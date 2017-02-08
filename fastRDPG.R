@@ -2,7 +2,7 @@
 # Karl Rohe, Jun Tao, Xintian Han, Norbert Binkiewicz 2017
 
 require(Matrix)
-require(igraph)
+
 
 
 howManyEdges = function(X,S){
@@ -18,13 +18,17 @@ howManyEdges = function(X,S){
 }
 
 
-dcOverlapping = function(theta,pi, B, avgDeg=10){
+dcOverlapping = function(theta,pi, B, ...){
   # samples from Overlapping SBM with degree correction (DC)
   #  to remove DC, set theta=rep(1,n)
   #  xi  = theta_i * z_i, where [z_i]_j ~ bernoulli(pi_j)
   #  lambda_ij = xi' B xj
   # probability of i connecting to j:  1 - exp(-lambda_ij)
-  n = length(theta)
+  if(length(theta)==1){
+    n = theta
+    theta = rep(1, n)
+  }
+  if(length(theta)>1) n = length(theta)
   K = length(pi) 
   
   if(K != nrow(B) | ncol(B) != nrow(B)){
@@ -35,25 +39,26 @@ dcOverlapping = function(theta,pi, B, avgDeg=10){
   
   X = matrix(0, nrow = n, ncol=K)
   for(i in 1:K) X[,i] = rbinom(n,1,pi[i])
+  X = X[order(X%*%(1:K)),]
   Theta = Diagonal(n,theta)
   X = Theta%*%X
-  if(length(avgDeg) == 0) return(fastRG(X,B, simple = T))
-  
-  em = howManyEdges(X,B)[1]  # expected number of edges in the poisson graph.
-  
-  scaleIt = em/(n*avgDeg)
-  return(fastRG(X,B/scaleIt, simple = T))
+
+  return(fastRG(X,B, ...))
 }
 
 
 
-dcMixed = function(theta,alpha, B, avgDeg=10){
+dcMixed = function(theta,alpha, B, ...){
   # samples from mixedmembership SBM with degree correction (DC)
   #  to remove DC, set theta=rep(1,n)
   #  xi  = theta_i * z_i, where z_i ~ dirichlet(alpha)
   #  lambda_ij = xi' B xj
   # probability of i connecting to j:  1 - exp(-lambda_ij)
-  n = length(theta)
+  if(length(theta)==1){
+    n = theta
+    theta = rep(1, n)
+  }
+  if(length(theta)>1) n = length(theta)
   K = length(alpha) 
   
   if(K != nrow(B) | ncol(B) != nrow(B)){
@@ -63,17 +68,14 @@ dcMixed = function(theta,alpha, B, avgDeg=10){
   
   
   X = t(sample_dirichlet(n, alpha))
+  X = X[order(X%*%(1:K)),]
   Theta = Diagonal(n,theta)
   X = Theta%*%X
   
-  if(length(avgDeg) == 0) return(fastRG(X,B, simple = T))
-  
-  em = howManyEdges(X,B)[1]  # expected number of edges in the poisson graph.
-  scaleIt = em/(n*avgDeg)
-  return(fastRG(X,B/scaleIt, simple = T))
+  return(fastRG(X,B, ...))
 }
 
-dcsbm = function(theta,pi, B, avgDeg=10){
+dcsbm = function(theta,pi, B, ...){
   # samples from a degree corrected stochastic blockmodel
   #  pi a K vector, contains block sampling proportions
   #  theta an n vector, contains degree parameters
@@ -93,6 +95,7 @@ dcsbm = function(theta,pi, B, avgDeg=10){
   
   n = length(theta)
   K = length(pi) 
+  B = B[order(pi), ]; B = B[, order(pi)]
   pi = sort(pi/sum(pi))
   
   
@@ -111,17 +114,13 @@ dcsbm = function(theta,pi, B, avgDeg=10){
   }
   X@x = theta
   
-  if(length(avgDeg) == 0) return(fastRG(X,B, simple = T))
-  
-  em = howManyEdges(X,B)[1]  # expected number of edges in the poisson graph.
-  scaleIt = em/(n*avgDeg)
-  return(fastRG(X,B/scaleIt, simple = T))
+  return(fastRG(X,B, ...))
   
 }
 
 
 
-sbm = function(n,pi, B, avgDeg=NULL){
+sbm = function(n,pi, B, PoissonEdges = F, avgDeg =NULL, ...){
   # samples from a stochastic blockmodel
   #  pi contains block sampling proportions
   #  B contains probabilities.
@@ -138,51 +137,89 @@ sbm = function(n,pi, B, avgDeg=NULL){
   z = sample(K,n,replace = T, prob = pi)
   # you might want to comment this next line out... but it is here so that pictures are pretty before clustering:
   z = sort(z)  
-  X = sparse.model.matrix(~as.factor(z)-1)
+  X = model.matrix(~factor(as.character(z), levels = as.character(1:K))-1)
   # there are more arguments that could be specified in fastRG:
   # as set, it will return a simple graph
-  #  defaults:  simple = NULL, selfLoops = FALSE, directed = FALSE, multiEdges = TRUE
-  S = -log(1-B)  # this is so that bij = 1-exp(-sij)
+  #  defaults:  simple = NULL, selfLoops = FALSE, directed = FALSE, PoissonEdges = TRUE
   
-  if(length(avgDeg)==0) return(fastRG(X,S, simple = T))  
-  pi = pi/sum(pi)
+  if(length(avgDeg)==0) return(fastRG(X,B, PoissonEdges=PoissonEdges, ...))  
   
-  em = howManyEdges(X,B)[1]  # expected number of edges in the poisson graph.
   
-  scaleIt = em/(n*avgDeg)
-  S = -log(1-B/scaleIt)
-  return(fastRG(X,S, simple = T))
+  # if avgDeg is specified, then scale B by the appropriate amount.
+  if(length(avgDeg) >0){
+    eDbar = howManyEdges(X,B)[2]  # this returns the expected avg degree in the poisson graph.
+    B = B * avgDeg/eDbar
+  }
+  
+  
+  if(!PoissonEdges){
+    if(max(B)>=1){
+      print(
+        "This combination of B and avgDeg has led to probabilities that exceed 1.
+        Suggestion:  Either diminish avgDeg or enable poisson edges."
+        )
+    }
+      
+    B = -log(1-B)   # this ensure that edge probabilites are bijand not 1-exp(-bij).
+  }
+  
+  # avgDeg is set to NULL because it has already been handled internally.... this is because we need to scale B before making the transformation.
+  return(fastRG(X,B, PoissonEdges = PoissonEdges, avgDeg=NULL,...))
 }
 
 
-fastRG <- function(X, S, 
-                   simple = NULL, selfLoops = FALSE, directed = FALSE, multiEdges = TRUE){
-  # X is an n x K matrix
-  # S is a K x K matrix
+
+fastRG <- function(X, S, avgDeg = NULL,
+                   simple = NULL, PoissonEdges = TRUE, directed = FALSE, selfLoops = FALSE){
+  # X                    is an n x K matrix
+  # S                    is a K x K matrix
+  # avgDeg               if specified and PoissonEdges == T, expected rowSums of output is avgDeg.
+  #                      if specified and PoissonEdges == F, expected rowSums of output is less than avgDeg and close when output is sparse.
+  # simple == T          sets PoissonEdges = FALSE, directed = FALSE, selfLoops = FALSE
   
-  # Both X and S should have non-negative entries.
+  # selfLoops == T       retains the selfloops, 
+  # directed == T        does not symmetrize the graph, 
+  # PoissonEdges == T    keeps the multiple edges.
+  
+  # directed == F,       symmetrizes S and A.  avgDeg calculations are on out degree (i.e. rowSums)
+  # selfLoops == F.      This uses a poisson approximation to the binomial...
+  #                           Let M~poisson(\sum_{uv} \lambda_{uv}) be the number of edges.
+  #                           If selfLoops == F, then the code uses the approximation 
+  #                              Poisson(\lambda_{ij}) \\approx\\ Binomial(M, \lambda_{ij}/\sum_{uv}\lambda_{uv})
+  #                              This approximation is good when total edges is ~n or larger and max \lambda_{ij} ~constant or smaller.
+  # PoissonEdges == F    this thresholds each edge; multiple edges are replaced by single edges. 
+  
+  
+  # Check that both X and S have non-negative entries.
   if(sum(X<0) + sum(S<0)) return(NA)
   
-  # if simple = T, then no selfLoops, undirected, and no multiple edges.
+  # if simple = T, then set PoissonEdges = FALSE, directed = FALSE, selfLoops = FALSE
   if(length(simple)>0) if(simple){
     selfLoops = FALSE
     directed= FALSE
-    multiEdges = FALSE
+    PoissonEdges = FALSE
   }
   
-  if(!directed) S = S/2
-  # selfLoops = T retains the selfloops, 
-  # directed = T does not symmetrize the graph, 
-  # multiedges = T keeps the multiple edges.
+  # if undirected, symmetrize S<- (S + t(S))/2 and then divide result by 2 because this doubles edge probabilities. 
+  if(!directed) S = (S+t(S))/4
   
   
   n = nrow(X) 
   K = ncol(X)
   
+  
+  # if avgDeg is specified, then scale S by the appropriate amount.
+  if(length(avgDeg) >0){
+    eDbar = howManyEdges(X,S)[2]  # this returns the expected avg degree in the poisson graph.
+    S = S * avgDeg/eDbar
+  }
+  
   C = diag(colSums(X))
   Xt  = apply(X,2,function(x) return(x/sum(x)))
   St = C%*%S%*%C
-  m = rpois(1, sum(St)) # number of sampling edges
+  m = rpois(1, sum(St)) # number of edges to sample
+  
+  # if no edges, return empty matrix. 
   if (m==0) return(sparseMatrix(c(1:n),c(1:n),x = 0, dims = c(n, n)))
   
   # to sample U,V from St, we need to sample from a vector, then convert back to matrix.
@@ -193,11 +230,6 @@ fastRG <- function(X, S,
   Vindex = ((1:K^2) %/% K ) + 1
   Vindex = c(1, Vindex)[-(K^2 +1)]
   
-  
-  #     col_table = table(U)
-  #     col_set = as.numeric(as.character(cbind.data.frame(col_table)$U)) 
-  #     col_num = cbind.data.frame(col_table)[2]
-  #     
   EdgeOut = rep(0, m)
   EdgeIn = EdgeOut
   ticker = 1
@@ -216,8 +248,8 @@ fastRG <- function(X, S,
   if (selfLoops == FALSE){
     diag(A) = 0
   }
-  if(!directed) A = A + t(A) 
-  if(!multiEdges) A@x[A@x>1]=1
+  if(!directed) A = A + t(A) # symmetrization doubles edge probabiilties! 
+  if(!PoissonEdges) A@x[A@x>1]=1  # thresholding sets nonzero elements of A to one.
   
   return(A)
 }

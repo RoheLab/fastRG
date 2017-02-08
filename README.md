@@ -5,32 +5,52 @@ fastRG quickly samples a generalized random dot product graph (RDPG), which is a
 
 The basic idea of the algorithm is to first sample the number of edges, $m$, and then put down edges one-by-one.  It runs in $O(m)$ operations.  For example, in sparse graphs $m = O(n)$ and the algorithm is dramatically faster than ``element-wise'' algorithms which run in $O(n^2)$ operations.
 
-Given $X$ and $S$, howManyEdges(X,S) returns the expected number of edges, the expected average node degree, and the expected edge density.  
+Installation
+------------
 
-Usage
+```R
+source("https://raw.githubusercontent.com/karlrohe/fastRG/master/fastRDPG.R")
+```
+
+
+
+Functions 
 ------------
 ```R
-sbm(n,pi, B, avgDeg=10)
-dcsbm(theta,pi, B, avgDeg=10)
-dcOverlapping(theta,pi, B, avgDeg=10)
-dcMixed(theta,alpha, B, avgDeg=10)
-fastRG(X, S,simple = NULL, selfLoops = FALSE, directed = FALSE, multiEdges = TRUE)
+fastRG(X, S, avgDeg = NULL, simple = NULL, PoissonEdges = TRUE, directed = FALSE, selfLoops = FALSE)
+sbm(n,pi, B, PoissonEdges = F, ...)
+dcsbm(theta,pi, B, ...)
+dcMixed(theta,alpha, B, ...)
+dcOverlapping(theta,pi, B, ...)
+
 howManyEdges(X,S)
 ```
+The functions sbm, dcsbm, dcMixed, and dcOverlapping are wrappers for fastRG.  
 
 Arguments 
 ------------
 ```R
-n          # number of nodes
-pi         # a K vector of membership probabilities
-B          # middle probability matrix
-theta      # degree parameter in degree corrected models
-alpha      # parameter of the dirichlet distribution in the assignment of block memberships.
-avgDeg     # to help ensure the graph is not too dense, avgDeg scales the B matrix to set 
-           #   the expected average degre. If avgDeg = null, this is ignored.
-X          # X in the gRDPG
-S          # S in the gRDPG
-simple     # if TRUE, then sets selfLoops = directed = multiEdges = FALSE
+X              # X in the gRDPG
+S              # S in the gRDPG
+avgDeg         # to help ensure the graph is not too dense, avgDeg scales the S matrix to set 
+               #   the expected average expected degree to avgDeg. If avgDeg = null, this is ignored.
+
+n              # number of nodes
+pi             # a K vector of membership probabilities
+alpha          # parameter of the dirichlet distribution in the assignment of block memberships in dcMixed
+B              # middle probability matrix  (this becomes S in fastRG)
+theta          # vector of degree parameter in degree corrected models, 
+               #  the expected adjacency matrix becomes: 
+               #            diag(theta) %*% X %*% S %*% t(X) %*% diag(theta)
+               #  in dcMixed and dcOverlapping, if theta is a single value, then 
+               #  n <- theta and there is no degree correction.
+
+
+simple         # if TRUE, samples a simple graph by setting PoissonEdges = directed = multiEdges = FALSE
+PoissonEdges   # See details
+directed       # See details
+selfLoops      # See details
+
 ```
 
 Details
@@ -39,17 +59,19 @@ fastRG samples a Bernoulli gRDPG where $\lambda_{ij} = X_i' S X_j$ and the proba
 
 sbm, dcsbm, dcOverlapping, and dcMixed are wrappers for fastRG that sample the Stochastic Blockmodel, Degree Corrected Stochastic Blockmodel, the Degree Corrected Overlapping Stochastic Blockmodel, and the Degree Corrected Mixed Membership Stochastic Blockmodel.  To remove Degree correction, set theta = rep(1, n).  
 
-howManyEdges returns a vector with three elements.  The first element is the expected number of edges. The second is the expected average degree.  The third is the expected edge density. 
-
-Note:  Only SBM has edge probabilities exactly given by $\lambda$ (up to scaling for avgDeg).  The other techniques have edge probabilities $1 - exp(-\lambda)$
+If selfLoops == T, then fastRG retains the selfloops. If selfLoops == F, then fastRG uses a poisson approximation to the binomial in the following sense: Let $M\sim poisson(\sum_{uv} \lambda_{uv})$ be the number of edges. fastRG approximates edge probabilities of $Poisson(\lambda_{ij})$ with  $Binomial(M, \lambda_{ij}/\sum_{uv}\lambda_{uv})$.  This approximation is good when total edges is order $n$ or larger and $\max \lambda_{ij}$ is order constant or smaller.
 
 
-Installation
+If directed == T, then fastRG does not symmetrize the graph.  If directed == F, then fastRG symmetrizes S and A.
+
+If PoissonEdges == T, then fastRG keeps the multiple edges and avgDeg calculations are on out degree (i.e. rowSums).  If PoissonEdges == F, then fastRG thresholds each edge so that multiple edges are replaced by single edges. In this case, only SBM has edge probabilities exactly given by $\lambda$ (up to scaling for avgDeg).  The other techniques have edge probabilities $1 - exp(-\lambda)$.
+
+
+Values
 ------------
+fastRG and its wrappers all output a sparse matrix from the package Matrix. 
 
-```R
-source("https://raw.githubusercontent.com/karlrohe/fastRG/master/fastRDPG.R")
-```
+howManyEdges returns a vector with three elements.  The first element is the expected number of edges. The second is the expected average degree.  The third is the expected edge density. 
 
 Example Usage
 -------------
@@ -74,17 +96,75 @@ pi = rexp(K) +1
 pi = pi/sum(pi) * 3
 B = matrix(rexp(K^2)+1, nrow=K)
 diag(B) = diag(B)+ mean(B)*K
-A = dcsbm(rgamma(n,shape = 2,scale = .4), pi,B,avgDeg = 20)
-hist(rowSums(A))
-# average degree is a bit smaller than 10 because we have simplified the graph, removing multiple edges:
+theta = rexp(n)
+
+A = dcsbm(theta, pi,B,avgDeg = 50)
+# here is the average degree:
 mean(rowSums(A))  
-image(as.matrix(t(A[,n:1])),col = grey(c(1,0)))
+
+# If we remove multiple edges, the avgDeg parameter is not trustworthy:
+A = dcsbm(theta, pi,B,avgDeg = 50, PoissonEdges = F)
+mean(rowSums(A))  
+
+# but it is a good upper bound when the graph is sparse:
+n = 10000
+A = dcsbm(rexp(n), pi,B,avgDeg = 50, PoissonEdges = F)
+mean(rowSums(A))  
+
+```      
+
+or
+
+```R
+# This draws a 500 x 500 adjacency matrix from each model.
+#   Each image might take around 5 seconds to render.
+
+K = 10
+n = 500
+pi = rexp(K) +1
+pi = pi/sum(pi) * 3
+B = matrix(rexp(K^2)+1, nrow=K)
+diag(B) = diag(B)+ mean(B)*K
+theta = rexp(n)
+A= dcsbm(theta, pi,B,avgDeg = 50)
+image(as.matrix(t(A[,n:1])),col = grey(seq(1,0, len=20)))
+
+
+K = 2
+n = 500
+alpha = c(1,1)/5
+B = diag(c(1,1))
+theta = n
+A= dcMixed(theta, alpha,B,avgDeg = 20)
+image(as.matrix(t(A[,theta:1]))/max(A),col = grey(seq(1,0, len=20)))
+
+
+n = 500
+K = 2
+pi = c(.7,.7)
+B = diag(c(1,1))
+theta = rexp(n)
+A= dcOverlapping(theta, pi,B,avgDeg = 50)
+image(as.matrix(t(A[,theta:1]))/max(A),col = grey(seq(1,0, len=20)))
+
+
+K = 10
+n = 500
+pi = rexp(K) +1
+pi = pi/sum(pi) * 3
+B = matrix(rexp(K^2)+1, nrow=K) / (3*max(B))
+diag(B) = diag(B)+ mean(B)*K
+A= sbm(n, pi,B)
+image(as.matrix(t(A[,n:1])),col = grey(seq(1,0, len=20)))
+
 ```
+
+
 
 
 ```R
 # this samples a DC-SBM with 10,000 nodes
-#  then finds, and plots the leading eigenspace.
+#  then computes, and plots the leading eigenspace.
 #  the code should run in less than a second.
 
 require(rARPACK)
@@ -96,24 +176,31 @@ pi = pi/sum(pi)
 pi = -sort(-pi)
 B = matrix(rexp(K^2)+1, nrow=K)
 diag(B) = diag(B)+ mean(B)*K
-A = dcsbm(rgamma(n,shape = 2,scale = .4), pi,B,avgDeg = 20)
+A = dcsbm(rgamma(n,shape = 2,scale = .4), pi,B,avgDeg = 20, simple = T)
+mean(rowSums(A))
 
 # leading eigen of regularized Laplacian with tau = 1
 D = Diagonal(n, 1/sqrt(rowSums(A)+1))
 ei = eigs_sym(D%*%A%*%D, 10)  
+
 # normalize the rows of X:
 X = t(apply(ei$vec[,1:K],1, function(x) return(x/sqrt(sum(x^2)+1/n))))
+
 # taking a varimax rotation makes the leading vectors pick out clusters:
 X = varimax(X, normalize = F)$load
-par(mfrow = c(5,1), mar = c(0,1,1,0), bty = "n", xaxt = "n")
-# plot leading eigenvectors:
+
+par(mfrow = c(5,1), mar = c(1,2,2,2), xaxt = "n",yaxt = "n")
+
+# plot 1000 elements of the leading eigenvectors:
+s = sort(sample(n,1000))
 for(i in 1:5){
-  plot(X[,i], pch  ='.')
-  lines(c(0,n), c(0,0))
+  plot(X[s,i], pch  ='.')
 }
 dev.off()
 
-```
+```    
+
+or
 
 
 
@@ -133,22 +220,30 @@ diag(B) = diag(B)+ mean(B)*K
 A = dcsbm(rgamma(n,shape = 2,scale = .4), pi,B,avgDeg = 10)
 D = Diagonal(n, 1/sqrt(rowSums(A)+10))
 L = D%*%A%*%D
-ei = eigs_sym(L, 10)  
+ei = eigs_sym(L, 4)  
 s = sort(sample(n, 10000))
+rs = rowSums(A[s,])
+plot(ei$vect[s,10]/rs)
 X = t(apply(ei$vec[,1:K],1, function(x) return(x/sqrt(sum(x^2)+1/n))))
 plot(X[s,2])  # highly localized eigenvectors
-
-Ac=A
-core = 3
-while(min(rs) <= core){
-good = rs>core
-  Ac = Ac[good,good]
-  rs = rowSums(Ac)
-}
-dim(Ac)
-ei = eigs_sym(Ac, 4)  
-s = sort(sample(nrow(Ac), 10000))
-plot(ei$vec[s,2])  # highly localized eigenvectors
+```   
 
 
-```
+or
+
+
+```R
+n = 100
+B = matrix(c(1,1,0,1), nrow =2)
+pi = c(1,1)
+A = sbm(n,pi,B, avgDeg = 30)
+isSymmetric(A)
+isSymmetric(B)
+ei = eigen(A)
+X = ei$vec[,1:3]%*%diag(ei$val[1:3])
+X = X[rowSums(abs(X))>10^(-10),]
+r= varimax(X)$load
+r[,2] = -r[,2]
+r = t(apply(r,1, function(x) return(x/sum(x))))
+plot(as.data.frame(r[1:nrow(r),]))
+```  
