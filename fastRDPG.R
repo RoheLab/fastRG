@@ -2,7 +2,7 @@
 # Karl Rohe, Jun Tao, Xintian Han, Norbert Binkiewicz 2017
 
 require(Matrix)
-
+require(igraph)  # this is needed for the function sample_dirichlet
 
 
 howManyEdges = function(X,S){
@@ -200,9 +200,6 @@ fastRG <- function(X, S, avgDeg = NULL,
     PoissonEdges = FALSE
   }
   
-  # if undirected, symmetrize S<- (S + t(S))/2 and then divide result by 2 because this doubles edge probabilities. 
-  if(!directed) S = (S+t(S))/4
-  
   
   n = nrow(X) 
   K = ncol(X)
@@ -213,6 +210,11 @@ fastRG <- function(X, S, avgDeg = NULL,
     eDbar = howManyEdges(X,S)[2]  # this returns the expected avg degree in the poisson graph.
     S = S * avgDeg/eDbar
   }
+  
+  # if undirected, symmetrize S<- (S + t(S))/2 and then divide result by 2 because this doubles edge probabilities. 
+  if(!directed) S = (S+t(S))/4
+  
+  
   
   C = diag(colSums(X))
   Xt  = apply(X,2,function(x) return(x/sum(x)))

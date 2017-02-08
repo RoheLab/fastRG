@@ -135,7 +135,7 @@ n = 500
 alpha = c(1,1)/5
 B = diag(c(1,1))
 theta = n
-A= dcMixed(theta, alpha,B,avgDeg = 20)
+A= dcMixed(theta, alpha,B,avgDeg = 50)
 image(as.matrix(t(A[,theta:1]))/max(A),col = grey(seq(1,0, len=20)))
 
 
@@ -143,20 +143,21 @@ n = 500
 K = 2
 pi = c(.7,.7)
 B = diag(c(1,1))
-theta = rexp(n)
+theta = n
 A= dcOverlapping(theta, pi,B,avgDeg = 50)
-image(as.matrix(t(A[,theta:1]))/max(A),col = grey(seq(1,0, len=20)))
+image(as.matrix(t(A[,n:1]))/max(A),col = grey(seq(1,0, len=20)))
 
 
 K = 10
 n = 500
 pi = rexp(K) +1
-pi = pi/sum(pi) * 3
-B = matrix(rexp(K^2)+1, nrow=K) / (3*max(B))
-diag(B) = diag(B)+ mean(B)*K
+pi = pi/sum(pi) 
+B = matrix(rexp(K^2), nrow=K) 
+B = B/ (3*max(B))
+diag(B) = diag(B)+ mean(B)*3
 A= sbm(n, pi,B)
 image(as.matrix(t(A[,n:1])),col = grey(seq(1,0, len=20)))
-
+mean(A)
 ```
 
 
@@ -221,29 +222,8 @@ A = dcsbm(rgamma(n,shape = 2,scale = .4), pi,B,avgDeg = 10)
 D = Diagonal(n, 1/sqrt(rowSums(A)+10))
 L = D%*%A%*%D
 ei = eigs_sym(L, 4)  
+
 s = sort(sample(n, 10000))
-rs = rowSums(A[s,])
-plot(ei$vect[s,10]/rs)
 X = t(apply(ei$vec[,1:K],1, function(x) return(x/sqrt(sum(x^2)+1/n))))
-plot(X[s,2])  # highly localized eigenvectors
+plot(X[s,3])  # highly localized eigenvectors
 ```   
-
-
-or
-
-
-```R
-n = 100
-B = matrix(c(1,1,0,1), nrow =2)
-pi = c(1,1)
-A = sbm(n,pi,B, avgDeg = 30)
-isSymmetric(A)
-isSymmetric(B)
-ei = eigen(A)
-X = ei$vec[,1:3]%*%diag(ei$val[1:3])
-X = X[rowSums(abs(X))>10^(-10),]
-r= varimax(X)$load
-r[,2] = -r[,2]
-r = t(apply(r,1, function(x) return(x/sum(x))))
-plot(as.data.frame(r[1:nrow(r),]))
-```  
