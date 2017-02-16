@@ -17,7 +17,7 @@ source("https://raw.githubusercontent.com/karlrohe/fastRG/master/fastRDPG.R")
 Functions 
 ------------
 ```R
-fastRG(X, S, avgDeg = NULL, simple = NULL, PoissonEdges = TRUE, directed = FALSE, selfLoops = FALSE)
+fastRG(X, S, Y= NULL, avgDeg = NULL, simple = NULL, PoissonEdges = TRUE, directed = FALSE, selfLoops = FALSE){
 sbm(n,pi, B, PoissonEdges = F, ...)
 dcsbm(theta,pi, B, ...)
 dcMixed(theta,alpha, B, ...)
@@ -32,6 +32,10 @@ Arguments
 ```R
 X              # X in the gRDPG
 S              # S in the gRDPG
+
+Y              # if Null, Y <- X; if not, E(A) = XSY', directed <- T, selfLoops <- T, simple <- F
+               #   Y need not have same number of rows or columns as X.  matrix mult X %*% S %*% t(Y) must be defined.
+  
 avgDeg         # to help ensure the graph is not too dense, avgDeg scales the S matrix to set 
 #   the expected average expected degree to avgDeg. If avgDeg = null, this is ignored.
 
@@ -65,6 +69,8 @@ If selfLoops == T, then fastRG retains the selfloops. If selfLoops == F, then fa
 If directed == T, then fastRG does not symmetrize the graph.  If directed == F, then fastRG symmetrizes S and A.
 
 If PoissonEdges == T, then fastRG keeps the multiple edges and avgDeg calculations are on out degree (i.e. rowSums).  If PoissonEdges == F, then fastRG thresholds each edge so that multiple edges are replaced by single edges. In this case, only SBM has edge probabilities exactly given by $\lambda$ (up to scaling for avgDeg).  The other techniques have edge probabilities $1 - exp(-\lambda)$.
+
+If Y is specified, then it returns a sparse matrix, with poisson entries, where $E(A) = X S Y'$.  This is useful for creating sparse rectangular matrices.  For example, this could be a feature matrix.  Or, it could be a "rectangular adjacency matrix" for a bipartite graph.
 
 
 Values
