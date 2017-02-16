@@ -33,17 +33,17 @@ Arguments
 X              # X in the gRDPG
 S              # S in the gRDPG
 avgDeg         # to help ensure the graph is not too dense, avgDeg scales the S matrix to set 
-               #   the expected average expected degree to avgDeg. If avgDeg = null, this is ignored.
+#   the expected average expected degree to avgDeg. If avgDeg = null, this is ignored.
 
 n              # number of nodes
 pi             # a K vector of membership probabilities
 alpha          # parameter of the dirichlet distribution in the assignment of block memberships in dcMixed
 B              # middle probability matrix  (this becomes S in fastRG)
 theta          # vector of degree parameter in degree corrected models, 
-               #  the expected adjacency matrix becomes: 
-               #            diag(theta) %*% X %*% S %*% t(X) %*% diag(theta)
-               #  in dcMixed and dcOverlapping, if theta is a single value, then 
-               #  n <- theta and there is no degree correction.
+#  the expected adjacency matrix becomes: 
+#            diag(theta) %*% X %*% S %*% t(X) %*% diag(theta)
+#  in dcMixed and dcOverlapping, if theta is a single value, then 
+#  n <- theta and there is no degree correction.
 
 
 simple         # if TRUE, samples a simple graph by setting PoissonEdges = directed = multiEdges = FALSE
@@ -86,6 +86,25 @@ S = matrix(runif(n = K*K, 0,.0001), nrow = K)
 howManyEdges(X,S)[-1]
 A = fastRG(X,S, simple=T)
 ```
+
+or fastRG also allows for simulating from E(A) = X S Y', where A and S could be rectangular.  This is helpful for bipartite graphs or matrices of features.
+
+```R
+n = 10000
+d = 1000
+K1 = 5
+K2 = 3
+
+X = matrix(rpois(n = n*K1, 1), nrow = n)
+Y = matrix(rpois(n = d*K2, 1), nrow = d)
+S = matrix(runif(n = K1*K2, 0,.1), nrow = K1)
+
+A = fastRG(X,S,Y, avgDeg = 10)
+```
+
+
+
+
 
 or
 
@@ -195,7 +214,7 @@ par(mfrow = c(5,1), mar = c(1,2,2,2), xaxt = "n",yaxt = "n")
 # plot 1000 elements of the leading eigenvectors:
 s = sort(sample(n,1000))
 for(i in 1:5){
-  plot(X[s,i], pch  ='.')
+plot(X[s,i], pch  ='.')
 }
 dev.off()
 
@@ -227,3 +246,73 @@ s = sort(sample(n, 10000))
 X = t(apply(ei$vec[,1:K],1, function(x) return(x/sqrt(sum(x^2)+1/n))))
 plot(X[s,3])  # highly localized eigenvectors
 ```   
+
+
+
+To sample from a degree corrected and node contextualized graph...
+
+```R
+n = 10000  # number of nodes
+d = 1000 # number of features
+K = 5  # number of blocks 
+
+
+# to generate an X for dc-sbm, we need pi and theta.
+
+pi = rexp(K) +1
+pi = pi/sum(pi) * 3
+B = matrix(rexp(K^2)+1, nrow=K)
+diag(B) = diag(B)+ mean(B)*K
+theta = rep(0,n)
+
+# to make pretty pictures, order by cluster size:
+B = B[order(pi), ]
+B = B[, order(pi)]
+pi = sort(pi/sum(pi))
+
+z = sample(K,n,replace = T, prob = pi)
+# Again, so that it makes pictures...
+z = sort(z)  
+X = sparse.model.matrix(~as.factor(z)-1)
+Tz = table(z)
+ct= c(0,cumsum(Tz))
+for(i in 1:K){
+  theta[(ct[i]+1):ct[i+1]] = -sort(-rexp(Tz[i]))
+}
+X@x = theta
+
+# first the graph:
+A = fastRG(X,B, avgDeg = 10)
+
+# now the features:
+X@x = X@x + rexp(n) # the degree parameter should be different. X@x + rexp(n) makes feature degrees correlated to degrees in graph.
+
+
+thetaY = rep(0, d)
+piFeatures = rexp(K) +1
+piFeatures = piFeatures/sum(piFeatures) * 3
+BFeatures = matrix(rexp(K^2)+1, nrow=K)
+diag(BFeatures) = diag(BFeatures)+ mean(BFeatures)*K
+
+# to make pretty pictures, order by cluster size:
+BFeatures = BFeatures[, order(piFeatures)]
+piFeatures = sort(piFeatures/sum(piFeatures))
+
+y = sample(K,d,replace = T, prob = piFeatures)
+# Again, so that it makes pictures...
+y = sort(y)  
+Y = sparse.model.matrix(~as.factor(y)-1)
+Ty = table(y)
+cty= c(0,cumsum(Ty))
+for(i in 1:K){
+  thetaY[(cty[i]+1):cty[i+1]] = -sort(-rexp(Ty[i]))
+}
+Y@x = thetaY
+
+# now generate the features:
+
+features = fastRG(X,BFeatures, Y, avgDeg = 20)
+
+```
+
+
