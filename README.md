@@ -5,7 +5,7 @@ fastRG quickly samples a generalized random dot product graph (RDPG), which is a
 
 The basic idea of the algorithm is to first sample the number of edges, $m$, and then put down edges one-by-one.  It runs in $O(m)$ operations.  For example, in sparse graphs $m = O(n)$ and the algorithm is dramatically faster than ``element-wise'' algorithms which run in $O(n^2)$ operations.
 
-Installation
+Installation in R
 ------------
 
 ```R
