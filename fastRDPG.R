@@ -14,13 +14,14 @@ howManyEdges = function(X,S, Y=NULL){
   Cy = diag(colSums(Y))
   em = sum(Cx%*%S%*%Cy)
   avDeg= em/nrow(X)
-  density = em/(nrow(X)*nrow(Y))
-  return(c(em,avDeg, density))
+  # density = em/(nrow(X)*nrow(Y))  # in big graphs, nrow(X)*nrow(Y) causes integer overflow errors...
+  return(c(em,avDeg))
+  # return(c(em,avDeg, density))
   
 }
 
 
-dcOverlapping = function(theta,pi, B, ...){
+dcOverlapping = function(theta,pi, B, parametersOnly = FALSE, ...){
   # samples from Overlapping SBM with degree correction (DC)
   #  to remove DC, set theta=rep(1,n)
   #  xi  = theta_i * z_i, where [z_i]_j ~ bernoulli(pi_j)
@@ -44,13 +45,14 @@ dcOverlapping = function(theta,pi, B, ...){
   X = X[order(X%*%(1:K)),]
   Theta = Diagonal(n,theta)
   X = Theta%*%X
-
+  
+  if(parametersOnly) return(list(X=X, S=B))
   return(fastRG(X,B, ...))
 }
 
 
 
-dcMixed = function(theta,alpha, B, ...){
+dcMixed = function(theta,alpha, B, parametersOnly = FALSE, ...){
   # samples from mixedmembership SBM with degree correction (DC)
   #  to remove DC, set theta=rep(1,n)
   #  xi  = theta_i * z_i, where z_i ~ dirichlet(alpha)
@@ -74,10 +76,11 @@ dcMixed = function(theta,alpha, B, ...){
   Theta = Diagonal(n,theta)
   X = Theta%*%X
   
+  if(parametersOnly) return(list(X=X, S=B))
   return(fastRG(X,B, ...))
 }
 
-dcsbm = function(theta,pi, B, ...){
+dcsbm = function(theta,pi, B, parametersOnly = FALSE, ...){
   # samples from a degree corrected stochastic blockmodel
   #  pi a K vector, contains block sampling proportions
   #  theta an n vector, contains degree parameters
@@ -116,6 +119,7 @@ dcsbm = function(theta,pi, B, ...){
   }
   X@x = theta
   
+  if(parametersOnly) return(list(X=X, S=B))
   return(fastRG(X,B, ...))
   
 }
@@ -126,7 +130,7 @@ dcsbm = function(theta,pi, B, ...){
 
 
 
-dcsbm = function(theta,pi, B, ...){
+dcsbm = function(theta,pi, B, parametersOnly = FALSE, ...){
   # samples from a degree corrected stochastic blockmodel
   #  pi a K vector, contains block sampling proportions
   #  theta an n vector, contains degree parameters
@@ -165,6 +169,7 @@ dcsbm = function(theta,pi, B, ...){
   }
   X@x = theta
   
+  if(parametersOnly) return(list(X=X, S=B))
   return(fastRG(X,B, ...))
   
 }
@@ -178,11 +183,12 @@ dcsbm = function(theta,pi, B, ...){
 
 
 
-sbm = function(n,pi, B, PoissonEdges = F, avgDeg =NULL, ...){
+sbm = function(n,pi, B, PoissonEdges = F, avgDeg =NULL, parametersOnly = FALSE, ...){
   # samples from a stochastic blockmodel
   #  pi contains block sampling proportions
   #  B contains probabilities.
   # if avgDeg is set, then B is scaled so that the expected average degree is avgDeg.
+  
   
   
   K = length(pi) 
@@ -200,7 +206,9 @@ sbm = function(n,pi, B, PoissonEdges = F, avgDeg =NULL, ...){
   # as set, it will return a simple graph
   #  defaults:  simple = NULL, selfLoops = FALSE, directed = FALSE, PoissonEdges = TRUE
   
-  if(length(avgDeg)==0) return(fastRG(X,B, PoissonEdges=PoissonEdges, ...))  
+  if(length(avgDeg)==0){
+    return(fastRG(X,B, PoissonEdges=PoissonEdges, ...))  
+  }
   
   
   # if avgDeg is specified, then scale B by the appropriate amount.
@@ -215,20 +223,21 @@ sbm = function(n,pi, B, PoissonEdges = F, avgDeg =NULL, ...){
       print(
         "This combination of B and avgDeg has led to probabilities that exceed 1.
         Suggestion:  Either diminish avgDeg or enable poisson edges."
-        )
+      )
     }
-      
+    
     B = -log(1-B)   # this ensure that edge probabilites are bijand not 1-exp(-bij).
   }
   
   # avgDeg is set to NULL because it has already been handled internally.... this is because we need to scale B before making the transformation.
+  if(parametersOnly) return(list(X=X, S=B))
   return(fastRG(X,B, PoissonEdges = PoissonEdges, avgDeg=NULL,...))
 }
 
 
 
 fastRG <- function(X, S, Y= NULL, avgDeg = NULL,
-                   simple = NULL, PoissonEdges = TRUE, directed = FALSE, selfLoops = FALSE){
+                   simple = NULL, PoissonEdges = TRUE, directed = FALSE, selfLoops = FALSE, returnEdgeList = FALSE){
   # X                    is an n x K1 matrix
   # S                    is a K1 x K2 matrix
   # Y                    is a d x K2 matrix; if Null, Y <- X
@@ -286,41 +295,93 @@ fastRG <- function(X, S, Y= NULL, avgDeg = NULL,
   
   Cx = diag(colSums(X))
   Cy = diag(colSums(Y))
-  Xt  = apply(X,2,function(x) return(x/sum(x)))
-  Yt  = apply(Y,2,function(x) return(x/sum(x)))
+  # Xt  = apply(X,2,function(x) return(x/sum(x)))
+  # Yt  = apply(Y,2,function(x) return(x/sum(x)))  # sample(n,...) automatically does the normalization.
   St = Cx%*%S%*%Cy
-  m = rpois(1, sum(St)) # number of edges to sample
+  m = rpois(n = 1, lambda = sum(St)) # number of edges to sample
   
   # if no edges, return empty matrix. 
   if (m==0) return(sparseMatrix(c(1:n),c(1:d),x = 0, dims = c(n, d)))
   
-  # to sample U,V from St, we need to sample from a vector, then convert back to matrix.
-  UV = sample(K1*K2, size = m, replace = TRUE, prob = St)  
-  tabUV = table(c(1:(K1*K2), UV))
-  Uindex = 1:(K1*K2) %% K1
-  Uindex[Uindex==0]= K1
-  Vindex = ((1:(K1*K2)) %/% K1 ) + 1
-  Vindex = c(1, Vindex)[-(K1*K2 +1)]
+  # this simulates \varpi, denoted here as tabUV.  element u,v is the number of edges between column u and column v.
+  tabUV = matrix(rmultinom(n=1, size= m, prob = St), nrow = K1, ncol = K2)
+  cumsumUV = matrix(cumsum(tabUV), nrow = K1, ncol = K2)
   
-  EdgeOut = rep(0, m)
-  EdgeIn = EdgeOut
+  #  cbind(eo,ei) is going to be the edge list.  eo = "edge out node".  ei = "edge in node"
+  eo = rep(NA, m)  
+  ei = eo
+  
+  
+  # to avoid doing K1*K2 samples for I and J, we can instead take
+  #   only K1 + K2 samples.  This requires some awkward indexing.
+  #   for(u in 1:K1) for(v in 1:K2) tabUV[u,v]  <- eventually this is going to happen.
+  #     because this first sets u =1 and loops through the different values of v, 
+  #     the awkward indexing will only apply to the "v" or the ei vector.
+  #     for eo, we can just loop through u in 1:K1...
+  
+  
   ticker = 1
-  
-  for (uv in 1:(K1*K2)){
-    edgesInThisBlock = tabUV[uv]
-    I = sample(n, size = edgesInThisBlock, replace = T, prob = Xt[, Uindex[uv]])
-    J = sample(d, size = edgesInThisBlock, replace = T, prob = Yt[, Vindex[uv]])
-    
-    EdgeOut[ticker:(ticker+edgesInThisBlock-1)] = I
-    EdgeIn[ticker:(ticker+edgesInThisBlock-1)] = J
-    ticker = ticker + edgesInThisBlock
+  blockDegreesU = rowSums(tabUV)
+  for(u in 1:K1){
+    if(blockDegreesU[u]>0){
+      eo[ticker:(ticker + blockDegreesU[u]-1)] = 
+        sample(n, size = blockDegreesU[u], replace = T, prob = X[, u])
+      ticker = ticker + blockDegreesU[u]
+    }
   }
   
-  A = sparseMatrix(EdgeOut, EdgeIn, x = 1, dims = c(n, d))
-  if (selfLoops == FALSE){
-    diag(A) = 0
+  
+  # for ei, things are more awkward.  if we had pointers, perhaps there would be a faster way... instead
+  #   create ei-tmp.  which will hold the values of ei, but in the wrong order.  another loop will take care of the indexing.
+  eitmp = ei  
+  ticker = 1
+  blockDegreesV = colSums(tabUV)
+  for(v in 1:K2){
+    if(blockDegreesV[v]>0){
+      eitmp[ticker:(ticker + blockDegreesV[v]-1)] = sample(d, size = blockDegreesV[v], replace = T, prob = Y[, v])
+      ticker = ticker + blockDegreesV[v]
+    }
   }
-  if(!directed) A = A + t(A) # symmetrization doubles edge probabiilties! 
+  
+  
+  #  this loop worries about the indexing... putting ei-tmp in the correct order, to match up with eo. 
+  ticker = 1
+  # tickerU = 1
+  tickerV = c(1,cumsum(blockDegreesV))
+  for (u in 1:K1){ 
+    for(v in 1:K2){
+      edgesInThisBlock = tabUV[u,v]
+      if(edgesInThisBlock>0){
+        # I = sample(n, size = edgesInThisBlock, replace = T, prob = X[, Uindex[uv]])
+        # J = sample(d, size = edgesInThisBlock, replace = T, prob = Y[, Vindex[uv]])
+        
+        # eo[ticker:(ticker+edgesInThisBlock-1)] = eotmp[tickerU:(tickerU+edgesInThisBlock-1)]
+        # tickerU = tickerU + edgesInThisBlock
+        ei[ticker:(ticker+edgesInThisBlock-1)] = eitmp[tickerV[v]:(tickerV[v]+edgesInThisBlock-1)]
+        tickerV[v] = tickerV[v] + edgesInThisBlock
+        ticker = ticker + edgesInThisBlock
+      }
+    }
+  }
+  
+  
+  if (!selfLoops){ 
+    goodEdges = eo!=ei
+    eo = eo[goodEdges]
+    ei =  ei[goodEdges]
+  }
+  
+  if(!directed){  if(n!=d) break
+    # if it is directed and has self-loops, the current implementation has the corrected expected number of edges... but it is required to be an even number... not poisson.
+    # symmetrization doubles edge probabiilties! 
+    eoOLD = eo
+    eo = c(eo, ei)
+    ei = c(ei, eoOLD)
+  }
+  
+  if(returnEdgeList) return(cbind(eo,ei))
+  
+  A = sparseMatrix(eo, ei, x = 1, dims = c(n, d))
   if(!PoissonEdges) A@x[A@x>1]=1  # thresholding sets nonzero elements of A to one.
   
   return(A)
