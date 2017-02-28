@@ -18,10 +18,10 @@ Functions
 ------------
 ```R
 fastRG(X, S, Y= NULL, avgDeg = NULL, simple = NULL, PoissonEdges = TRUE, directed = FALSE, selfLoops = FALSE){
-sbm(n,pi, B, PoissonEdges = F, ...)
-dcsbm(theta,pi, B, ...)
-dcMixed(theta,alpha, B, ...)
-dcOverlapping(theta,pi, B, ...)
+sbm(n,pi, B, PoissonEdges = F, parametersOnly = FALSE, ...)
+dcsbm(theta,pi, B, parametersOnly = FALSE, ...)
+dcMixed(theta,alpha, B, parametersOnly = FALSE, ...)
+dcOverlapping(theta,pi, B, parametersOnly = FALSE, ...)
 
 howManyEdges(X,S)
 ```
@@ -37,18 +37,18 @@ Y              # if Null, Y <- X; if not, E(A) = XSY', directed <- T, selfLoops 
                #   Y need not have same number of rows or columns as X.  matrix mult X %*% S %*% t(Y) must be defined.
   
 avgDeg         # to help ensure the graph is not too dense, avgDeg scales the S matrix to set 
-#   the expected average expected degree to avgDeg. If avgDeg = null, this is ignored.
+               #   the expected average expected degree to avgDeg. If avgDeg = null, this is ignored.
 
 n              # number of nodes
 pi             # a K vector of membership probabilities
 alpha          # parameter of the dirichlet distribution in the assignment of block memberships in dcMixed
 B              # middle probability matrix  (this becomes S in fastRG)
 theta          # vector of degree parameter in degree corrected models, 
-#  the expected adjacency matrix becomes: 
-#            diag(theta) %*% X %*% S %*% t(X) %*% diag(theta)
-#  in dcMixed and dcOverlapping, if theta is a single value, then 
-#  n <- theta and there is no degree correction.
-
+               #  the expected adjacency matrix becomes: 
+               #            diag(theta) %*% X %*% S %*% t(X) %*% diag(theta)
+               #  in dcMixed and dcOverlapping, if theta is a single value, then 
+               #  n <- theta and there is no degree correction.
+parametersOnly # if TRUE, then the wrapper only returns the X and S matrix that would otherwise be sent to fastRG.
 
 simple         # if TRUE, samples a simple graph by setting PoissonEdges = directed = multiEdges = FALSE
 PoissonEdges   # See details
@@ -77,7 +77,7 @@ Values
 ------------
 fastRG and its wrappers all output a sparse matrix from the package Matrix. 
 
-howManyEdges returns a vector with three elements.  The first element is the expected number of edges. The second is the expected average degree.  The third is the expected edge density. 
+howManyEdges returns a vector with two elements.  The first element is the expected number of edges. The second is the expected average degree.  
 
 Example Usage
 -------------
@@ -145,7 +145,7 @@ or
 #   Each image might take around 5 seconds to render.
 
 K = 10
-n = 500
+n = 100
 pi = rexp(K) +1
 pi = pi/sum(pi) * 3
 B = matrix(rexp(K^2)+1, nrow=K)
@@ -156,7 +156,7 @@ image(as.matrix(t(A[,n:1])),col = grey(seq(1,0, len=20)))
 
 
 K = 2
-n = 500
+n = 100
 alpha = c(1,1)/5
 B = diag(c(1,1))
 theta = n
@@ -164,7 +164,7 @@ A= dcMixed(theta, alpha,B,avgDeg = 50)
 image(as.matrix(t(A[,theta:1]))/max(A),col = grey(seq(1,0, len=20)))
 
 
-n = 500
+n = 100
 K = 2
 pi = c(.7,.7)
 B = diag(c(1,1))
@@ -174,12 +174,12 @@ image(as.matrix(t(A[,n:1]))/max(A),col = grey(seq(1,0, len=20)))
 
 
 K = 10
-n = 500
+n = 100
 pi = rexp(K) +1
 pi = pi/sum(pi) 
 B = matrix(rexp(K^2), nrow=K) 
 B = B/ (3*max(B))
-diag(B) = diag(B)+ mean(B)*3
+diag(B) = diag(B)+ mean(B)*K
 A= sbm(n, pi,B)
 image(as.matrix(t(A[,n:1])),col = grey(seq(1,0, len=20)))
 mean(A)
@@ -263,62 +263,33 @@ d = 1000 # number of features
 K = 5  # number of blocks 
 
 
-# to generate an X for dc-sbm, we need pi and theta.
+# Here are the parameters for the graph:
 
 pi = rexp(K) +1
 pi = pi/sum(pi) * 3
 B = matrix(rexp(K^2)+1, nrow=K)
 diag(B) = diag(B)+ mean(B)*K
-theta = rep(0,n)
-
-# to make pretty pictures, order by cluster size:
-B = B[order(pi), ]
-B = B[, order(pi)]
-pi = sort(pi/sum(pi))
-
-z = sample(K,n,replace = T, prob = pi)
-# Again, so that it makes pictures...
-z = sort(z)  
-X = sparse.model.matrix(~as.factor(z)-1)
-Tz = table(z)
-ct= c(0,cumsum(Tz))
-for(i in 1:K){
-  theta[(ct[i]+1):ct[i+1]] = -sort(-rexp(Tz[i]))
-}
-X@x = theta
-
-# first the graph:
-A = fastRG(X,B, avgDeg = 10)
-
-# now the features:
-X@x = X@x + rexp(n) # the degree parameter should be different. X@x + rexp(n) makes feature degrees correlated to degrees in graph.
+theta = rexp(n)
+paraG = dcsbm(theta=theta, pi = pi, B=B,parametersOnly = T)
 
 
-thetaY = rep(0, d)
+# Here are the parameters for the features:
+
+thetaY = rexp(d)
 piFeatures = rexp(K) +1
 piFeatures = piFeatures/sum(piFeatures) * 3
 BFeatures = matrix(rexp(K^2)+1, nrow=K)
 diag(BFeatures) = diag(BFeatures)+ mean(BFeatures)*K
 
-# to make pretty pictures, order by cluster size:
-BFeatures = BFeatures[, order(piFeatures)]
-piFeatures = sort(piFeatures/sum(piFeatures))
+paraFeat = dcsbm(theta = thetaY,pi = piFeatures, B = BFeatures,parametersOnly = T)
 
-y = sample(K,d,replace = T, prob = piFeatures)
-# Again, so that it makes pictures...
-y = sort(y)  
-Y = sparse.model.matrix(~as.factor(y)-1)
-Ty = table(y)
-cty= c(0,cumsum(Ty))
-for(i in 1:K){
-  thetaY[(cty[i]+1):cty[i+1]] = -sort(-rexp(Ty[i]))
-}
-Y@x = thetaY
+# the node "degrees" in the features, should be related to their degrees in the graph.
+X = paraG$X
+X@x = paraG$X@x + rexp(n) # the degree parameter should be different. X@x + rexp(n) makes feature degrees correlated to degrees in graph.
 
-# now generate the features:
 
-features = fastRG(X,BFeatures, Y, avgDeg = 20)
 
+# generate the graph and features
+A = fastRG(paraG$X,paraG$S, avgDeg = 10)
+features = fastRG(X,paraFeat$S, paraFeat$X, avgDeg = 20)
 ```
-
-
