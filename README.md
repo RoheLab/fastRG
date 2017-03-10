@@ -1,7 +1,7 @@
-fastRG: a linear time algorithm for sampling a generalized random dot product graph.
+fastRG: a linear time algorithm for sampling a generalized random product graph.
 ==============================
 
-fastRG quickly samples a generalized random dot product graph (RDPG), which is a generalization of a broad class of network models.   Given matrices $X \in R^{n \times K}$ and $S \in R^{K \times K}$ with positive entries, fastRG samples a matrix with  expectation $XSX^T$ and independent Poisson entries.  See Theorem \ref{theorem2} for an extension to Bernoulli entries.  See the forthcoming report for sampling Bernoulli entries. 
+fastRG quickly samples a generalized random product graph, which is a generalization of a broad class of network models.   Given matrices $X \in R^{n \times K_x}$, $Y \in R^{n \times K_y}$, and $S \in R^{K_x \times K_y}$ each with positive entries, fastRG samples a matrix with  expectation $XSY^T$ and independent Poisson entries.  [See the tech report for sampling Bernoulli entries](https://arxiv.org/abs/1703.02998). 
 
 The basic idea of the algorithm is to first sample the number of edges, $m$, and then put down edges one-by-one.  It runs in $O(m)$ operations.  For example, in sparse graphs $m = O(n)$ and the algorithm is dramatically faster than ``element-wise'' algorithms which run in $O(n^2)$ operations.
 
@@ -17,7 +17,7 @@ source("https://raw.githubusercontent.com/karlrohe/fastRG/master/fastRDPG.R")
 Functions 
 ------------
 ```R
-fastRG(X, S, Y= NULL, avgDeg = NULL, simple = NULL, PoissonEdges = TRUE, directed = FALSE, selfLoops = FALSE){
+fastRG(X, S, Y= NULL, avgDeg = NULL, simple = NULL, PoissonEdges = TRUE, directed = FALSE, selfLoops = FALSE, returnEdgeList = FALSE){
 sbm(n,pi, B, PoissonEdges = F, parametersOnly = FALSE, ...)
 dcsbm(theta,pi, B, parametersOnly = FALSE, ...)
 dcMixed(theta,alpha, B, parametersOnly = FALSE, ...)
@@ -51,20 +51,19 @@ theta          # vector of degree parameter in degree corrected models,
 parametersOnly # if TRUE, then the wrapper only returns the X and S matrix that would otherwise be sent to fastRG.
 
 simple         # if TRUE, samples a simple graph by setting PoissonEdges = directed = multiEdges = FALSE
-PoissonEdges   # See details
-directed       # See details
-selfLoops      # See details
-
+PoissonEdges   # See Details
+directed       # See Details
+selfLoops      # See Details
+returnEdgeList # See Values
 ```
 
 Details
 ------------
-fastRG samples a Bernoulli gRDPG where $\lambda_{ij} = X_i' S X_j$ and the probability of an edge $(i,j)$ is $1 - exp(-\lambda_{ij})$.  In sparse graphs, this is a good approximation to having edge probabilities $\lambda_{ij}$.  If multiEdges is set to TRUE, then it samples a Poisson gRDPG where $\lambda_{ij} = X_i' S X_j$.  Arugments can keep self loops or keep the graph directed.
+fastRG samples a Poisson gRPG where $\lambda_{ij} = X_i' S Y_j$ is the rate parameter for edge $i,j$.   If multiEdges is set to FALSE, then it samples a Bernoulli gRPG where the probability of edge $(i,j)$ is $1 - exp(-\lambda_{ij})$.  In sparse graphs, this is a good approximation to having edge probabilities $\lambda_{ij}$. Arugments can keep self loops or keep the graph directed.
 
-sbm, dcsbm, dcOverlapping, and dcMixed are wrappers for fastRG that sample the Stochastic Blockmodel, Degree Corrected Stochastic Blockmodel, the Degree Corrected Overlapping Stochastic Blockmodel, and the Degree Corrected Mixed Membership Stochastic Blockmodel.  To remove Degree correction, set theta = rep(1, n).  
+sbm, dcsbm, dcOverlapping, and dcMixed are wrappers for fastRG that sample the Stochastic Blockmodel, Degree Corrected Stochastic Blockmodel, the Degree Corrected Overlapping Stochastic Blockmodel, and the Degree Corrected Mixed Membership Stochastic Blockmodel.  To remove Degree correction, set theta = rep(1, n) or set theta equal to the number of desired nodes $n$.
 
 If selfLoops == T, then fastRG retains the selfloops. If selfLoops == F, then fastRG uses a poisson approximation to the binomial in the following sense: Let $M\sim poisson(\sum_{uv} \lambda_{uv})$ be the number of edges. fastRG approximates edge probabilities of $Poisson(\lambda_{ij})$ with  $Binomial(M, \lambda_{ij}/\sum_{uv}\lambda_{uv})$.  This approximation is good when total edges is order $n$ or larger and $\max \lambda_{ij}$ is order constant or smaller.
-
 
 If directed == T, then fastRG does not symmetrize the graph.  If directed == F, then fastRG symmetrizes S and A.
 
@@ -75,7 +74,7 @@ If Y is specified, then it returns a sparse matrix, with poisson entries, where 
 
 Values
 ------------
-fastRG and its wrappers all output a sparse matrix from the package Matrix. 
+By default, fastRG and its wrappers all output a sparse matrix from the package Matrix. If returnEdgeList = TRUE, then it returns an edge list matrix with m rows and 2 columns. 
 
 howManyEdges returns a vector with two elements.  The first element is the expected number of edges. The second is the expected average degree.  
 
@@ -91,6 +90,14 @@ S = matrix(runif(n = K*K, 0,.0001), nrow = K)
 
 howManyEdges(X,S)[-1]
 A = fastRG(X,S, simple=T)
+
+# if you want to create an igraph, it is fastest to
+#   1) return an edgelist from fastRG and 
+#   2) form the igraph from the edgelist.
+
+library(igraph)
+el = fastRG(X,S, simple=T, returnEdgeList = T)
+g = graph_from_edgelist(el)
 ```
 
 or fastRG also allows for simulating from E(A) = X S Y', where A and S could be rectangular.  This is helpful for bipartite graphs or matrices of features.
