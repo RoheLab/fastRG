@@ -381,8 +381,8 @@ fastRG <- function(X, S, Y= NULL, avgDeg = NULL,
   
   if(returnEdgeList) return(cbind(eo,ei))
   
-  A = sparseMatrix(eo, ei, x = 1, dims = c(n, d))
-  if(!PoissonEdges) A@x[A@x>1]=1  # thresholding sets nonzero elements of A to one.
+  if(PoissonEdges) A = sparseMatrix(eo, ei, x = 1, dims = c(n, d))
+  if(!PoissonEdges) A = sparseMatrix(i = eo, j = ei,dims = c(n, d))  # thresholding sets nonzero elements of A to one.
   
   return(A)
 }
