@@ -365,15 +365,3 @@ fastRG <- function(X, S, Y= NULL, avgDeg = NULL,
 }
 
 
-##### element-wise sampling method
-eRDPG <- function(X, dia = TRUE){
-  A = matrix(rpois(nrow(X)^2,X%*%t(X)), nrow(X))
-  if (dia == FALSE){
-    diag(A) = 0
-  }
-  return(A)
-}
-
-
-
-
