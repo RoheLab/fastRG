@@ -17,11 +17,13 @@ source("https://raw.githubusercontent.com/karlrohe/fastRG/master/fastRDPG.R")
 Functions 
 ------------
 ```R
-fastRG(X, S, Y= NULL, avgDeg = NULL, simple = NULL, PoissonEdges = TRUE, directed = FALSE, selfLoops = FALSE, returnEdgeList = FALSE){
-sbm(n,pi, B, PoissonEdges = F, parametersOnly = FALSE, ...)
-dcsbm(theta,pi, B, parametersOnly = FALSE, ...)
-dcMixed(theta,alpha, B, parametersOnly = FALSE, ...)
-dcOverlapping(theta,pi, B, parametersOnly = FALSE, ...)
+fastRG(X, S, Y= NULL, avgDeg = NULL, simple = NULL, 
+          PoissonEdges = TRUE, directed = FALSE, selfLoops = FALSE, 
+          returnEdgeList = FALSE, returnParameters = FALSE)
+sbm(n,pi, B, PoissonEdges = F, returnParameters = FALSE, parametersOnly = FALSE, ...)
+dcsbm(theta,pi, B, returnParameters = FALSE, parametersOnly = FALSE, ...)
+dcMixed(theta,alpha, B, returnParameters = FALSE, parametersOnly = FALSE, ...)
+dcOverlapping(theta,pi, B, returnParameters = FALSE, parametersOnly = FALSE, ...)
 
 howManyEdges(X,S)
 ```
@@ -30,31 +32,34 @@ The functions sbm, dcsbm, dcMixed, and dcOverlapping are wrappers for fastRG.
 Arguments 
 ------------
 ```R
-X              # X in the gRDPG
-S              # S in the gRDPG
+X                 # X in the gRDPG
+S                 # S in the gRDPG
 
-Y              # if Null, Y <- X; if not, E(A) = XSY', directed <- T, selfLoops <- T, simple <- F
-               #   Y need not have same number of rows or columns as X.  matrix mult X %*% S %*% t(Y) must be defined.
+Y                 # if Null, Y <- X; if not, E(A) = XSY', directed <- T, selfLoops <- T, simple <- F
+                  #   Y need not have same number of rows or columns as X.  matrix mult X %*% S %*% t(Y) must be defined.
   
-avgDeg         # to help ensure the graph is not too dense, avgDeg scales the S matrix to set 
-               #   the expected average expected degree to avgDeg. If avgDeg = null, this is ignored.
+avgDeg            # to help ensure the graph is not too dense, avgDeg scales the S matrix to set 
+                  #   the expected average expected degree to avgDeg. If avgDeg = null, this is ignored.
 
-n              # number of nodes
-pi             # a K vector of membership probabilities
-alpha          # parameter of the dirichlet distribution in the assignment of block memberships in dcMixed
-B              # middle probability matrix  (this becomes S in fastRG)
-theta          # vector of degree parameter in degree corrected models, 
-               #  the expected adjacency matrix becomes: 
-               #            diag(theta) %*% X %*% S %*% t(X) %*% diag(theta)
-               #  in dcMixed and dcOverlapping, if theta is a single value, then 
-               #  n <- theta and there is no degree correction.
-parametersOnly # if TRUE, then the wrapper only returns the X and S matrix that would otherwise be sent to fastRG.
+n                 # number of nodes
+pi                # a K vector of membership probabilities
+alpha             # parameter of the dirichlet distribution in the assignment of block memberships in dcMixed
+B                 # middle probability matrix  (this becomes S in fastRG)
+theta             # vector of degree parameter in degree corrected models, 
+                  #  the expected adjacency matrix becomes: 
+                  #           diag(theta) %*% X %*% S %*% t(X) %*% diag(theta)
+                  #  in dcMixed and dcOverlapping, if theta is a single value, then 
+                  #  n <- theta and there is no degree correction.
+returnParameters  # if TRUE, then it returns a list(A, X, S, Y).  This can be helpful for simulation studies which 
+                              # seek to estimate X, S, Y.  If FALSE, then it returns A.  
+                              # if returnEdgeList = TRUE, then this parameter is ignored.
+parametersOnly    # if TRUE, then the wrapper only returns the X and S matrix that would otherwise be sent to fastRG.
 
-simple         # if TRUE, samples a simple graph by setting PoissonEdges = directed = multiEdges = FALSE
-PoissonEdges   # See Details
-directed       # See Details
-selfLoops      # See Details
-returnEdgeList # See Values
+simple            # if TRUE, samples a simple graph by setting PoissonEdges = directed = multiEdges = FALSE
+PoissonEdges      # See Details
+directed          # See Details
+selfLoops         # See Details
+returnEdgeList    # See Values
 ```
 
 Details
@@ -148,7 +153,7 @@ mean(rowSums(A))
 or
 
 ```R
-# This draws a 500 x 500 adjacency matrix from each model.
+# This draws a 100 x 100 adjacency matrix from each model.
 #   Each image might take around 5 seconds to render.
 
 K = 10

@@ -21,7 +21,7 @@ howManyEdges = function(X,S, Y=NULL){
 }
 
 
-dcOverlapping = function(theta,pi, B, parametersOnly = FALSE, ...){
+dcOverlapping = function(theta,pi, B, returnParameters = FALSE, parametersOnly = FALSE, ...){
   # samples from Overlapping SBM with degree correction (DC)
   #  to remove DC, set theta=rep(1,n)
   #  xi  = theta_i * z_i, where [z_i]_j ~ bernoulli(pi_j)
@@ -47,12 +47,12 @@ dcOverlapping = function(theta,pi, B, parametersOnly = FALSE, ...){
   X = Theta%*%X
   
   if(parametersOnly) return(list(X=X, S=B))
-  return(fastRG(X,B, ...))
+  return(fastRG(X,B, returnParameters = returnParameters, ...))
 }
 
 
 
-dcMixed = function(theta,alpha, B, parametersOnly = FALSE, ...){
+dcMixed = function(theta,alpha, B, returnParameters = FALSE, parametersOnly = FALSE, ...){
   # samples from mixedmembership SBM with degree correction (DC)
   #  to remove DC, set theta=rep(1,n)
   #  xi  = theta_i * z_i, where z_i ~ dirichlet(alpha)
@@ -77,10 +77,12 @@ dcMixed = function(theta,alpha, B, parametersOnly = FALSE, ...){
   X = Theta%*%X
   
   if(parametersOnly) return(list(X=X, S=B))
-  return(fastRG(X,B, ...))
+  return(fastRG(X,B, returnParameters = returnParameters, ...))
 }
 
-dcsbm = function(theta,pi, B, parametersOnly = FALSE, ...){
+
+
+dcsbm = function(theta,pi, B, returnParameters = FALSE, parametersOnly = FALSE, ...){
   # samples from a degree corrected stochastic blockmodel
   #  pi a K vector, contains block sampling proportions
   #  theta an n vector, contains degree parameters
@@ -120,57 +122,7 @@ dcsbm = function(theta,pi, B, parametersOnly = FALSE, ...){
   X@x = theta
   
   if(parametersOnly) return(list(X=X, S=B))
-  return(fastRG(X,B, ...))
-  
-}
-
-
-
-
-
-
-
-dcsbm = function(theta,pi, B, parametersOnly = FALSE, ...){
-  # samples from a degree corrected stochastic blockmodel
-  #  pi a K vector, contains block sampling proportions
-  #  theta an n vector, contains degree parameters
-  #  B is K time K.
-  #   Define lambda_ij = theta[i]*theta[j]*B_{U,V}
-  #   where U,V are blockmemberships of i and j, sampled from multinomial(pi)
-  
-  #   i connects to j with probability 1- exp( -lambda_ij) ,
-  #   if lambda_ij is small, then 1- exp( -lambda_ij) \approx lambda_ij
-  
-  # if avgDeg is set, then B is scaled so that the expected average degree is avgDeg.
-  #   in fact, avgDeg is a slight upper bound that is good when the graph is sparse.
-  
-  #  to make function easy to parameterize, this function does not allow for different 
-  #   degree distributions between blocks.
-  
-  
-  n = length(theta)
-  K = length(pi) 
-  B = B[order(pi), ]; B = B[, order(pi)]
-  pi = sort(pi/sum(pi))
-  
-  
-  if(K != nrow(B) | ncol(B) != nrow(B)){
-    print("Both dimensions of B must match length of pi")
-    return(NA)
-  }
-  
-  z = sample(K,n,replace = T, prob = pi)
-  # you might want to comment this next line out... but it is here so that pictures are pretty before clustering:
-  z = sort(z)  
-  X = sparse.model.matrix(~as.factor(z)-1)
-  ct= c(0,cumsum(table(z)))
-  for(i in 1:K){
-    theta[(ct[i]+1):ct[i+1]] = -sort(-theta[(ct[i]+1):ct[i+1]])
-  }
-  X@x = theta
-  
-  if(parametersOnly) return(list(X=X, S=B))
-  return(fastRG(X,B, ...))
+  return(fastRG(X,B, returnParameters = returnParameters, ...))
   
 }
 
@@ -183,7 +135,7 @@ dcsbm = function(theta,pi, B, parametersOnly = FALSE, ...){
 
 
 
-sbm = function(n,pi, B, PoissonEdges = F, avgDeg =NULL, parametersOnly = FALSE, ...){
+sbm = function(n,pi, B, PoissonEdges = F, avgDeg =NULL, returnParameters = FALSE, parametersOnly = FALSE, ...){
   # samples from a stochastic blockmodel
   #  pi contains block sampling proportions
   #  B contains probabilities.
@@ -231,13 +183,14 @@ sbm = function(n,pi, B, PoissonEdges = F, avgDeg =NULL, parametersOnly = FALSE, 
   
   # avgDeg is set to NULL because it has already been handled internally.... this is because we need to scale B before making the transformation.
   if(parametersOnly) return(list(X=X, S=B))
-  return(fastRG(X,B, PoissonEdges = PoissonEdges, avgDeg=NULL,...))
+  return(fastRG(X,B, PoissonEdges = PoissonEdges, avgDeg=NULL, returnParameters = returnParameters, ...))
 }
 
 
 
 fastRG <- function(X, S, Y= NULL, avgDeg = NULL,
-                   simple = NULL, PoissonEdges = TRUE, directed = FALSE, selfLoops = FALSE, returnEdgeList = FALSE){
+                   simple = NULL, PoissonEdges = TRUE, directed = FALSE, 
+                   selfLoops = FALSE, returnEdgeList = FALSE, returnParameters = FALSE){
   # X                    is an n x K1 matrix
   # S                    is a K1 x K2 matrix
   # Y                    is a d x K2 matrix; if Null, Y <- X
@@ -257,12 +210,17 @@ fastRG <- function(X, S, Y= NULL, avgDeg = NULL,
   #                              This approximation is good when total edges is ~n or larger and max \lambda_{ij} ~constant or smaller.
   # PoissonEdges == F    this thresholds each edge; multiple edges are replaced by single edges. 
   
+  
   if(length(Y)>0){  # this means the output will be asymmetric and potentially rectangular
     directed = T
     selfLoops = T
     simple = F
+    returnY = TRUE
   }
-  if(is.null(Y)) Y <- X
+  if(is.null(Y)){
+    Y <- X
+    returnY = FALSE
+  }
   
   
   # Check that both X, Y, and S have non-negative entries.
@@ -301,7 +259,17 @@ fastRG <- function(X, S, Y= NULL, avgDeg = NULL,
   m = rpois(n = 1, lambda = sum(St)) # number of edges to sample
   
   # if no edges, return empty matrix. 
-  if (m==0) return(sparseMatrix(c(1:n),c(1:d),x = 0, dims = c(n, d)))
+  if (m==0){
+    A = sparseMatrix(c(1:n),c(1:d),x = 0, dims = c(n, d))
+    if(returnParameters){
+      if(returnY) out = list(A = A, X = X, S = S, Y = Y)
+      if(!returnY) out = list(A = A, X = X, S = S, Y = NULL)
+    }
+    if(!returnParameters){
+      out = A
+    }
+    return(out)
+  }
   
   # this simulates \varpi, denoted here as tabUV.  element u,v is the number of edges between column u and column v.
   tabUV = matrix(rmultinom(n=1, size= m, prob = St), nrow = K1, ncol = K2)
@@ -384,7 +352,14 @@ fastRG <- function(X, S, Y= NULL, avgDeg = NULL,
   if(PoissonEdges) A = sparseMatrix(eo, ei, x = 1, dims = c(n, d))
   if(!PoissonEdges) A = sparseMatrix(i = eo, j = ei,dims = c(n, d))  # thresholding sets nonzero elements of A to one.
   
-  return(A)
+  if(returnParameters){
+    if(returnY) out = list(A = A, X = X, S = S, Y = Y)
+    if(!returnY) out = list(A = A, X = X, S = S, Y = NULL)
+    return(out)
+  }
+  if(!returnParameters){
+    return(A)
+  }
 }
 
 
