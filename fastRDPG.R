@@ -1,5 +1,7 @@
 # Fast way of sampling Random dot product graph
 # Karl Rohe, Jun Tao, Xintian Han, Norbert Binkiewicz 2017
+# For details of the functions see https://github.com/karlrohe/fastRG/blob/master/README.md
+# based upon this paper:  https://arxiv.org/abs/1703.02998
 
 require(Matrix)
 require(igraph)  # this is needed for the function sample_dirichlet
