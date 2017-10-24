@@ -20,6 +20,7 @@ Functions
 fastRG(X, S, Y= NULL, avgDeg = NULL, simple = NULL, 
           PoissonEdges = TRUE, directed = FALSE, selfLoops = FALSE, 
           returnEdgeList = FALSE, returnParameters = FALSE)
+er(n, p = NULL, avgDeg =NULL, directed = FALSE, returnEdgeList = FALSE,...){          
 sbm(n,pi, B, PoissonEdges = F, returnParameters = FALSE, parametersOnly = FALSE, ...)
 dcsbm(theta,pi, B, returnParameters = FALSE, parametersOnly = FALSE, ...)
 dcMixed(theta,alpha, B, returnParameters = FALSE, parametersOnly = FALSE, ...)
@@ -27,7 +28,7 @@ dcOverlapping(theta,pi, B, returnParameters = FALSE, parametersOnly = FALSE, ...
 
 howManyEdges(X,S)
 ```
-The functions sbm, dcsbm, dcMixed, and dcOverlapping are wrappers for fastRG.  
+The functions er, sbm, dcsbm, dcMixed, and dcOverlapping are wrappers for fastRG.  
 
 Arguments 
 ------------
@@ -66,9 +67,9 @@ Details
 ------------
 fastRG samples a Poisson gRPG where $\lambda_{ij} = X_i' S Y_j$ is the rate parameter for edge $i,j$.   If multiEdges is set to FALSE, then it samples a Bernoulli gRPG where the probability of edge $(i,j)$ is $1 - exp(-\lambda_{ij})$.  In sparse graphs, this is a good approximation to having edge probabilities $\lambda_{ij}$. Arugments can keep self loops or keep the graph directed.
 
-sbm, dcsbm, dcOverlapping, and dcMixed are wrappers for fastRG that sample the Stochastic Blockmodel, Degree Corrected Stochastic Blockmodel, the Degree Corrected Overlapping Stochastic Blockmodel, and the Degree Corrected Mixed Membership Stochastic Blockmodel.  To remove Degree correction, set theta = rep(1, n) or set theta equal to the number of desired nodes $n$.
+er, sbm, dcsbm, dcOverlapping, and dcMixed are wrappers for fastRG that sample the Erdos-Renyi, Stochastic Blockmodel, Degree Corrected Stochastic Blockmodel, the Degree Corrected Overlapping Stochastic Blockmodel, and the Degree Corrected Mixed Membership Stochastic Blockmodel.  To remove Degree correction, set theta = rep(1, n) or set theta equal to the number of desired nodes $n$.
 
-If selfLoops == T, then fastRG retains the selfloops. If selfLoops == F, then fastRG uses a poisson approximation to the binomial in the following sense: Let $M\sim poisson(\sum_{uv} \lambda_{uv})$ be the number of edges. fastRG approximates edge probabilities of $Poisson(\lambda_{ij})$ with  $Binomial(M, \lambda_{ij}/\sum_{uv}\lambda_{uv})$.  This approximation is good when total edges is order $n$ or larger and $\max \lambda_{ij}$ is order constant or smaller.
+If selfLoops == T, then fastRG retains the selfloops. If selfLoops == F, then fastRG uses a poisson approximation to the binomial in the following sense: Let $M\sim poisson(\sum_{uv} \lambda_{uv})$ be the number of edges. fastRG approximates edge probabilities of $Poisson(\lambda_{ij})$ with  $Binomial(M, \lambda_{ij}/\sum_{uv}\lambda_{uv})$.  This approximation is good when total edges is order $n$ or larger and $\max \lambda_{ij}$ is order constant or smaller.  Under er and sbm, there is a default correction that removes this issue. 
 
 If directed == T, then fastRG does not symmetrize the graph.  If directed == F, then fastRG symmetrizes S and A.
 
@@ -85,6 +86,10 @@ howManyEdges returns a vector with two elements.  The first element is the expec
 
 Example Usage
 -------------
+First, generate the edgelist for an Erdos-Renyi graph with n = 1,000,000 nodes and expected degree 5.  That makes the edge probability 5/n.  
+```R
+system.time(er(n=10^6, avgDeg = 5, returnEdgeList = F))
+```
 
 ```R
 n = 10000
