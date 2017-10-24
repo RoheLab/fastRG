@@ -12,8 +12,8 @@ howManyEdges = function(X,S, Y=NULL){
   # this quantity is proportional to the running time of fastRG
   # Also returns the expected degree and the expected edge density.
   if(is.null(Y)) Y<-X
-  Cx = diag(colSums(X))
-  Cy = diag(colSums(Y))
+  Cx = diag(colSums(X), nrow = ncol(X), ncol = ncol(X))
+  Cy = diag(colSums(Y), nrow = ncol(Y), ncol = ncol(Y))
   em = sum(Cx%*%S%*%Cy)
   avDeg= em/nrow(X)
   # density = em/(nrow(X)*nrow(Y))  # in big graphs, nrow(X)*nrow(Y) causes integer overflow errors...
@@ -189,6 +189,25 @@ sbm = function(n,pi, B, PoissonEdges = F, avgDeg =NULL, returnParameters = FALSE
 }
 
 
+er = function(n, p = NULL, avgDeg =NULL, directed = FALSE, returnEdgeList = FALSE,...){
+  # defaults to undirected.  If prefer directed, then define directed = TRUE
+  # another
+  X = matrix(1, nrow=n, ncol=1)
+  if(is.null(p)){
+    if(is.null(avgDeg)){
+      print("Error: specify avgDeg or p")
+      return(NA)
+    }
+    p = avgDeg/n
+  }
+  
+  poisson_p = -log(1-p)
+  S = matrix(poisson_p, nrow = 1, ncol = 1)
+  return(fastRG(X,S,PoissonEdges = F,directed = directed, returnEdgeList = returnEdgeList,...))
+  
+}
+
+
 
 fastRG <- function(X, S, Y= NULL, avgDeg = NULL,
                    simple = NULL, PoissonEdges = TRUE, directed = FALSE, 
@@ -253,8 +272,8 @@ fastRG <- function(X, S, Y= NULL, avgDeg = NULL,
   
   
   
-  Cx = diag(colSums(X))
-  Cy = diag(colSums(Y))
+  Cx = diag(colSums(X), nrow = ncol(X), ncol = ncol(X))
+  Cy = diag(colSums(Y), nrow = ncol(Y), ncol = ncol(Y))
   # Xt  = apply(X,2,function(x) return(x/sum(x)))
   # Yt  = apply(Y,2,function(x) return(x/sum(x)))  # sample(n,...) automatically does the normalization.
   St = Cx%*%S%*%Cy
@@ -349,14 +368,7 @@ fastRG <- function(X, S, Y= NULL, avgDeg = NULL,
     ei = c(ei, eoOLD)
   }
   
-  if(returnEdgeList){
-    if(!returnParameters) return(cbind(eo,ei))
-    if(returnParameters) {
-      if(returnY) out = list(el = cbind(eo,ei), X = X, S = S, Y = Y)
-      if(!returnY) out = list(el = cbind(eo,ei), X = X, S = S, Y = NULL)
-      return(out)
-    }
-  }
+  if(returnEdgeList) return(cbind(eo,ei))
   
   if(PoissonEdges) A = sparseMatrix(eo, ei, x = 1, dims = c(n, d))
   if(!PoissonEdges) A = sparseMatrix(i = eo, j = ei,dims = c(n, d))  # thresholding sets nonzero elements of A to one.
