@@ -88,6 +88,9 @@ Example Usage
 -------------
 First, generate the edgelist for an Erdos-Renyi graph with n = 1,000,000 nodes and expected degree 5.  That makes the edge probability 5/n.  
 ```R
+# install fastRG:
+source("https://raw.githubusercontent.com/karlrohe/fastRG/master/fastRDPG.R")
+# sample:
 system.time(er(n=10^6, avgDeg = 5, returnEdgeList = F))
 ```
 
