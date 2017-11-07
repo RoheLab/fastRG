@@ -212,6 +212,7 @@ cl = function(theta, avgDeg = NULL, directed = FALSE, returnEdgeList = FALSE,...
   # samples Chung-Lu graph
   # defaults to undirected.  If prefer directed, then define directed = TRUE
   # another
+  n = length(theta)
   X = matrix(theta, nrow=n, ncol=1)
   
   S = matrix(1, nrow = 1, ncol = 1)
