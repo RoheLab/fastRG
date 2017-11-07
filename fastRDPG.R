@@ -190,6 +190,7 @@ sbm = function(n,pi, B, PoissonEdges = F, avgDeg =NULL, returnParameters = FALSE
 
 
 er = function(n, p = NULL, avgDeg =NULL, directed = FALSE, returnEdgeList = FALSE,...){
+  # samples erdos-renyi graph
   # defaults to undirected.  If prefer directed, then define directed = TRUE
   # another
   X = matrix(1, nrow=n, ncol=1)
@@ -206,6 +207,18 @@ er = function(n, p = NULL, avgDeg =NULL, directed = FALSE, returnEdgeList = FALS
   return(fastRG(X,S,PoissonEdges = F,directed = directed, returnEdgeList = returnEdgeList,...))
   
 }
+
+cl = function(theta, avgDeg = NULL, directed = FALSE, returnEdgeList = FALSE,...){
+  # samples Chung-Lu graph
+  # defaults to undirected.  If prefer directed, then define directed = TRUE
+  # another
+  X = matrix(theta, nrow=n, ncol=1)
+  
+  S = matrix(1, nrow = 1, ncol = 1)
+  return(fastRG(X,S,avgDeg = avgDeg, PoissonEdges = F,directed = directed, returnEdgeList = returnEdgeList,...))
+  
+}
+
 
 
 
