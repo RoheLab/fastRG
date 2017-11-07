@@ -20,7 +20,8 @@ Functions
 fastRG(X, S, Y= NULL, avgDeg = NULL, simple = NULL, 
           PoissonEdges = TRUE, directed = FALSE, selfLoops = FALSE, 
           returnEdgeList = FALSE, returnParameters = FALSE)
-er(n, p = NULL, avgDeg =NULL, directed = FALSE, returnEdgeList = FALSE,...){          
+er(n, p = NULL, avgDeg =NULL, directed = FALSE, returnEdgeList = FALSE,...)     
+cl = function(theta, avgDeg = NULL, directed = FALSE, returnEdgeList = FALSE,...)   
 sbm(n,pi, B, PoissonEdges = F, returnParameters = FALSE, parametersOnly = FALSE, ...)
 dcsbm(theta,pi, B, returnParameters = FALSE, parametersOnly = FALSE, ...)
 dcMixed(theta,alpha, B, returnParameters = FALSE, parametersOnly = FALSE, ...)
@@ -46,7 +47,7 @@ n                 # number of nodes
 pi                # a K vector of membership probabilities
 alpha             # parameter of the dirichlet distribution in the assignment of block memberships in dcMixed
 B                 # middle probability matrix  (this becomes S in fastRG)
-theta             # vector of degree parameter in degree corrected models, 
+theta             # vector of degree parameter in degree corrected and Chung-Lu models, 
                   #  the expected adjacency matrix becomes: 
                   #           diag(theta) %*% X %*% S %*% t(X) %*% diag(theta)
                   #  in dcMixed and dcOverlapping, if theta is a single value, then 
@@ -67,7 +68,7 @@ Details
 ------------
 fastRG samples a Poisson gRPG where $\lambda_{ij} = X_i' S Y_j$ is the rate parameter for edge $i,j$.   If multiEdges is set to FALSE, then it samples a Bernoulli gRPG where the probability of edge $(i,j)$ is $1 - exp(-\lambda_{ij})$.  In sparse graphs, this is a good approximation to having edge probabilities $\lambda_{ij}$. Arugments can keep self loops or keep the graph directed.
 
-er, sbm, dcsbm, dcOverlapping, and dcMixed are wrappers for fastRG that sample the Erdos-Renyi, Stochastic Blockmodel, Degree Corrected Stochastic Blockmodel, the Degree Corrected Overlapping Stochastic Blockmodel, and the Degree Corrected Mixed Membership Stochastic Blockmodel.  To remove Degree correction, set theta = rep(1, n) or set theta equal to the number of desired nodes $n$.
+er, cl, sbm, dcsbm, dcOverlapping, and dcMixed are wrappers for fastRG that sample the Erdos-Renyi, Chung-Lu, Stochastic Blockmodel, Degree Corrected Stochastic Blockmodel, the Degree Corrected Overlapping Stochastic Blockmodel, and the Degree Corrected Mixed Membership Stochastic Blockmodel.  To remove Degree correction, set theta = rep(1, n) or set theta equal to the number of desired nodes $n$.
 
 If selfLoops == T, then fastRG retains the selfloops. If selfLoops == F, then fastRG uses a poisson approximation to the binomial in the following sense: Let $M\sim poisson(\sum_{uv} \lambda_{uv})$ be the number of edges. fastRG approximates edge probabilities of $Poisson(\lambda_{ij})$ with  $Binomial(M, \lambda_{ij}/\sum_{uv}\lambda_{uv})$.  This approximation is good when total edges is order $n$ or larger and $\max \lambda_{ij}$ is order constant or smaller.  Under er and sbm, there is a default correction that removes this issue. 
 
