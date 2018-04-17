@@ -3,6 +3,8 @@
 # For details of the functions see https://github.com/karlrohe/fastRG/blob/master/README.md
 # based upon this paper:  https://arxiv.org/abs/1703.02998
 
+# TODO:  clean up decisions on formatting the return from fastRG; lots of options, not handled elegantly.  
+
 require(Matrix)
 require(igraph)  # this is needed for the function sample_dirichlet
 
@@ -382,7 +384,17 @@ fastRG <- function(X, S, Y= NULL, avgDeg = NULL,
     ei = c(ei, eoOLD)
   }
   
-  if(returnEdgeList) return(cbind(eo,ei))
+  if(returnEdgeList){
+    el = cbind(eo,ei)
+    if(returnParameters){
+      if(returnY) out = list(el = el, X = X, S = S, Y = Y)
+      if(!returnY) out = list(el = el, X = X, S = S, Y = NULL)
+      return(out)
+    }
+    if(!returnParameters){
+      return(el)
+    }
+  }
   
   if(PoissonEdges) A = sparseMatrix(eo, ei, x = 1, dims = c(n, d))
   if(!PoissonEdges) A = sparseMatrix(i = eo, j = ei,dims = c(n, d))  # thresholding sets nonzero elements of A to one.
