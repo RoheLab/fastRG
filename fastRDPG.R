@@ -297,6 +297,8 @@ fastRG <- function(X, S, Y= NULL, avgDeg = NULL,
   
   # if no edges, return empty matrix. 
   if (m==0){
+    if(returnEdgeList) return(matrix(NA, nrow=0, ncol =2))
+    
     A = sparseMatrix(c(1:n),c(1:d),x = 0, dims = c(n, d))
     if(returnParameters){
       if(returnY) out = list(A = A, X = X, S = S, Y = Y)
