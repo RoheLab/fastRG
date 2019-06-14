@@ -25,6 +25,43 @@ allowed. Defaults to \code{TRUE}, which keeps multi-edges and produces
 a multi-graph. When \code{FALSE}, only single edges are allowed, resulting
 in a graph. See \strong{details} for some additional comments. Effected by
 \code{simple} argument.}
+
+\item{...}{Arguments passed on to \code{fastRG}
+\describe{
+  \item{X}{An \code{n} by \code{k_1} matrix.}
+  \item{S}{A \code{k_1} by \code{k_2} matrix.}
+  \item{Y}{A \code{d} by \code{k_2} matrix. Defaults to \code{X}.}
+  \item{avgDeg}{When specified, the expected average degree of nodes
+in the output poisson multi-graph. When \code{poissonEdges = FALSE}, the
+resulting graph will have lower average degree due to lack
+of multiple-edges. When the graph is sparse, the expected number of
+edges for the Poisson multi-graph and Bernoulli graph are nearly the
+same. Defaults to \code{NULL}, such that no scaling occurs.}
+  \item{simple}{When \code{TRUE} indicates that you want to work with undirected
+graphs where self-loops and multi-edges are prohibited. Accomplishes
+this by setting \code{directed = FALSE}, \code{selfLoops = FALSE}, and
+\code{PoissonEdges = FALSE}, and then ignoring arguments \code{directed},
+\code{selfLoops} and \code{PoissonEdges}. Defaults to \code{FALSE}.}
+  \item{PoissonEdges}{Logical indicating whether or not multi-edges are
+allowed. Defaults to \code{TRUE}, which keeps multi-edges and produces
+a multi-graph. When \code{FALSE}, only single edges are allowed, resulting
+in a graph. See \strong{details} for some additional comments. Effected by
+\code{simple} argument.}
+  \item{directed}{Logical indicating whether or not the graph should be
+directed. Default is \code{directed = TRUE}. When \code{directed = FALSE},
+symmetrizes \code{S} internally. When \code{X = Y} (which is the default when
+no \code{Y} is specified), this results in a symmetric adjacency matrix
+as output. When \code{avgDeg} is specified and the desired graph is directed,
+the average degree scaling is on the out-degree of each node (or the
+row sums if you prefer to think in terms of the adjacency matrix).
+Effected by the \code{simple} argument.}
+  \item{selfLoops}{Logical indicating whether edges are allowed from
+a node back to itself. Defaults to \code{TRUE}. When \code{FALSE}, sampling
+proceeds normally, and then self-loops are removed after sampling
+is completed. Effected by the \code{simple} argument.}
+  \item{returnEdgeList}{Logical indicating whether to return an edgelist
+rather than an adjacency matrix.}
+}}
 }
 \value{
 A random Poisson (or Bernoulli) dot product graph. By default,

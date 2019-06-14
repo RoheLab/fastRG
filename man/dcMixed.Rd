@@ -9,6 +9,8 @@ dcMixed(theta, alpha, B, ...)
 \arguments{
 \item{theta}{TODO}
 
+\item{alpha}{TODO}
+
 \item{B}{TODO}
 
 \item{...}{Arguments passed on to \code{fastRG}
@@ -47,8 +49,6 @@ is completed. Effected by the \code{simple} argument.}
   \item{returnEdgeList}{Logical indicating whether to return an edgelist
 rather than an adjacency matrix.}
 }}
-
-\item{pi}{TODO}
 }
 \value{
 A random Poisson (or Bernoulli) dot product graph. By default,

@@ -7,24 +7,15 @@
 
 <!-- badges: end -->
 
-fastRG quickly samples a generalized random product graph, which is a
-generalization of a broad class of network models. Given matrices
-\(X \in R^{n \times K_x}\), \(Y \in R^{n \times K_y}\), and
-\(S \in R^{K_x \times K_y}\) each with positive entries, fastRG samples
-a matrix with expectation \(X S Y^T\) and independent Poisson entries.
-[See the tech report for sampling Bernoulli
-entries](https://arxiv.org/abs/1703.02998).
-
-The basic idea of the algorithm is to first sample the number of edges,
-\(m\), and then put down edges one-by-one. It runs in \(\mathcal O(m)\)
-operations. For example, in sparse graphs \(m = \mathcal O(n)\) and the
-algorithm is dramatically faster than element-wise algorithms which run
-in \(\mathcal O(n^2)\) operations.
-
-## TODO
-
-  - Talk to Karl about license
-  - Talk to Karl about authorship
+`fastRG` quickly samples a broad class of network models known as
+generalized random product graphs. In particular, for matrices `X`, `S`
+and `Y`, `fastRG` samples a matrix `A` with expectation `X S Y^T` where
+individual entries are Poisson distributed. We recommend that you think
+of `A` as the adjacency matrix for a graph (or a multi-graph).
+Crucially, the sampling is `O(m)`, where `m` is the number of the edges
+in graph. Other algorithms are `O(n^2)`, where `n` is the number of
+nodes in the network. For additional details, please have a look at the
+[paper](https://arxiv.org/abs/1703.02998).
 
 ## Installation
 
@@ -33,19 +24,21 @@ with:
 
 ``` r
 # install.package("devtools")
-devtools::install_github("alexpghayes/fastRG")
+devtools::install_github("karlrohe/fastRG")
 ```
 
 ## Example Usage
 
 The easiest way to use `fastRG` is to use wrapper functions that sample
 from population graph models. For example, to sample from an Erdos-Renyi
-graphn = 1,000,000$ nodes and expected degree 5, we can use the `er()`
+graph `n = 1,000,000` nodes and expected degree 5, we can use the `er()`
 function.
 
 ``` r
+library(fastRG)
+#> Loading required package: Matrix
+
 A <- er(n = 10^6, avgDeg = 5)
-A
 ```
 
 By default we always get a `Matrix::sparseMatrix()`, but if we can also
@@ -53,7 +46,19 @@ ask for the graph as an edgelist as well. This results in a fast way to
 create `igraph` objects using `igraph::graph_from_edgelist()`.
 
 ``` r
+library(fastRG)
 library(igraph)
+#> 
+#> Attaching package: 'igraph'
+#> The following object is masked from 'package:fastRG':
+#> 
+#>     sbm
+#> The following objects are masked from 'package:stats':
+#> 
+#>     decompose, spectrum
+#> The following object is masked from 'package:base':
+#> 
+#>     union
 
 n <- 10000
 K <- 5
@@ -61,16 +66,24 @@ K <- 5
 X <- matrix(rpois(n = n * K, 1), nrow = n)
 S <- matrix(runif(n = K * K, 0, .0001), nrow = K)
 
-howManyEdges(X, S)[-1]
-A <- fastRG(X, S, simple = T)
+howManyEdges(X, S)
+#> $em
+#> [1] 102554.1
+#> 
+#> $avDeg
+#> [1] 10.25541
+#> 
+#> $density
+#> [1] 0.001025541
+A <- fastRG(X, S, simple = TRUE)
 
 el <- fastRG(X, S, simple = TRUE, returnEdgeList = TRUE)
 g <- graph_from_edgelist(el)
 ```
 
-or fastRG also allows for simulating from E(A) = X S Y’, where A and S
-could be rectangular. This is helpful for bipartite graphs or matrices
-of features.
+`fastRG()` also allows for simulating from graph with `E(A) = X S Y^T`,
+where `A` and `S` could be rectangular. This is helpful for bipartite
+graphs or matrices of features.
 
 ``` r
 n <- 10000
@@ -99,15 +112,18 @@ theta <- rexp(n)
 A <- dcsbm(theta, pi, B, avgDeg = 50)
 # here is the average degree:
 mean(rowSums(A))
+#> [1] 50.228
 
 # If we remove multiple edges, the avgDeg parameter is not trustworthy:
-A <- dcsbm(theta, pi, B, avgDeg = 50, PoissonEdges = F)
+A <- dcsbm(theta, pi, B, avgDeg = 50, PoissonEdges = FALSE)
 mean(rowSums(A))
+#> [1] 33.994
 
 # but it is a good upper bound when the graph is sparse:
 n <- 10000
-A <- dcsbm(rexp(n), pi, B, avgDeg = 50, PoissonEdges = F)
+A <- dcsbm(rexp(n), pi, B, avgDeg = 50, PoissonEdges = FALSE)
 mean(rowSums(A))
+#> [1] 48.4552
 ```
 
 or
@@ -125,6 +141,13 @@ diag(B) <- diag(B) + mean(B) * K
 theta <- rexp(n)
 A <- dcsbm(theta, pi, B, avgDeg = 50)
 image(as.matrix(t(A[, n:1])), col = grey(seq(1, 0, len = 20)))
+#> Warning in seq.default(1, 0, len = 20): partial argument match of 'len' to
+#> 'length.out'
+```
+
+<img src="man/figures/README-unnamed-chunk-6-1.png" width="100%" />
+
+``` r
 
 
 K <- 2
@@ -134,6 +157,13 @@ B <- diag(c(1, 1))
 theta <- n
 A <- dcMixed(theta, alpha, B, avgDeg = 50)
 image(as.matrix(t(A[, theta:1])) / max(A), col = grey(seq(1, 0, len = 20)))
+#> Warning in seq.default(1, 0, len = 20): partial argument match of 'len' to
+#> 'length.out'
+```
+
+<img src="man/figures/README-unnamed-chunk-6-2.png" width="100%" />
+
+``` r
 
 
 n <- 100
@@ -143,7 +173,13 @@ B <- diag(c(1, 1))
 theta <- n
 A <- dcOverlapping(theta, pi, B, avgDeg = 50)
 image(as.matrix(t(A[, n:1])) / max(A), col = grey(seq(1, 0, len = 20)))
+#> Warning in seq.default(1, 0, len = 20): partial argument match of 'len' to
+#> 'length.out'
+```
 
+<img src="man/figures/README-unnamed-chunk-6-3.png" width="100%" />
+
+``` r
 
 K <- 10
 n <- 100
@@ -152,18 +188,20 @@ pi <- pi / sum(pi)
 B <- matrix(rexp(K^2), nrow = K)
 B <- B / (3 * max(B))
 diag(B) <- diag(B) + mean(B) * K
-A <- sbm(n, pi, B)
-image(as.matrix(t(A[, n:1])), col = grey(seq(1, 0, len = 20)))
-mean(A)
+A <- fastRG::sbm(n, pi, B)
+image(as.matrix(t(A[, n:1])) / max(A), col = grey(seq(1, 0, len = 20)))
+#> Warning in seq.default(1, 0, len = 20): partial argument match of 'len' to
+#> 'length.out'
 ```
 
-``` r
-# this samples a DC-SBM with 10,000 nodes
-#  then computes, and plots the leading eigenspace.
-#  the code should run in less than a second.
+<img src="man/figures/README-unnamed-chunk-6-4.png" width="100%" />
 
-require(rARPACK)
-require(stats)
+Next sample a DC-SBM with 10,000 nodes. Then compute and plot the
+leading eigenspace.
+
+``` r
+library(RSpectra)
+
 K <- 10
 n <- 10000
 pi <- rexp(K) + 1
@@ -173,16 +211,14 @@ B <- matrix(rexp(K^2) + 1, nrow = K)
 diag(B) <- diag(B) + mean(B) * K
 A <- dcsbm(rgamma(n, shape = 2, scale = .4), pi, B, avgDeg = 20, simple = T)
 mean(rowSums(A))
+#> [1] 19.8604
 
 # leading eigen of regularized Laplacian with tau = 1
 D <- Diagonal(n, 1 / sqrt(rowSums(A) + 1))
 ei <- eigs_sym(D %*% A %*% D, 10)
 
 # normalize the rows of X:
-X <- t(apply(ei$vec[, 1:K], 1, function(x) return(x / sqrt(sum(x^2) + 1 / n))))
-
-# taking a varimax rotation makes the leading vectors pick out clusters:
-X <- varimax(X, normalize = FALSE)$loadings
+X <- t(apply(ei$vectors[, 1:K], 1, function(x) return(x / sqrt(sum(x^2) + 1 / n))))
 
 par(mfrow = c(5, 1), mar = c(1, 2, 2, 2), xaxt = "n", yaxt = "n")
 
@@ -191,8 +227,9 @@ s <- sort(sample(n, 1000))
 for (i in 1:5) {
   plot(X[s, i], pch = ".")
 }
-dev.off()
 ```
+
+<img src="man/figures/README-unnamed-chunk-7-1.png" width="100%" />
 
 or
 
@@ -215,7 +252,7 @@ L <- D %*% A %*% D
 ei <- eigs_sym(L, 4)
 
 s <- sort(sample(n, 10000))
-X <- t(apply(ei$vec[, 1:K], 1, function(x) return(x / sqrt(sum(x^2) + 1 / n))))
+X <- t(apply(ei$vectors[, 1:K], 1, function(x) return(x / sqrt(sum(x^2) + 1 / n))))
 plot(X[s, 3]) # highly localized eigenvectors
 ```
 
@@ -225,7 +262,6 @@ To sample from a degree corrected and node contextualized graph…
 n <- 10000 # number of nodes
 d <- 1000 # number of features
 K <- 5 # number of blocks
-
 
 # Here are the parameters for the graph:
 
@@ -255,44 +291,3 @@ X@x <- paraG$X@x + rexp(n) # the degree parameter should be different. X@x + rex
 A <- fastRG(paraG$X, paraG$S, avgDeg = 10)
 features <- fastRG(X, paraFeat$S, paraFeat$X, avgDeg = 20)
 ```
-
-## Mathematical Details
-
-fastRG samples a Poisson gRPG where \(\lambda_{ij} = X_i' S Y_j\) is the
-rate parameter for edge \(i,j\). If multiEdges is set to FALSE, then it
-samples a Bernoulli gRPG where the probability of edge \((i,j)\) is
-\(1 - exp(-\lambda_{ij})\). In sparse graphs, this is a good
-approximation to having edge probabilities \(\lambda_{ij}\). Arugments
-can keep self loops or keep the graph directed.
-
-er, cl, sbm, dcsbm, dcOverlapping, and dcMixed are wrappers for fastRG
-that sample the Erdos-Renyi, Chung-Lu, Stochastic Blockmodel, Degree
-Corrected Stochastic Blockmodel, the Degree Corrected Overlapping
-Stochastic Blockmodel, and the Degree Corrected Mixed Membership
-Stochastic Blockmodel. To remove Degree correction, set theta = rep(1,
-n) or set theta equal to the number of desired nodes \(n\).
-
-If selfLoops == T, then fastRG retains the selfloops. If selfLoops == F,
-then fastRG uses a poisson approximation to the binomial in the
-following sense: Let \(M\sim poisson(\sum_{uv} \lambda_{uv})\) be the
-number of edges. fastRG approximates edge probabilities of
-\(Poisson(\lambda_{ij})\) with
-\(Binomial(M, \lambda_{ij}/\sum_{uv}\lambda_{uv})\). This approximation
-is good when total edges is order \(n\) or larger and
-\(\max \lambda_{ij}\) is order constant or smaller. Under er and sbm,
-there is a default correction that removes this issue.
-
-If directed == T, then fastRG does not symmetrize the graph. If directed
-== F, then fastRG symmetrizes S and A.
-
-If PoissonEdges == T, then fastRG keeps the multiple edges and avgDeg
-calculations are on out degree (i.e. rowSums). If PoissonEdges == F,
-then fastRG thresholds each edge so that multiple edges are replaced by
-single edges. In this case, only SBM has edge probabilities exactly
-given by \(\lambda\) (up to scaling for avgDeg). The other techniques
-have edge probabilities \(1 - exp(-\lambda)\).
-
-If Y is specified, then it returns a sparse matrix, with poisson
-entries, where \(E(A) = X S Y'\). This is useful for creating sparse
-rectangular matrices. For example, this could be a feature matrix. Or,
-it could be a “rectangular adjacency matrix” for a bipartite graph.

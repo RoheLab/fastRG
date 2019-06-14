@@ -200,7 +200,7 @@ the index of the incoming edge.</p>
 pi a K vector, contains block sampling proportions
 theta an n vector, contains degree parameters
 B is K time K</p>
-<p>Define lambda_ij = thetai * thetaj*B_U,V
+<p>Define \(lambda_ij = theta[i] * theta[j]*B_{U,V}\)
 where U,V are blockmemberships of i and j, sampled from multinomial(pi)
 i connects to j with probability 1- exp( -lambda_ij)</p>
 <p>if lambda_ij is small, then 1- exp( -lambda_ij) approx lambda_ij
@@ -213,7 +213,7 @@ for different degree distributions between blocks.</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code>fastRG()</code></p>
+    <div class='dont-index'><p><code><a href='fastRG.html'>fastRG()</a></code></p>
 <p>Other stochastic block models: <code><a href='dcMixed.html'>dcMixed</a></code>,
   <code><a href='dcOverlapping.html'>dcOverlapping</a></code>, <code><a href='sbm.html'>sbm</a></code></p></div>
     

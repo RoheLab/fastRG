@@ -134,6 +134,44 @@
       <th>theta</th>
       <td><p>TODO</p></td>
     </tr>
+    <tr>
+      <th>...</th>
+      <td><p>Arguments passed on to <code>fastRG</code></p><dl class='dl-horizontal'>
+  <dt>X</dt><dd><p>An <code>n</code> by <code>k_1</code> matrix.</p></dd>
+  <dt>S</dt><dd><p>A <code>k_1</code> by <code>k_2</code> matrix.</p></dd>
+  <dt>Y</dt><dd><p>A <code>d</code> by <code>k_2</code> matrix. Defaults to <code>X</code>.</p></dd>
+  <dt>avgDeg</dt><dd><p>When specified, the expected average degree of nodes
+in the output poisson multi-graph. When <code>poissonEdges = FALSE</code>, the
+resulting graph will have lower average degree due to lack
+of multiple-edges. When the graph is sparse, the expected number of
+edges for the Poisson multi-graph and Bernoulli graph are nearly the
+same. Defaults to <code>NULL</code>, such that no scaling occurs.</p></dd>
+  <dt>simple</dt><dd><p>When <code>TRUE</code> indicates that you want to work with undirected
+graphs where self-loops and multi-edges are prohibited. Accomplishes
+this by setting <code>directed = FALSE</code>, <code>selfLoops = FALSE</code>, and
+<code>PoissonEdges = FALSE</code>, and then ignoring arguments <code>directed</code>,
+<code>selfLoops</code> and <code>PoissonEdges</code>. Defaults to <code>FALSE</code>.</p></dd>
+  <dt>PoissonEdges</dt><dd><p>Logical indicating whether or not multi-edges are
+allowed. Defaults to <code>TRUE</code>, which keeps multi-edges and produces
+a multi-graph. When <code>FALSE</code>, only single edges are allowed, resulting
+in a graph. See <strong>details</strong> for some additional comments. Effected by
+<code>simple</code> argument.</p></dd>
+  <dt>directed</dt><dd><p>Logical indicating whether or not the graph should be
+directed. Default is <code>directed = TRUE</code>. When <code>directed = FALSE</code>,
+symmetrizes <code>S</code> internally. When <code>X = Y</code> (which is the default when
+no <code>Y</code> is specified), this results in a symmetric adjacency matrix
+as output. When <code>avgDeg</code> is specified and the desired graph is directed,
+the average degree scaling is on the out-degree of each node (or the
+row sums if you prefer to think in terms of the adjacency matrix).
+Effected by the <code>simple</code> argument.</p></dd>
+  <dt>selfLoops</dt><dd><p>Logical indicating whether edges are allowed from
+a node back to itself. Defaults to <code>TRUE</code>. When <code>FALSE</code>, sampling
+proceeds normally, and then self-loops are removed after sampling
+is completed. Effected by the <code>simple</code> argument.</p></dd>
+  <dt>returnEdgeList</dt><dd><p>Logical indicating whether to return an edgelist
+rather than an adjacency matrix.</p></dd>
+</dl></td>
+    </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -142,7 +180,7 @@
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code>fastRG()</code></p>
+    <div class='dont-index'><p><code><a href='fastRG.html'>fastRG()</a></code></p>
 <p>Other bernoulli graphs: <code><a href='er.html'>er</a></code></p></div>
     
 

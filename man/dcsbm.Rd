@@ -71,7 +71,7 @@ pi a K vector, contains block sampling proportions
 theta an n vector, contains degree parameters
 B is K time K
 
-Define lambda_ij = theta\link{i} * theta\link{j}*B_{U,V}
+Define \eqn{lambda_ij = theta[i] * theta[j]*B_{U,V}}
 where U,V are blockmemberships of i and j, sampled from multinomial(pi)
 i connects to j with probability 1- exp( -lambda_ij)
 

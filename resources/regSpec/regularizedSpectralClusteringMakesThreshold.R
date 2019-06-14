@@ -4,16 +4,16 @@
 source("https://raw.githubusercontent.com/karlrohe/fastRG/master/fastRDPG.R")
 library(rARPACK)
 
-n  =10000  # number of nodes in graph.  
-replicates = 20  # how many times to simulate each graph? 
+n  =10000  # number of nodes in graph.
+replicates = 20  # how many times to simulate each graph?
 
 
-# here is a single simulation.  
+# here is a single simulation.
 a = 4.5  # this is expected "in block degree"
 b = 1  # this is expected "out block degree"
 s = (a - b)/2
 p = (a + b)/2
-# if this is greater than 1, then we are above reconstruction threshold. 
+# if this is greater than 1, then we are above reconstruction threshold.
 s^2 / p
 
 # sample a graph
@@ -25,7 +25,7 @@ rs = rowSums(A)
 D = Diagonal(n, 1/sqrt(rs + mean(rs)))
 L = D%*%A%*%D
 ei = eigs(L, 10)
-v = ei$vec[,2]
+v = ei$vectors[,2]
 
 # here is a scree plot:
 plot(abs(ei$values[-1]))

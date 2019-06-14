@@ -16,9 +16,15 @@
 #'   TODO: write the model out in detail here
 #'
 #'   to remove DC, set theta=rep(1,n)
-#'   xi  = theta_i * z_i, where [z_i]_j ~ bernoulli(pi_j)
-#'   lambda_ij = xi' B xj
-#'   probability of i connecting to j:  1 - exp(-lambda_ij)
+#'   \deqn{
+#'     xi  = \theta_i * z_i, where [z_i]_j ~ bernoulli(pi_j)
+#'   }
+#'
+#'   \deqn{
+#'     \lambda_{ij} = xi' B xj
+#'   }
+#'
+#'   probability of \eqn{i} connecting to \eqn{j}:  \eqn{1 - exp(-\lambda_{ij})}
 #'
 #' @examples
 #'
@@ -42,7 +48,7 @@ dcOverlapping <- function(theta, pi, B, ...) {
   X <- matrix(0, nrow = n, ncol = K)
 
   for (i in 1:K)
-    X[, i] <- rbinom(n, 1, pi[i])
+    X[, i] <- stats::rbinom(n, 1, pi[i])
 
   X <- X[order(X %*% (1:K)), ]
   Theta <- Diagonal(n, theta)
@@ -61,8 +67,8 @@ dcOverlapping <- function(theta, pi, B, ...) {
 #' Sample a degree corrected mixed membership stochastic blockmodel graph
 #'
 #' @param theta TODO
-#' @param pi TODO
 #' @param B TODO
+#' @param alpha TODO
 #'
 #' @inheritDotParams fastRG
 #' @inherit fastRG return
@@ -126,7 +132,7 @@ dcMixed <- function(theta, alpha, B, ...) {
 #'   theta an n vector, contains degree parameters
 #'   B is K time K
 #'
-#'   Define lambda_ij = theta[i] * theta[j]*B_{U,V}
+#'   Define \eqn{lambda_ij = theta[i] * theta[j]*B_{U,V}}
 #'   where U,V are blockmemberships of i and j, sampled from multinomial(pi)
 #'   i connects to j with probability 1- exp( -lambda_ij)
 #'
@@ -178,7 +184,7 @@ dcsbm <- function(theta, pi, B, ...) {
 #' @param pi Block sampling proportions.
 #' @param B "Contains probabilities". TODO
 #'
-#' @inheritParams fastRG
+#' @inheritDotParams fastRG
 #' @inherit fastRG params return
 #'
 #' @export
@@ -205,7 +211,7 @@ sbm <- function(n, pi, B, avgDeg = NULL, PoissonEdges = TRUE,...) {
   # you might want to comment this next line out...
   # but it is here so that pictures are pretty before clustering:
   z <- sort(z)
-  X <- model.matrix(~ factor(as.character(z), levels = as.character(1:K)) - 1)
+  X <- stats::model.matrix(~ factor(as.character(z), levels = as.character(1:K)) - 1)
 
   # now we handle avgDeg specially to make sure we don't get a matrix B
   # with probabilities outside of [0, 1]
@@ -246,8 +252,8 @@ sbm <- function(n, pi, B, avgDeg = NULL, PoissonEdges = TRUE,...) {
 #' @param directed Defaults to `FALSE` for Erdos-Renyi graphs. The default
 #'   in the more general [fastRG()] is `TRUE`.
 #'
-#' @inheritParams fastRG
-#' @inherit fastRG params return
+#' @inheritDotParams fastRG
+#' @inherit fastRG return
 #'
 #' @return Never returns Poisson edges.
 #'
@@ -281,8 +287,8 @@ er <- function(n, p = NULL, avgDeg = NULL, directed = FALSE, ...) {
 #'
 #' @param theta TODO
 #'
-#' @inheritParams fastRG
-#' @inherit fastRG params return
+#' @inheritDotParams fastRG
+#' @inherit fastRG return
 #'
 #' @return Never returns Poisson edges.
 #'

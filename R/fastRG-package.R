@@ -1,6 +1,5 @@
-#' @keywords internal
 #' @import Matrix
-"_PACKAGE"
+NULL
 
 # The following block is used by usethis to automatically manage
 # roxygen namespace tags. Modify with care!

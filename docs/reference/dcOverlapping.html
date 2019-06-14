@@ -198,13 +198,17 @@ the index of the incoming edge.</p>
 
     <p>TODO: write the model out in detail here</p>
 <p>to remove DC, set theta=rep(1,n)
-xi  = theta_i * z_i, where z_i_j ~ bernoulli(pi_j)
-lambda_ij = xi' B xj
-probability of i connecting to j:  1 - exp(-lambda_ij)</p>
+$$
+    xi  = \theta_i * z_i, where [z_i]_j ~ bernoulli(pi_j)
+  $$</p>
+<p>$$
+    \lambda_{ij} = xi' B xj
+  $$</p>
+<p>probability of \(i\) connecting to \(j\):  \(1 - exp(-\lambda_{ij})\)</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><code>fastRG()</code></p>
+    <div class='dont-index'><p><code><a href='fastRG.html'>fastRG()</a></code></p>
 <p>Other stochastic block models: <code><a href='dcMixed.html'>dcMixed</a></code>,
   <code><a href='dcsbm.html'>dcsbm</a></code>, <code><a href='sbm.html'>sbm</a></code></p></div>
     

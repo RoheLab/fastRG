@@ -69,9 +69,15 @@ Sample a degree corrected overlapping stochastic blockmodel graph
 TODO: write the model out in detail here
 
 to remove DC, set theta=rep(1,n)
-xi  = theta_i * z_i, where \link{z_i}_j ~ bernoulli(pi_j)
-lambda_ij = xi' B xj
-probability of i connecting to j:  1 - exp(-lambda_ij)
+\deqn{
+    xi  = \theta_i * z_i, where [z_i]_j ~ bernoulli(pi_j)
+  }
+
+\deqn{
+    \lambda_{ij} = xi' B xj
+  }
+
+probability of \eqn{i} connecting to \eqn{j}:  \eqn{1 - exp(-\lambda_{ij})}
 }
 \examples{
 

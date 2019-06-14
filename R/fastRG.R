@@ -79,18 +79,6 @@ fastRG <- function(X, S, Y = NULL, avgDeg = NULL, simple = FALSE,
   if (any(X < 0) || any(S < 0) || any(Y < 0))
     stop("`X`, `S`, `Y` can only contain non-negative elements.", call. = FALSE)
 
-  n <- nrow(X)
-  d <- nrow(Y)
-
-  # more input validation
-
-  # TODO: issue: d may not be defined here if Y is NULL, as is the default
-  if (!directed && n != d)
-    stop(
-      "`n = nrow(X)` and `d = nrow(Y)` must be the same for undirected graphs",
-      call. = FALSE
-    )
-
   if (!directed & !is.null(Y))
     stop("Must not specify `Y` for undirected graphs.", call. = FALSE)
 
@@ -102,6 +90,18 @@ fastRG <- function(X, S, Y = NULL, avgDeg = NULL, simple = FALSE,
     selfLoops <- TRUE
     simple <- FALSE
   }
+
+  n <- nrow(X)
+  d <- nrow(Y)
+
+  # more input validation
+
+  # TODO: issue: d may not be defined here if Y is NULL, as is the default
+  if (!directed && n != d)
+    stop(
+      "`n = nrow(X)` and `d = nrow(Y)` must be the same for undirected graphs",
+      call. = FALSE
+    )
 
   if (simple) {
     selfLoops <- FALSE
@@ -115,7 +115,7 @@ fastRG <- function(X, S, Y = NULL, avgDeg = NULL, simple = FALSE,
     # find the expected average degree in the poisson graph
     # TODO: should S be symmetrized before this?
     # TODO: avgDeg vs avDeg is some confusing naming
-    eDbar <- howManyEdges(X, S, Y)["avDeg"]
+    eDbar <- howManyEdges(X, S, Y)[["avDeg"]]
 
     S <- S * avgDeg / eDbar
   }
@@ -134,7 +134,7 @@ fastRG <- function(X, S, Y = NULL, avgDeg = NULL, simple = FALSE,
   St <- Cx %*% S %*% Cy
 
   # number of edges to sample
-  m <- rpois(n = 1, lambda = sum(St))
+  m <- stats::rpois(n = 1, lambda = sum(St))
 
   # if no edges, return empty matrix.
   if (m == 0) {
@@ -148,7 +148,7 @@ fastRG <- function(X, S, Y = NULL, avgDeg = NULL, simple = FALSE,
   # this simulates \varpi, denoted here as tabUV.
   # element u,v is the number of edges between column u and column v.
 
-  tabUV <- matrix(rmultinom(n = 1, size = m, prob = St), nrow = K1, ncol = K2)
+  tabUV <- matrix(stats::rmultinom(n = 1, size = m, prob = St), nrow = K1, ncol = K2)
   cumsumUV <- matrix(cumsum(tabUV), nrow = K1, ncol = K2)
 
   # cbind(eo, ei) is going to be the edge list
