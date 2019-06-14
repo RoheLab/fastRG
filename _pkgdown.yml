@@ -1,0 +1,32 @@
+destination: docs
+
+development:
+  mode: auto
+
+template:
+  params:
+    bootswatch: paper
+
+reference:
+  - title: Key function
+    desc: ~
+    contents:
+      - "fastRG"
+  - title: Stochastic blockmodels and generalizations
+    desc: ~
+    contents:
+      - "cl"
+      - "dcMixed"
+      - "dcOverlapping"
+      - "dcsbm"
+      - "er"
+      - "sbm"
+  - title: Bernoulli graphs
+    desc: ~
+    contents:
+      - "cl"
+      - "er"
+  - title: Utilities
+    desc: ~
+    contents:
+    - "howManyEdges"

@@ -1,35 +1,36 @@
+---
+output: github_document
+---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  eval = FALSE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+```
 # fastRG
 
 <!-- badges: start -->
-
 <!-- badges: end -->
 
-fastRG quickly samples a generalized random product graph, which is a
-generalization of a broad class of network models. Given matrices
-\(X \in R^{n \times K_x}\), \(Y \in R^{n \times K_y}\), and
-\(S \in R^{K_x \times K_y}\) each with positive entries, fastRG samples
-a matrix with expectation \(X S Y^T\) and independent Poisson entries.
-[See the tech report for sampling Bernoulli
-entries](https://arxiv.org/abs/1703.02998).
 
-The basic idea of the algorithm is to first sample the number of edges,
-\(m\), and then put down edges one-by-one. It runs in \(\mathcal O(m)\)
-operations. For example, in sparse graphs \(m = \mathcal O(n)\) and the
-algorithm is dramatically faster than element-wise algorithms which run
-in \(\mathcal O(n^2)\) operations.
+fastRG quickly samples a generalized random product graph, which is a generalization of a broad class of network models.   Given matrices $X \in R^{n \times K_x}$, $Y \in R^{n \times K_y}$, and $S \in R^{K_x \times K_y}$ each with positive entries, fastRG samples a matrix with  expectation $X S Y^T$ and independent Poisson entries.  [See the tech report for sampling Bernoulli entries](https://arxiv.org/abs/1703.02998). 
+
+The basic idea of the algorithm is to first sample the number of edges, $m$, and then put down edges one-by-one.  It runs in $\mathcal O(m)$ operations.  For example, in sparse graphs $m = \mathcal O(n)$ and the algorithm is dramatically faster than element-wise algorithms which run in $\mathcal O(n^2)$ operations.
 
 ## TODO
 
-  - Talk to Karl about license
-  - Talk to Karl about authorship
+- Talk to Karl about license
+- Talk to Karl about authorship
 
 ## Installation
 
-`fastRG` is not yet on CRAN. You can install the development version
-with:
+`fastRG` is not yet on CRAN. You can install the development version with:
 
 ``` r
 # install.package("devtools")
@@ -38,21 +39,16 @@ devtools::install_github("alexpghayes/fastRG")
 
 ## Example Usage
 
-The easiest way to use `fastRG` is to use wrapper functions that sample
-from population graph models. For example, to sample from an Erdos-Renyi
-graphn = 1,000,000$ nodes and expected degree 5, we can use the `er()`
-function.
+The easiest way to use `fastRG` is to use wrapper functions that sample from population graph models. For example, to sample from an Erdos-Renyi graphn = 1,000,000$ nodes and expected degree 5, we can use the `er()` function.
 
-``` r
+```{r}
 A <- er(n = 10^6, avgDeg = 5)
 A
 ```
 
-By default we always get a `Matrix::sparseMatrix()`, but if we can also
-ask for the graph as an edgelist as well. This results in a fast way to
-create `igraph` objects using `igraph::graph_from_edgelist()`.
+By default we always get a `Matrix::sparseMatrix()`, but if we can also ask for the graph as an edgelist as well. This results in a fast way to create `igraph` objects using `igraph::graph_from_edgelist()`.
 
-``` r
+```{r}
 library(igraph)
 
 n <- 10000
@@ -68,11 +64,9 @@ el <- fastRG(X, S, simple = TRUE, returnEdgeList = TRUE)
 g <- graph_from_edgelist(el)
 ```
 
-or fastRG also allows for simulating from E(A) = X S Y’, where A and S
-could be rectangular. This is helpful for bipartite graphs or matrices
-of features.
+or fastRG also allows for simulating from E(A) = X S Y', where A and S could be rectangular.  This is helpful for bipartite graphs or matrices of features.
 
-``` r
+```{r}
 n <- 10000
 d <- 1000
 K1 <- 5
@@ -87,7 +81,7 @@ A <- fastRG(X, S, Y, avgDeg = 10)
 
 or
 
-``` r
+```{R}
 K <- 10
 n <- 500
 pi <- rexp(K) + 1
@@ -108,11 +102,11 @@ mean(rowSums(A))
 n <- 10000
 A <- dcsbm(rexp(n), pi, B, avgDeg = 50, PoissonEdges = F)
 mean(rowSums(A))
-```
+```      
 
 or
 
-``` r
+```{R}
 # This draws a 100 x 100 adjacency matrix from each model.
 #   Each image might take around 5 seconds to render.
 
@@ -157,7 +151,10 @@ image(as.matrix(t(A[, n:1])), col = grey(seq(1, 0, len = 20)))
 mean(A)
 ```
 
-``` r
+
+
+
+```{R}
 # this samples a DC-SBM with 10,000 nodes
 #  then computes, and plots the leading eigenspace.
 #  the code should run in less than a second.
@@ -192,11 +189,13 @@ for (i in 1:5) {
   plot(X[s, i], pch = ".")
 }
 dev.off()
-```
+```    
 
 or
 
-``` r
+
+
+```{r}
 # This samples a 1M node graph.
 # Depending on the computer, sampling the graph should take between 10 and 30 seconds
 #   Then, taking the eigendecomposition of the regularized graph laplacian should take between 1 and 3 minutes
@@ -217,11 +216,13 @@ ei <- eigs_sym(L, 4)
 s <- sort(sample(n, 10000))
 X <- t(apply(ei$vec[, 1:K], 1, function(x) return(x / sqrt(sum(x^2) + 1 / n))))
 plot(X[s, 3]) # highly localized eigenvectors
-```
+```   
 
-To sample from a degree corrected and node contextualized graph…
 
-``` r
+
+To sample from a degree corrected and node contextualized graph...
+
+```{r}
 n <- 10000 # number of nodes
 d <- 1000 # number of features
 K <- 5 # number of blocks
@@ -258,41 +259,14 @@ features <- fastRG(X, paraFeat$S, paraFeat$X, avgDeg = 20)
 
 ## Mathematical Details
 
-fastRG samples a Poisson gRPG where \(\lambda_{ij} = X_i' S Y_j\) is the
-rate parameter for edge \(i,j\). If multiEdges is set to FALSE, then it
-samples a Bernoulli gRPG where the probability of edge \((i,j)\) is
-\(1 - exp(-\lambda_{ij})\). In sparse graphs, this is a good
-approximation to having edge probabilities \(\lambda_{ij}\). Arugments
-can keep self loops or keep the graph directed.
+fastRG samples a Poisson gRPG where $\lambda_{ij} = X_i' S Y_j$ is the rate parameter for edge $i,j$.   If multiEdges is set to FALSE, then it samples a Bernoulli gRPG where the probability of edge $(i,j)$ is $1 - exp(-\lambda_{ij})$.  In sparse graphs, this is a good approximation to having edge probabilities $\lambda_{ij}$. Arugments can keep self loops or keep the graph directed.
 
-er, cl, sbm, dcsbm, dcOverlapping, and dcMixed are wrappers for fastRG
-that sample the Erdos-Renyi, Chung-Lu, Stochastic Blockmodel, Degree
-Corrected Stochastic Blockmodel, the Degree Corrected Overlapping
-Stochastic Blockmodel, and the Degree Corrected Mixed Membership
-Stochastic Blockmodel. To remove Degree correction, set theta = rep(1,
-n) or set theta equal to the number of desired nodes \(n\).
+er, cl, sbm, dcsbm, dcOverlapping, and dcMixed are wrappers for fastRG that sample the Erdos-Renyi, Chung-Lu, Stochastic Blockmodel, Degree Corrected Stochastic Blockmodel, the Degree Corrected Overlapping Stochastic Blockmodel, and the Degree Corrected Mixed Membership Stochastic Blockmodel.  To remove Degree correction, set theta = rep(1, n) or set theta equal to the number of desired nodes $n$.
 
-If selfLoops == T, then fastRG retains the selfloops. If selfLoops == F,
-then fastRG uses a poisson approximation to the binomial in the
-following sense: Let \(M\sim poisson(\sum_{uv} \lambda_{uv})\) be the
-number of edges. fastRG approximates edge probabilities of
-\(Poisson(\lambda_{ij})\) with
-\(Binomial(M, \lambda_{ij}/\sum_{uv}\lambda_{uv})\). This approximation
-is good when total edges is order \(n\) or larger and
-\(\max \lambda_{ij}\) is order constant or smaller. Under er and sbm,
-there is a default correction that removes this issue.
+If selfLoops == T, then fastRG retains the selfloops. If selfLoops == F, then fastRG uses a poisson approximation to the binomial in the following sense: Let $M\sim poisson(\sum_{uv} \lambda_{uv})$ be the number of edges. fastRG approximates edge probabilities of $Poisson(\lambda_{ij})$ with  $Binomial(M, \lambda_{ij}/\sum_{uv}\lambda_{uv})$.  This approximation is good when total edges is order $n$ or larger and $\max \lambda_{ij}$ is order constant or smaller.  Under er and sbm, there is a default correction that removes this issue. 
 
-If directed == T, then fastRG does not symmetrize the graph. If directed
-== F, then fastRG symmetrizes S and A.
+If directed == T, then fastRG does not symmetrize the graph.  If directed == F, then fastRG symmetrizes S and A.
 
-If PoissonEdges == T, then fastRG keeps the multiple edges and avgDeg
-calculations are on out degree (i.e. rowSums). If PoissonEdges == F,
-then fastRG thresholds each edge so that multiple edges are replaced by
-single edges. In this case, only SBM has edge probabilities exactly
-given by \(\lambda\) (up to scaling for avgDeg). The other techniques
-have edge probabilities \(1 - exp(-\lambda)\).
+If PoissonEdges == T, then fastRG keeps the multiple edges and avgDeg calculations are on out degree (i.e. rowSums).  If PoissonEdges == F, then fastRG thresholds each edge so that multiple edges are replaced by single edges. In this case, only SBM has edge probabilities exactly given by $\lambda$ (up to scaling for avgDeg).  The other techniques have edge probabilities $1 - exp(-\lambda)$.
 
-If Y is specified, then it returns a sparse matrix, with poisson
-entries, where \(E(A) = X S Y'\). This is useful for creating sparse
-rectangular matrices. For example, this could be a feature matrix. Or,
-it could be a “rectangular adjacency matrix” for a bipartite graph.
+If Y is specified, then it returns a sparse matrix, with poisson entries, where $E(A) = X S Y'$.  This is useful for creating sparse rectangular matrices.  For example, this could be a feature matrix.  Or, it could be a "rectangular adjacency matrix" for a bipartite graph.
