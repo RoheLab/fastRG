@@ -10,7 +10,8 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  eval = FALSE
 )
 ```
 
@@ -18,6 +19,8 @@ knitr::opts_chunk$set(
 library(igraph)
 library(fastRG)
 ```
+
+TODO: for some reason these examples are very not happy at the moment
 
 `fastRG` quickly samples a broad class of network models known as generalized random product graphs. In particular, for matrices $X$, $S$ and $Y$, `fastRG` samples a matrix $A$ with expectation $X S Y^T$ where individual entries are Poisson distributed. We recommend that you think of $A$ as the adjacency matrix for a graph (or a multi-graph). Crucially, the sampling is $O(m)$, where $m$ is the number of the edges in graph. Other algorithms are $O(n^2)$, where $n$ is the number of nodes in the network. For additional details, please have a look at the [paper](https://arxiv.org/abs/1703.02998).
 

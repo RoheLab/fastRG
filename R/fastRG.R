@@ -153,12 +153,9 @@ fastRG <- function(X, S, Y = NULL, avg_deg = NULL, simple = FALSE,
     S <- S * avg_deg / eDbar
   }
 
-  print("got here")
-
   # if undirected, symmetrize by setting S := (S + t(S))/2
   # then divide result by 2 because this doubles edge probabilities
   if (!directed) {
-    print("symmetrizing")
     print(class(S))
     S <- (S + t(S)) / 4
   }
@@ -170,8 +167,6 @@ fastRG <- function(X, S, Y = NULL, avg_deg = NULL, simple = FALSE,
   Cy <- diag(colSums(Y), nrow = K2, ncol = K2)
 
   St <- Cx %*% S %*% Cy
-
-  print("blah")
 
   # number of edges to sample
   m <- stats::rpois(n = 1, lambda = sum(St))
@@ -188,8 +183,6 @@ fastRG <- function(X, S, Y = NULL, avg_deg = NULL, simple = FALSE,
   # this simulates \varpi, denoted here as tabUV.
   # element u,v is the number of edges between column u and column v.
 
-  print("blee")
-
   tabUV <- matrix(stats::rmultinom(n = 1, size = m, prob = St), nrow = K1, ncol = K2)
   cumsumUV <- matrix(cumsum(tabUV), nrow = K1, ncol = K2)
 
@@ -197,10 +190,8 @@ fastRG <- function(X, S, Y = NULL, avg_deg = NULL, simple = FALSE,
   #   eo: "edge out node".
   #   ei: "edge in node"
 
-  print(m)
-
-  eo <- rep(NA, m)
-  ei <- eo
+  eo <- integer(m)
+  ei <- integer(m)
 
   print("boom")
 
@@ -258,8 +249,6 @@ fastRG <- function(X, S, Y = NULL, avg_deg = NULL, simple = FALSE,
     eo <- eo[-edges_to_self]
     ei <- ei[-edges_to_self]
   }
-
-  print("burp")
 
   # symmetrize the edge list. this doubles the edge probabilities!
   if (!directed) {

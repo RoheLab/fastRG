@@ -5,7 +5,8 @@
 \alias{dc_mixed_params}
 \title{Sample a degree corrected mixed membership stochastic blockmodel graph}
 \usage{
-dc_mixed(theta, alpha, B, ...)
+dc_mixed(theta, alpha, B, avg_deg = NULL, poisson_edges = TRUE,
+  sort_nodes = FALSE, ...)
 
 dc_mixed_params(theta, alpha, B, avg_deg = NULL, poisson_edges = TRUE,
   sort_nodes = FALSE)
@@ -24,6 +25,25 @@ specifies the number of communities.}
 probabilities. \code{B[i, j]} contains the probability that a node in
 community \code{i} links to a node in community \code{j}. Does not need to
 be symmetric.}
+
+\item{avg_deg}{When specified, rescales parameter such that the
+expected degree is \code{avg_deg} in the Poisson multi-graph. When
+\code{poisson_edges = FALSE}, the resulting graph will have lower a
+average degree than \code{avg_deg} due to lack of multi-edges. When
+the graph is sparse, the expected number of edges for the Poisson
+multi-graph and Bernoulli graph are nearly the
+same. Defaults to \code{NULL}, such that no scaling occurs.}
+
+\item{poisson_edges}{Logical indicating whether or not multi-edges are
+allowed. Defaults to \code{TRUE}, which keeps multi-edges and produces
+a multi-graph. When \code{FALSE}, only single edges are allowed, resulting
+in a graph. See \strong{details} for some additional comments. Effected by
+\code{simple} argument.}
+
+\item{sort_nodes}{Logical indicating whether or not to sort the nodes
+so that they are grouped by block. This incurs the the cost of a
+radix sort, which is linear in the number of nodes in the graph.
+Defaults to \code{FALSE}. Useful for plotting.}
 
 \item{...}{Arguments passed on to \code{fastRG}
 \describe{
@@ -62,25 +82,6 @@ is completed. Effected by the \code{simple} argument.}
   \item{return_edge_list}{Logical indicating whether to return an edgelist
 rather than an adjacency matrix. Defaults to \code{FALSE}.}
 }}
-
-\item{avg_deg}{When specified, rescales parameter such that the
-expected degree is \code{avg_deg} in the Poisson multi-graph. When
-\code{poisson_edges = FALSE}, the resulting graph will have lower a
-average degree than \code{avg_deg} due to lack of multi-edges. When
-the graph is sparse, the expected number of edges for the Poisson
-multi-graph and Bernoulli graph are nearly the
-same. Defaults to \code{NULL}, such that no scaling occurs.}
-
-\item{poisson_edges}{Logical indicating whether or not multi-edges are
-allowed. Defaults to \code{TRUE}, which keeps multi-edges and produces
-a multi-graph. When \code{FALSE}, only single edges are allowed, resulting
-in a graph. See \strong{details} for some additional comments. Effected by
-\code{simple} argument.}
-
-\item{sort_nodes}{Logical indicating whether or not to sort the nodes
-so that they are grouped by block. This incurs the the cost of a
-radix sort, which is linear in the number of nodes in the graph.
-Defaults to \code{FALSE}. Useful for plotting.}
 }
 \value{
 A random Poisson (or Bernoulli) dot product graph. By default,

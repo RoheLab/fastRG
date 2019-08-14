@@ -5,6 +5,7 @@
 #'   `p[i]` of being in the `i^th` community. `length(p)` implicitly
 #'   specifies the number of communities.
 #'
+#' @inherit dcsbm params
 #' @inheritDotParams fastRG
 #' @inherit fastRG return
 #'

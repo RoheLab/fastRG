@@ -5,12 +5,47 @@
 \alias{dc_overlapping_params}
 \title{Sample a degree corrected overlapping stochastic blockmodel graph}
 \usage{
-dc_overlapping(theta, pi, B, ...)
+dc_overlapping(theta, p, B, avg_deg = NULL, poisson_edges = TRUE,
+  sort_nodes = FALSE, ...)
 
 dc_overlapping_params(theta, p, B, avg_deg = NULL,
   poisson_edges = TRUE, sort_nodes = FALSE)
 }
 \arguments{
+\item{theta}{A vector specified the degree distribution parameters.
+The resulting graph will have \code{length(theta)} nodes. Setting
+\code{theta = rep(1, n)} recovers a stochastic blockmodel without
+degree correction.}
+
+\item{p}{Community membership parameter. For each node, membership in
+each community is consider separately. Each node has probability
+\code{p[i]} of being in the \code{i^th} community. \code{length(p)} implicitly
+specifies the number of communities.}
+
+\item{B}{A \code{length(pi)} by \code{length(pi)} matrix of block connection
+probabilities. \code{B[i, j]} contains the probability that a node in
+community \code{i} links to a node in community \code{j}. Does not need to
+be symmetric.}
+
+\item{avg_deg}{When specified, rescales parameter such that the
+expected degree is \code{avg_deg} in the Poisson multi-graph. When
+\code{poisson_edges = FALSE}, the resulting graph will have lower a
+average degree than \code{avg_deg} due to lack of multi-edges. When
+the graph is sparse, the expected number of edges for the Poisson
+multi-graph and Bernoulli graph are nearly the
+same. Defaults to \code{NULL}, such that no scaling occurs.}
+
+\item{poisson_edges}{Logical indicating whether or not multi-edges are
+allowed. Defaults to \code{TRUE}, which keeps multi-edges and produces
+a multi-graph. When \code{FALSE}, only single edges are allowed, resulting
+in a graph. See \strong{details} for some additional comments. Effected by
+\code{simple} argument.}
+
+\item{sort_nodes}{Logical indicating whether or not to sort the nodes
+so that they are grouped by block. This incurs the the cost of a
+radix sort, which is linear in the number of nodes in the graph.
+Defaults to \code{FALSE}. Useful for plotting.}
+
 \item{...}{Arguments passed on to \code{fastRG}
 \describe{
   \item{X}{An \code{n} by \code{k_1} matrix.}
@@ -48,11 +83,6 @@ is completed. Effected by the \code{simple} argument.}
   \item{return_edge_list}{Logical indicating whether to return an edgelist
 rather than an adjacency matrix. Defaults to \code{FALSE}.}
 }}
-
-\item{p}{Community membership parameter. For each node, membership in
-each community is consider separately. Each node has probability
-\code{p[i]} of being in the \code{i^th} community. \code{length(p)} implicitly
-specifies the number of communities.}
 }
 \value{
 A random Poisson (or Bernoulli) dot product graph. By default,
