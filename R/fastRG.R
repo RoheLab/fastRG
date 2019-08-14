@@ -1,56 +1,62 @@
-#' Sample a random dot product graph (RDPG)
+#' Sample a Random Dot Product Graph (RDPG)
 #'
 #' @param X An `n` by `k_1` matrix.
 #' @param S A `k_1` by `k_2` matrix.
 #' @param Y A `d` by `k_2` matrix. Defaults to `X`.
-#' @param avgDeg When specified, the expected average degree of nodes
-#'   in the output poisson multi-graph. When `poissonEdges = FALSE`, the
-#'   resulting graph will have lower average degree due to lack
-#'   of multiple-edges. When the graph is sparse, the expected number of
-#'   edges for the Poisson multi-graph and Bernoulli graph are nearly the
+#'
+#' @param avg_deg When specified, rescales parameter such that the
+#'   expected degree is `avg_deg` in the Poisson multi-graph. When
+#'   `poisson_edges = FALSE`, the resulting graph will have lower a
+#'   average degree than `avg_deg` due to lack of multi-edges. When
+#'   the graph is sparse, the expected number of edges for the Poisson
+#'   multi-graph and Bernoulli graph are nearly the
 #'   same. Defaults to `NULL`, such that no scaling occurs.
-#' @param simple When `TRUE` indicates that you want to work with undirected
+#'
+#' @param simple When `TRUE`, indicates that you want to work with undirected
 #'   graphs where self-loops and multi-edges are prohibited. Accomplishes
-#'   this by setting `directed = FALSE`, `selfLoops = FALSE`, and
-#'   `PoissonEdges = FALSE`, and then ignoring arguments `directed`,
-#'   `selfLoops` and `PoissonEdges`. Defaults to `FALSE`.
-#' @param PoissonEdges Logical indicating whether or not multi-edges are
+#'   this by setting `directed = FALSE`, `allow_self_loops = FALSE`, and
+#'   `poisson_edges = FALSE`, and then ignoring arguments `directed`,
+#'   `allow_self_loops` and `poisson_edges`. Defaults to `FALSE`.
+#'
+#' @param poisson_edges Logical indicating whether or not multi-edges are
 #'   allowed. Defaults to `TRUE`, which keeps multi-edges and produces
 #'   a multi-graph. When `FALSE`, only single edges are allowed, resulting
 #'   in a graph. See **details** for some additional comments. Effected by
 #'   `simple` argument.
+#'
 #' @param directed Logical indicating whether or not the graph should be
 #'   directed. Default is `directed = TRUE`. When `directed = FALSE`,
 #'   symmetrizes `S` internally. When `X = Y` (which is the default when
 #'   no `Y` is specified), this results in a symmetric adjacency matrix
-#'   as output. When `avgDeg` is specified and the desired graph is directed,
+#'   as output. When `avg_deg` is specified and the desired graph is directed,
 #'   the average degree scaling is on the out-degree of each node (or the
 #'   row sums if you prefer to think in terms of the adjacency matrix).
 #'   Effected by the `simple` argument.
-#' @param selfLoops Logical indicating whether edges are allowed from
+#'
+#' @param allow_self_loops Logical indicating whether edges are allowed from
 #'   a node back to itself. Defaults to `TRUE`. When `FALSE`, sampling
 #'   proceeds normally, and then self-loops are removed after sampling
 #'   is completed. Effected by the `simple` argument.
-#' @param returnEdgeList Logical indicating whether to return an edgelist
-#'   rather than an adjacency matrix.
+#'
+#' @param return_edge_list Logical indicating whether to return an edgelist
+#'   rather than an adjacency matrix. Defaults to `FALSE`.
 #'
 #' @return A random Poisson (or Bernoulli) dot product graph. By default,
 #'   returns a [Matrix::sparseMatrix()] in CSC format (i.e. of abstract
 #'   class `CsparseMatrix`). When the graph is undirected, the `sparseMatrix`
 #'   will also be symmetric.
 #'
-#'   If `returnEdgeList = TRUE`, instead returns the graph as an edgelist
-#'   in matrix format, where the first column of the matrix contains two
-#'   columns `from` and `to` . The `from` column contains the index
-#'   of the outgoing edge in this case, and the `to` column contains
-#'   the index of the incoming edge.
+#'   If `return_edge_list = TRUE`, instead returns the graph as an edgelist
+#'   in matrix format, with contains two columns called `from` and `to`.
+#'   The `from` column contains the index of the outgoing edge,
+#'   and the `to` column contains the index of the incoming edge.
 #'
 #' @details TODO: clean up the following:
 #'
 #'   This uses a poisson approximation to the binomial...
 #'
 #'   Let \eqn{M ~ Poisson(\sum_{uv} \lambda_{uv})} be the number of edges.
-#'   If selfLoops == F, then the code uses the approximation
+#'   If allow_self_loops == F, then the code uses the approximation
 #'   \deqn{
 #'     Poisson(\lambda_{ij})
 #'     \approx Binomial(M, \lambda_{ij}/\sum_{uv}\lambda_{uv})
@@ -62,32 +68,57 @@
 #'
 #' @references Rohe, Karl, Jun Tao, Xintian Han, and Norbert Binkiewicz. 2017.
 #'    “A Note on Quickly Sampling a Sparse Matrix with Low Rank Expectation.”
-#'    Journal of Machine Learning Research; 19(77):1−13, 2018.
+#'    Journal of Machine Learning Research; 19(77):1-13, 2018.
 #'    <http://www.jmlr.org/papers/v19/17-128.html>
 #'
 #' @export
 #'
 #' @examples
 #'
-#' # TODO
+#' set.seed(372)
 #'
-fastRG <- function(X, S, Y = NULL, avgDeg = NULL, simple = FALSE,
-                   PoissonEdges = TRUE, directed = TRUE,
-                   selfLoops = TRUE, returnEdgeList = FALSE) {
+#' n <- 10000
+#' d <- 1000
+#'
+#' k1 <- 5
+#' k2 <- 3
+#'
+#' X <- matrix(rpois(n = n * k1, 1), nrow = n)
+#' Y <- matrix(rpois(n = d * k2, 1), nrow = d)
+#' S <- matrix(runif(n = k1 * k2, 0, .1), nrow = K1)
+#'
+#' # all the bells and whistles, return graph as a matrix
+#' A <- fastRG(X, S, Y, avg_deg = 10)
+#'
+#' # a nice binary, symmetric graph with no self-loops
+#' B <- fastRG(X, S, avg_deg = 10, simple = TRUE)
+#'
+#' # get the graph as an edge list
+#' edge_list <- fastRG(X, S, return_edge_list = TRUE)
+#'
+#' # a symmetric graph
+#' C <- fastRG(X, S, directed = FALSE)
+#'
+fastRG <- function(X, S, Y = NULL, avg_deg = NULL, simple = FALSE,
+                   poisson_edges = TRUE, directed = TRUE,
+                   allow_self_loops = TRUE, return_edge_list = FALSE) {
 
-  # input validation: X, S, Y must be non-negative
-  if (any(X < 0) || any(S < 0) || any(Y < 0))
+  # TODO: check dimensions. also check in expected()
+
+  if (any(X < 0) || any(S < 0) || any(Y < 0)) {
     stop("`X`, `S`, `Y` can only contain non-negative elements.", call. = FALSE)
+  }
 
-  if (!directed & !is.null(Y))
+  if (!directed & !is.null(Y)) {
     stop("Must not specify `Y` for undirected graphs.", call. = FALSE)
+  }
 
   # output will be asymmetric and potentially rectangular
   if (is.null(Y)) {
     Y <- X
   } else {
     directed <- TRUE
-    selfLoops <- TRUE
+    allow_self_loops <- TRUE
     simple <- FALSE
   }
 
@@ -97,33 +128,40 @@ fastRG <- function(X, S, Y = NULL, avgDeg = NULL, simple = FALSE,
   # more input validation
 
   # TODO: issue: d may not be defined here if Y is NULL, as is the default
-  if (!directed && n != d)
+  if (!directed && n != d) {
     stop(
       "`n = nrow(X)` and `d = nrow(Y)` must be the same for undirected graphs",
       call. = FALSE
     )
-
-  if (simple) {
-    selfLoops <- FALSE
-    directed <- FALSE
-    PoissonEdges <- FALSE
   }
 
-  # if avgDeg is specified, then scale S by the appropriate amount.
-  if (!is.null(avgDeg)) {
+  if (simple) {
+    allow_self_loops <- FALSE
+    directed <- FALSE
+    poisson_edges <- FALSE
+  }
+
+
+  # if avg_deg is specified, then scale S by the appropriate amount.
+  if (!is.null(avg_deg)) {
 
     # find the expected average degree in the poisson graph
     # TODO: should S be symmetrized before this?
-    # TODO: avgDeg vs avDeg is some confusing naming
-    eDbar <- howManyEdges(X, S, Y)[["avDeg"]]
+    # TODO: avg_deg vs avDeg is some confusing naming
+    eDbar <- expected(X, S, Y)$degree
 
-    S <- S * avgDeg / eDbar
+    S <- S * avg_deg / eDbar
   }
+
+  print("got here")
 
   # if undirected, symmetrize by setting S := (S + t(S))/2
   # then divide result by 2 because this doubles edge probabilities
-  if (!directed)
+  if (!directed) {
+    print("symmetrizing")
+    print(class(S))
     S <- (S + t(S)) / 4
+  }
 
   K1 <- ncol(X)
   K2 <- ncol(Y)
@@ -133,20 +171,24 @@ fastRG <- function(X, S, Y = NULL, avgDeg = NULL, simple = FALSE,
 
   St <- Cx %*% S %*% Cy
 
+  print("blah")
+
   # number of edges to sample
   m <- stats::rpois(n = 1, lambda = sum(St))
 
   # if no edges, return empty matrix.
   if (m == 0) {
-
-    if (returnEdgeList)
+    if (return_edge_list) {
       return(matrix(NA, nrow = 0, ncol = 2))
+    }
 
     return(sparseMatrix(1:n, 1:d, x = 0, dims = c(n, d)))
   }
 
   # this simulates \varpi, denoted here as tabUV.
   # element u,v is the number of edges between column u and column v.
+
+  print("blee")
 
   tabUV <- matrix(stats::rmultinom(n = 1, size = m, prob = St), nrow = K1, ncol = K2)
   cumsumUV <- matrix(cumsum(tabUV), nrow = K1, ncol = K2)
@@ -155,8 +197,12 @@ fastRG <- function(X, S, Y = NULL, avgDeg = NULL, simple = FALSE,
   #   eo: "edge out node".
   #   ei: "edge in node"
 
+  print(m)
+
   eo <- rep(NA, m)
   ei <- eo
+
+  print("boom")
 
   # to avoid doing K1*K2 samples for I and J, we can instead take
   #   only K1 + K2 samples.  This requires some awkward indexing.
@@ -207,11 +253,13 @@ fastRG <- function(X, S, Y = NULL, avgDeg = NULL, simple = FALSE,
     }
   }
 
-  if (!selfLoops) {
+  if (!allow_self_loops) {
     edges_to_self <- eo == ei
     eo <- eo[-edges_to_self]
     ei <- ei[-edges_to_self]
   }
+
+  print("burp")
 
   # symmetrize the edge list. this doubles the edge probabilities!
   if (!directed) {
@@ -220,16 +268,20 @@ fastRG <- function(X, S, Y = NULL, avgDeg = NULL, simple = FALSE,
     ei <- c(ei, eo_copy)
   }
 
-  if (returnEdgeList)
-    return(cbind(eo, ei))
+  if (return_edge_list) {
+    el <- cbind(eo, ei)
+    colnames(el) <- c("from", "to")
+    return(el)
+  }
 
-  if (PoissonEdges)
+  if (poisson_edges) {
     # NOTE: x = 1 is correct to create a multigraph adjacency matrix
     # here. see ?Matrix::sparseMatrix for details, in particular the
     # documentation for arguments `i, j`
     A <- sparseMatrix(eo, ei, x = 1, dims = c(n, d), symmetric = !directed)
-  else
+  } else {
     A <- sparseMatrix(eo, ei, dims = c(n, d), symmetric = !directed)
+  }
 
   A
 }

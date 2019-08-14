@@ -35,20 +35,22 @@ There's also a [Python implementation](https://github.com/yunjhongwu/matrix-rout
 
 ## Example Usage
 
-The easiest way to use `fastRG` is to use wrapper functions that sample from population graph models. For example, to sample from an Erdos-Renyi graph `n = 1,000,000` nodes and expected degree 5, we can use the `er()` function.
+The easiest way to use `fastRG` is to use wrapper functions that sample from popular graph models. For example, to sample from an Erdos-Renyi graph `n = 1,000,000` nodes and expected degree of five, we can use the `erdos_renyi()` function.
 
 ```{r}
 library(fastRG)
 
-A <- erdos_renyi(n = 10^6, avgDeg = 5)
+A <- erdos_renyi(n = 10^6, avg_deg = 5)
 ```
 
-By default we always get a `Matrix::sparseMatrix()`, but we can also ask for the graph as an edgelist as well. This results in a fast way to create `igraph` objects using `igraph::graph_from_edgelist()`.
+By default we always get a `Matrix::sparseMatrix()`, but we can also ask for the graph as an edgelist as well.
 
 ```{r}
-el <- erdos_renyi(n = 1000, avgDeg = 5, returnEdgeList = TRUE)
+el <- erdos_renyi(n = 1000, avg_deg = 5, return_edge_list = TRUE)
 head(el)
 ```
+
+This results in a fast way to create `igraph` objects using `igraph::graph_from_edgelist()`.
 
 ```{r}
 g <- igraph::graph_from_edgelist(el)

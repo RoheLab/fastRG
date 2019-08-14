@@ -26,13 +26,13 @@ library(fastRG)
 The easiest way to use `fastRG` is to use wrapper functions that sample from population graph models. For example, to sample from an Erdos-Renyi graph `n = 1,000,000` nodes and expected degree 5, we can use the `er()` function.
 
 ```{r}
-A <- erdos_renyi(n = 10^6, avgDeg = 5)
+A <- erdos_renyi(n = 10^6, avg_deg = 5)
 ```
 
 By default we always get a `Matrix::sparseMatrix()`, but we can also ask for the graph as an edgelist as well. This results in a fast way to create `igraph` objects using `igraph::graph_from_edgelist()`.
 
 ```{r}
-el <- erdos_renyi(n = 1000, avgDeg = 5, returnEdgeList = TRUE)
+el <- erdos_renyi(n = 1000, avg_deg = 5, return_edge_list = TRUE)
 head(el)
 ```
 
@@ -53,7 +53,7 @@ X <- matrix(rpois(n = n * K1, 1), nrow = n)
 Y <- matrix(rpois(n = d * K2, 1), nrow = d)
 S <- matrix(runif(n = K1 * K2, 0, .1), nrow = K1)
 
-A <- fastRG(X, S, Y, avgDeg = 10)
+A <- fastRG(X, S, Y, avg_deg = 10)
 ```
 
 or
@@ -67,17 +67,17 @@ B <- matrix(rexp(K^2) + 1, nrow = K)
 diag(B) <- diag(B) + mean(B) * K
 theta <- rexp(n)
 
-A <- dcsbm(theta, pi, B, avgDeg = 50)
+A <- dcsbm(theta, pi, B, avg_deg = 50)
 # here is the average degree:
 mean(rowSums(A))
 
-# If we remove multiple edges, the avgDeg parameter is not trustworthy:
-A <- dcsbm(theta, pi, B, avgDeg = 50, PoissonEdges = FALSE)
+# If we remove multiple edges, the avg_deg parameter is not trustworthy:
+A <- dcsbm(theta, pi, B, avg_deg = 50, poisson_edges = FALSE)
 mean(rowSums(A))
 
 # but it is a good upper bound when the graph is sparse:
 n <- 10000
-A <- dcsbm(rexp(n), pi, B, avgDeg = 50, PoissonEdges = FALSE)
+A <- dcsbm(rexp(n), pi, B, avg_deg = 50, poisson_edges = FALSE)
 mean(rowSums(A))
 ```      
 
@@ -94,7 +94,7 @@ pi <- pi / sum(pi) * 3
 B <- matrix(rexp(K^2) + 1, nrow = K)
 diag(B) <- diag(B) + mean(B) * K
 theta <- rexp(n)
-A <- dcsbm(theta, pi, B, avgDeg = 50)
+A <- dcsbm(theta, pi, B, avg_deg = 50)
 image(as.matrix(t(A[, n:1])), col = grey(seq(1, 0, len = 20)))
 
 
@@ -103,7 +103,7 @@ n <- 100
 alpha <- c(1, 1) / 5
 B <- diag(c(1, 1))
 theta <- n
-A <- dc_mixed(theta, alpha, B, avgDeg = 50)
+A <- dc_mixed(theta, alpha, B, avg_deg = 50)
 image(as.matrix(t(A[, theta:1])) / max(A), col = grey(seq(1, 0, len = 20)))
 
 
@@ -112,7 +112,7 @@ K <- 2
 pi <- c(.7, .7)
 B <- diag(c(1, 1))
 theta <- n
-A <- dc_overlapping(theta, pi, B, avgDeg = 50)
+A <- dc_overlapping(theta, pi, B, avg_deg = 50)
 image(as.matrix(t(A[, n:1])) / max(A), col = grey(seq(1, 0, len = 20)))
 
 K <- 10
@@ -139,7 +139,7 @@ pi <- pi / sum(pi)
 pi <- -sort(-pi)
 B <- matrix(rexp(K^2) + 1, nrow = K)
 diag(B) <- diag(B) + mean(B) * K
-A <- dcsbm(rgamma(n, shape = 2, scale = .4), pi, B, avgDeg = 20, simple = T)
+A <- dcsbm(rgamma(n, shape = 2, scale = .4), pi, B, avg_deg = 20, simple = TRUE)
 mean(rowSums(A))
 
 # leading eigen of regularized Laplacian with tau = 1
@@ -175,7 +175,7 @@ pi <- pi / sum(pi)
 pi <- -sort(-pi)
 B <- matrix(rexp(K^2) + 1, nrow = K)
 diag(B) <- diag(B) + mean(B) * K
-A <- dcsbm(rgamma(n, shape = 2, scale = .4), pi, B, avgDeg = 10)
+A <- dcsbm(rgamma(n, shape = 2, scale = .4), pi, B, avg_deg = 10)
 D <- Diagonal(n, 1 / sqrt(rowSums(A) + 10))
 L <- D %*% A %*% D
 ei <- eigs_sym(L, 4)
@@ -217,7 +217,7 @@ X <- paraG$X
 X@x <- paraG$X@x + rexp(n) # the degree parameter should be different. X@x + rexp(n) makes feature degrees correlated to degrees in graph.
 
 # generate the graph and features
-A <- fastRG(paraG$X, paraG$S, avgDeg = 10)
-features <- fastRG(X, paraFeat$S, paraFeat$X, avgDeg = 20)
+A <- fastRG(paraG$X, paraG$S, avg_deg = 10)
+features <- fastRG(X, paraFeat$S, paraFeat$X, avg_deg = 20)
 ```
 
