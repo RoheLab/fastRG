@@ -5,36 +5,64 @@
 \alias{dcsbm_params}
 \title{Sample a degree corrected stochastic blockmodel graph}
 \usage{
-dcsbm(theta, pi, B, ...)
+dcsbm(theta, pi, B, avg_deg = NULL, poisson_edges = TRUE,
+  sort_nodes = FALSE, ...)
 
-dcsbm_params(theta, pi, B)
+dcsbm_params(theta, pi, B, avg_deg = NULL, poisson_edges = TRUE,
+  sort_nodes = FALSE)
 }
 \arguments{
-\item{theta}{Node degree distribution parameter.}
+\item{theta}{A vector specified the degree distribution parameters.
+The resulting graph will have \code{length(theta)} nodes. Setting
+\code{theta = rep(1, n)} recovers a stochastic blockmodel without
+degree correction.}
 
-\item{pi}{vector of length k, must be normalized. to allow independent
-probabilities of membership in each block use the \code{\link[=dc_overlapping]{dc_overlapping()}}
-model}
+\item{pi}{Block sampling proportions. Must be positive, but do not need to
+sum to one, as they will be normalized internally. Note that \code{length(pi)}
+implicitly specifies the number of blocks.}
 
-\item{B}{TODO -- import from SBM}
+\item{B}{A \code{length(pi)} by \code{length(pi)} matrix of block connection
+probabilities. \code{B[i, j]} contains the probability that a node in
+community \code{i} links to a node in community \code{j}. Does not need to
+be symmetric.}
+
+\item{avg_deg}{When specified, rescales parameter such that the
+expected degree is \code{avg_deg} in the Poisson multi-graph. When
+\code{poisson_edges = FALSE}, the resulting graph will have lower a
+average degree than \code{avg_deg} due to lack of multi-edges. When
+the graph is sparse, the expected number of edges for the Poisson
+multi-graph and Bernoulli graph are nearly the
+same. Defaults to \code{NULL}, such that no scaling occurs.}
+
+\item{poisson_edges}{Logical indicating whether or not multi-edges are
+allowed. Defaults to \code{TRUE}, which keeps multi-edges and produces
+a multi-graph. When \code{FALSE}, only single edges are allowed, resulting
+in a graph. See \strong{details} for some additional comments. Effected by
+\code{simple} argument.}
+
+\item{sort_nodes}{Logical indicating whether or not to sort the nodes
+so that they are grouped by block. This incurs the the cost of a
+radix sort, which is linear in the number of nodes in the graph.
+Defaults to \code{FALSE}. Useful for plotting.}
 
 \item{...}{Arguments passed on to \code{fastRG}
 \describe{
   \item{X}{An \code{n} by \code{k_1} matrix.}
   \item{S}{A \code{k_1} by \code{k_2} matrix.}
   \item{Y}{A \code{d} by \code{k_2} matrix. Defaults to \code{X}.}
-  \item{avgDeg}{When specified, the expected average degree of nodes
-in the output poisson multi-graph. When \code{poissonEdges = FALSE}, the
-resulting graph will have lower average degree due to lack
-of multiple-edges. When the graph is sparse, the expected number of
-edges for the Poisson multi-graph and Bernoulli graph are nearly the
+  \item{avg_deg}{When specified, rescales parameter such that the
+expected degree is \code{avg_deg} in the Poisson multi-graph. When
+\code{poisson_edges = FALSE}, the resulting graph will have lower a
+average degree than \code{avg_deg} due to lack of multi-edges. When
+the graph is sparse, the expected number of edges for the Poisson
+multi-graph and Bernoulli graph are nearly the
 same. Defaults to \code{NULL}, such that no scaling occurs.}
-  \item{simple}{When \code{TRUE} indicates that you want to work with undirected
+  \item{simple}{When \code{TRUE}, indicates that you want to work with undirected
 graphs where self-loops and multi-edges are prohibited. Accomplishes
-this by setting \code{directed = FALSE}, \code{selfLoops = FALSE}, and
-\code{PoissonEdges = FALSE}, and then ignoring arguments \code{directed},
-\code{selfLoops} and \code{PoissonEdges}. Defaults to \code{FALSE}.}
-  \item{PoissonEdges}{Logical indicating whether or not multi-edges are
+this by setting \code{directed = FALSE}, \code{allow_self_loops = FALSE}, and
+\code{poisson_edges = FALSE}, and then ignoring arguments \code{directed},
+\code{allow_self_loops} and \code{poisson_edges}. Defaults to \code{FALSE}.}
+  \item{poisson_edges}{Logical indicating whether or not multi-edges are
 allowed. Defaults to \code{TRUE}, which keeps multi-edges and produces
 a multi-graph. When \code{FALSE}, only single edges are allowed, resulting
 in a graph. See \strong{details} for some additional comments. Effected by
@@ -43,16 +71,16 @@ in a graph. See \strong{details} for some additional comments. Effected by
 directed. Default is \code{directed = TRUE}. When \code{directed = FALSE},
 symmetrizes \code{S} internally. When \code{X = Y} (which is the default when
 no \code{Y} is specified), this results in a symmetric adjacency matrix
-as output. When \code{avgDeg} is specified and the desired graph is directed,
+as output. When \code{avg_deg} is specified and the desired graph is directed,
 the average degree scaling is on the out-degree of each node (or the
 row sums if you prefer to think in terms of the adjacency matrix).
 Effected by the \code{simple} argument.}
-  \item{selfLoops}{Logical indicating whether edges are allowed from
+  \item{allow_self_loops}{Logical indicating whether edges are allowed from
 a node back to itself. Defaults to \code{TRUE}. When \code{FALSE}, sampling
 proceeds normally, and then self-loops are removed after sampling
 is completed. Effected by the \code{simple} argument.}
-  \item{returnEdgeList}{Logical indicating whether to return an edgelist
-rather than an adjacency matrix.}
+  \item{return_edge_list}{Logical indicating whether to return an edgelist
+rather than an adjacency matrix. Defaults to \code{FALSE}.}
 }}
 }
 \value{
@@ -61,16 +89,17 @@ returns a \code{\link[Matrix:sparseMatrix]{Matrix::sparseMatrix()}} in CSC forma
 class \code{CsparseMatrix}). When the graph is undirected, the \code{sparseMatrix}
 will also be symmetric.
 
-If \code{returnEdgeList = TRUE}, instead returns the graph as an edgelist
-in matrix format, where the first column of the matrix contains two
-columns \code{from} and \code{to} . The \code{from} column contains the index
-of the outgoing edge in this case, and the \code{to} column contains
-the index of the incoming edge.
+If \code{return_edge_list = TRUE}, instead returns the graph as an edgelist
+in matrix format, with contains two columns called \code{from} and \code{to}.
+The \code{from} column contains the index of the outgoing edge,
+and the \code{to} column contains the index of the incoming edge.
 }
 \description{
 Sample a degree corrected stochastic blockmodel graph
 }
 \details{
+TODO: document the generative model
+
 samples from a degree corrected stochastic blockmodel
 pi a K vector, contains block sampling proportions
 theta an n vector, contains degree parameters
@@ -84,9 +113,6 @@ if lambda_ij is small, then 1- exp( -lambda_ij) approx lambda_ij
 if avgDeg is set, then B is scaled so that the expected average
 degree is avgDeg.
 
-in fact, avgDeg is a slight upper bound that is good when
-the graph is sparse.
-
 to make function easy to parameterize, this function does not allow
 for different degree distributions between blocks.
 }
@@ -97,12 +123,12 @@ set.seed(27)
 n <- 1000
 k <- 5
 
-B <- matrix(runif(k * k), nrow = k, ncol = k)  # mixing probabilities
+B <- matrix(runif(k * k), nrow = k, ncol = k) # mixing probabilities
 
-theta <- round(rlnorm(n, 2))  # degree parameter
-pi <- c(1, 2, 4, 1, 1) / 5    # community membership
+theta <- round(rlnorm(n, 2)) # degree parameter
+pi <- c(1, 2, 4, 1, 1) / 5 # community membership
 
-A <- dcsbm(theta, pi, B, avgDeg = 50)
+A <- dcsbm(theta, pi, B, avg_deg = 50)
 
 }
 \seealso{

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Sample a stochastic blockmodel graph — sbm • fastRG</title>
+<title>Sample a stochastic blockmodel — sbm • fastRG</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Sample a stochastic blockmodel graph — sbm" />
+<meta property="og:title" content="Sample a stochastic blockmodel — sbm" />
 
-<meta property="og:description" content="Sample a stochastic blockmodel graph" />
+<meta property="og:description" content="Sample a stochastic blockmodel" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -114,22 +114,22 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Sample a stochastic blockmodel graph</h1>
+    <h1>Sample a stochastic blockmodel</h1>
     <small class="dont-index">Source: <a href='https://github.com/alexpghayes/fastRG/blob/master/R/sbm.R'><code>R/sbm.R</code></a></small>
     <div class="hidden name"><code>sbm.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Sample a stochastic blockmodel graph</p>
+    <p>Sample a stochastic blockmodel</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>sbm</span>(<span class='no'>n</span>, <span class='no'>pi</span>, <span class='no'>B</span>, <span class='kw'>avgDeg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>PoissonEdges</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>sort_nodes</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>sbm</span>(<span class='no'>n</span>, <span class='no'>pi</span>, <span class='no'>B</span>, <span class='kw'>avg_deg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>poisson_edges</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>sort_nodes</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
 
-<span class='fu'>sbm_params</span>(<span class='no'>n</span>, <span class='no'>pi</span>, <span class='no'>B</span>, <span class='kw'>avgDeg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>PoissonEdges</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>sort_nodes</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>sbm_params</span>(<span class='no'>n</span>, <span class='no'>pi</span>, <span class='no'>B</span>, <span class='kw'>avg_deg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>poisson_edges</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>sort_nodes</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -146,22 +146,35 @@ implicitly specifies the number of blocks.</p></td>
     </tr>
     <tr>
       <th>B</th>
-      <td><p>"Contains probabilities". TODO</p></td>
+      <td><p>A <code><a href='https://www.rdocumentation.org/packages/base/topics/length'>length(pi)</a></code> by <code><a href='https://www.rdocumentation.org/packages/base/topics/length'>length(pi)</a></code> matrix of block connection
+probabilities. <code>B[i, j]</code> contains the probability that a node in
+community <code>i</code> links to a node in community <code>j</code>. Does not need to
+be symmetric.</p></td>
     </tr>
     <tr>
-      <th>avgDeg</th>
-      <td><p>TODO</p></td>
+      <th>avg_deg</th>
+      <td><p>When specified, rescales parameter such that the
+expected degree is <code>avg_deg</code> in the Poisson multi-graph. When
+<code>poisson_edges = FALSE</code>, the resulting graph will have lower a
+average degree than <code>avg_deg</code> due to lack of multi-edges. When
+the graph is sparse, the expected number of edges for the Poisson
+multi-graph and Bernoulli graph are nearly the
+same. Defaults to <code>NULL</code>, such that no scaling occurs.</p></td>
     </tr>
     <tr>
-      <th>PoissonEdges</th>
-      <td><p>TODO</p></td>
+      <th>poisson_edges</th>
+      <td><p>Logical indicating whether or not multi-edges are
+allowed. Defaults to <code>TRUE</code>, which keeps multi-edges and produces
+a multi-graph. When <code>FALSE</code>, only single edges are allowed, resulting
+in a graph. See <strong>details</strong> for some additional comments. Effected by
+<code>simple</code> argument.</p></td>
     </tr>
     <tr>
       <th>sort_nodes</th>
       <td><p>Logical indicating whether or not to sort the nodes
-so that they are grouped by block. This incurs the cost of a fast
-integer radix sort, but even this may be prohibitive when sampling
-large graphs. Defaults to <code>TRUE</code>.</p></td>
+so that they are grouped by block. This incurs the the cost of a
+radix sort, which is linear in the number of nodes in the graph.
+Defaults to <code>FALSE</code>. Useful for plotting.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -169,18 +182,19 @@ large graphs. Defaults to <code>TRUE</code>.</p></td>
   <dt>X</dt><dd><p>An <code>n</code> by <code>k_1</code> matrix.</p></dd>
   <dt>S</dt><dd><p>A <code>k_1</code> by <code>k_2</code> matrix.</p></dd>
   <dt>Y</dt><dd><p>A <code>d</code> by <code>k_2</code> matrix. Defaults to <code>X</code>.</p></dd>
-  <dt>avgDeg</dt><dd><p>When specified, the expected average degree of nodes
-in the output poisson multi-graph. When <code>poissonEdges = FALSE</code>, the
-resulting graph will have lower average degree due to lack
-of multiple-edges. When the graph is sparse, the expected number of
-edges for the Poisson multi-graph and Bernoulli graph are nearly the
+  <dt>avg_deg</dt><dd><p>When specified, rescales parameter such that the
+expected degree is <code>avg_deg</code> in the Poisson multi-graph. When
+<code>poisson_edges = FALSE</code>, the resulting graph will have lower a
+average degree than <code>avg_deg</code> due to lack of multi-edges. When
+the graph is sparse, the expected number of edges for the Poisson
+multi-graph and Bernoulli graph are nearly the
 same. Defaults to <code>NULL</code>, such that no scaling occurs.</p></dd>
-  <dt>simple</dt><dd><p>When <code>TRUE</code> indicates that you want to work with undirected
+  <dt>simple</dt><dd><p>When <code>TRUE</code>, indicates that you want to work with undirected
 graphs where self-loops and multi-edges are prohibited. Accomplishes
-this by setting <code>directed = FALSE</code>, <code>selfLoops = FALSE</code>, and
-<code>PoissonEdges = FALSE</code>, and then ignoring arguments <code>directed</code>,
-<code>selfLoops</code> and <code>PoissonEdges</code>. Defaults to <code>FALSE</code>.</p></dd>
-  <dt>PoissonEdges</dt><dd><p>Logical indicating whether or not multi-edges are
+this by setting <code>directed = FALSE</code>, <code>allow_self_loops = FALSE</code>, and
+<code>poisson_edges = FALSE</code>, and then ignoring arguments <code>directed</code>,
+<code>allow_self_loops</code> and <code>poisson_edges</code>. Defaults to <code>FALSE</code>.</p></dd>
+  <dt>poisson_edges</dt><dd><p>Logical indicating whether or not multi-edges are
 allowed. Defaults to <code>TRUE</code>, which keeps multi-edges and produces
 a multi-graph. When <code>FALSE</code>, only single edges are allowed, resulting
 in a graph. See <strong>details</strong> for some additional comments. Effected by
@@ -189,16 +203,16 @@ in a graph. See <strong>details</strong> for some additional comments. Effected 
 directed. Default is <code>directed = TRUE</code>. When <code>directed = FALSE</code>,
 symmetrizes <code>S</code> internally. When <code>X = Y</code> (which is the default when
 no <code>Y</code> is specified), this results in a symmetric adjacency matrix
-as output. When <code>avgDeg</code> is specified and the desired graph is directed,
+as output. When <code>avg_deg</code> is specified and the desired graph is directed,
 the average degree scaling is on the out-degree of each node (or the
 row sums if you prefer to think in terms of the adjacency matrix).
 Effected by the <code>simple</code> argument.</p></dd>
-  <dt>selfLoops</dt><dd><p>Logical indicating whether edges are allowed from
+  <dt>allow_self_loops</dt><dd><p>Logical indicating whether edges are allowed from
 a node back to itself. Defaults to <code>TRUE</code>. When <code>FALSE</code>, sampling
 proceeds normally, and then self-loops are removed after sampling
 is completed. Effected by the <code>simple</code> argument.</p></dd>
-  <dt>returnEdgeList</dt><dd><p>Logical indicating whether to return an edgelist
-rather than an adjacency matrix.</p></dd>
+  <dt>return_edge_list</dt><dd><p>Logical indicating whether to return an edgelist
+rather than an adjacency matrix. Defaults to <code>FALSE</code>.</p></dd>
 </dl></td>
     </tr>
     </table>
@@ -209,15 +223,14 @@ rather than an adjacency matrix.</p></dd>
 returns a <code><a href='https://www.rdocumentation.org/packages/Matrix/topics/sparseMatrix'>Matrix::sparseMatrix()</a></code> in CSC format (i.e. of abstract
 class <code>CsparseMatrix</code>). When the graph is undirected, the <code>sparseMatrix</code>
 will also be symmetric.</p>
-<p>If <code>returnEdgeList = TRUE</code>, instead returns the graph as an edgelist
-in matrix format, where the first column of the matrix contains two
-columns <code>from</code> and <code>to</code> . The <code>from</code> column contains the index
-of the outgoing edge in this case, and the <code>to</code> column contains
-the index of the incoming edge.</p>
+<p>If <code>return_edge_list = TRUE</code>, instead returns the graph as an edgelist
+in matrix format, with contains two columns called <code>from</code> and <code>to</code>.
+The <code>from</code> column contains the index of the outgoing edge,
+and the <code>to</code> column contains the index of the incoming edge.</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>TODO</p>
+    <p>TODO: describe the generative model.</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 

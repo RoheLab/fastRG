@@ -5,17 +5,18 @@
 \alias{erdos_renyi_params}
 \title{Sample an Erdos-Renyi graph}
 \usage{
-erdos_renyi(n, p = NULL, avgDeg = NULL, directed = FALSE, ...)
+erdos_renyi(n, p = NULL, avg_deg = NULL, directed = FALSE, ...)
 
-erdos_renyi_params(n, p = NULL, avgDeg = NULL, directed = FALSE, ...)
+erdos_renyi_params(n, p = NULL, avg_deg = NULL, directed = FALSE,
+  ...)
 }
 \arguments{
 \item{n}{Number of nodes in graph.}
 
 \item{p}{Probability of an edge between any two nodes. You must specify
-either \code{p} or \code{avgDeg}. If you do not specify \code{p}, uses \code{avgDeg / n}.}
+either \code{p} or \code{avg_deg}. If you do not specify \code{p}, uses \code{avg_deg / n}.}
 
-\item{avgDeg}{Desired average out degree. When specified, rescales
+\item{avg_deg}{Desired average out degree. When specified, rescales
 sampling probabilities to achieve the desired average out degree.
 Defaults to \code{NULL}, such that there is no rescaling.}
 
@@ -27,18 +28,19 @@ in the more general \code{\link[=fastRG]{fastRG()}} is \code{TRUE}.}
   \item{X}{An \code{n} by \code{k_1} matrix.}
   \item{S}{A \code{k_1} by \code{k_2} matrix.}
   \item{Y}{A \code{d} by \code{k_2} matrix. Defaults to \code{X}.}
-  \item{avgDeg}{When specified, the expected average degree of nodes
-in the output poisson multi-graph. When \code{poissonEdges = FALSE}, the
-resulting graph will have lower average degree due to lack
-of multiple-edges. When the graph is sparse, the expected number of
-edges for the Poisson multi-graph and Bernoulli graph are nearly the
+  \item{avg_deg}{When specified, rescales parameter such that the
+expected degree is \code{avg_deg} in the Poisson multi-graph. When
+\code{poisson_edges = FALSE}, the resulting graph will have lower a
+average degree than \code{avg_deg} due to lack of multi-edges. When
+the graph is sparse, the expected number of edges for the Poisson
+multi-graph and Bernoulli graph are nearly the
 same. Defaults to \code{NULL}, such that no scaling occurs.}
-  \item{simple}{When \code{TRUE} indicates that you want to work with undirected
+  \item{simple}{When \code{TRUE}, indicates that you want to work with undirected
 graphs where self-loops and multi-edges are prohibited. Accomplishes
-this by setting \code{directed = FALSE}, \code{selfLoops = FALSE}, and
-\code{PoissonEdges = FALSE}, and then ignoring arguments \code{directed},
-\code{selfLoops} and \code{PoissonEdges}. Defaults to \code{FALSE}.}
-  \item{PoissonEdges}{Logical indicating whether or not multi-edges are
+this by setting \code{directed = FALSE}, \code{allow_self_loops = FALSE}, and
+\code{poisson_edges = FALSE}, and then ignoring arguments \code{directed},
+\code{allow_self_loops} and \code{poisson_edges}. Defaults to \code{FALSE}.}
+  \item{poisson_edges}{Logical indicating whether or not multi-edges are
 allowed. Defaults to \code{TRUE}, which keeps multi-edges and produces
 a multi-graph. When \code{FALSE}, only single edges are allowed, resulting
 in a graph. See \strong{details} for some additional comments. Effected by
@@ -47,16 +49,16 @@ in a graph. See \strong{details} for some additional comments. Effected by
 directed. Default is \code{directed = TRUE}. When \code{directed = FALSE},
 symmetrizes \code{S} internally. When \code{X = Y} (which is the default when
 no \code{Y} is specified), this results in a symmetric adjacency matrix
-as output. When \code{avgDeg} is specified and the desired graph is directed,
+as output. When \code{avg_deg} is specified and the desired graph is directed,
 the average degree scaling is on the out-degree of each node (or the
 row sums if you prefer to think in terms of the adjacency matrix).
 Effected by the \code{simple} argument.}
-  \item{selfLoops}{Logical indicating whether edges are allowed from
+  \item{allow_self_loops}{Logical indicating whether edges are allowed from
 a node back to itself. Defaults to \code{TRUE}. When \code{FALSE}, sampling
 proceeds normally, and then self-loops are removed after sampling
 is completed. Effected by the \code{simple} argument.}
-  \item{returnEdgeList}{Logical indicating whether to return an edgelist
-rather than an adjacency matrix.}
+  \item{return_edge_list}{Logical indicating whether to return an edgelist
+rather than an adjacency matrix. Defaults to \code{FALSE}.}
 }}
 }
 \value{
@@ -83,7 +85,7 @@ rowSums(A)
 colSums(A)
 
 # sample a much larger graph
-B <- erdos_renyi(n = 10^6, avgDeg = 5)
+B <- erdos_renyi(n = 10^6, avg_deg = 5)
 
 }
 \seealso{

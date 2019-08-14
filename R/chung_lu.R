@@ -31,18 +31,19 @@
 #'
 chung_lu <- function(theta, ...) {
   params <- chung_lu_params(theta)
-  fastRG(params$X, params$S, PoissonEdges = FALSE, ...)
+  fastRG(params$X, params$S, poisson_edges = FALSE, ...)
 }
 
 #' @rdname chung_lu
 #' @export
 chung_lu_params <- function(theta) {
-
-  if (!is.vector(theta))
+  if (!is.vector(theta)) {
     stop("`theta` must be a vector.", call. = FALSE)
+  }
 
-  if (any(theta < 0))
+  if (any(theta < 0)) {
     stop("Elements of `theta` must be non-negative.", call. = FALSE)
+  }
 
   n <- length(theta)
   X <- matrix(theta, nrow = n, ncol = 1)
@@ -50,4 +51,3 @@ chung_lu_params <- function(theta) {
 
   list(X = X, S = S, Y = X)
 }
-

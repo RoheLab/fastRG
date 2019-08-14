@@ -2,11 +2,11 @@
 % Please edit documentation in R/fastRG.R
 \name{fastRG}
 \alias{fastRG}
-\title{Sample a random dot product graph (RDPG)}
+\title{Sample a Random Dot Product Graph (RDPG)}
 \usage{
-fastRG(X, S, Y = NULL, avgDeg = NULL, simple = FALSE,
-  PoissonEdges = TRUE, directed = TRUE, selfLoops = TRUE,
-  returnEdgeList = FALSE)
+fastRG(X, S, Y = NULL, avg_deg = NULL, simple = FALSE,
+  poisson_edges = TRUE, directed = TRUE, allow_self_loops = TRUE,
+  return_edge_list = FALSE)
 }
 \arguments{
 \item{X}{An \code{n} by \code{k_1} matrix.}
@@ -15,20 +15,21 @@ fastRG(X, S, Y = NULL, avgDeg = NULL, simple = FALSE,
 
 \item{Y}{A \code{d} by \code{k_2} matrix. Defaults to \code{X}.}
 
-\item{avgDeg}{When specified, the expected average degree of nodes
-in the output poisson multi-graph. When \code{poissonEdges = FALSE}, the
-resulting graph will have lower average degree due to lack
-of multiple-edges. When the graph is sparse, the expected number of
-edges for the Poisson multi-graph and Bernoulli graph are nearly the
+\item{avg_deg}{When specified, rescales parameter such that the
+expected degree is \code{avg_deg} in the Poisson multi-graph. When
+\code{poisson_edges = FALSE}, the resulting graph will have lower a
+average degree than \code{avg_deg} due to lack of multi-edges. When
+the graph is sparse, the expected number of edges for the Poisson
+multi-graph and Bernoulli graph are nearly the
 same. Defaults to \code{NULL}, such that no scaling occurs.}
 
-\item{simple}{When \code{TRUE} indicates that you want to work with undirected
+\item{simple}{When \code{TRUE}, indicates that you want to work with undirected
 graphs where self-loops and multi-edges are prohibited. Accomplishes
-this by setting \code{directed = FALSE}, \code{selfLoops = FALSE}, and
-\code{PoissonEdges = FALSE}, and then ignoring arguments \code{directed},
-\code{selfLoops} and \code{PoissonEdges}. Defaults to \code{FALSE}.}
+this by setting \code{directed = FALSE}, \code{allow_self_loops = FALSE}, and
+\code{poisson_edges = FALSE}, and then ignoring arguments \code{directed},
+\code{allow_self_loops} and \code{poisson_edges}. Defaults to \code{FALSE}.}
 
-\item{PoissonEdges}{Logical indicating whether or not multi-edges are
+\item{poisson_edges}{Logical indicating whether or not multi-edges are
 allowed. Defaults to \code{TRUE}, which keeps multi-edges and produces
 a multi-graph. When \code{FALSE}, only single edges are allowed, resulting
 in a graph. See \strong{details} for some additional comments. Effected by
@@ -38,18 +39,18 @@ in a graph. See \strong{details} for some additional comments. Effected by
 directed. Default is \code{directed = TRUE}. When \code{directed = FALSE},
 symmetrizes \code{S} internally. When \code{X = Y} (which is the default when
 no \code{Y} is specified), this results in a symmetric adjacency matrix
-as output. When \code{avgDeg} is specified and the desired graph is directed,
+as output. When \code{avg_deg} is specified and the desired graph is directed,
 the average degree scaling is on the out-degree of each node (or the
 row sums if you prefer to think in terms of the adjacency matrix).
 Effected by the \code{simple} argument.}
 
-\item{selfLoops}{Logical indicating whether edges are allowed from
+\item{allow_self_loops}{Logical indicating whether edges are allowed from
 a node back to itself. Defaults to \code{TRUE}. When \code{FALSE}, sampling
 proceeds normally, and then self-loops are removed after sampling
 is completed. Effected by the \code{simple} argument.}
 
-\item{returnEdgeList}{Logical indicating whether to return an edgelist
-rather than an adjacency matrix.}
+\item{return_edge_list}{Logical indicating whether to return an edgelist
+rather than an adjacency matrix. Defaults to \code{FALSE}.}
 }
 \value{
 A random Poisson (or Bernoulli) dot product graph. By default,
@@ -57,14 +58,13 @@ returns a \code{\link[Matrix:sparseMatrix]{Matrix::sparseMatrix()}} in CSC forma
 class \code{CsparseMatrix}). When the graph is undirected, the \code{sparseMatrix}
 will also be symmetric.
 
-If \code{returnEdgeList = TRUE}, instead returns the graph as an edgelist
-in matrix format, where the first column of the matrix contains two
-columns \code{from} and \code{to} . The \code{from} column contains the index
-of the outgoing edge in this case, and the \code{to} column contains
-the index of the incoming edge.
+If \code{return_edge_list = TRUE}, instead returns the graph as an edgelist
+in matrix format, with contains two columns called \code{from} and \code{to}.
+The \code{from} column contains the index of the outgoing edge,
+and the \code{to} column contains the index of the incoming edge.
 }
 \description{
-Sample a random dot product graph (RDPG)
+Sample a Random Dot Product Graph (RDPG)
 }
 \details{
 TODO: clean up the following:
@@ -72,7 +72,7 @@ TODO: clean up the following:
 This uses a poisson approximation to the binomial...
 
 Let \eqn{M ~ Poisson(\sum_{uv} \lambda_{uv})} be the number of edges.
-If selfLoops == F, then the code uses the approximation
+If allow_self_loops == F, then the code uses the approximation
 \deqn{
     Poisson(\lambda_{ij})
     \approx Binomial(M, \lambda_{ij}/\sum_{uv}\lambda_{uv})
@@ -84,12 +84,34 @@ multiple edges are replaced by single edges.
 }
 \examples{
 
-# TODO
+set.seed(372)
+
+n <- 10000
+d <- 1000
+
+k1 <- 5
+k2 <- 3
+
+X <- matrix(rpois(n = n * k1, 1), nrow = n)
+Y <- matrix(rpois(n = d * k2, 1), nrow = d)
+S <- matrix(runif(n = k1 * k2, 0, .1), nrow = K1)
+
+# all the bells and whistles, return graph as a matrix
+A <- fastRG(X, S, Y, avg_deg = 10)
+
+# a nice binary, symmetric graph with no self-loops
+B <- fastRG(X, S, avg_deg = 10, simple = TRUE)
+
+# get the graph as an edge list
+edge_list <- fastRG(X, S, return_edge_list = TRUE)
+
+# a symmetric graph
+C <- fastRG(X, S, directed = FALSE)
 
 }
 \references{
 Rohe, Karl, Jun Tao, Xintian Han, and Norbert Binkiewicz. 2017.
 “A Note on Quickly Sampling a Sparse Matrix with Low Rank Expectation.”
-Journal of Machine Learning Research; 19(77):1−13, 2018.
+Journal of Machine Learning Research; 19(77):1-13, 2018.
 \url{http://www.jmlr.org/papers/v19/17-128.html}
 }

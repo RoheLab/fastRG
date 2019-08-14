@@ -27,4 +27,4 @@ reference:
   - title: Utilities
     desc: ~
     contents:
-    - "howManyEdges"
+    - "expected"

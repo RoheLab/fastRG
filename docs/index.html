@@ -5,11 +5,11 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sample Generalized Random Product Graphs in Linear Time • fastRG</title>
+<title>Sample Generalized Random Dot Product Graphs in Linear Time • fastRG</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://cdnjs.cloudflare.com/ajax/libs/bootswatch/3.3.7/paper/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha256-U5ZEeKfGNOja007MMD3YBI0A3OSZOQbeG6z2f2Y0hu8=" crossorigin="anonymous"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha256-eZrrJcwDc/3uDhsdt61sL2oOBY362qM3lon1gyExkL0=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.4/clipboard.min.js" integrity="sha256-FiZwavyI2V6+EXO1U+xzLG3IKldpiTFf3153ea9zikQ=" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script><meta property="og:title" content="Sample Generalized Random Product Graphs in Linear Time">
+<script src="pkgdown.js"></script><meta property="og:title" content="Sample Generalized Random Dot Product Graphs in Linear Time">
 <meta property="og:description" content="Samples generalized random product graph, a
     generalization of a broad class of network models. Given matrices X,
     S, and Y with with non-negative entries, samples a matrix with
@@ -109,34 +109,35 @@
 <div id="example-usage" class="section level2">
 <h2 class="hasAnchor">
 <a href="#example-usage" class="anchor"></a>Example Usage</h2>
-<p>The easiest way to use <code>fastRG</code> is to use wrapper functions that sample from population graph models. For example, to sample from an Erdos-Renyi graph <code>n = 1,000,000</code> nodes and expected degree 5, we can use the <code>er()</code> function.</p>
+<p>The easiest way to use <code>fastRG</code> is to use wrapper functions that sample from popular graph models. For example, to sample from an Erdos-Renyi graph <code>n = 1,000,000</code> nodes and expected degree of five, we can use the <code><a href="reference/erdos_renyi.html">erdos_renyi()</a></code> function.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(fastRG)</a>
 <a class="sourceLine" id="cb2-2" title="2"><span class="co">#&gt; Loading required package: Matrix</span></a>
 <a class="sourceLine" id="cb2-3" title="3"></a>
-<a class="sourceLine" id="cb2-4" title="4">A &lt;-<span class="st"> </span><span class="kw"><a href="reference/erdos_renyi.html">erdos_renyi</a></span>(<span class="dt">n =</span> <span class="dv">10</span><span class="op">^</span><span class="dv">6</span>, <span class="dt">avgDeg =</span> <span class="dv">5</span>)</a></code></pre></div>
-<p>By default we always get a <code><a href="https://www.rdocumentation.org/packages/Matrix/topics/sparseMatrix">Matrix::sparseMatrix()</a></code>, but we can also ask for the graph as an edgelist as well. This results in a fast way to create <code>igraph</code> objects using <code><a href="https://www.rdocumentation.org/packages/igraph/topics/graph_from_edgelist">igraph::graph_from_edgelist()</a></code>.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">el &lt;-<span class="st"> </span><span class="kw"><a href="reference/erdos_renyi.html">erdos_renyi</a></span>(<span class="dt">n =</span> <span class="dv">1000</span>, <span class="dt">avgDeg =</span> <span class="dv">5</span>, <span class="dt">returnEdgeList =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb2-4" title="4">A &lt;-<span class="st"> </span><span class="kw"><a href="reference/erdos_renyi.html">erdos_renyi</a></span>(<span class="dt">n =</span> <span class="dv">10</span><span class="op">^</span><span class="dv">6</span>, <span class="dt">avg_deg =</span> <span class="dv">5</span>)</a></code></pre></div>
+<p>By default we always get a <code><a href="https://www.rdocumentation.org/packages/Matrix/topics/sparseMatrix">Matrix::sparseMatrix()</a></code>, but we can also ask for the graph as an edgelist as well.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">el &lt;-<span class="st"> </span><span class="kw"><a href="reference/erdos_renyi.html">erdos_renyi</a></span>(<span class="dt">n =</span> <span class="dv">1000</span>, <span class="dt">avg_deg =</span> <span class="dv">5</span>, <span class="dt">return_edge_list =</span> <span class="ot">TRUE</span>)</a>
 <a class="sourceLine" id="cb3-2" title="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(el)</a>
-<a class="sourceLine" id="cb3-3" title="3"><span class="co">#&gt;       eo  ei</span></a>
-<a class="sourceLine" id="cb3-4" title="4"><span class="co">#&gt; [1,] 113 928</span></a>
-<a class="sourceLine" id="cb3-5" title="5"><span class="co">#&gt; [2,] 318 560</span></a>
-<a class="sourceLine" id="cb3-6" title="6"><span class="co">#&gt; [3,] 922 682</span></a>
-<a class="sourceLine" id="cb3-7" title="7"><span class="co">#&gt; [4,] 797 890</span></a>
-<a class="sourceLine" id="cb3-8" title="8"><span class="co">#&gt; [5,] 214 194</span></a>
-<a class="sourceLine" id="cb3-9" title="9"><span class="co">#&gt; [6,] 843  54</span></a></code></pre></div>
+<a class="sourceLine" id="cb3-3" title="3"><span class="co">#&gt;      from  to</span></a>
+<a class="sourceLine" id="cb3-4" title="4"><span class="co">#&gt; [1,]  457 560</span></a>
+<a class="sourceLine" id="cb3-5" title="5"><span class="co">#&gt; [2,]  247 130</span></a>
+<a class="sourceLine" id="cb3-6" title="6"><span class="co">#&gt; [3,]  147 109</span></a>
+<a class="sourceLine" id="cb3-7" title="7"><span class="co">#&gt; [4,]  266 792</span></a>
+<a class="sourceLine" id="cb3-8" title="8"><span class="co">#&gt; [5,]  235 471</span></a>
+<a class="sourceLine" id="cb3-9" title="9"><span class="co">#&gt; [6,]  177 344</span></a></code></pre></div>
+<p>This results in a fast way to create <code>igraph</code> objects using <code><a href="https://www.rdocumentation.org/packages/igraph/topics/graph_from_edgelist">igraph::graph_from_edgelist()</a></code>.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1">g &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/igraph/topics/graph_from_edgelist">graph_from_edgelist</a></span>(el)</a>
 <a class="sourceLine" id="cb4-2" title="2">g</a>
-<a class="sourceLine" id="cb4-3" title="3"><span class="co">#&gt; IGRAPH 7d0c7b6 D--- 1000 4944 -- </span></a>
-<a class="sourceLine" id="cb4-4" title="4"><span class="co">#&gt; + edges from 7d0c7b6:</span></a>
-<a class="sourceLine" id="cb4-5" title="5"><span class="co">#&gt;  [1] 113-&gt;928 318-&gt;560 922-&gt;682 797-&gt;890 214-&gt;194 843-&gt; 54 485-&gt;924</span></a>
-<a class="sourceLine" id="cb4-6" title="6"><span class="co">#&gt;  [8] 630-&gt;734 992-&gt;433 868-&gt;124 238-&gt; 15 950-&gt;931 120-&gt;986 645-&gt;852</span></a>
-<a class="sourceLine" id="cb4-7" title="7"><span class="co">#&gt; [15] 444-&gt;535 762-&gt; 98 891-&gt;468 702-&gt;850 408-&gt;795 721-&gt;645 943-&gt;545</span></a>
-<a class="sourceLine" id="cb4-8" title="8"><span class="co">#&gt; [22] 164-&gt;685 191-&gt;195 782-&gt;672  89-&gt;736 881-&gt;625 612-&gt;470 227-&gt;583</span></a>
-<a class="sourceLine" id="cb4-9" title="9"><span class="co">#&gt; [29] 406-&gt;476 142-&gt;666 248-&gt;166 971-&gt;235 827-&gt;545 376-&gt;388 539-&gt;966</span></a>
-<a class="sourceLine" id="cb4-10" title="10"><span class="co">#&gt; [36] 867-&gt;547 762-&gt;819 771-&gt;535 920-&gt;822 397-&gt; 70  35-&gt; 82 204-&gt;321</span></a>
-<a class="sourceLine" id="cb4-11" title="11"><span class="co">#&gt; [43]  62-&gt;237 666-&gt;987 163-&gt;153 998-&gt;648 451-&gt;227 435-&gt;794 352-&gt;676</span></a>
-<a class="sourceLine" id="cb4-12" title="12"><span class="co">#&gt; [50] 884-&gt;799 717-&gt;243 363-&gt;201 549-&gt;672 232-&gt;899 782-&gt;969 737-&gt; 41</span></a>
-<a class="sourceLine" id="cb4-13" title="13"><span class="co">#&gt; [57]  14-&gt; 54 125-&gt;491 543-&gt;563 969-&gt;216 495-&gt;528 236-&gt;803 932-&gt;930</span></a>
+<a class="sourceLine" id="cb4-3" title="3"><span class="co">#&gt; IGRAPH 579ca4f D--- 1000 5070 -- </span></a>
+<a class="sourceLine" id="cb4-4" title="4"><span class="co">#&gt; + edges from 579ca4f:</span></a>
+<a class="sourceLine" id="cb4-5" title="5"><span class="co">#&gt;  [1] 457-&gt;560 247-&gt;130 147-&gt;109 266-&gt;792 235-&gt;471 177-&gt;344  38-&gt;478</span></a>
+<a class="sourceLine" id="cb4-6" title="6"><span class="co">#&gt;  [8] 888-&gt;793 390-&gt;466 712-&gt;940 966-&gt;713 671-&gt;993 213-&gt;265 459-&gt;645</span></a>
+<a class="sourceLine" id="cb4-7" title="7"><span class="co">#&gt; [15] 466-&gt;825 842-&gt;584 790-&gt;400 466-&gt;762 873-&gt;658 483-&gt; 71 260-&gt;486</span></a>
+<a class="sourceLine" id="cb4-8" title="8"><span class="co">#&gt; [22] 964-&gt;  2 240-&gt;210 737-&gt;206 304-&gt; 36 597-&gt;829 968-&gt;799 182-&gt;429</span></a>
+<a class="sourceLine" id="cb4-9" title="9"><span class="co">#&gt; [29] 913-&gt;774 947-&gt;460 568-&gt; 11 118-&gt;303 622-&gt;493 234-&gt;620 489-&gt;493</span></a>
+<a class="sourceLine" id="cb4-10" title="10"><span class="co">#&gt; [36] 448-&gt; 81 456-&gt;372 846-&gt;409 690-&gt; 36 537-&gt;288  41-&gt;127 996-&gt; 84</span></a>
+<a class="sourceLine" id="cb4-11" title="11"><span class="co">#&gt; [43] 602-&gt;686 884-&gt;119  92-&gt;352 302-&gt;723 630-&gt;341 189-&gt;690 881-&gt;422</span></a>
+<a class="sourceLine" id="cb4-12" title="12"><span class="co">#&gt; [50] 433-&gt;244 148-&gt;257 427-&gt;521 775-&gt;921 810-&gt;539 360-&gt; 50 554-&gt;691</span></a>
+<a class="sourceLine" id="cb4-13" title="13"><span class="co">#&gt; [57] 891-&gt;119 921-&gt;486  53-&gt;792 353-&gt;447 823-&gt;207 868-&gt;971 891-&gt;789</span></a>
 <a class="sourceLine" id="cb4-14" title="14"><span class="co">#&gt; + ... omitted several edges</span></a></code></pre></div>
 </div>
 </div>
