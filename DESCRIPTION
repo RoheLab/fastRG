@@ -1,0 +1,49 @@
+Package: fastRG
+Title: Sample Generalized Random Dot Product Graphs in Linear Time
+Version: 0.0.0.9000
+Authors@R: 
+    c(person(given = "Karl",
+             family = "Rohe",
+             role = "aut",
+             email = "KarlRohe@stat.wisc.edu"),
+      person(given = "Alex",
+             family = "Hayes",
+             role = c("aut", "cre"),
+             email = "alexpghayes@gmail.com",
+             comment = c(ORCID = "0000-0002-4985-5160")),
+      person(given = "Jun",
+             family = "Tao",
+             role = "aut"),
+      person(given = "Xintian",
+             family = "Han",
+             role = "aut"),
+      person(given = "Norbert",
+             family = "Binkiewicz",
+             role = "aut"))
+Description: Samples generalized random product graph, a
+    generalization of a broad class of network models. Given matrices X,
+    S, and Y with with non-negative entries, samples a matrix with
+    expectation X S Y^T and independent Poisson or Bernoulli entries. The
+    algorithm first samples the number of edges and then puts them down
+    one-by-one.  As a result it is O(m) where m is the number of edges, a
+    dramatic improvement over element-wise algorithms that which require
+    O(n^2) operations to sample a random graph, where n is the number of
+    nodes.
+License: MIT + file LICENSE
+Imports: 
+    igraph
+Suggests: 
+    knitr,
+    rmarkdown,
+    testthat (>= 2.1.0),
+    RSpectra
+VignetteBuilder: 
+    knitr
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 6.1.1
+URL: https://github.com/alexpghayes/fastRG
+BugReports: https://github.com/alexpghayes/fastRG/issues
+Depends: 
+    Matrix

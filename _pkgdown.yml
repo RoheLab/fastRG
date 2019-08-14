@@ -1,0 +1,30 @@
+destination: docs
+
+development:
+  mode: auto
+
+template:
+  params:
+    bootswatch: paper
+
+reference:
+  - title: Key function
+    desc: ~
+    contents:
+      - "fastRG"
+  - title: Stochastic blockmodels
+    desc: ~
+    contents:
+      - "dc_mixed"
+      - "dc_overlapping"
+      - "dcsbm"
+      - "sbm"
+  - title: Bernoulli graphs
+    desc: ~
+    contents:
+      - "chung_lu"
+      - "erdos_renyi"
+  - title: Utilities
+    desc: ~
+    contents:
+    - "howManyEdges"
