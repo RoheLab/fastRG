@@ -76,6 +76,9 @@
   </a>
 </li>
 <li>
+  <a href="../articles/fastRG.html">Get started</a>
+</li>
+<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
@@ -87,9 +90,6 @@
   <ul class="dropdown-menu" role="menu">
     <li>
       <a href="../articles/experiment.html">experiment</a>
-    </li>
-    <li>
-      <a href="../articles/explanation.html">explanation</a>
     </li>
   </ul>
 </li>
@@ -115,7 +115,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Sample a stochastic blockmodel graph</h1>
-    <small class="dont-index">Source: <a href='https://github.com/alexpghayes/fastRG/blob/master/R/models.R'><code>R/models.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/alexpghayes/fastRG/blob/master/R/sbm.R'><code>R/sbm.R</code></a></small>
     <div class="hidden name"><code>sbm.Rd</code></div>
     </div>
 
@@ -125,18 +125,24 @@
     
     </div>
 
-    <pre class="usage"><span class='fu'>sbm</span>(<span class='no'>n</span>, <span class='no'>pi</span>, <span class='no'>B</span>, <span class='kw'>avgDeg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>PoissonEdges</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>sbm</span>(<span class='no'>n</span>, <span class='no'>pi</span>, <span class='no'>B</span>, <span class='kw'>avgDeg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>PoissonEdges</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>sort_nodes</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='no'>...</span>)
+
+<span class='fu'>sbm_params</span>(<span class='no'>n</span>, <span class='no'>pi</span>, <span class='no'>B</span>, <span class='kw'>avgDeg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>PoissonEdges</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>sort_nodes</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>n</th>
-      <td><p>TODO</p></td>
+      <td><p>Number of nodes in graph.</p></td>
     </tr>
     <tr>
       <th>pi</th>
-      <td><p>Block sampling proportions.</p></td>
+      <td><p>Block sampling proportions. Must be positive, but do not need to
+sum to one, as they will be normalized internally. Note that <code><a href='https://www.rdocumentation.org/packages/base/topics/length'>length(pi)</a></code>
+implicitly specifies the number of blocks.</p></td>
     </tr>
     <tr>
       <th>B</th>
@@ -144,20 +150,18 @@
     </tr>
     <tr>
       <th>avgDeg</th>
-      <td><p>When specified, the expected average degree of nodes
-in the output poisson multi-graph. When <code>poissonEdges = FALSE</code>, the
-resulting graph will have lower average degree due to lack
-of multiple-edges. When the graph is sparse, the expected number of
-edges for the Poisson multi-graph and Bernoulli graph are nearly the
-same. Defaults to <code>NULL</code>, such that no scaling occurs.</p></td>
+      <td><p>TODO</p></td>
     </tr>
     <tr>
       <th>PoissonEdges</th>
-      <td><p>Logical indicating whether or not multi-edges are
-allowed. Defaults to <code>TRUE</code>, which keeps multi-edges and produces
-a multi-graph. When <code>FALSE</code>, only single edges are allowed, resulting
-in a graph. See <strong>details</strong> for some additional comments. Effected by
-<code>simple</code> argument.</p></td>
+      <td><p>TODO</p></td>
+    </tr>
+    <tr>
+      <th>sort_nodes</th>
+      <td><p>Logical indicating whether or not to sort the nodes
+so that they are grouped by block. This incurs the cost of a fast
+integer radix sort, but even this may be prohibitive when sampling
+large graphs. Defaults to <code>TRUE</code>.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -218,15 +222,23 @@ the index of the incoming edge.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p><code><a href='fastRG.html'>fastRG()</a></code></p>
-<p>Other stochastic block models: <code><a href='dcMixed.html'>dcMixed</a></code>,
-  <code><a href='dcOverlapping.html'>dcOverlapping</a></code>, <code><a href='dcsbm.html'>dcsbm</a></code></p></div>
+<p>Other stochastic block models: <code><a href='dc_mixed.html'>dc_mixed</a></code>,
+  <code><a href='dc_overlapping.html'>dc_overlapping</a></code>, <code><a href='dcsbm.html'>dcsbm</a></code></p></div>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-# TODO
+<span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Random'>set.seed</a></span>(<span class='fl'>27</span>)
 
-</div></pre>
+<span class='no'>n</span> <span class='kw'>&lt;-</span> <span class='fl'>1000</span>
+<span class='no'>pi</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>0.3</span>, <span class='fl'>0.7</span>)
+
+<span class='no'>B</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/cbind'>rbind</a></span>(
+  <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>0.7</span>, <span class='fl'>0.1</span>),
+  <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>0.1</span>, <span class='fl'>0.6</span>)
+)
+
+<span class='no'>A</span> <span class='kw'>&lt;-</span> <span class='fu'>sbm</span>(<span class='no'>n</span>, <span class='no'>pi</span>, <span class='no'>B</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

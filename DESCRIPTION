@@ -1,5 +1,5 @@
 Package: fastRG
-Title: Sample Generalized Random Product Graphs in Linear Time
+Title: Sample Generalized Random Dot Product Graphs in Linear Time
 Version: 0.0.0.9000
 Authors@R: 
     c(person(given = "Karl",
@@ -34,7 +34,9 @@ Imports:
     igraph
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    testthat (>= 2.1.0),
+    RSpectra
 VignetteBuilder: 
     knitr
 Encoding: UTF-8

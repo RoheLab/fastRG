@@ -12,20 +12,18 @@ reference:
     desc: ~
     contents:
       - "fastRG"
-  - title: Stochastic blockmodels and generalizations
+  - title: Stochastic blockmodels
     desc: ~
     contents:
-      - "cl"
-      - "dcMixed"
-      - "dcOverlapping"
+      - "dc_mixed"
+      - "dc_overlapping"
       - "dcsbm"
-      - "er"
       - "sbm"
   - title: Bernoulli graphs
     desc: ~
     contents:
-      - "cl"
-      - "er"
+      - "chung_lu"
+      - "erdos_renyi"
   - title: Utilities
     desc: ~
     contents:
