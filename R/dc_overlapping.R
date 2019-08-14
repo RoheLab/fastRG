@@ -38,7 +38,8 @@
 #'
 #' A <- dc_overlapping(theta, p, B, avg_deg = 50)
 #'
-dc_overlapping <- function(theta, pi, B, ...) {
+dc_overlapping <- function(theta, p, B, avg_deg = NULL,
+                           poisson_edges = TRUE, sort_nodes = FALSE, ...) {
 
   params <- dc_overlapping_params(
     theta = theta, p = p, B = B,

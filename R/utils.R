@@ -27,7 +27,7 @@
 #'
 #' X <- matrix(rpois(n = n * k1, 1), nrow = n)
 #' Y <- matrix(rpois(n = d * k2, 1), nrow = d)
-#' S <- matrix(runif(n = k1 * k2, 0, .1), nrow = K1)
+#' S <- matrix(runif(n = k1 * k2, 0, .1), nrow = k1)
 #'
 #' expected(X, S, Y)
 expected <- function(X, S, Y = X) {

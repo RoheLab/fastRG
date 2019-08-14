@@ -103,7 +103,7 @@ n <- 100
 alpha <- c(1, 1) / 5
 B <- diag(c(1, 1))
 theta <- n
-A <- dc_mixed(theta, alpha, B, avg_deg = 50)
+A <- dc_mixed(theta, alpha, B, avg_deg = 50, sort_nodes = TRUE)
 image(as.matrix(t(A[, theta:1])) / max(A), col = grey(seq(1, 0, len = 20)))
 
 
@@ -112,7 +112,7 @@ K <- 2
 pi <- c(.7, .7)
 B <- diag(c(1, 1))
 theta <- n
-A <- dc_overlapping(theta, pi, B, avg_deg = 50)
+A <- dc_overlapping(theta, pi, B, avg_deg = 50, sort_nodes = TRUE)
 image(as.matrix(t(A[, n:1])) / max(A), col = grey(seq(1, 0, len = 20)))
 
 K <- 10
@@ -122,7 +122,7 @@ pi <- pi / sum(pi)
 B <- matrix(rexp(K^2), nrow = K)
 B <- B / (3 * max(B))
 diag(B) <- diag(B) + mean(B) * K
-A <- sbm(n, pi, B)
+A <- sbm(n, pi, B, sort_nodes = TRUE)
 image(as.matrix(t(A[, n:1])) / max(A), col = grey(seq(1, 0, len = 20)))
 ```
 
@@ -131,6 +131,18 @@ Next sample a DC-SBM with 10,000 nodes. Then compute and plot the leading eigens
 
 ```{R}
 library(RSpectra)
+
+profvis::profvis({
+  K <- 10
+  n <- 10000
+  pi <- rexp(K) + 1
+  pi <- pi / sum(pi)
+  pi <- -sort(-pi)
+  B <- matrix(rexp(K^2) + 1, nrow = K)
+  diag(B) <- diag(B) + mean(B) * K
+  A <- dcsbm(rgamma(n, shape = 2, scale = .4), pi, B, avg_deg = 20, simple = TRUE)
+  mean(rowSums(A))
+})
 
 K <- 10
 n <- 10000
