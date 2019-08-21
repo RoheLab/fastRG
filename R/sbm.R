@@ -62,7 +62,7 @@ sbm_params <- function(n, pi, B, avg_deg = NULL, poisson_edges = TRUE,
   K <- length(pi)
 
   if (K != nrow(B) || ncol(B) != nrow(B)) {
-    stop("`B` must be a kxk matrix, where k is `length(pi)`.", call. = FALSE)
+    stop("`B` must be a k x k matrix, where k is `length(pi)`.", call. = FALSE)
   }
 
   # block memberships
@@ -87,14 +87,16 @@ sbm_params <- function(n, pi, B, avg_deg = NULL, poisson_edges = TRUE,
   # scale B just like in fastRG()
   B <- B * avg_deg / expected(X, B)$degree
 
-  if (!poisson_edges && max(B) >= 1) {
-    warning(
-      "This combination of B and avg_deg has led to probabilities exceeding 1.",
-      "We suggest you either diminish avg_deg or enable poisson edges.",
-      call. = FALSE
-    )
+  if (!poisson_edges) {
 
-    # we're still sampling from a Poisson distribution, but the B has been
+    if (max(B) > 1)
+      stop(
+        "Expected edge values must be not exceed 1 for bernoulli graphs. ",
+        "Either diminish `avg_deg` or set `poisson_edges = TRUE`.",
+        call. = FALSE
+      )
+
+    # we're still sampling from a Poisson distribution, but B has been
     # specified as Bernoulli edges probabilities. convert these edges
     # probabilities such that we can feed them into a Poisson sampling
     # procedure

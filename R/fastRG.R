@@ -147,16 +147,13 @@ fastRG <- function(X, S, Y = NULL, avg_deg = NULL, simple = FALSE,
 
     # find the expected average degree in the poisson graph
     # TODO: should S be symmetrized before this?
-    # TODO: avg_deg vs avDeg is some confusing naming
-    eDbar <- expected(X, S, Y)$degree
-
-    S <- S * avg_deg / eDbar
+    S <- S * avg_deg / expected(X, S, Y)$degree
   }
 
-  # if undirected, symmetrize by setting S := (S + t(S))/2
-  # then divide result by 2 because this doubles edge probabilities
+  # symmetrize undirected graphs by setting S := (S + t(S)) / 2
+  # then divide by 2 again this doubles edge probabilities
+
   if (!directed) {
-    print(class(S))
     S <- (S + t(S)) / 4
   }
 
@@ -167,14 +164,37 @@ fastRG <- function(X, S, Y = NULL, avg_deg = NULL, simple = FALSE,
   Cy <- diag(colSums(Y), nrow = K2, ncol = K2)
 
   St <- Cx %*% S %*% Cy
+  expected_edges <- sum(St)
+
+  # the following can occur fairly easily if you sample from a blockmodel
+  # with a couple thousand nodes and forget to set a reasonable average
+  # degree.
+
+  if (expected_edges > .Machine$integer.max)
+    stop(
+      "Graph parameterization must have expected number of edges ",
+      "less than `.Machine$integer.max`.",
+      call. = FALSE
+    )
+
+  # use as.numeric() to avoid integer overflow with 53-bit doubles
+
+  if (expected_edges > as.numeric(n) * as.numeric(d))
+    stop(
+      "Graph parameterization must have expected number of edges ",
+      "less than or equal to maximal possible number of edges.",
+      call. = FALSE
+    )
 
   # number of edges to sample
-  m <- stats::rpois(n = 1, lambda = sum(St))
+  m <- stats::rpois(n = 1, lambda = expected_edges)
 
-  # if no edges, return empty matrix.
   if (m == 0) {
+
     if (return_edge_list) {
-      return(matrix(NA, nrow = 0, ncol = 2))
+      edge_list <- matrix(NA, nrow = 0, ncol = 2)
+      colnames(edge_list) <- c("from", "to")
+      return(edge_list)
     }
 
     return(sparseMatrix(1:n, 1:d, x = 0, dims = c(n, d)))
@@ -192,8 +212,6 @@ fastRG <- function(X, S, Y = NULL, avg_deg = NULL, simple = FALSE,
 
   eo <- integer(m)
   ei <- integer(m)
-
-  print("boom")
 
   # to avoid doing K1*K2 samples for I and J, we can instead take
   #   only K1 + K2 samples.  This requires some awkward indexing.

@@ -81,14 +81,43 @@ dcsbm_params <- function(theta, pi, B, avg_deg = NULL, poisson_edges = TRUE,
   }
 
   X <- sparse.model.matrix(~ as.factor(z) - 1)
-  ct <- c(0, cumsum(table(z)))
 
-  # TODO: understand what is going on here
-  for (i in 1:K) {
-    theta[(ct[i] + 1):ct[i + 1]] <- -sort(-theta[(ct[i] + 1):ct[i + 1]])
+  # sort by degree within community as well as community
+
+  if (sort_nodes) {
+    ct <- c(0, cumsum(table(z)))
+
+    for (i in 1:K) {
+      theta[(ct[i] + 1):ct[i + 1]] <- -sort(-theta[(ct[i] + 1):ct[i + 1]])
+    }
+
   }
 
   X@x <- theta
+
+  if (is.null(avg_deg)) {
+    return(list(X = X, S = B, Y = X))
+  }
+
+  # scale B just like in fastRG()
+  B <- B * avg_deg / expected(X, B)$degree
+
+  if (!poisson_edges) {
+
+    if (max(B) > 1)
+      stop(
+        "Expected edge values must be not exceed 1 for bernoulli graphs. ",
+        "Either diminish `avg_deg` or set `poisson_edges = TRUE`.",
+        call. = FALSE
+      )
+
+    # we're still sampling from a Poisson distribution, but B has been
+    # specified as Bernoulli edges probabilities. convert these edges
+    # probabilities such that we can feed them into a Poisson sampling
+    # procedure
+
+    B <- -log(1 - B)
+  }
 
   list(X = X, S = B, Y = X)
 }

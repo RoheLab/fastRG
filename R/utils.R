@@ -8,7 +8,10 @@
 #'     multi-graph:
 #'
 #'   - `count`: Expected number of edges.
-#'   - `degree`: Expected degree of each node.
+#'
+#'   - `degree`: Expected degree of each node. TODO: for directed graphs
+#'     is this the in-degree or the out-degree?
+#'
 #'   - `density`: Expected edge density. Equals the expected number of edges
 #'     divided by the total number of edges.
 #'
@@ -32,8 +35,6 @@
 #' expected(X, S, Y)
 expected <- function(X, S, Y = X) {
 
-  print("start of expected")
-
   if (any(X < 0) || any(S < 0) || any(Y < 0)) {
     stop("`X`, `S`, `Y` can only contain non-negative elements.", call. = FALSE)
   }
@@ -45,16 +46,14 @@ expected <- function(X, S, Y = X) {
   nx <- as.numeric(nrow(X))
   ny <- as.numeric(nrow(Y))
 
-  count <- sum(Cx %*% S %*% Cy)
-  degree <- count / nx
+  edges <- sum(Cx %*% S %*% Cy)
+  degree <- edges / nx
 
   # TODO: set `density = NULL` and issue a warning on overflows
 
-  print("end of expected")
-
   list(
-    count = count,
+    edges = edges,
     degree = degree,
-    density = count / (nx * ny)
+    density = edges / (nx * ny)
   )
 }

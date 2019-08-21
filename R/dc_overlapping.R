@@ -84,5 +84,29 @@ dc_overlapping_params <- function(theta, p, B, avg_deg = NULL,
   Theta <- Diagonal(n, theta)
   X <- Theta %*% X
 
+  if (is.null(avg_deg)) {
+    return(list(X = X, S = B, Y = X))
+  }
+
+  # scale B just like in fastRG()
+  B <- B * avg_deg / expected(X, B)$degree
+
+  if (!poisson_edges) {
+
+    if (max(B) > 1)
+      stop(
+        "Expected edge values must be not exceed 1 for bernoulli graphs. ",
+        "Either diminish `avg_deg` or set `poisson_edges = TRUE`.",
+        call. = FALSE
+      )
+
+    # we're still sampling from a Poisson distribution, but B has been
+    # specified as Bernoulli edges probabilities. convert these edges
+    # probabilities such that we can feed them into a Poisson sampling
+    # procedure
+
+    B <- -log(1 - B)
+  }
+
   list(X = X, S = B, Y = X)
 }

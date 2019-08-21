@@ -264,7 +264,35 @@ pi = pi/sum(pi)
 pi = -sort(-pi)
 B = matrix(rexp(K^2)+1, nrow=K)
 diag(B) = diag(B)+ mean(B)*K
+
+A <- fastRG::dcsbm(theta = rgamma(n,shape = 2,scale = .4), pi = pi, B = B, avg_deg = 10)
+
 A = dcsbm(rgamma(n,shape = 2,scale = .4), pi,B,avgDeg = 10)
+
+set.seed(39)
+theta <- rgamma(n,shape = 2,scale = .4)
+
+set.seed(40)
+p = dcsbm(theta, pi,B,avgDeg = 10, parametersOnly = T)
+
+set.seed(40)
+p2 = dcsbm_params(theta, pi,B, avg_deg = 10)
+
+all.equal(p$X, p2$X)
+all.equal(p$S, p2$S)
+
+e <- howManyEdges(p$X, p$S)
+e2 <- expected(p$X, p$S)
+
+all.equal(e[1], e2[[1]])
+all.equal(e[2], e2[[2]])
+
+fastRG::fastRG(p$X, p$S)
+fastRG(p$X, p$S)
+
+
+
+
 D = Diagonal(n, 1/sqrt(rowSums(A)+10))
 L = D%*%A%*%D
 ei = eigs_sym(L, 4)  
