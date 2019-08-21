@@ -63,7 +63,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fastRG</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="Unreleased version">0.0.0.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="Unreleased version">0.0.0.9001</span>
       </span>
     </div>
 
@@ -89,7 +89,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/experiment.html">experiment</a>
+      <a href="../articles/experiment.html">Computational complexity experiment</a>
     </li>
   </ul>
 </li>
@@ -97,7 +97,7 @@
       
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/alexpghayes/fastRG">
+  <a href="https://github.com/RoheLab/fastRG">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -115,7 +115,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Sample a degree corrected overlapping stochastic blockmodel graph</h1>
-    <small class="dont-index">Source: <a href='https://github.com/alexpghayes/fastRG/blob/master/R/dc_overlapping.R'><code>R/dc_overlapping.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/RoheLab/fastRG/blob/master/R/dc_overlapping.R'><code>R/dc_overlapping.R</code></a></small>
     <div class="hidden name"><code>dc_overlapping.Rd</code></div>
     </div>
 
@@ -125,7 +125,8 @@
     
     </div>
 
-    <pre class="usage"><span class='fu'>dc_overlapping</span>(<span class='no'>theta</span>, <span class='no'>pi</span>, <span class='no'>B</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>dc_overlapping</span>(<span class='no'>theta</span>, <span class='no'>p</span>, <span class='no'>B</span>, <span class='kw'>avg_deg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>poisson_edges</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
+  <span class='kw'>sort_nodes</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
 
 <span class='fu'>dc_overlapping_params</span>(<span class='no'>theta</span>, <span class='no'>p</span>, <span class='no'>B</span>, <span class='kw'>avg_deg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
   <span class='kw'>poisson_edges</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>sort_nodes</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
@@ -133,6 +134,52 @@
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>theta</th>
+      <td><p>A vector specified the degree distribution parameters.
+The resulting graph will have <code><a href='https://www.rdocumentation.org/packages/base/topics/length'>length(theta)</a></code> nodes. Setting
+<code>theta = rep(1, n)</code> recovers a stochastic blockmodel without
+degree correction.</p></td>
+    </tr>
+    <tr>
+      <th>p</th>
+      <td><p>Community membership parameter. For each node, membership in
+each community is consider separately. Each node has probability
+<code>p[i]</code> of being in the <code>i^th</code> community. <code><a href='https://www.rdocumentation.org/packages/base/topics/length'>length(p)</a></code> implicitly
+specifies the number of communities.</p></td>
+    </tr>
+    <tr>
+      <th>B</th>
+      <td><p>A <code><a href='https://www.rdocumentation.org/packages/base/topics/length'>length(pi)</a></code> by <code><a href='https://www.rdocumentation.org/packages/base/topics/length'>length(pi)</a></code> matrix of block connection
+probabilities. <code>B[i, j]</code> contains the probability that a node in
+community <code>i</code> links to a node in community <code>j</code>. Does not need to
+be symmetric.</p></td>
+    </tr>
+    <tr>
+      <th>avg_deg</th>
+      <td><p>When specified, rescales parameter such that the
+expected degree is <code>avg_deg</code> in the Poisson multi-graph. When
+<code>poisson_edges = FALSE</code>, the resulting graph will have lower a
+average degree than <code>avg_deg</code> due to lack of multi-edges. When
+the graph is sparse, the expected number of edges for the Poisson
+multi-graph and Bernoulli graph are nearly the
+same. Defaults to <code>NULL</code>, such that no scaling occurs.</p></td>
+    </tr>
+    <tr>
+      <th>poisson_edges</th>
+      <td><p>Logical indicating whether or not multi-edges are
+allowed. Defaults to <code>TRUE</code>, which keeps multi-edges and produces
+a multi-graph. When <code>FALSE</code>, only single edges are allowed, resulting
+in a graph. See <strong>details</strong> for some additional comments. Effected by
+<code>simple</code> argument.</p></td>
+    </tr>
+    <tr>
+      <th>sort_nodes</th>
+      <td><p>Logical indicating whether or not to sort the nodes
+so that they are grouped by block. This incurs the the cost of a
+radix sort, which is linear in the number of nodes in the graph.
+Defaults to <code>FALSE</code>. Useful for plotting.</p></td>
+    </tr>
     <tr>
       <th>...</th>
       <td><p>Arguments passed on to <code>fastRG</code></p><dl class='dl-horizontal'>
@@ -171,13 +218,6 @@ is completed. Effected by the <code>simple</code> argument.</p></dd>
   <dt>return_edge_list</dt><dd><p>Logical indicating whether to return an edgelist
 rather than an adjacency matrix. Defaults to <code>FALSE</code>.</p></dd>
 </dl></td>
-    </tr>
-    <tr>
-      <th>p</th>
-      <td><p>Community membership parameter. For each node, membership in
-each community is consider separately. Each node has probability
-<code>p[i]</code> of being in the <code>i^th</code> community. <code><a href='https://www.rdocumentation.org/packages/base/topics/length'>length(p)</a></code> implicitly
-specifies the number of communities.</p></td>
     </tr>
     </table>
     
@@ -222,8 +262,7 @@ and the <code>to</code> column contains the index of the incoming edge.</p>
 <span class='no'>theta</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Round'>round</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/Lognormal'>rlnorm</a></span>(<span class='no'>n</span>, <span class='fl'>2</span>))  <span class='co'># degree parameter</span>
 <span class='no'>p</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>1</span>, <span class='fl'>2</span>, <span class='fl'>4</span>, <span class='fl'>1</span>, <span class='fl'>1</span>) / <span class='fl'>5</span>     <span class='co'># community membership</span>
 
-<span class='no'>A</span> <span class='kw'>&lt;-</span> <span class='fu'>dc_overlapping</span>(<span class='no'>theta</span>, <span class='no'>p</span>, <span class='no'>B</span>, <span class='kw'>avg_deg</span> <span class='kw'>=</span> <span class='fl'>50</span>)</div><div class='output co'>#&gt; <span class='error'>Error in dc_overlapping_params(theta = theta, p = p, B = B, avg_deg = avg_deg,     poisson_edges = poisson_edges, sort_nodes = sort_nodes): object 'p' not found</span></div><div class='input'>
-</div></pre>
+<span class='no'>A</span> <span class='kw'>&lt;-</span> <span class='fu'>dc_overlapping</span>(<span class='no'>theta</span>, <span class='no'>p</span>, <span class='no'>B</span>, <span class='kw'>avg_deg</span> <span class='kw'>=</span> <span class='fl'>50</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

@@ -63,7 +63,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fastRG</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="Unreleased version">0.0.0.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="Unreleased version">0.0.0.9001</span>
       </span>
     </div>
 
@@ -89,7 +89,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/experiment.html">experiment</a>
+      <a href="../articles/experiment.html">Computational complexity experiment</a>
     </li>
   </ul>
 </li>
@@ -97,7 +97,7 @@
       
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/alexpghayes/fastRG">
+  <a href="https://github.com/RoheLab/fastRG">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -115,7 +115,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Calculate the expected number of edges in Poisson RDPG graph</h1>
-    <small class="dont-index">Source: <a href='https://github.com/alexpghayes/fastRG/blob/master/R/utils.R'><code>R/utils.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/RoheLab/fastRG/blob/master/R/utils.R'><code>R/utils.R</code></a></small>
     <div class="hidden name"><code>expected.Rd</code></div>
     </div>
 
@@ -149,7 +149,8 @@
     <p>A named list with three measurements from a Poisson RDPG(X, S, Y)
 multi-graph:</p><ul>
 <li><p><code>count</code>: Expected number of edges.</p></li>
-<li><p><code>degree</code>: Expected degree of each node.</p></li>
+<li><p><code>degree</code>: Expected degree of each node. TODO: for directed graphs
+is this the in-degree or the out-degree?</p></li>
 <li><p><code>density</code>: Expected edge density. Equals the expected number of edges
 divided by the total number of edges.</p></li>
 </ul>
@@ -171,8 +172,17 @@ divided by the total number of edges.</p></li>
 
 <span class='no'>X</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/matrix'>matrix</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/Poisson'>rpois</a></span>(<span class='kw'>n</span> <span class='kw'>=</span> <span class='no'>n</span> * <span class='no'>k1</span>, <span class='fl'>1</span>), <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='no'>n</span>)
 <span class='no'>Y</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/matrix'>matrix</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/Poisson'>rpois</a></span>(<span class='kw'>n</span> <span class='kw'>=</span> <span class='no'>d</span> * <span class='no'>k2</span>, <span class='fl'>1</span>), <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='no'>d</span>)
-<span class='no'>S</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/matrix'>matrix</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/Uniform'>runif</a></span>(<span class='kw'>n</span> <span class='kw'>=</span> <span class='no'>k1</span> * <span class='no'>k2</span>, <span class='fl'>0</span>, <span class='fl'>.1</span>), <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='no'>K1</span>)</div><div class='output co'>#&gt; <span class='error'>Error in matrix(runif(n = k1 * k2, 0, 0.1), nrow = K1): object 'K1' not found</span></div><div class='input'>
-<span class='fu'>expected</span>(<span class='no'>X</span>, <span class='no'>S</span>, <span class='no'>Y</span>)</div><div class='output co'>#&gt; <span class='error'>Error in expected(X, S, Y): object 'S' not found</span></div></pre>
+<span class='no'>S</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/matrix'>matrix</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/Uniform'>runif</a></span>(<span class='kw'>n</span> <span class='kw'>=</span> <span class='no'>k1</span> * <span class='no'>k2</span>, <span class='fl'>0</span>, <span class='fl'>.1</span>), <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='no'>k1</span>)
+
+<span class='fu'>expected</span>(<span class='no'>X</span>, <span class='no'>S</span>, <span class='no'>Y</span>)</div><div class='output co'>#&gt; $edges
+#&gt; [1] 9135777
+#&gt; 
+#&gt; $degree
+#&gt; [1] 913.5777
+#&gt; 
+#&gt; $density
+#&gt; [1] 0.9135777
+#&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

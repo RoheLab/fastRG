@@ -19,7 +19,7 @@ knitr::opts_chunk$set(
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 <!-- badges: end -->
 
-`fastRG` quickly samples a broad class of network models known as generalized random product graphs. In particular, for matrices `X`, `S` and `Y`, `fastRG` samples a matrix `A` with expectation `X S Y^T` where individual entries are Poisson distributed. We recommend that you think of `A` as the adjacency matrix for a graph (or a multi-graph). Crucially, the sampling is `O(m)`, where `m` is the number of the edges in graph. Other algorithms are `O(n^2)`, where `n` is the number of nodes in the network. For additional details, please have a look at the [paper](https://arxiv.org/abs/1703.02998).
+`fastRG` quickly samples a broad class of network models known as generalized random product graphs. In particular, for matrices `X`, `S` and `Y`, `fastRG` samples a matrix `A` with expectation `X S Y^T` where individual entries are Poisson distributed. We recommend that you think of `A` as the adjacency matrix for a graph (or a multi-graph). Crucially, the sampling is `O(m)`, where `m` is the number of the edges in graph. Other algorithms are `O(n^2)`, where `n` is the number of nodes in the network. For additional details, see the [paper](https://arxiv.org/abs/1703.02998).
 
 ## Installation
 
@@ -30,8 +30,6 @@ with:
 # install.package("devtools")
 devtools::install_github("RoheLab/fastRG")
 ```
-
-There's also a [Python implementation](https://github.com/yunjhongwu/matrix-routines/blob/master/fastRG.py).
 
 ## Example Usage
 
@@ -58,3 +56,8 @@ This results in a fast way to create `igraph` objects using `igraph::graph_from_
 g <- igraph::graph_from_edgelist(el)
 g
 ```
+
+## Other languages
+
+The `fastRG` sampler has been implemented in Python [here](https://github.com/yunjhongwu/matrix-routines/blob/master/fastRG.py).
+

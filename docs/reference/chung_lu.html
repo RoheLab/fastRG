@@ -63,7 +63,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fastRG</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="Unreleased version">0.0.0.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="Unreleased version">0.0.0.9001</span>
       </span>
     </div>
 
@@ -89,7 +89,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/experiment.html">experiment</a>
+      <a href="../articles/experiment.html">Computational complexity experiment</a>
     </li>
   </ul>
 </li>
@@ -97,7 +97,7 @@
       
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/alexpghayes/fastRG">
+  <a href="https://github.com/RoheLab/fastRG">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -115,7 +115,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Sample a Chung-Lu graph</h1>
-    <small class="dont-index">Source: <a href='https://github.com/alexpghayes/fastRG/blob/master/R/chung_lu.R'><code>R/chung_lu.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/RoheLab/fastRG/blob/master/R/chung_lu.R'><code>R/chung_lu.R</code></a></small>
     <div class="hidden name"><code>chung_lu.Rd</code></div>
     </div>
 
@@ -194,14 +194,25 @@ rather than an adjacency matrix. Defaults to <code>FALSE</code>.</p></dd>
     <pre class="examples"><div class='input'>
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Random'>set.seed</a></span>(<span class='fl'>27</span>)
 
-<span class='no'>expected_degree</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>2</span>, <span class='fl'>0</span>)
+<span class='no'>theta</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>0</span>, <span class='fl'>1</span>, <span class='fl'>0</span>, <span class='fl'>2</span>, <span class='fl'>0</span>)
 
-<span class='no'>A</span> <span class='kw'>&lt;-</span> <span class='fu'>chung_lu</span>(<span class='no'>expected_degree</span>)
+<span class='no'>A</span> <span class='kw'>&lt;-</span> <span class='fu'>chung_lu</span>(<span class='no'>theta</span>)
 
 <span class='co'># out degree</span>
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/colSums'>rowSums</a></span>(<span class='no'>A</span>)</div><div class='output co'>#&gt; [1] 0 1 0 2 0</div><div class='input'>
 <span class='co'># get the random dot product model parameters</span>
-<span class='no'>params</span> <span class='kw'>&lt;-</span> <span class='fu'>chung_lu_params</span>(<span class='no'>expected_degree</span>)</div></pre>
+<span class='no'>params</span> <span class='kw'>&lt;-</span> <span class='fu'>chung_lu_params</span>(<span class='no'>theta</span>)
+
+<span class='fu'><a href='expected.html'>expected</a></span>(<span class='no'>params</span>$<span class='no'>X</span>, <span class='no'>params</span>$<span class='no'>S</span>)</div><div class='output co'>#&gt; $edges
+#&gt; [1] 9
+#&gt; 
+#&gt; $degree
+#&gt; [1] 1.8
+#&gt; 
+#&gt; $density
+#&gt; [1] 0.36
+#&gt; </div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

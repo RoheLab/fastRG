@@ -38,7 +38,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">fastRG</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="Unreleased version">0.0.0.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="Unreleased version">0.0.0.9001</span>
       </span>
     </div>
 
@@ -64,14 +64,14 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="articles/experiment.html">experiment</a>
+      <a href="articles/experiment.html">Computational complexity experiment</a>
     </li>
   </ul>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/alexpghayes/fastRG">
+  <a href="https://github.com/RoheLab/fastRG">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -97,19 +97,19 @@
 <a href="#fastrg" class="anchor"></a>fastRG</h1></div>
 <!-- badges: start -->
 
-<p><code>fastRG</code> quickly samples a broad class of network models known as generalized random product graphs. In particular, for matrices <code>X</code>, <code>S</code> and <code>Y</code>, <code>fastRG</code> samples a matrix <code>A</code> with expectation <code>X S Y^T</code> where individual entries are Poisson distributed. We recommend that you think of <code>A</code> as the adjacency matrix for a graph (or a multi-graph). Crucially, the sampling is <code>O(m)</code>, where <code>m</code> is the number of the edges in graph. Other algorithms are <code>O(n^2)</code>, where <code>n</code> is the number of nodes in the network. For additional details, please have a look at the <a href="https://arxiv.org/abs/1703.02998">paper</a>.</p>
+<p><code>fastRG</code> quickly samples a broad class of network models known as generalized random product graphs. In particular, for matrices <code>X</code>, <code>S</code> and <code>Y</code>, <code>fastRG</code> samples a matrix <code>A</code> with expectation <code>X S Y^T</code> where individual entries are Poisson distributed. We recommend that you think of <code>A</code> as the adjacency matrix for a graph (or a multi-graph). Crucially, the sampling is <code>O(m)</code>, where <code>m</code> is the number of the edges in graph. Other algorithms are <code>O(n^2)</code>, where <code>n</code> is the number of nodes in the network. For additional details, see the <a href="https://arxiv.org/abs/1703.02998">paper</a>.</p>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p><code>fastRG</code> is not yet on CRAN. You can install the development version with:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="co"># install.package("devtools")</span></a>
 <a class="sourceLine" id="cb1-2" title="2">devtools<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/devtools/topics/reexports">install_github</a></span>(<span class="st">"RoheLab/fastRG"</span>)</a></code></pre></div>
-<p>There’s also a <a href="https://github.com/yunjhongwu/matrix-routines/blob/master/fastRG.py">Python implementation</a>.</p>
 </div>
 <div id="example-usage" class="section level2">
 <h2 class="hasAnchor">
 <a href="#example-usage" class="anchor"></a>Example Usage</h2>
 <p>The easiest way to use <code>fastRG</code> is to use wrapper functions that sample from popular graph models. For example, to sample from an Erdos-Renyi graph <code>n = 1,000,000</code> nodes and expected degree of five, we can use the <code><a href="reference/erdos_renyi.html">erdos_renyi()</a></code> function.</p>
+<p>We <em>strongly</em> advise that you always set <code>avg_deg</code>, as it is easy to request very large and dense graphs without this scaling.</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/library">library</a></span>(fastRG)</a>
 <a class="sourceLine" id="cb2-2" title="2"><span class="co">#&gt; Loading required package: Matrix</span></a>
 <a class="sourceLine" id="cb2-3" title="3"></a>
@@ -118,27 +118,32 @@
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">el &lt;-<span class="st"> </span><span class="kw"><a href="reference/erdos_renyi.html">erdos_renyi</a></span>(<span class="dt">n =</span> <span class="dv">1000</span>, <span class="dt">avg_deg =</span> <span class="dv">5</span>, <span class="dt">return_edge_list =</span> <span class="ot">TRUE</span>)</a>
 <a class="sourceLine" id="cb3-2" title="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(el)</a>
 <a class="sourceLine" id="cb3-3" title="3"><span class="co">#&gt;      from  to</span></a>
-<a class="sourceLine" id="cb3-4" title="4"><span class="co">#&gt; [1,]  457 560</span></a>
-<a class="sourceLine" id="cb3-5" title="5"><span class="co">#&gt; [2,]  247 130</span></a>
-<a class="sourceLine" id="cb3-6" title="6"><span class="co">#&gt; [3,]  147 109</span></a>
-<a class="sourceLine" id="cb3-7" title="7"><span class="co">#&gt; [4,]  266 792</span></a>
-<a class="sourceLine" id="cb3-8" title="8"><span class="co">#&gt; [5,]  235 471</span></a>
-<a class="sourceLine" id="cb3-9" title="9"><span class="co">#&gt; [6,]  177 344</span></a></code></pre></div>
+<a class="sourceLine" id="cb3-4" title="4"><span class="co">#&gt; [1,]  237 165</span></a>
+<a class="sourceLine" id="cb3-5" title="5"><span class="co">#&gt; [2,]  571 845</span></a>
+<a class="sourceLine" id="cb3-6" title="6"><span class="co">#&gt; [3,]  128 984</span></a>
+<a class="sourceLine" id="cb3-7" title="7"><span class="co">#&gt; [4,]  840 479</span></a>
+<a class="sourceLine" id="cb3-8" title="8"><span class="co">#&gt; [5,]  128 474</span></a>
+<a class="sourceLine" id="cb3-9" title="9"><span class="co">#&gt; [6,]  869 324</span></a></code></pre></div>
 <p>This results in a fast way to create <code>igraph</code> objects using <code><a href="https://www.rdocumentation.org/packages/igraph/topics/graph_from_edgelist">igraph::graph_from_edgelist()</a></code>.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1">g &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/igraph/topics/graph_from_edgelist">graph_from_edgelist</a></span>(el)</a>
 <a class="sourceLine" id="cb4-2" title="2">g</a>
-<a class="sourceLine" id="cb4-3" title="3"><span class="co">#&gt; IGRAPH 579ca4f D--- 1000 5070 -- </span></a>
-<a class="sourceLine" id="cb4-4" title="4"><span class="co">#&gt; + edges from 579ca4f:</span></a>
-<a class="sourceLine" id="cb4-5" title="5"><span class="co">#&gt;  [1] 457-&gt;560 247-&gt;130 147-&gt;109 266-&gt;792 235-&gt;471 177-&gt;344  38-&gt;478</span></a>
-<a class="sourceLine" id="cb4-6" title="6"><span class="co">#&gt;  [8] 888-&gt;793 390-&gt;466 712-&gt;940 966-&gt;713 671-&gt;993 213-&gt;265 459-&gt;645</span></a>
-<a class="sourceLine" id="cb4-7" title="7"><span class="co">#&gt; [15] 466-&gt;825 842-&gt;584 790-&gt;400 466-&gt;762 873-&gt;658 483-&gt; 71 260-&gt;486</span></a>
-<a class="sourceLine" id="cb4-8" title="8"><span class="co">#&gt; [22] 964-&gt;  2 240-&gt;210 737-&gt;206 304-&gt; 36 597-&gt;829 968-&gt;799 182-&gt;429</span></a>
-<a class="sourceLine" id="cb4-9" title="9"><span class="co">#&gt; [29] 913-&gt;774 947-&gt;460 568-&gt; 11 118-&gt;303 622-&gt;493 234-&gt;620 489-&gt;493</span></a>
-<a class="sourceLine" id="cb4-10" title="10"><span class="co">#&gt; [36] 448-&gt; 81 456-&gt;372 846-&gt;409 690-&gt; 36 537-&gt;288  41-&gt;127 996-&gt; 84</span></a>
-<a class="sourceLine" id="cb4-11" title="11"><span class="co">#&gt; [43] 602-&gt;686 884-&gt;119  92-&gt;352 302-&gt;723 630-&gt;341 189-&gt;690 881-&gt;422</span></a>
-<a class="sourceLine" id="cb4-12" title="12"><span class="co">#&gt; [50] 433-&gt;244 148-&gt;257 427-&gt;521 775-&gt;921 810-&gt;539 360-&gt; 50 554-&gt;691</span></a>
-<a class="sourceLine" id="cb4-13" title="13"><span class="co">#&gt; [57] 891-&gt;119 921-&gt;486  53-&gt;792 353-&gt;447 823-&gt;207 868-&gt;971 891-&gt;789</span></a>
+<a class="sourceLine" id="cb4-3" title="3"><span class="co">#&gt; IGRAPH 7f6f5ab D--- 1000 5120 -- </span></a>
+<a class="sourceLine" id="cb4-4" title="4"><span class="co">#&gt; + edges from 7f6f5ab:</span></a>
+<a class="sourceLine" id="cb4-5" title="5"><span class="co">#&gt;  [1] 237-&gt;165 571-&gt;845 128-&gt;984 840-&gt;479 128-&gt;474 869-&gt;324 332-&gt;398</span></a>
+<a class="sourceLine" id="cb4-6" title="6"><span class="co">#&gt;  [8]   7-&gt;706 817-&gt;172 197-&gt;633 925-&gt;858 131-&gt; 36 366-&gt;340 178-&gt;  8</span></a>
+<a class="sourceLine" id="cb4-7" title="7"><span class="co">#&gt; [15] 104-&gt; 66 985-&gt;955 290-&gt;892 393-&gt;485 609-&gt;805 510-&gt;363 206-&gt;532</span></a>
+<a class="sourceLine" id="cb4-8" title="8"><span class="co">#&gt; [22] 938-&gt;118 837-&gt;926 839-&gt;559 800-&gt;357 460-&gt;755 221-&gt;730  94-&gt;293</span></a>
+<a class="sourceLine" id="cb4-9" title="9"><span class="co">#&gt; [29] 921-&gt;717 792-&gt;584 418-&gt;863 947-&gt;123 498-&gt; 48 883-&gt;698  33-&gt;994</span></a>
+<a class="sourceLine" id="cb4-10" title="10"><span class="co">#&gt; [36] 418-&gt;840 448-&gt;859 866-&gt;402 935-&gt;954 998-&gt;463 736-&gt;593 943-&gt;726</span></a>
+<a class="sourceLine" id="cb4-11" title="11"><span class="co">#&gt; [43]  83-&gt;699 977-&gt;610 988-&gt;371 896-&gt;583 960-&gt; 62 465-&gt;685 870-&gt;463</span></a>
+<a class="sourceLine" id="cb4-12" title="12"><span class="co">#&gt; [50] 204-&gt;132 946-&gt;  7 968-&gt;195 276-&gt;525 376-&gt;  5 182-&gt;768 561-&gt;208</span></a>
+<a class="sourceLine" id="cb4-13" title="13"><span class="co">#&gt; [57]   2-&gt;957   3-&gt;211 175-&gt;641 584-&gt;  5 548-&gt;669 158-&gt;503 625-&gt;730</span></a>
 <a class="sourceLine" id="cb4-14" title="14"><span class="co">#&gt; + ... omitted several edges</span></a></code></pre></div>
+</div>
+<div id="other-languages" class="section level2">
+<h2 class="hasAnchor">
+<a href="#other-languages" class="anchor"></a>Other languages</h2>
+<p>The <code>fastRG</code> sampler has been implemented in Python <a href="https://github.com/yunjhongwu/matrix-routines/blob/master/fastRG.py">here</a>.</p>
 </div>
 </div>
   </div>
@@ -147,9 +152,9 @@
     <div class="links">
 <h2>Links</h2>
 <ul class="list-unstyled">
-<li>Browse source code at <br><a href="https://github.com/alexpghayes/fastRG">https://​github.com/​alexpghayes/​fastRG</a>
+<li>Browse source code at <br><a href="https://github.com/RoheLab/fastRG">https://​github.com/​RoheLab/​fastRG</a>
 </li>
-<li>Report a bug at <br><a href="https://github.com/alexpghayes/fastRG/issues">https://​github.com/​alexpghayes/​fastRG/​issues</a>
+<li>Report a bug at <br><a href="https://github.com/RoheLab/fastRG/issues">https://​github.com/​RoheLab/​fastRG/​issues</a>
 </li>
 </ul>
 </div>

@@ -32,7 +32,8 @@
 
 <meta property="og:title" content="Sample a Random Dot Product Graph (RDPG) — fastRG" />
 
-<meta property="og:description" content="Sample a Random Dot Product Graph (RDPG)" />
+<meta property="og:description" content="We strongly advise that you always set avg_deg, as it is
+easy to request very large and dense graphs without this scaling." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -63,7 +64,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fastRG</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="Unreleased version">0.0.0.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="Unreleased version">0.0.0.9001</span>
       </span>
     </div>
 
@@ -89,7 +90,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="../articles/experiment.html">experiment</a>
+      <a href="../articles/experiment.html">Computational complexity experiment</a>
     </li>
   </ul>
 </li>
@@ -97,7 +98,7 @@
       
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/alexpghayes/fastRG">
+  <a href="https://github.com/RoheLab/fastRG">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -115,13 +116,14 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Sample a Random Dot Product Graph (RDPG)</h1>
-    <small class="dont-index">Source: <a href='https://github.com/alexpghayes/fastRG/blob/master/R/fastRG.R'><code>R/fastRG.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/RoheLab/fastRG/blob/master/R/fastRG.R'><code>R/fastRG.R</code></a></small>
     <div class="hidden name"><code>fastRG.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Sample a Random Dot Product Graph (RDPG)</p>
+    <p>We <em>strongly</em> advise that you always set <code>avg_deg</code>, as it is
+easy to request very large and dense graphs without this scaling.</p>
     
     </div>
 
@@ -239,16 +241,45 @@ Journal of Machine Learning Research; 19(77):1-13, 2018.
 <span class='no'>k2</span> <span class='kw'>&lt;-</span> <span class='fl'>3</span>
 
 <span class='no'>X</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/matrix'>matrix</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/Poisson'>rpois</a></span>(<span class='kw'>n</span> <span class='kw'>=</span> <span class='no'>n</span> * <span class='no'>k1</span>, <span class='fl'>1</span>), <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='no'>n</span>)
+<span class='no'>S</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/matrix'>matrix</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/Uniform'>runif</a></span>(<span class='kw'>n</span> <span class='kw'>=</span> <span class='no'>k1</span> * <span class='no'>k2</span>, <span class='fl'>0</span>, <span class='fl'>.1</span>), <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='no'>k1</span>)
 <span class='no'>Y</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/matrix'>matrix</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/Poisson'>rpois</a></span>(<span class='kw'>n</span> <span class='kw'>=</span> <span class='no'>d</span> * <span class='no'>k2</span>, <span class='fl'>1</span>), <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='no'>d</span>)
-<span class='no'>S</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/matrix'>matrix</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/Uniform'>runif</a></span>(<span class='kw'>n</span> <span class='kw'>=</span> <span class='no'>k1</span> * <span class='no'>k2</span>, <span class='fl'>0</span>, <span class='fl'>.1</span>), <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='no'>K1</span>)</div><div class='output co'>#&gt; <span class='error'>Error in matrix(runif(n = k1 * k2, 0, 0.1), nrow = K1): object 'K1' not found</span></div><div class='input'>
+
 <span class='co'># all the bells and whistles, return graph as a matrix</span>
-<span class='no'>A</span> <span class='kw'>&lt;-</span> <span class='fu'>fastRG</span>(<span class='no'>X</span>, <span class='no'>S</span>, <span class='no'>Y</span>, <span class='kw'>avg_deg</span> <span class='kw'>=</span> <span class='fl'>10</span>)</div><div class='output co'>#&gt; <span class='error'>Error in fastRG(X, S, Y, avg_deg = 10): object 'S' not found</span></div><div class='input'>
-<span class='co'># a nice binary, symmetric graph with no self-loops</span>
-<span class='no'>B</span> <span class='kw'>&lt;-</span> <span class='fu'>fastRG</span>(<span class='no'>X</span>, <span class='no'>S</span>, <span class='kw'>avg_deg</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>simple</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='error'>Error in fastRG(X, S, avg_deg = 10, simple = TRUE): object 'S' not found</span></div><div class='input'>
+<span class='no'>A</span> <span class='kw'>&lt;-</span> <span class='fu'>fastRG</span>(<span class='no'>X</span>, <span class='no'>S</span>, <span class='no'>Y</span>, <span class='kw'>avg_deg</span> <span class='kw'>=</span> <span class='fl'>10</span>)
+
+<span class='co'># expected edge count, degree and density without scaling</span>
+<span class='fu'><a href='expected.html'>expected</a></span>(<span class='no'>X</span>, <span class='no'>S</span>, <span class='no'>Y</span>)</div><div class='output co'>#&gt; $edges
+#&gt; [1] 7635910
+#&gt; 
+#&gt; $degree
+#&gt; [1] 763.591
+#&gt; 
+#&gt; $density
+#&gt; [1] 0.763591
+#&gt; </div><div class='input'>
 <span class='co'># get the graph as an edge list</span>
-<span class='no'>edge_list</span> <span class='kw'>&lt;-</span> <span class='fu'>fastRG</span>(<span class='no'>X</span>, <span class='no'>S</span>, <span class='kw'>return_edge_list</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; <span class='error'>Error in fastRG(X, S, return_edge_list = TRUE): object 'S' not found</span></div><div class='input'>
-<span class='co'># a symmetric graph</span>
-<span class='no'>C</span> <span class='kw'>&lt;-</span> <span class='fu'>fastRG</span>(<span class='no'>X</span>, <span class='no'>S</span>, <span class='kw'>directed</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</div><div class='output co'>#&gt; <span class='error'>Error in fastRG(X, S, directed = FALSE): object 'S' not found</span></div><div class='input'>
+<span class='no'>edge_list</span> <span class='kw'>&lt;-</span> <span class='fu'>fastRG</span>(<span class='no'>X</span>, <span class='no'>S</span>, <span class='no'>Y</span>, <span class='kw'>return_edge_list</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+
+<span class='co'>### some symmetric graphs</span>
+
+<span class='no'>S2</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/matrix'>matrix</a></span>(<span class='fu'><a href='https://www.rdocumentation.org/packages/stats/topics/Uniform'>runif</a></span>(<span class='kw'>n</span> <span class='kw'>=</span> <span class='no'>k1</span> * <span class='no'>k1</span>, <span class='fl'>0</span>, <span class='fl'>.1</span>), <span class='kw'>nrow</span> <span class='kw'>=</span> <span class='no'>k1</span>)
+
+<span class='co'># a binary, symmetric graph with no self-loops</span>
+<span class='no'>B</span> <span class='kw'>&lt;-</span> <span class='fu'>fastRG</span>(<span class='no'>X</span>, <span class='no'>S2</span>, <span class='kw'>avg_deg</span> <span class='kw'>=</span> <span class='fl'>10</span>, <span class='kw'>simple</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+
+<span class='co'># another symmetric graph</span>
+<span class='no'>C</span> <span class='kw'>&lt;-</span> <span class='fu'>fastRG</span>(<span class='no'>X</span>, <span class='no'>S2</span>, <span class='kw'>avg_deg</span> <span class='kw'>=</span> <span class='fl'>20</span>, <span class='kw'>directed</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+
+<span class='co'># expected edge count, degree and density without scaling</span>
+<span class='fu'><a href='expected.html'>expected</a></span>(<span class='no'>X</span>, <span class='no'>S2</span>)</div><div class='output co'>#&gt; $edges
+#&gt; [1] 125333370
+#&gt; 
+#&gt; $degree
+#&gt; [1] 12533.34
+#&gt; 
+#&gt; $density
+#&gt; [1] 1.253334
+#&gt; </div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

@@ -1,5 +1,5 @@
 ---
-title: "experiment"
+title: "Computational complexity experiment"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{experiment}
@@ -7,17 +7,16 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>",
-  eval = FALSE
+  comment = "#>"
 )
 ```
 
-This next bit of code repeats the computational experiment from Section 4.1 on a slightly smaller scale.
+WARNING: this code has not yet been cleaned up it. It repeats the computational experiment from Section 4.1 of the paper on a slightly smaller scale.
 
-```{r setup}
+```{r}
 library(fastRG)
 
 library(dplyr)
@@ -46,12 +45,8 @@ for (ntick in length(nseq):1) {
   for (mtick in 1:length(mseq)) {
     averageDegree <- mseq[mtick] / n
 
-    print(ntick)
-    print(mtick)
-
-
     timer <- system.time({
-      el <- fastRG(X, S, avgDeg = averageDegree, PoissonEdges = T, directed = T, selfLoops = T, returnEdgeList = T)
+      el <- fastRG(X, S, avg_deg = averageDegree, return_edge_list = TRUE)
     })
 
     rm(el)

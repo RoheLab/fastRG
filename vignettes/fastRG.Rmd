@@ -10,8 +10,7 @@ vignette: >
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>",
-  eval = FALSE
+  comment = "#>"
 )
 ```
 
@@ -20,19 +19,19 @@ library(igraph)
 library(fastRG)
 ```
 
-TODO: for some reason these examples are very not happy at the moment
-
-`fastRG` quickly samples a broad class of network models known as generalized random product graphs. In particular, for matrices $X$, $S$ and $Y$, `fastRG` samples a matrix $A$ with expectation $X S Y^T$ where individual entries are Poisson distributed. We recommend that you think of $A$ as the adjacency matrix for a graph (or a multi-graph). Crucially, the sampling is $O(m)$, where $m$ is the number of the edges in graph. Other algorithms are $O(n^2)$, where $n$ is the number of nodes in the network. For additional details, please have a look at the [paper](https://arxiv.org/abs/1703.02998).
+`fastRG` quickly samples a broad class of network models known as generalized random product graphs. In particular, for matrices $X$, $S$ and $Y$, `fastRG` samples a matrix $A$ with expectation $X S Y^T$ where individual entries are Poisson distributed. We recommend that you think of $A$ as the adjacency matrix for a graph (or a multi-graph). Crucially, the sampling is $\mathcal O(m)$, where $m$ is the number of the edges in graph. Other algorithms are $\mathcal O(n^2)$, where $n$ is the number of nodes in the network. For additional details, see the [paper](https://arxiv.org/abs/1703.02998).
 
 ## Example Usage
 
-The easiest way to use `fastRG` is to use wrapper functions that sample from population graph models. For example, to sample from an Erdos-Renyi graph `n = 1,000,000` nodes and expected degree 5, we can use the `er()` function.
+The easiest way to use `fastRG` is to use wrapper functions that sample from popular graph models. For example, to sample from an Erdos-Renyi graph `n = 1,000,000` nodes and expected degree of five, we can use the `erdos_renyi()` function.
 
 ```{r}
 A <- erdos_renyi(n = 10^6, avg_deg = 5)
 ```
 
-By default we always get a `Matrix::sparseMatrix()`, but we can also ask for the graph as an edgelist as well. This results in a fast way to create `igraph` objects using `igraph::graph_from_edgelist()`.
+### Return format
+
+By default `fastRG()` returns a `Matrix` object stored in CSC, which may be binary or integer, and possibly symmetric. We can also ask for the graph as an edgelist. This results in a fast way to create `igraph` objects using `igraph::graph_from_edgelist()`.
 
 ```{r}
 el <- erdos_renyi(n = 1000, avg_deg = 5, return_edge_list = TRUE)
@@ -44,24 +43,37 @@ g <- igraph::graph_from_edgelist(el)
 g
 ```
 
-`fastRG()` also allows for simulating from graph with `E(A) = X S Y^T`, where `A` and `S` could be rectangular.  This is helpful for bipartite graphs or matrices of features.
+`fastRG()` allows for simulating from graph with `E(A) = X S Y^T`, where `A` and `S` could be rectangular.  This is helpful for bipartite graphs or matrices of graph features.
 
 ```{r}
 n <- 10000
 d <- 1000
-K1 <- 5
-K2 <- 3
+k1 <- 5
+k2 <- 3
 
-X <- matrix(rpois(n = n * K1, 1), nrow = n)
-Y <- matrix(rpois(n = d * K2, 1), nrow = d)
-S <- matrix(runif(n = K1 * K2, 0, .1), nrow = K1)
+X <- matrix(rpois(n = n * k1, 1), nrow = n)
+Y <- matrix(rpois(n = d * k2, 1), nrow = d)
+S <- matrix(runif(n = k1 * k2, 0, 0.1), nrow = k1)
 
 A <- fastRG(X, S, Y, avg_deg = 10)
 ```
 
-or
+## Key sampling options
 
-```{R}
+- `avg_deg`: Set the average degree of the graph by scaling sampling probabilities. We *strongly, strongly* recommend that you always set this option. If you do not, it is easy accidentally sample from large and dense graphs.
+
+- `directed`: Either `TRUE` or `FALSE` depending on whether you would like a direct or undirected graph.
+
+- `poisson_edges`: Either `TRUE` or `FALSE` depending on whether you would like a Bernoulli graph or a Poisson multi-graph. Scaling via `avg_deg` always assumes a Poisson multi-graph.
+
+- `allow_self_edges`: Whether nodes should be allowed to connect to themselves. Either `TRUE` or `FALSE`.
+
+## Some blockmodel examples
+
+WARNING: content below here is rough!
+
+
+```{r}
 K <- 10
 n <- 500
 pi <- rexp(K) + 1
@@ -71,25 +83,37 @@ diag(B) <- diag(B) + mean(B) * K
 theta <- rexp(n)
 
 A <- dcsbm(theta, pi, B, avg_deg = 50)
-# here is the average degree:
-mean(rowSums(A))
+mean(rowSums(A))  # average degree
+```
 
-# If we remove multiple edges, the avg_deg parameter is not trustworthy:
+If we remove multiple edges, the avg_deg parameter is not trustworthy:
+
+```{r}
 A <- dcsbm(theta, pi, B, avg_deg = 50, poisson_edges = FALSE)
 mean(rowSums(A))
+```
 
-# but it is a good upper bound when the graph is sparse:
+but it is a good upper bound when the graph is sparse:
+
+```{r}
 n <- 10000
 A <- dcsbm(rexp(n), pi, B, avg_deg = 50, poisson_edges = FALSE)
 mean(rowSums(A))
-```      
+```
 
-or
+This draws a 100 x 100 adjacency matrix from each model. Each image might take around 5 seconds to render.
 
-```{R}
-# This draws a 100 x 100 adjacency matrix from each model.
-#   Each image might take around 5 seconds to render.
+```{r}
+# helper to plot adjacency matrices
 
+plot_matrix <- function(A) {
+  image(as.matrix(A), col = grey(seq(1, 0, len = 20)))
+}
+```
+
+
+
+```{r}
 K <- 10
 n <- 100
 pi <- rexp(K) + 1
@@ -98,26 +122,36 @@ B <- matrix(rexp(K^2) + 1, nrow = K)
 diag(B) <- diag(B) + mean(B) * K
 theta <- rexp(n)
 A <- dcsbm(theta, pi, B, avg_deg = 50)
-image(as.matrix(t(A[, n:1])), col = grey(seq(1, 0, len = 20)))
+
+plot_matrix(A[, n:1])
+```
 
 
+```{r}
 K <- 2
 n <- 100
 alpha <- c(1, 1) / 5
 B <- diag(c(1, 1))
 theta <- n
 A <- dc_mixed(theta, alpha, B, avg_deg = 50, sort_nodes = TRUE)
-image(as.matrix(t(A[, theta:1])) / max(A), col = grey(seq(1, 0, len = 20)))
+
+plot_matrix(A[, theta:1] / max(A))
+```
 
 
+```{r}
 n <- 100
 K <- 2
 pi <- c(.7, .7)
 B <- diag(c(1, 1))
 theta <- n
 A <- dc_overlapping(theta, pi, B, avg_deg = 50, sort_nodes = TRUE)
-image(as.matrix(t(A[, n:1])) / max(A), col = grey(seq(1, 0, len = 20)))
 
+plot_matrix(t(A[, 1:n] / max(A)))
+```
+
+
+```{r}
 K <- 10
 n <- 100
 pi <- rexp(K) + 1
@@ -125,27 +159,15 @@ pi <- pi / sum(pi)
 B <- matrix(rexp(K^2), nrow = K)
 B <- B / (3 * max(B))
 diag(B) <- diag(B) + mean(B) * K
-A <- sbm(n, pi, B, sort_nodes = TRUE)
-image(as.matrix(t(A[, n:1])) / max(A), col = grey(seq(1, 0, len = 20)))
-```
+A <- fastRG::sbm(n, pi, B, sort_nodes = TRUE)
 
+plot_matrix(A)
+```
 
 Next sample a DC-SBM with 10,000 nodes. Then compute and plot the leading eigenspace.
 
-```{R}
+```{r}
 library(RSpectra)
-
-profvis::profvis({
-  K <- 10
-  n <- 10000
-  pi <- rexp(K) + 1
-  pi <- pi / sum(pi)
-  pi <- -sort(-pi)
-  B <- matrix(rexp(K^2) + 1, nrow = K)
-  diag(B) <- diag(B) + mean(B) * K
-  A <- dcsbm(rgamma(n, shape = 2, scale = .4), pi, B, avg_deg = 20, simple = TRUE)
-  mean(rowSums(A))
-})
 
 K <- 10
 n <- 10000
@@ -156,7 +178,23 @@ B <- matrix(rexp(K^2) + 1, nrow = K)
 diag(B) <- diag(B) + mean(B) * K
 A <- dcsbm(rgamma(n, shape = 2, scale = .4), pi, B, avg_deg = 20, simple = TRUE)
 mean(rowSums(A))
+```
 
+
+```{r}
+K <- 10
+n <- 10000
+pi <- rexp(K) + 1
+pi <- pi / sum(pi)
+pi <- -sort(-pi)
+B <- matrix(rexp(K^2) + 1, nrow = K)
+diag(B) <- diag(B) + mean(B) * K
+A <- dcsbm(rgamma(n, shape = 2, scale = .4), pi, B, avg_deg = 20, simple = TRUE, sort_nodes = TRUE)
+mean(rowSums(A))
+```
+
+
+```{r}
 # leading eigen of regularized Laplacian with tau = 1
 D <- Diagonal(n, 1 / sqrt(rowSums(A) + 1))
 ei <- eigs_sym(D %*% A %*% D, 10)
@@ -168,16 +206,17 @@ par(mfrow = c(5, 1), mar = c(1, 2, 2, 2), xaxt = "n", yaxt = "n")
 
 # plot 1000 elements of the leading eigenvectors:
 s <- sort(sample(n, 1000))
+
 for (i in 1:5) {
   plot(X[s, i], pch = ".")
 }
-```    
+```
 
 or
 
 
 
-```{r eval = FALSE}
+```{r}
 # This samples a 1M node graph.
 # Depending on the computer, sampling the graph should take between 10 and 30 seconds
 #   Then, taking the eigendecomposition of the regularized graph laplacian should take between 1 and 3 minutes
@@ -190,19 +229,22 @@ pi <- pi / sum(pi)
 pi <- -sort(-pi)
 B <- matrix(rexp(K^2) + 1, nrow = K)
 diag(B) <- diag(B) + mean(B) * K
-A <- dcsbm(rgamma(n, shape = 2, scale = .4), pi, B, avg_deg = 10)
+A <- dcsbm(rgamma(n, shape = 2, scale = .4), pi, B, avg_deg = 10, sort_nodes = TRUE)
 D <- Diagonal(n, 1 / sqrt(rowSums(A) + 10))
 L <- D %*% A %*% D
 ei <- eigs_sym(L, 4)
+```
 
+
+```{r}
 s <- sort(sample(n, 10000))
 X <- t(apply(ei$vectors[, 1:K], 1, function(x) return(x / sqrt(sum(x^2) + 1 / n))))
 plot(X[s, 3]) # highly localized eigenvectors
-```   
+```
 
 To sample from a degree corrected and node contextualized graph...
 
-```{r eval = FALSE}
+```{r}
 n <- 10000 # number of nodes
 d <- 1000 # number of features
 K <- 5 # number of blocks
@@ -214,9 +256,11 @@ pi <- pi / sum(pi) * 3
 B <- matrix(rexp(K^2) + 1, nrow = K)
 diag(B) <- diag(B) + mean(B) * K
 theta <- rexp(n)
-paraG <- dcsbm(theta = theta, pi = pi, B = B, parametersOnly = T)
+paraG <- dcsbm_params(theta = theta, pi = pi, B = B)
+```
 
 
+```{r}
 # Here are the parameters for the features:
 
 thetaY <- rexp(d)
@@ -225,8 +269,11 @@ piFeatures <- piFeatures / sum(piFeatures) * 3
 BFeatures <- matrix(rexp(K^2) + 1, nrow = K)
 diag(BFeatures) <- diag(BFeatures) + mean(BFeatures) * K
 
-paraFeat <- dcsbm(theta = thetaY, pi = piFeatures, B = BFeatures, parametersOnly = T)
+paraFeat <- dcsbm_params(theta = thetaY, pi = piFeatures, B = BFeatures)
+```
 
+
+```{r}
 # the node "degrees" in the features, should be related to their degrees in the graph.
 X <- paraG$X
 X@x <- paraG$X@x + rexp(n) # the degree parameter should be different. X@x + rexp(n) makes feature degrees correlated to degrees in graph.
