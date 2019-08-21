@@ -43,6 +43,7 @@
 #' B <- erdos_renyi(n = 10^6, avg_deg = 5)
 #'
 erdos_renyi <- function(n, p = NULL, avg_deg = NULL, directed = FALSE, ...) {
+
   params <- erdos_renyi_params(
     n = n, p = p, avg_deg = avg_deg,
     directed = directed, ...

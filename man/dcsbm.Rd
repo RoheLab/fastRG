@@ -130,6 +130,10 @@ pi <- c(1, 2, 4, 1, 1) / 5 # community membership
 
 A <- dcsbm(theta, pi, B, avg_deg = 50)
 
+params <- dcsbm_params(theta, pi, B, avg_deg = 50)
+
+expected(params$X, params$S)
+
 }
 \seealso{
 \code{\link[=fastRG]{fastRG()}}

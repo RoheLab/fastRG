@@ -1,5 +1,8 @@
 #' Sample a Random Dot Product Graph (RDPG)
 #'
+#' We *strongly* advise that you always set `avg_deg`, as it is
+#' easy to request very large and dense graphs without this scaling.
+#'
 #' @param X An `n` by `k_1` matrix.
 #' @param S A `k_1` by `k_2` matrix.
 #' @param Y A `d` by `k_2` matrix. Defaults to `X`.
@@ -84,20 +87,30 @@
 #' k2 <- 3
 #'
 #' X <- matrix(rpois(n = n * k1, 1), nrow = n)
+#' S <- matrix(runif(n = k1 * k2, 0, .1), nrow = k1)
 #' Y <- matrix(rpois(n = d * k2, 1), nrow = d)
-#' S <- matrix(runif(n = k1 * k2, 0, .1), nrow = K1)
 #'
 #' # all the bells and whistles, return graph as a matrix
 #' A <- fastRG(X, S, Y, avg_deg = 10)
 #'
-#' # a nice binary, symmetric graph with no self-loops
-#' B <- fastRG(X, S, avg_deg = 10, simple = TRUE)
+#' # expected edge count, degree and density without scaling
+#' expected(X, S, Y)
 #'
 #' # get the graph as an edge list
-#' edge_list <- fastRG(X, S, return_edge_list = TRUE)
+#' edge_list <- fastRG(X, S, Y, return_edge_list = TRUE)
 #'
-#' # a symmetric graph
-#' C <- fastRG(X, S, directed = FALSE)
+#' ### some symmetric graphs
+#'
+#' S2 <- matrix(runif(n = k1 * k1, 0, .1), nrow = k1)
+#'
+#' # a binary, symmetric graph with no self-loops
+#' B <- fastRG(X, S2, avg_deg = 10, simple = TRUE)
+#'
+#' # another symmetric graph
+#' C <- fastRG(X, S2, avg_deg = 20, directed = FALSE)
+#'
+#' # expected edge count, degree and density without scaling
+#' expected(X, S2)
 #'
 fastRG <- function(X, S, Y = NULL, avg_deg = NULL, simple = FALSE,
                    poisson_edges = TRUE, directed = TRUE,
@@ -109,11 +122,11 @@ fastRG <- function(X, S, Y = NULL, avg_deg = NULL, simple = FALSE,
     stop("`X`, `S`, `Y` can only contain non-negative elements.", call. = FALSE)
   }
 
-  if (!directed & !is.null(Y)) {
-    stop("Must not specify `Y` for undirected graphs.", call. = FALSE)
-  }
+  if (!directed && !is.null(Y))
+      stop("Must not specify `Y` for undirected graphs.", call. = FALSE)
 
   # output will be asymmetric and potentially rectangular
+
   if (is.null(Y)) {
     Y <- X
   } else {
@@ -121,6 +134,9 @@ fastRG <- function(X, S, Y = NULL, avg_deg = NULL, simple = FALSE,
     allow_self_loops <- TRUE
     simple <- FALSE
   }
+
+  if (!directed && nrow(S) != ncol(S))
+    stop("`S` must be symmetric for undirected graphs.", call. = FALSE)
 
   n <- nrow(X)
   d <- nrow(Y)
@@ -268,23 +284,43 @@ fastRG <- function(X, S, Y = NULL, avg_deg = NULL, simple = FALSE,
     ei <- ei[-edges_to_self]
   }
 
-  # symmetrize the edge list. this doubles the edge probabilities!
-  if (!directed) {
-    eo_copy <- eo
-    eo <- c(eo, ei)
-    ei <- c(ei, eo_copy)
-  }
-
   if (return_edge_list) {
+
+    # symmetrize the edge list. this doubles the edge probabilities, but
+    # we accounted for this earlier by scaling S
+
+    if (!directed) {
+      eo_copy <- eo
+      eo <- c(eo, ei)
+      ei <- c(ei, eo_copy)
+    }
+
+    # otherwise no symmetrization is needed and we can just return
+
     el <- cbind(eo, ei)
     colnames(el) <- c("from", "to")
     return(el)
   }
 
+  # matrix return case
+
+  # to construct a symmetric sparseMatrix, we only pass in elements
+  # of either the upper or lower diagonal (otherwise we'll get an error).
+  # flop all edges to the lower diagonal
+
+  if (!directed) {
+
+    eo_new <- pmin(eo, ei)
+    ei <- pmax(eo, ei)
+    eo <- eo_new
+  }
+
   if (poisson_edges) {
+
     # NOTE: x = 1 is correct to create a multigraph adjacency matrix
     # here. see ?Matrix::sparseMatrix for details, in particular the
     # documentation for arguments `i, j`
+
     A <- sparseMatrix(eo, ei, x = 1, dims = c(n, d), symmetric = !directed)
   } else {
     A <- sparseMatrix(eo, ei, dims = c(n, d), symmetric = !directed)

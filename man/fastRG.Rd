@@ -64,7 +64,8 @@ The \code{from} column contains the index of the outgoing edge,
 and the \code{to} column contains the index of the incoming edge.
 }
 \description{
-Sample a Random Dot Product Graph (RDPG)
+We \emph{strongly} advise that you always set \code{avg_deg}, as it is
+easy to request very large and dense graphs without this scaling.
 }
 \details{
 TODO: clean up the following:
@@ -93,20 +94,30 @@ k1 <- 5
 k2 <- 3
 
 X <- matrix(rpois(n = n * k1, 1), nrow = n)
+S <- matrix(runif(n = k1 * k2, 0, .1), nrow = k1)
 Y <- matrix(rpois(n = d * k2, 1), nrow = d)
-S <- matrix(runif(n = k1 * k2, 0, .1), nrow = K1)
 
 # all the bells and whistles, return graph as a matrix
 A <- fastRG(X, S, Y, avg_deg = 10)
 
-# a nice binary, symmetric graph with no self-loops
-B <- fastRG(X, S, avg_deg = 10, simple = TRUE)
+# expected edge count, degree and density without scaling
+expected(X, S, Y)
 
 # get the graph as an edge list
-edge_list <- fastRG(X, S, return_edge_list = TRUE)
+edge_list <- fastRG(X, S, Y, return_edge_list = TRUE)
 
-# a symmetric graph
-C <- fastRG(X, S, directed = FALSE)
+### some symmetric graphs
+
+S2 <- matrix(runif(n = k1 * k1, 0, .1), nrow = k1)
+
+# a binary, symmetric graph with no self-loops
+B <- fastRG(X, S2, avg_deg = 10, simple = TRUE)
+
+# another symmetric graph
+C <- fastRG(X, S2, avg_deg = 20, directed = FALSE)
+
+# expected edge count, degree and density without scaling
+expected(X, S2)
 
 }
 \references{

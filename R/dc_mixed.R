@@ -35,7 +35,7 @@
 #'
 #' params <- dc_mixed_params(theta, alpha, B, avg_deg = 50)
 #'
-#' expected(params)
+#' expected(params$X, params$S)
 #'
 dc_mixed <- function(theta, alpha, B, avg_deg = NULL,
                      poisson_edges = TRUE, sort_nodes = FALSE, ...) {

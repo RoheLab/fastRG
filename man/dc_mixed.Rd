@@ -119,6 +119,10 @@ alpha <- rep(1, k)            # equiprobable communities
 
 A <- dc_mixed(theta, alpha, B, avg_deg = 50)
 
+params <- dc_mixed_params(theta, alpha, B, avg_deg = 50)
+
+expected(params$X, params$S)
+
 }
 \seealso{
 \code{\link[=fastRG]{fastRG()}}

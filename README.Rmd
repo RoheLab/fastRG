@@ -37,6 +37,8 @@ There's also a [Python implementation](https://github.com/yunjhongwu/matrix-rout
 
 The easiest way to use `fastRG` is to use wrapper functions that sample from popular graph models. For example, to sample from an Erdos-Renyi graph `n = 1,000,000` nodes and expected degree of five, we can use the `erdos_renyi()` function.
 
+We *strongly* advise that you always set `avg_deg`, as it is easy to request very large and dense graphs without this scaling.
+
 ```{r}
 library(fastRG)
 

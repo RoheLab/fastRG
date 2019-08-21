@@ -1,6 +1,6 @@
 Package: fastRG
 Title: Sample Generalized Random Dot Product Graphs in Linear Time
-Version: 0.0.0.9000
+Version: 0.0.0.9001
 Authors@R: 
     c(person(given = "Karl",
              family = "Rohe",
@@ -30,20 +30,20 @@ Description: Samples generalized random product graph, a
     O(n^2) operations to sample a random graph, where n is the number of
     nodes.
 License: MIT + file LICENSE
+URL: https://github.com/RoheLab/fastRG
+BugReports: https://github.com/RoheLab/fastRG/issues
+Depends: 
+    Matrix
 Imports: 
     igraph
 Suggests: 
     knitr,
     rmarkdown,
-    testthat (>= 2.1.0),
-    RSpectra
+    RSpectra,
+    testthat (>= 2.1.0)
 VignetteBuilder: 
     knitr
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.1.1
-URL: https://github.com/alexpghayes/fastRG
-BugReports: https://github.com/alexpghayes/fastRG/issues
-Depends: 
-    Matrix

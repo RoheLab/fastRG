@@ -18,7 +18,8 @@ A named list with three measurements from a Poisson RDPG(X, S, Y)
 multi-graph:
 \itemize{
 \item \code{count}: Expected number of edges.
-\item \code{degree}: Expected degree of each node.
+\item \code{degree}: Expected degree of each node. TODO: for directed graphs
+is this the in-degree or the out-degree?
 \item \code{density}: Expected edge density. Equals the expected number of edges
 divided by the total number of edges.
 }

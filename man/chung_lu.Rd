@@ -63,15 +63,17 @@ Sample a Chung-Lu graph
 
 set.seed(27)
 
-expected_degree <- c(0, 1, 0, 2, 0)
+theta <- c(0, 1, 0, 2, 0)
 
-A <- chung_lu(expected_degree)
+A <- chung_lu(theta)
 
 # out degree
 rowSums(A)
 
 # get the random dot product model parameters
-params <- chung_lu_params(expected_degree)
+params <- chung_lu_params(theta)
+
+expected(params$X, params$S)
 
 }
 \seealso{

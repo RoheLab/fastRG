@@ -45,6 +45,10 @@
 #'
 #' A <- dcsbm(theta, pi, B, avg_deg = 50)
 #'
+#' params <- dcsbm_params(theta, pi, B, avg_deg = 50)
+#'
+#' expected(params$X, params$S)
+#'
 dcsbm <- function(theta, pi, B, avg_deg = NULL, poisson_edges = TRUE,
                   sort_nodes = FALSE, ...) {
 
