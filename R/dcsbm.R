@@ -123,5 +123,5 @@ dcsbm_params <- function(theta, pi, B, avg_deg = NULL, poisson_edges = TRUE,
     B <- -log(1 - B)
   }
 
-  list(X = X, S = B, Y = X)
+  list(X = X, S = B, Y = X, z = z)
 }

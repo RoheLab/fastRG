@@ -131,5 +131,5 @@ disbm_params <- function(n, pi_in, pi_out, B, avg_deg = NULL,
     B <- -log(1 - B)
   }
 
-  list(X = X, S = B, Y = Y)
+  list(X = X, S = B, Y = Y, z_in = z_in, z_out = z_out)
 }

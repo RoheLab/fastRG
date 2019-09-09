@@ -108,5 +108,6 @@ dc_overlapping_params <- function(theta, p, B, avg_deg = NULL,
     B <- -log(1 - B)
   }
 
+  # TODO: return latent communities
   list(X = X, S = B, Y = X)
 }

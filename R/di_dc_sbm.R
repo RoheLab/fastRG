@@ -159,5 +159,5 @@ di_dc_sbm_params <- function(theta_in, theta_out, pi_in, pi_out, B,
     B <- -log(1 - B)
   }
 
-  list(X = X, S = B, Y = Y)
+  list(X = X, S = B, Y = Y, z_in = z_in, z_out = z_out)
 }

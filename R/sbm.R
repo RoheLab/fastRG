@@ -104,5 +104,5 @@ sbm_params <- function(n, pi, B, avg_deg = NULL, poisson_edges = TRUE,
     B <- -log(1 - B)
   }
 
-  list(X = X, S = B, Y = X)
+  list(X = X, S = B, Y = X, z = z)
 }

@@ -102,5 +102,6 @@ dc_mixed_params <- function(theta, alpha, B, avg_deg = NULL,
     B <- -log(1 - B)
   }
 
+  # TODO: return latent communities
   list(X = X, S = B, Y = X)
 }
