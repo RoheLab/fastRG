@@ -7,6 +7,8 @@
 
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+[![Travis build
+status](https://travis-ci.org/RoheLab/fastRG.svg?branch=master)](https://travis-ci.org/RoheLab/fastRG)
 <!-- badges: end -->
 
 `fastRG` quickly samples a broad class of network models known as
@@ -16,7 +18,7 @@ individual entries are Poisson distributed. We recommend that you think
 of `A` as the adjacency matrix for a graph (or a multi-graph).
 Crucially, the sampling is `O(m)`, where `m` is the number of the edges
 in graph. Other algorithms are `O(n^2)`, where `n` is the number of
-nodes in the network. For additional details, please have a look at the
+nodes in the network. For additional details, see the
 [paper](https://arxiv.org/abs/1703.02998).
 
 ## Installation
@@ -53,12 +55,12 @@ for the graph as an edgelist as well.
 el <- erdos_renyi(n = 1000, avg_deg = 5, return_edge_list = TRUE)
 head(el)
 #>      from  to
-#> [1,]   57 970
-#> [2,]  546 737
-#> [3,]  253 779
-#> [4,]  798 223
-#> [5,]  522 679
-#> [6,]  853  72
+#> [1,]  143 367
+#> [2,]  247 799
+#> [3,]  519 224
+#> [4,]  334  43
+#> [5,]  639 304
+#> [6,]  930 702
 ```
 
 This results in a fast way to create `igraph` objects using
@@ -67,17 +69,17 @@ This results in a fast way to create `igraph` objects using
 ``` r
 g <- igraph::graph_from_edgelist(el)
 g
-#> IGRAPH 6e969ad D--- 1000 5006 -- 
-#> + edges from 6e969ad:
-#>  [1]  57->970 546->737 253->779 798->223 522->679 853-> 72 574->444
-#>  [8] 575->798 946->649 735-> 23  12->729 174->944 121->308  34->968
-#> [15] 489->346 231->162 565-> 87 687->320 810->648  64->269 313-> 65
-#> [22] 391->701 751->958 488->199 390->375 732->782 870->627 110->396
-#> [29] 816->653 421->865 556->907 582->836 938->368 552->602 715->755
-#> [36] 144->618 673-> 88 887->825 794->511 710->289 248->243 980->929
-#> [43] 868->996 240->925 691->313 454->582 350->345 369->689  67-> 44
-#> [50]  17->773 593->367 582->363 983-> 60 472->869 299-> 56 220->713
-#> [57] 817->370 770->633  48->479 385->168 338->862  32->750 639->258
+#> IGRAPH ef6e76e D--- 1000 5058 -- 
+#> + edges from ef6e76e:
+#>  [1] 143->367 247->799 519->224 334-> 43 639->304 930->702 673->475
+#>  [8]  88->229 723->382 655->631 499-> 40 240->732 710->992  70->463
+#> [15] 951->  8 965->755 309->474  67->341 255->654 167->839 610-> 50
+#> [22] 163->245 626->635 970->249 349->132 717->870 280->844 186->256
+#> [29] 816->320 707->147 400->742 644->585 465->999 126->521 140->986
+#> [36] 602->  4 323->311 908->814 183->270  23->330  57->431 365->163
+#> [43] 266->489 874->540 397->722 365->502 406-> 30 763->230 772->875
+#> [50] 312->  8 467->651 177->  1 839-> 73 818->204  74->650 739->884
+#> [57] 520->174 956->621  88->977  95->866 276->924  45->927 969->951
 #> + ... omitted several edges
 ```
 
