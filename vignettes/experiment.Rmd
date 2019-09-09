@@ -18,7 +18,6 @@ WARNING: this code has not yet been cleaned up it. It repeats the computational 
 
 ```{r}
 library(fastRG)
-
 library(dplyr)
 library(ggplot2)
 
