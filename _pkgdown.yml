@@ -19,6 +19,11 @@ reference:
       - "dc_overlapping"
       - "dcsbm"
       - "sbm"
+  - title: Directed stochastic blockmodels
+    desc: ~
+    contents:
+      - "di_dc_sbm"
+      - "disbm"
   - title: Bernoulli graphs
     desc: ~
     contents:

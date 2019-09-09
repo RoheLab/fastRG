@@ -130,6 +130,7 @@ A <- dc_overlapping(theta, p, B, avg_deg = 50)
 \code{\link[=fastRG]{fastRG()}}
 
 Other stochastic block models: \code{\link{dc_mixed}},
-  \code{\link{dcsbm}}, \code{\link{sbm}}
+  \code{\link{dcsbm}}, \code{\link{di_dc_sbm}},
+  \code{\link{disbm_params}}, \code{\link{disbm}}
 }
 \concept{stochastic block models}
