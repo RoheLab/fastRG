@@ -55,7 +55,7 @@
 #'
 #' params <- di_dc_sbm_params(theta_in, theta_out, pi_in, pi_out, B, avg_deg = 50)
 #'
-#' expected(params$X, params$S, params%Y)
+#' expected(params$X, params$S, params$Y)
 #'
 di_dc_sbm <- function(theta_in, theta_out, pi_in, pi_out, B, avg_deg = NULL,
                       poisson_edges = TRUE, sort_nodes = FALSE, ...) {

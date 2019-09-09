@@ -143,7 +143,7 @@ A <- di_dc_sbm(theta_in, theta_out, pi_in, pi_out, B, avg_deg = 50)
 
 params <- di_dc_sbm_params(theta_in, theta_out, pi_in, pi_out, B, avg_deg = 50)
 
-expected(params$X, params$S, params\%Y)
+expected(params$X, params$S, params$Y)
 
 }
 \seealso{
