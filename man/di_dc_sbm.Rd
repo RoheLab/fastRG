@@ -151,7 +151,8 @@ expected(params$X, params$S, params$Y)
 
 Other stochastic block models: \code{\link{dc_mixed}},
   \code{\link{dc_overlapping}}, \code{\link{dcsbm}},
-  \code{\link{disbm_params}}, \code{\link{disbm}}
+  \code{\link{disbm_params}}, \code{\link{disbm}},
+  \code{\link{planted_partition}}
 
 Other directed graphs: \code{\link{disbm}}
 }

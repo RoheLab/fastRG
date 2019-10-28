@@ -19,6 +19,7 @@ reference:
       - "dc_overlapping"
       - "dcsbm"
       - "sbm"
+      - "planted_partition"
   - title: Directed stochastic blockmodels
     desc: ~
     contents:
@@ -27,6 +28,7 @@ reference:
   - title: Bernoulli graphs
     desc: ~
     contents:
+      - "planted_partition"
       - "chung_lu"
       - "erdos_renyi"
   - title: Utilities

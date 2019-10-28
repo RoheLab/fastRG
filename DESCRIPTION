@@ -35,7 +35,9 @@ BugReports: https://github.com/RoheLab/fastRG/issues
 Depends: 
     Matrix
 Imports: 
-    igraph
+    igraph,
+    distributions3,
+    magrittr
 Suggests: 
     knitr,
     rmarkdown,

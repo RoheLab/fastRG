@@ -120,6 +120,7 @@ A <- sbm(n, pi, B)
 
 Other stochastic block models: \code{\link{dc_mixed}},
   \code{\link{dc_overlapping}}, \code{\link{dcsbm}},
-  \code{\link{di_dc_sbm}}, \code{\link{disbm}}
+  \code{\link{di_dc_sbm}}, \code{\link{disbm}},
+  \code{\link{planted_partition}}
 }
 \concept{stochastic block models}

@@ -129,6 +129,7 @@ expected(params$X, params$S)
 
 Other stochastic block models: \code{\link{dc_overlapping}},
   \code{\link{dcsbm}}, \code{\link{di_dc_sbm}},
-  \code{\link{disbm_params}}, \code{\link{disbm}}
+  \code{\link{disbm_params}}, \code{\link{disbm}},
+  \code{\link{planted_partition}}
 }
 \concept{stochastic block models}

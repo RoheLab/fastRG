@@ -122,7 +122,8 @@ A <- disbm(n, pi_in, pi_out, B)
 
 Other stochastic block models: \code{\link{dc_mixed}},
   \code{\link{dc_overlapping}}, \code{\link{dcsbm}},
-  \code{\link{di_dc_sbm}}, \code{\link{disbm_params}}
+  \code{\link{di_dc_sbm}}, \code{\link{disbm_params}},
+  \code{\link{planted_partition}}
 
 Other directed graphs: \code{\link{di_dc_sbm}}
 }

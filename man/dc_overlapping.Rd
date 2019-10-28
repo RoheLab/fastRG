@@ -131,6 +131,7 @@ A <- dc_overlapping(theta, p, B, avg_deg = 50)
 
 Other stochastic block models: \code{\link{dc_mixed}},
   \code{\link{dcsbm}}, \code{\link{di_dc_sbm}},
-  \code{\link{disbm_params}}, \code{\link{disbm}}
+  \code{\link{disbm_params}}, \code{\link{disbm}},
+  \code{\link{planted_partition}}
 }
 \concept{stochastic block models}

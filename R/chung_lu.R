@@ -39,6 +39,7 @@ chung_lu <- function(theta, ...) {
 #' @rdname chung_lu
 #' @export
 chung_lu_params <- function(theta) {
+
   if (!is.vector(theta)) {
     stop("`theta` must be a vector.", call. = FALSE)
   }

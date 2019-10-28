@@ -79,6 +79,7 @@ expected(params$X, params$S)
 \seealso{
 \code{\link[=fastRG]{fastRG()}}
 
-Other bernoulli graphs: \code{\link{erdos_renyi}}
+Other bernoulli graphs: \code{\link{erdos_renyi}},
+  \code{\link{planted_partition}}
 }
 \concept{bernoulli graphs}
