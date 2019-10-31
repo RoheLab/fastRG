@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Sample a stochastic blockmodel — disbm_params • fastRG</title>
+<title>Sample a balanced planted partition model — planted_partition • fastRG</title>
 
 <!-- jquery -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -30,9 +30,9 @@
 
 
 
-<meta property="og:title" content="Sample a stochastic blockmodel — disbm_params" />
+<meta property="og:title" content="Sample a balanced planted partition model — planted_partition" />
 
-<meta property="og:description" content="Sample a stochastic blockmodel" />
+<meta property="og:description" content="Sample a balanced planted partition model" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -114,25 +114,23 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Sample a stochastic blockmodel</h1>
-    <small class="dont-index">Source: <a href='https://github.com/RoheLab/fastRG/blob/master/R/disbm.R'><code>R/disbm.R</code></a>, <a href='https://github.com/RoheLab/fastRG/blob/master/R/sbm.R'><code>R/sbm.R</code></a></small>
-    <div class="hidden name"><code>sbm.Rd</code></div>
+    <h1>Sample a balanced planted partition model</h1>
+    <small class="dont-index">Source: <a href='https://github.com/RoheLab/fastRG/blob/master/R/planted_partition.R'><code>R/planted_partition.R</code></a></small>
+    <div class="hidden name"><code>planted_partition.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Sample a stochastic blockmodel</p>
+    <p>Sample a balanced planted partition model</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>disbm_params</span>(<span class='no'>n</span>, <span class='no'>pi_in</span>, <span class='no'>pi_out</span>, <span class='no'>B</span>, <span class='kw'>avg_deg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>poisson_edges</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>sort_nodes</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
+    <pre class="usage"><span class='fu'>planted_partition</span>(<span class='no'>n</span>, <span class='no'>k</span>, <span class='kw'>within_block</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>between_block</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>a</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>b</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>sort_nodes</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
 
-<span class='fu'>sbm</span>(<span class='no'>n</span>, <span class='no'>pi</span>, <span class='no'>B</span>, <span class='kw'>avg_deg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>poisson_edges</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>sort_nodes</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
-
-<span class='fu'>sbm_params</span>(<span class='no'>n</span>, <span class='no'>pi</span>, <span class='no'>B</span>, <span class='kw'>avg_deg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>poisson_edges</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>sort_nodes</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)</pre>
+<span class='fu'>planted_partition_params</span>(<span class='no'>n</span>, <span class='no'>k</span>, <span class='kw'>within_block</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>between_block</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>a</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>b</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>sort_nodes</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>,
+  <span class='no'>...</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -142,29 +140,36 @@
       <td><p>Number of nodes in graph.</p></td>
     </tr>
     <tr>
-      <th>B</th>
-      <td><p>A <code><a href='https://www.rdocumentation.org/packages/base/topics/length'>length(pi)</a></code> by <code><a href='https://www.rdocumentation.org/packages/base/topics/length'>length(pi)</a></code> matrix of block connection
-probabilities. <code>B[i, j]</code> contains the probability that a node in
-community <code>i</code> links to a node in community <code>j</code>. Does not need to
-be symmetric.</p></td>
+      <th>k</th>
+      <td><p>Number of planted partitions.</p></td>
     </tr>
     <tr>
-      <th>avg_deg</th>
-      <td><p>When specified, rescales parameter such that the
-expected degree is <code>avg_deg</code> in the Poisson multi-graph. When
-<code>poisson_edges = FALSE</code>, the resulting graph will have lower a
-average degree than <code>avg_deg</code> due to lack of multi-edges. When
-the graph is sparse, the expected number of edges for the Poisson
-multi-graph and Bernoulli graph are nearly the
-same. Defaults to <code>NULL</code>, such that no scaling occurs.</p></td>
+      <th>within_block</th>
+      <td><p>Probability of within block edges. Must be
+strictly between zero and one. Must specify either
+<code>within_block</code> and <code>between_block</code>, or <code>a</code> and <code>b</code> to determine
+edge probabilities.</p></td>
     </tr>
     <tr>
-      <th>poisson_edges</th>
-      <td><p>Logical indicating whether or not multi-edges are
-allowed. Defaults to <code>TRUE</code>, which keeps multi-edges and produces
-a multi-graph. When <code>FALSE</code>, only single edges are allowed, resulting
-in a graph. See <strong>details</strong> for some additional comments. Effected by
-<code>simple</code> argument.</p></td>
+      <th>between_block</th>
+      <td><p>Probability of between block edges. Must be
+strictly between zero and one. Must specify either
+<code>within_block</code> and <code>between_block</code>, or <code>a</code> and <code>b</code> to determine
+edge probabilities.</p></td>
+    </tr>
+    <tr>
+      <th>a</th>
+      <td><p>Integer such that <code>a/n</code> is the probability of edges
+within a block. Useful for sparse graphs. Must specify either
+<code>within_block</code> and <code>between_block</code>, or <code>a</code> and <code>b</code> to determine
+edge probabilities.</p></td>
+    </tr>
+    <tr>
+      <th>b</th>
+      <td><p>Integer such that <code>b/n</code> is the probability of edges
+between blocks. Useful for sparse graphs. Must specify either
+<code>within_block</code> and <code>between_block</code>, or <code>a</code> and <code>b</code> to determine
+edge probabilities.</p></td>
     </tr>
     <tr>
       <th>sort_nodes</th>
@@ -212,12 +217,6 @@ is completed. Effected by the <code>simple</code> argument.</p></dd>
 rather than an adjacency matrix. Defaults to <code>FALSE</code>.</p></dd>
 </dl></td>
     </tr>
-    <tr>
-      <th>pi</th>
-      <td><p>Block sampling proportions. Must be positive, but do not need to
-sum to one, as they will be normalized internally. Note that <code><a href='https://www.rdocumentation.org/packages/base/topics/length'>length(pi)</a></code>
-implicitly specifies the number of blocks.</p></td>
-    </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -240,23 +239,29 @@ and the <code>to</code> column contains the index of the incoming edge.</p>
     <div class='dont-index'><p><code><a href='fastRG.html'>fastRG()</a></code></p>
 <p>Other stochastic block models: <code><a href='dc_mixed.html'>dc_mixed</a></code>,
   <code><a href='dc_overlapping.html'>dc_overlapping</a></code>, <code><a href='dcsbm.html'>dcsbm</a></code>,
-  <code><a href='di_dc_sbm.html'>di_dc_sbm</a></code>, <code><a href='disbm.html'>disbm</a></code>,
-  <code><a href='planted_partition.html'>planted_partition</a></code></p></div>
+  <code><a href='di_dc_sbm.html'>di_dc_sbm</a></code>, <code><a href='sbm.html'>disbm_params</a></code>,
+  <code><a href='disbm.html'>disbm</a></code></p>
+<p>Other bernoulli graphs: <code><a href='chung_lu.html'>chung_lu</a></code>,
+  <code><a href='erdos_renyi.html'>erdos_renyi</a></code></p></div>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
 <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/Random'>set.seed</a></span>(<span class='fl'>27</span>)
 
-<span class='no'>n</span> <span class='kw'>&lt;-</span> <span class='fl'>1000</span>
-<span class='no'>pi</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>0.3</span>, <span class='fl'>0.7</span>)
-
-<span class='no'>B</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/cbind'>rbind</a></span>(
-  <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>0.7</span>, <span class='fl'>0.1</span>),
-  <span class='fu'><a href='https://www.rdocumentation.org/packages/base/topics/c'>c</a></span>(<span class='fl'>0.1</span>, <span class='fl'>0.6</span>)
+<span class='no'>A</span> <span class='kw'>&lt;-</span> <span class='fu'>planted_partition</span>(
+  <span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>1000</span>,
+  <span class='kw'>k</span> <span class='kw'>=</span> <span class='fl'>3</span>,
+  <span class='kw'>within_block</span> <span class='kw'>=</span> <span class='fl'>0.8</span>,
+  <span class='kw'>between_block</span> <span class='kw'>=</span> <span class='fl'>0.2</span>
 )
 
-<span class='no'>A</span> <span class='kw'>&lt;-</span> <span class='fu'>sbm</span>(<span class='no'>n</span>, <span class='no'>pi</span>, <span class='no'>B</span>)</div></pre>
+<span class='no'>B</span> <span class='kw'>&lt;-</span> <span class='fu'>planted_partition</span>(
+  <span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>1000</span>,
+  <span class='kw'>k</span> <span class='kw'>=</span> <span class='fl'>3</span>,
+  <span class='kw'>a</span> <span class='kw'>=</span> <span class='fl'>10</span>,
+  <span class='kw'>b</span> <span class='kw'>=</span> <span class='fl'>4</span>
+)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

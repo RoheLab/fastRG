@@ -108,7 +108,7 @@ A <- planted_partition(
   between_block = 0.2
 )
 
-A <- planted_partition(
+B <- planted_partition(
   n = 1000,
   k = 3,
   a = 10,
