@@ -5,20 +5,37 @@
 \alias{planted_partition_params}
 \title{Sample a balanced planted partition model}
 \usage{
-planted_partition(n, k, within_block, between_block, sort_nodes = FALSE,
-  ...)
+planted_partition(n, k, within_block = NULL, between_block = NULL,
+  a = NULL, b = NULL, sort_nodes = FALSE, ...)
 
-planted_partition_params(n, k, within_block, between_block,
-  sort_nodes = FALSE, ...)
+planted_partition_params(n, k, within_block = NULL,
+  between_block = NULL, a = NULL, b = NULL, sort_nodes = FALSE,
+  ...)
 }
 \arguments{
 \item{n}{Number of nodes in graph.}
 
 \item{k}{Number of planted partitions.}
 
-\item{within_block}{Probability of within block edges.}
+\item{within_block}{Probability of within block edges. Must be
+strictly between zero and one. Must specify either
+\code{within_block} and \code{between_block}, or \code{a} and \code{b} to determine
+edge probabilities.}
 
-\item{between_block}{Probability of between block edges.}
+\item{between_block}{Probability of between block edges. Must be
+strictly between zero and one. Must specify either
+\code{within_block} and \code{between_block}, or \code{a} and \code{b} to determine
+edge probabilities.}
+
+\item{a}{Integer such that \code{a/n} is the probability of edges
+within a block. Useful for sparse graphs. Must specify either
+\code{within_block} and \code{between_block}, or \code{a} and \code{b} to determine
+edge probabilities.}
+
+\item{b}{Integer such that \code{b/n} is the probability of edges
+between blocks. Useful for sparse graphs. Must specify either
+\code{within_block} and \code{between_block}, or \code{a} and \code{b} to determine
+edge probabilities.}
 
 \item{sort_nodes}{Logical indicating whether or not to sort the nodes
 so that they are grouped by block. This incurs the the cost of a
@@ -89,6 +106,13 @@ A <- planted_partition(
   k = 3,
   within_block = 0.8,
   between_block = 0.2
+)
+
+A <- planted_partition(
+  n = 1000,
+  k = 3,
+  a = 10,
+  b = 4
 )
 
 }

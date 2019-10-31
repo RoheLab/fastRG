@@ -115,7 +115,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Sample a degree corrected stochastic blockmodel graph</h1>
-    <small class="dont-index">Source: <a href='https://github.com/RoheLab/fastRG/blob/master/R/dcsbm.R'><code>R/dcsbm.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/RoheLab/fastRG/blob/master/R/dcsbm.R'><code>R/dcsbm.R</code></a>, <a href='https://github.com/RoheLab/fastRG/blob/master/R/di_dc_sbm.R'><code>R/di_dc_sbm.R</code></a></small>
     <div class="hidden name"><code>dcsbm.Rd</code></div>
     </div>
 
@@ -129,7 +129,10 @@
   <span class='kw'>sort_nodes</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='no'>...</span>)
 
 <span class='fu'>dcsbm_params</span>(<span class='no'>theta</span>, <span class='no'>pi</span>, <span class='no'>B</span>, <span class='kw'>avg_deg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>, <span class='kw'>poisson_edges</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>,
-  <span class='kw'>sort_nodes</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
+  <span class='kw'>sort_nodes</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+
+<span class='fu'>di_dc_sbm_params</span>(<span class='no'>theta_in</span>, <span class='no'>theta_out</span>, <span class='no'>pi_in</span>, <span class='no'>pi_out</span>, <span class='no'>B</span>, <span class='kw'>avg_deg</span> <span class='kw'>=</span> <span class='kw'>NULL</span>,
+  <span class='kw'>poisson_edges</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>sort_nodes</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -251,7 +254,9 @@ for different degree distributions between blocks.</p>
 
     <div class='dont-index'><p><code><a href='fastRG.html'>fastRG()</a></code></p>
 <p>Other stochastic block models: <code><a href='dc_mixed.html'>dc_mixed</a></code>,
-  <code><a href='dc_overlapping.html'>dc_overlapping</a></code>, <code><a href='sbm.html'>sbm</a></code></p></div>
+  <code><a href='dc_overlapping.html'>dc_overlapping</a></code>, <code><a href='di_dc_sbm.html'>di_dc_sbm</a></code>,
+  <code><a href='sbm.html'>disbm_params</a></code>, <code><a href='disbm.html'>disbm</a></code>,
+  <code><a href='planted_partition.html'>planted_partition</a></code></p></div>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>

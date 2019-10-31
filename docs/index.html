@@ -118,26 +118,26 @@
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">el &lt;-<span class="st"> </span><span class="kw"><a href="reference/erdos_renyi.html">erdos_renyi</a></span>(<span class="dt">n =</span> <span class="dv">1000</span>, <span class="dt">avg_deg =</span> <span class="dv">5</span>, <span class="dt">return_edge_list =</span> <span class="ot">TRUE</span>)</a>
 <a class="sourceLine" id="cb3-2" title="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(el)</a>
 <a class="sourceLine" id="cb3-3" title="3"><span class="co">#&gt;      from  to</span></a>
-<a class="sourceLine" id="cb3-4" title="4"><span class="co">#&gt; [1,]  237 165</span></a>
-<a class="sourceLine" id="cb3-5" title="5"><span class="co">#&gt; [2,]  571 845</span></a>
-<a class="sourceLine" id="cb3-6" title="6"><span class="co">#&gt; [3,]  128 984</span></a>
-<a class="sourceLine" id="cb3-7" title="7"><span class="co">#&gt; [4,]  840 479</span></a>
-<a class="sourceLine" id="cb3-8" title="8"><span class="co">#&gt; [5,]  128 474</span></a>
-<a class="sourceLine" id="cb3-9" title="9"><span class="co">#&gt; [6,]  869 324</span></a></code></pre></div>
+<a class="sourceLine" id="cb3-4" title="4"><span class="co">#&gt; [1,]  314 557</span></a>
+<a class="sourceLine" id="cb3-5" title="5"><span class="co">#&gt; [2,]  703 494</span></a>
+<a class="sourceLine" id="cb3-6" title="6"><span class="co">#&gt; [3,]  529 163</span></a>
+<a class="sourceLine" id="cb3-7" title="7"><span class="co">#&gt; [4,]  602 929</span></a>
+<a class="sourceLine" id="cb3-8" title="8"><span class="co">#&gt; [5,]  269 822</span></a>
+<a class="sourceLine" id="cb3-9" title="9"><span class="co">#&gt; [6,]  774 353</span></a></code></pre></div>
 <p>This results in a fast way to create <code>igraph</code> objects using <code><a href="https://www.rdocumentation.org/packages/igraph/topics/graph_from_edgelist">igraph::graph_from_edgelist()</a></code>.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1">g &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/igraph/topics/graph_from_edgelist">graph_from_edgelist</a></span>(el)</a>
 <a class="sourceLine" id="cb4-2" title="2">g</a>
-<a class="sourceLine" id="cb4-3" title="3"><span class="co">#&gt; IGRAPH 7f6f5ab D--- 1000 5120 -- </span></a>
-<a class="sourceLine" id="cb4-4" title="4"><span class="co">#&gt; + edges from 7f6f5ab:</span></a>
-<a class="sourceLine" id="cb4-5" title="5"><span class="co">#&gt;  [1] 237-&gt;165 571-&gt;845 128-&gt;984 840-&gt;479 128-&gt;474 869-&gt;324 332-&gt;398</span></a>
-<a class="sourceLine" id="cb4-6" title="6"><span class="co">#&gt;  [8]   7-&gt;706 817-&gt;172 197-&gt;633 925-&gt;858 131-&gt; 36 366-&gt;340 178-&gt;  8</span></a>
-<a class="sourceLine" id="cb4-7" title="7"><span class="co">#&gt; [15] 104-&gt; 66 985-&gt;955 290-&gt;892 393-&gt;485 609-&gt;805 510-&gt;363 206-&gt;532</span></a>
-<a class="sourceLine" id="cb4-8" title="8"><span class="co">#&gt; [22] 938-&gt;118 837-&gt;926 839-&gt;559 800-&gt;357 460-&gt;755 221-&gt;730  94-&gt;293</span></a>
-<a class="sourceLine" id="cb4-9" title="9"><span class="co">#&gt; [29] 921-&gt;717 792-&gt;584 418-&gt;863 947-&gt;123 498-&gt; 48 883-&gt;698  33-&gt;994</span></a>
-<a class="sourceLine" id="cb4-10" title="10"><span class="co">#&gt; [36] 418-&gt;840 448-&gt;859 866-&gt;402 935-&gt;954 998-&gt;463 736-&gt;593 943-&gt;726</span></a>
-<a class="sourceLine" id="cb4-11" title="11"><span class="co">#&gt; [43]  83-&gt;699 977-&gt;610 988-&gt;371 896-&gt;583 960-&gt; 62 465-&gt;685 870-&gt;463</span></a>
-<a class="sourceLine" id="cb4-12" title="12"><span class="co">#&gt; [50] 204-&gt;132 946-&gt;  7 968-&gt;195 276-&gt;525 376-&gt;  5 182-&gt;768 561-&gt;208</span></a>
-<a class="sourceLine" id="cb4-13" title="13"><span class="co">#&gt; [57]   2-&gt;957   3-&gt;211 175-&gt;641 584-&gt;  5 548-&gt;669 158-&gt;503 625-&gt;730</span></a>
+<a class="sourceLine" id="cb4-3" title="3"><span class="co">#&gt; IGRAPH f8c31fe D--- 1000 5096 -- </span></a>
+<a class="sourceLine" id="cb4-4" title="4"><span class="co">#&gt; + edges from f8c31fe:</span></a>
+<a class="sourceLine" id="cb4-5" title="5"><span class="co">#&gt;  [1] 314-&gt;557 703-&gt;494 529-&gt;163 602-&gt;929 269-&gt;822 774-&gt;353 564-&gt; 31</span></a>
+<a class="sourceLine" id="cb4-6" title="6"><span class="co">#&gt;  [8] 873-&gt;621 580-&gt;795 749-&gt;660  93-&gt;733 402-&gt;934 233-&gt;806 683-&gt;329</span></a>
+<a class="sourceLine" id="cb4-7" title="7"><span class="co">#&gt; [15] 148-&gt;633 784-&gt;435 724-&gt;481   6-&gt;495 216-&gt;111 687-&gt;881  16-&gt;264</span></a>
+<a class="sourceLine" id="cb4-8" title="8"><span class="co">#&gt; [22]  54-&gt;255 283-&gt;671 290-&gt;862 760-&gt;974 509-&gt;756 432-&gt;983 700-&gt;531</span></a>
+<a class="sourceLine" id="cb4-9" title="9"><span class="co">#&gt; [29] 664-&gt;462 794-&gt;293 456-&gt;313 825-&gt;997  61-&gt;196 976-&gt;927 527-&gt;662</span></a>
+<a class="sourceLine" id="cb4-10" title="10"><span class="co">#&gt; [36] 130-&gt;896 338-&gt;718 399-&gt;461  97-&gt;325 459-&gt;867 157-&gt; 96 155-&gt;660</span></a>
+<a class="sourceLine" id="cb4-11" title="11"><span class="co">#&gt; [43] 476-&gt;485 440-&gt; 19 287-&gt;974 865-&gt;556 228-&gt;585 551-&gt;441 990-&gt;942</span></a>
+<a class="sourceLine" id="cb4-12" title="12"><span class="co">#&gt; [50] 263-&gt;316 518-&gt;256 662-&gt;462 852-&gt;146  80-&gt;603 204-&gt;589 926-&gt;631</span></a>
+<a class="sourceLine" id="cb4-13" title="13"><span class="co">#&gt; [57]   5-&gt;881 324-&gt;974  68-&gt;211  71-&gt; 40 260-&gt;241 354-&gt;332 474-&gt;402</span></a>
 <a class="sourceLine" id="cb4-14" title="14"><span class="co">#&gt; + ... omitted several edges</span></a></code></pre></div>
 </div>
 <div id="other-languages" class="section level2">
@@ -180,6 +180,7 @@
 <h2>Dev status</h2>
 <ul class="list-unstyled">
 <li><a href="https://www.tidyverse.org/lifecycle/#experimental"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
+<li><a href="https://travis-ci.org/RoheLab/fastRG"><img src="https://travis-ci.org/RoheLab/fastRG.svg?branch=master" alt="Travis build status"></a></li>
 </ul>
 </div>
 </div>

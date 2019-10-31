@@ -2,8 +2,26 @@
 #'
 #' @param n Number of nodes in graph.
 #' @param k Number of planted partitions.
-#' @param within_block Probability of within block edges.
-#' @param between_block Probability of between block edges.
+#'
+#' @param within_block Probability of within block edges. Must be
+#'   strictly between zero and one. Must specify either
+#'   `within_block` and `between_block`, or `a` and `b` to determine
+#'   edge probabilities.
+#'
+#' @param between_block Probability of between block edges. Must be
+#'   strictly between zero and one. Must specify either
+#'   `within_block` and `between_block`, or `a` and `b` to determine
+#'   edge probabilities.
+#'
+#' @param a Integer such that `a/n` is the probability of edges
+#'   within a block. Useful for sparse graphs. Must specify either
+#'   `within_block` and `between_block`, or `a` and `b` to determine
+#'   edge probabilities.
+#'
+#' @param b Integer such that `b/n` is the probability of edges
+#'   between blocks. Useful for sparse graphs. Must specify either
+#'   `within_block` and `between_block`, or `a` and `b` to determine
+#'   edge probabilities.
 #'
 #' @param sort_nodes Logical indicating whether or not to sort the nodes
 #'   so that they are grouped by block. This incurs the the cost of a
@@ -32,11 +50,18 @@
 #'   between_block = 0.2
 #' )
 #'
-planted_partition <- function(n, k, within_block, between_block,
-                              sort_nodes = FALSE, ...) {
+#' B <- planted_partition(
+#'   n = 1000,
+#'   k = 3,
+#'   a = 10,
+#'   b = 4
+#' )
+#'
+planted_partition <- function(n, k, within_block = NULL, between_block = NULL,
+                              a = NULL, b = NULL, sort_nodes = FALSE, ...) {
 
   params <- planted_partition_params(
-    n = n, k = k, within_block = within_block,
+    n = n, k = k, a = a, b = b, within_block = within_block,
     between_block = between_block, sort_nodes = sort_nodes
   )
 
@@ -46,27 +71,46 @@ planted_partition <- function(n, k, within_block, between_block,
 
 #' @rdname planted_partition
 #' @export
-planted_partition_params <- function(n, k, within_block, between_block,
+planted_partition_params <- function(n, k, within_block = NULL,
+                                     between_block = NULL, a = NULL, b = NULL,
                                      sort_nodes = FALSE, ...) {
 
   if (k > n) {
     stop("`k` must be less than or equal to `n`.", call. = FALSE)
   }
 
-  if (length(within_block) != 1) {
+  if (!is.null(within_block) && length(within_block) != 1) {
     stop("`within_block` must be a scalar.", call. = FALSE)
   }
 
-  if (length(between_block) != 1) {
+  if (!is.null(between_block) && length(between_block) != 1) {
     stop("`between_block` must be a scalar.", call. = FALSE)
   }
 
-  if (within_block < 0 || within_block > 1) {
+  if (!is.null(within_block) && (within_block < 0 || within_block > 1)) {
     stop("`within_block` must be between zero and one.", call. = FALSE)
   }
 
-  if (between_block < 0 || between_block > 1) {
+  if (!is.null(between_block) && (between_block < 0 || between_block > 1)) {
     stop("`between_block` must be between zero and one.", call. = FALSE)
+  }
+
+  if (!is.null(a) && a < 0) {
+    stop("`a` must be greater than zero.", call. = FALSE)
+  }
+
+  if (!is.null(b) && b < 0) {
+    stop("`b` must be greater than zero.", call. = FALSE)
+  }
+
+  # TODO: more input validation on a and b
+
+  if (is.null(within_block)) {
+    within_block <- a / n
+  }
+
+  if (is.null(between_block)) {
+    between_block <- b / n
   }
 
   # just a special case of the SBM, so leverage that infrastructure

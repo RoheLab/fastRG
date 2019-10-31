@@ -105,25 +105,25 @@
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">el &lt;-<span class="st"> </span><span class="kw"><a href="../reference/erdos_renyi.html">erdos_renyi</a></span>(<span class="dt">n =</span> <span class="dv">1000</span>, <span class="dt">avg_deg =</span> <span class="dv">5</span>, <span class="dt">return_edge_list =</span> <span class="ot">TRUE</span>)</a>
 <a class="sourceLine" id="cb3-2" title="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/utils/topics/head">head</a></span>(el)</a>
 <a class="sourceLine" id="cb3-3" title="3"><span class="co">#&gt;      from  to</span></a>
-<a class="sourceLine" id="cb3-4" title="4"><span class="co">#&gt; [1,]  975 747</span></a>
-<a class="sourceLine" id="cb3-5" title="5"><span class="co">#&gt; [2,]  968 900</span></a>
-<a class="sourceLine" id="cb3-6" title="6"><span class="co">#&gt; [3,]  867 299</span></a>
-<a class="sourceLine" id="cb3-7" title="7"><span class="co">#&gt; [4,]  655 841</span></a>
-<a class="sourceLine" id="cb3-8" title="8"><span class="co">#&gt; [5,]  756 934</span></a>
-<a class="sourceLine" id="cb3-9" title="9"><span class="co">#&gt; [6,]  162 340</span></a></code></pre></div>
+<a class="sourceLine" id="cb3-4" title="4"><span class="co">#&gt; [1,]   29 801</span></a>
+<a class="sourceLine" id="cb3-5" title="5"><span class="co">#&gt; [2,]   62 837</span></a>
+<a class="sourceLine" id="cb3-6" title="6"><span class="co">#&gt; [3,]  933 902</span></a>
+<a class="sourceLine" id="cb3-7" title="7"><span class="co">#&gt; [4,]  260  95</span></a>
+<a class="sourceLine" id="cb3-8" title="8"><span class="co">#&gt; [5,]  242 409</span></a>
+<a class="sourceLine" id="cb3-9" title="9"><span class="co">#&gt; [6,]  171 355</span></a></code></pre></div>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1">g &lt;-<span class="st"> </span>igraph<span class="op">::</span><span class="kw"><a href="https://www.rdocumentation.org/packages/igraph/topics/graph_from_edgelist">graph_from_edgelist</a></span>(el)</a>
 <a class="sourceLine" id="cb4-2" title="2">g</a>
-<a class="sourceLine" id="cb4-3" title="3"><span class="co">#&gt; IGRAPH a0b90fd D--- 1000 4936 -- </span></a>
-<a class="sourceLine" id="cb4-4" title="4"><span class="co">#&gt; + edges from a0b90fd:</span></a>
-<a class="sourceLine" id="cb4-5" title="5"><span class="co">#&gt;  [1] 975-&gt;747 968-&gt;900 867-&gt;299 655-&gt;841 756-&gt;934 162-&gt;340 587-&gt;153</span></a>
-<a class="sourceLine" id="cb4-6" title="6"><span class="co">#&gt;  [8] 386-&gt;897  93-&gt;622   2-&gt;497 725-&gt;381 250-&gt;106 673-&gt;522  94-&gt;717</span></a>
-<a class="sourceLine" id="cb4-7" title="7"><span class="co">#&gt; [15] 938-&gt;166 753-&gt;529 544-&gt;769 198-&gt;912  95-&gt;966 263-&gt;308 952-&gt;921</span></a>
-<a class="sourceLine" id="cb4-8" title="8"><span class="co">#&gt; [22] 217-&gt;871 697-&gt;638 161-&gt;160 417-&gt;133 544-&gt;174 138-&gt;384  23-&gt;711</span></a>
-<a class="sourceLine" id="cb4-9" title="9"><span class="co">#&gt; [29] 784-&gt;220 221-&gt; 87 460-&gt;829 582-&gt;283 220-&gt;702 109-&gt;948 837-&gt;703</span></a>
-<a class="sourceLine" id="cb4-10" title="10"><span class="co">#&gt; [36] 421-&gt;156 642-&gt;570 472-&gt;492 390-&gt;487 415-&gt;215 205-&gt;779 921-&gt;309</span></a>
-<a class="sourceLine" id="cb4-11" title="11"><span class="co">#&gt; [43] 414-&gt;267 918-&gt;903 864-&gt;826  31-&gt;104 746-&gt;  4 204-&gt;201 356-&gt;213</span></a>
-<a class="sourceLine" id="cb4-12" title="12"><span class="co">#&gt; [50] 955-&gt; 64  30-&gt;206 854-&gt;272 320-&gt;355 171-&gt;888 870-&gt; 19 632-&gt;380</span></a>
-<a class="sourceLine" id="cb4-13" title="13"><span class="co">#&gt; [57] 429-&gt;492 157-&gt;572 100-&gt; 48  86-&gt;856 570-&gt;498 520-&gt;113 924-&gt;249</span></a>
+<a class="sourceLine" id="cb4-3" title="3"><span class="co">#&gt; IGRAPH 953727d D--- 1000 5064 -- </span></a>
+<a class="sourceLine" id="cb4-4" title="4"><span class="co">#&gt; + edges from 953727d:</span></a>
+<a class="sourceLine" id="cb4-5" title="5"><span class="co">#&gt;  [1]  29-&gt;801  62-&gt;837 933-&gt;902 260-&gt; 95 242-&gt;409 171-&gt;355 872-&gt;204</span></a>
+<a class="sourceLine" id="cb4-6" title="6"><span class="co">#&gt;  [8] 964-&gt;690 638-&gt;289 558-&gt;899 848-&gt;874   5-&gt;266 335-&gt;420 759-&gt;606</span></a>
+<a class="sourceLine" id="cb4-7" title="7"><span class="co">#&gt; [15] 662-&gt;377 368-&gt;477 260-&gt;522 314-&gt;433 100-&gt;589 567-&gt;488 713-&gt;819</span></a>
+<a class="sourceLine" id="cb4-8" title="8"><span class="co">#&gt; [22] 563-&gt;306 237-&gt;  2 224-&gt;965 699-&gt;144 519-&gt;148 644-&gt;270 684-&gt;278</span></a>
+<a class="sourceLine" id="cb4-9" title="9"><span class="co">#&gt; [29] 727-&gt; 85 753-&gt;514 189-&gt;631 146-&gt;219 933-&gt;545 749-&gt;455 112-&gt;142</span></a>
+<a class="sourceLine" id="cb4-10" title="10"><span class="co">#&gt; [36]   2-&gt;362 740-&gt; 72 433-&gt; 52 791-&gt;955 707-&gt;736  96-&gt;936 161-&gt;226</span></a>
+<a class="sourceLine" id="cb4-11" title="11"><span class="co">#&gt; [43] 757-&gt;296  48-&gt;396 113-&gt;329 144-&gt;278 959-&gt;451 902-&gt;880 716-&gt; 41</span></a>
+<a class="sourceLine" id="cb4-12" title="12"><span class="co">#&gt; [50] 590-&gt;124 861-&gt;293 580-&gt;775 888-&gt; 92 103-&gt;536 442-&gt;631 417-&gt;963</span></a>
+<a class="sourceLine" id="cb4-13" title="13"><span class="co">#&gt; [57] 572-&gt;715 337-&gt;907 609-&gt;903 233-&gt;900 865-&gt; 90 126-&gt;912 728-&gt;757</span></a>
 <a class="sourceLine" id="cb4-14" title="14"><span class="co">#&gt; + ... omitted several edges</span></a></code></pre></div>
 <p><code><a href="../reference/fastRG.html">fastRG()</a></code> allows for simulating from graph with <code>E(A) = X S Y^T</code>, where <code>A</code> and <code>S</code> could be rectangular. This is helpful for bipartite graphs or matrices of graph features.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1">n &lt;-<span class="st"> </span><span class="dv">10000</span></a>
@@ -162,16 +162,16 @@
 <a class="sourceLine" id="cb6-8" title="8"></a>
 <a class="sourceLine" id="cb6-9" title="9">A &lt;-<span class="st"> </span><span class="kw"><a href="../reference/dcsbm.html">dcsbm</a></span>(theta, pi, B, <span class="dt">avg_deg =</span> <span class="dv">50</span>)</a>
 <a class="sourceLine" id="cb6-10" title="10"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/mean">mean</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colSums">rowSums</a></span>(A))  <span class="co"># average degree</span></a>
-<a class="sourceLine" id="cb6-11" title="11"><span class="co">#&gt; [1] 49.652</span></a></code></pre></div>
+<a class="sourceLine" id="cb6-11" title="11"><span class="co">#&gt; [1] 50.344</span></a></code></pre></div>
 <p>If we remove multiple edges, the avg_deg parameter is not trustworthy:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1">A &lt;-<span class="st"> </span><span class="kw"><a href="../reference/dcsbm.html">dcsbm</a></span>(theta, pi, B, <span class="dt">avg_deg =</span> <span class="dv">50</span>, <span class="dt">poisson_edges =</span> <span class="ot">FALSE</span>)</a>
 <a class="sourceLine" id="cb7-2" title="2"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/mean">mean</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colSums">rowSums</a></span>(A))</a>
-<a class="sourceLine" id="cb7-3" title="3"><span class="co">#&gt; [1] 39.074</span></a></code></pre></div>
+<a class="sourceLine" id="cb7-3" title="3"><span class="co">#&gt; [1] 37.882</span></a></code></pre></div>
 <p>but it is a good upper bound when the graph is sparse:</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1">n &lt;-<span class="st"> </span><span class="dv">10000</span></a>
 <a class="sourceLine" id="cb8-2" title="2">A &lt;-<span class="st"> </span><span class="kw"><a href="../reference/dcsbm.html">dcsbm</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Exponential">rexp</a></span>(n), pi, B, <span class="dt">avg_deg =</span> <span class="dv">50</span>, <span class="dt">poisson_edges =</span> <span class="ot">FALSE</span>)</a>
 <a class="sourceLine" id="cb8-3" title="3"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/mean">mean</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colSums">rowSums</a></span>(A))</a>
-<a class="sourceLine" id="cb8-4" title="4"><span class="co">#&gt; [1] 48.8844</span></a></code></pre></div>
+<a class="sourceLine" id="cb8-4" title="4"><span class="co">#&gt; [1] 48.7309</span></a></code></pre></div>
 <p>This draws a 100 x 100 adjacency matrix from each model. Each image might take around 5 seconds to render.</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1"><span class="co"># helper to plot adjacency matrices</span></a>
 <a class="sourceLine" id="cb9-2" title="2"></a>
@@ -230,7 +230,7 @@
 <a class="sourceLine" id="cb14-9" title="9"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/diag">diag</a></span>(B) &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/diag">diag</a></span>(B) <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/mean">mean</a></span>(B) <span class="op">*</span><span class="st"> </span>K</a>
 <a class="sourceLine" id="cb14-10" title="10">A &lt;-<span class="st"> </span><span class="kw"><a href="../reference/dcsbm.html">dcsbm</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/GammaDist">rgamma</a></span>(n, <span class="dt">shape =</span> <span class="dv">2</span>, <span class="dt">scale =</span> <span class="fl">.4</span>), pi, B, <span class="dt">avg_deg =</span> <span class="dv">20</span>, <span class="dt">simple =</span> <span class="ot">TRUE</span>)</a>
 <a class="sourceLine" id="cb14-11" title="11"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/mean">mean</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colSums">rowSums</a></span>(A))</a>
-<a class="sourceLine" id="cb14-12" title="12"><span class="co">#&gt; [1] 19.7485</span></a></code></pre></div>
+<a class="sourceLine" id="cb14-12" title="12"><span class="co">#&gt; [1] 19.8156</span></a></code></pre></div>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" title="1">K &lt;-<span class="st"> </span><span class="dv">10</span></a>
 <a class="sourceLine" id="cb15-2" title="2">n &lt;-<span class="st"> </span><span class="dv">10000</span></a>
 <a class="sourceLine" id="cb15-3" title="3">pi &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/Exponential">rexp</a></span>(K) <span class="op">+</span><span class="st"> </span><span class="dv">1</span></a>
@@ -240,7 +240,7 @@
 <a class="sourceLine" id="cb15-7" title="7"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/diag">diag</a></span>(B) &lt;-<span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/diag">diag</a></span>(B) <span class="op">+</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/mean">mean</a></span>(B) <span class="op">*</span><span class="st"> </span>K</a>
 <a class="sourceLine" id="cb15-8" title="8">A &lt;-<span class="st"> </span><span class="kw"><a href="../reference/dcsbm.html">dcsbm</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/stats/topics/GammaDist">rgamma</a></span>(n, <span class="dt">shape =</span> <span class="dv">2</span>, <span class="dt">scale =</span> <span class="fl">.4</span>), pi, B, <span class="dt">avg_deg =</span> <span class="dv">20</span>, <span class="dt">simple =</span> <span class="ot">TRUE</span>, <span class="dt">sort_nodes =</span> <span class="ot">TRUE</span>)</a>
 <a class="sourceLine" id="cb15-9" title="9"><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/mean">mean</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colSums">rowSums</a></span>(A))</a>
-<a class="sourceLine" id="cb15-10" title="10"><span class="co">#&gt; [1] 19.8845</span></a></code></pre></div>
+<a class="sourceLine" id="cb15-10" title="10"><span class="co">#&gt; [1] 19.6872</span></a></code></pre></div>
 <div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" title="1"><span class="co"># leading eigen of regularized Laplacian with tau = 1</span></a>
 <a class="sourceLine" id="cb16-2" title="2">D &lt;-<span class="st"> </span><span class="kw">Diagonal</span>(n, <span class="dv">1</span> <span class="op">/</span><span class="st"> </span><span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/MathFun">sqrt</a></span>(<span class="kw"><a href="https://www.rdocumentation.org/packages/base/topics/colSums">rowSums</a></span>(A) <span class="op">+</span><span class="st"> </span><span class="dv">1</span>))</a>
 <a class="sourceLine" id="cb16-3" title="3">ei &lt;-<span class="st"> </span><span class="kw">eigs_sym</span>(D <span class="op">%*%</span><span class="st"> </span>A <span class="op">%*%</span><span class="st"> </span>D, <span class="dv">10</span>)</a>
