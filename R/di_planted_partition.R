@@ -1,7 +1,11 @@
-#' Sample a balanced planted partition model
+#' Sample a directed, balanced planted partition model
 #'
 #' @param n Number of nodes in graph.
-#' @param k Number of planted partitions.
+#'
+#' @param k Number of incoming (and outgoing) planted partitions.
+#'   There will be `k` incoming and `k` outgoing communities. In the future,
+#'   we may allow different numbers of incoming and outgoing communities
+#'   provided there is interest. Should be an integer.
 #'
 #' @param within_block Probability of within block edges. Must be
 #'   strictly between zero and one. Must specify either
@@ -36,6 +40,7 @@
 #' @seealso [fastRG()]
 #' @family stochastic block models
 #' @family bernoulli graphs
+#' @family directed graphs
 #'
 #' @details TODO: describe the generative model.
 #'
@@ -43,37 +48,43 @@
 #'
 #' set.seed(27)
 #'
-#' A <- planted_partition(
+#' A <- di_planted_partition(
 #'   n = 1000,
 #'   k = 3,
 #'   within_block = 0.8,
 #'   between_block = 0.2
 #' )
 #'
-#' B <- planted_partition(
+#' B <- di_planted_partition(
 #'   n = 1000,
 #'   k = 3,
 #'   a = 10,
 #'   b = 4
 #' )
 #'
-planted_partition <- function(n, k, within_block = NULL, between_block = NULL,
-                              a = NULL, b = NULL, sort_nodes = FALSE, ...) {
+di_planted_partition <- function(n, k, within_block = NULL,
+                                 between_block = NULL, a = NULL, b = NULL,
+                                 sort_nodes = FALSE, ...) {
 
-  params <- planted_partition_params(
+  params <- di_planted_partition_params(
     n = n, k = k, a = a, b = b, within_block = within_block,
     between_block = between_block, sort_nodes = sort_nodes
   )
 
   # NOTE: avg_deg is null since we handled scaling B internally
-  fastRG(params$X, params$S, poisson_edges = FALSE, directed = FALSE, ...)
+  fastRG(
+    params$X, params$S, params$Y,
+    poisson_edges = FALSE,
+    directed = TRUE,
+    ...
+  )
 }
 
 #' @rdname planted_partition
 #' @export
-planted_partition_params <- function(n, k, within_block = NULL,
-                                     between_block = NULL, a = NULL, b = NULL,
-                                     sort_nodes = FALSE, ...) {
+di_planted_partition_params <- function(n, k, within_block = NULL,
+                                        between_block = NULL, a = NULL,
+                                        b = NULL, sort_nodes = FALSE, ...) {
 
   if (k > n) {
     stop("`k` must be less than or equal to `n`.", call. = FALSE)
@@ -119,5 +130,5 @@ planted_partition_params <- function(n, k, within_block = NULL,
   B <- matrix(between_block, nrow = k, ncol = k)
   diag(B) <- within_block
 
-  sbm_params(n, pi, B, poisson_edges = FALSE, sort_nodes = sort_nodes)
+  disbm_params(n, pi, pi, B, poisson_edges = FALSE, sort_nodes = sort_nodes)
 }

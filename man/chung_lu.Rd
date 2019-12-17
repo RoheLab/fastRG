@@ -15,29 +15,30 @@ the resulting graph will have \code{length(theta)} nodes. Note that as
 \code{sum(theta)} approaches \code{length(theta)}, you will start to sample
 very dense graphs.}
 
-\item{...}{Arguments passed on to \code{fastRG}
-\describe{
-  \item{X}{An \code{n} by \code{k_1} matrix.}
-  \item{S}{A \code{k_1} by \code{k_2} matrix.}
-  \item{Y}{A \code{d} by \code{k_2} matrix. Defaults to \code{X}.}
-  \item{avg_deg}{When specified, rescales parameter such that the
+\item{...}{
+  Arguments passed on to \code{\link[=fastRG]{fastRG}}
+  \describe{
+    \item{\code{X}}{An \code{n} by \code{k_1} matrix.}
+    \item{\code{S}}{A \code{k_1} by \code{k_2} matrix.}
+    \item{\code{Y}}{A \code{d} by \code{k_2} matrix. Defaults to \code{X}.}
+    \item{\code{avg_deg}}{When specified, rescales parameter such that the
 expected degree is \code{avg_deg} in the Poisson multi-graph. When
 \code{poisson_edges = FALSE}, the resulting graph will have lower a
 average degree than \code{avg_deg} due to lack of multi-edges. When
 the graph is sparse, the expected number of edges for the Poisson
 multi-graph and Bernoulli graph are nearly the
 same. Defaults to \code{NULL}, such that no scaling occurs.}
-  \item{simple}{When \code{TRUE}, indicates that you want to work with undirected
+    \item{\code{simple}}{When \code{TRUE}, indicates that you want to work with undirected
 graphs where self-loops and multi-edges are prohibited. Accomplishes
 this by setting \code{directed = FALSE}, \code{allow_self_loops = FALSE}, and
 \code{poisson_edges = FALSE}, and then ignoring arguments \code{directed},
 \code{allow_self_loops} and \code{poisson_edges}. Defaults to \code{FALSE}.}
-  \item{poisson_edges}{Logical indicating whether or not multi-edges are
+    \item{\code{poisson_edges}}{Logical indicating whether or not multi-edges are
 allowed. Defaults to \code{TRUE}, which keeps multi-edges and produces
 a multi-graph. When \code{FALSE}, only single edges are allowed, resulting
 in a graph. See \strong{details} for some additional comments. Effected by
 \code{simple} argument.}
-  \item{directed}{Logical indicating whether or not the graph should be
+    \item{\code{directed}}{Logical indicating whether or not the graph should be
 directed. Default is \code{directed = TRUE}. When \code{directed = FALSE},
 symmetrizes \code{S} internally. When \code{X = Y} (which is the default when
 no \code{Y} is specified), this results in a symmetric adjacency matrix
@@ -45,13 +46,13 @@ as output. When \code{avg_deg} is specified and the desired graph is directed,
 the average degree scaling is on the out-degree of each node (or the
 row sums if you prefer to think in terms of the adjacency matrix).
 Effected by the \code{simple} argument.}
-  \item{allow_self_loops}{Logical indicating whether edges are allowed from
+    \item{\code{allow_self_loops}}{Logical indicating whether edges are allowed from
 a node back to itself. Defaults to \code{TRUE}. When \code{FALSE}, sampling
 proceeds normally, and then self-loops are removed after sampling
 is completed. Effected by the \code{simple} argument.}
-  \item{return_edge_list}{Logical indicating whether to return an edgelist
+    \item{\code{return_edge_list}}{Logical indicating whether to return an edgelist
 rather than an adjacency matrix. Defaults to \code{FALSE}.}
-}}
+  }}
 }
 \value{
 Never returns Poisson edges.
@@ -79,7 +80,9 @@ expected(params$X, params$S)
 \seealso{
 \code{\link[=fastRG]{fastRG()}}
 
-Other bernoulli graphs: \code{\link{erdos_renyi}},
-  \code{\link{planted_partition}}
+Other bernoulli graphs: 
+\code{\link{di_planted_partition_params}()},
+\code{\link{di_planted_partition}()},
+\code{\link{erdos_renyi}()}
 }
 \concept{bernoulli graphs}

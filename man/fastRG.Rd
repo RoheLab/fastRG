@@ -4,9 +4,17 @@
 \alias{fastRG}
 \title{Sample a Random Dot Product Graph (RDPG)}
 \usage{
-fastRG(X, S, Y = NULL, avg_deg = NULL, simple = FALSE,
-  poisson_edges = TRUE, directed = TRUE, allow_self_loops = TRUE,
-  return_edge_list = FALSE)
+fastRG(
+  X,
+  S,
+  Y = NULL,
+  avg_deg = NULL,
+  simple = FALSE,
+  poisson_edges = TRUE,
+  directed = TRUE,
+  allow_self_loops = TRUE,
+  return_edge_list = FALSE
+)
 }
 \arguments{
 \item{X}{An \code{n} by \code{k_1} matrix.}
