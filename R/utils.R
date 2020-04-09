@@ -9,7 +9,7 @@
 #'
 #'   - `count`: Expected number of edges.
 #'
-#'   - `degree`: Expected degree of each node. TODO: for directed graphs
+#'   - `degree`: Expected degree of across all nodes TODO: for directed graphs
 #'     is this the in-degree or the out-degree?
 #'
 #'   - `density`: Expected edge density. Equals the expected number of edges
@@ -56,4 +56,19 @@ expected <- function(X, S, Y = X) {
     degree = degree,
     density = edges / (nx * ny)
   )
+}
+
+# TODO: ask Karl if there is a better way to do this
+#' @export
+expected_degrees <- function(X, S, Y = X) {
+
+  if (any(X < 0) || any(S < 0) || any(Y < 0)) {
+    stop("`X`, `S`, `Y` can only contain non-negative elements.", call. = FALSE)
+  }
+
+  SYt <- tcrossprod(S, Y)
+  in_degree <- as.numeric(X %*% rowSums(SYt))   # rowSums(A)
+  out_degree <- as.numeric(colSums(X) %*% SYt)  # colSums(A)
+
+  list(in_degree = in_degree, out_degree = out_degree)
 }

@@ -108,7 +108,7 @@ TODO: describe the generative model.
 
 set.seed(27)
 
-A <- planted_partition(
+A <- di_planted_partition(
   n = 1000,
   k = 3,
   within_block = 0.8,

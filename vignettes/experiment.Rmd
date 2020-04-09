@@ -10,11 +10,14 @@ vignette: >
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
-  comment = "#>"
+  comment = "#>",
+  eval = FALSE
 )
 ```
 
 WARNING: this code has not yet been cleaned up it. It repeats the computational experiment from Section 4.1 of the paper on a slightly smaller scale.
+
+<!-- TODO: run the experiment once and just cache the results in sysdata.rda or something like that -->
 
 ```{r}
 library(fastRG)
