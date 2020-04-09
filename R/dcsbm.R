@@ -79,12 +79,13 @@ dcsbm_params <- function(theta, pi, B, avg_deg = NULL, poisson_edges = TRUE,
   }
 
   z <- sample(K, n, replace = TRUE, prob = pi)
+  z <- factor(z, levels = 1:K)
 
   if (sort_nodes) {
     z <- sort(z)
   }
 
-  X <- sparse.model.matrix(~ as.factor(z) - 1)
+  X <- sparse.model.matrix(~z + 0)
 
   # sort by degree within community as well as community
 

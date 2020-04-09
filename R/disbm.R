@@ -93,6 +93,9 @@ disbm_params <- function(n, pi_in, pi_out, B, avg_deg = NULL,
   z_in <- sample(K_in, n, replace = TRUE, prob = pi_in)
   z_out <- sample(K_out, n, replace = TRUE, prob = pi_out)
 
+  z_in <- factor(z_in, levels = 1:K_in)
+  z_out <- factor(z_out, levels = 1:K_out)
+
   # sort(z) orders the nodes so that all nodes in the first
   # block are together, nodes in the second block are all together, etc
   if (sort_nodes) {
@@ -100,9 +103,8 @@ disbm_params <- function(n, pi_in, pi_out, B, avg_deg = NULL,
     z_out <- sort(z_out)
   }
 
-  # X is a dummy matrix for the block memberships
-  X <- sparse.model.matrix(~ as.factor(z_in) - 1)
-  Y <- sparse.model.matrix(~ as.factor(z_out) - 1)
+  X <- sparse.model.matrix(~ z_in + 0)
+  Y <- sparse.model.matrix(~ z_out + 0)
 
   # now we handle avg_deg specially to make sure we don't get a matrix B
   # with probabilities outside of [0, 1]

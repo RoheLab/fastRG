@@ -105,14 +105,15 @@ di_dc_sbm_params <- function(theta_in, theta_out, pi_in, pi_out, B,
   z_in <- sample(K_in, n, replace = TRUE, prob = pi_in)
   z_out <- sample(K_out, n, replace = TRUE, prob = pi_out)
 
+  z_in <- factor(z_in, levels = 1:K_in)
+  z_out <- factor(z_out, levels = 1:K_out)
 
-  X <- sparse.model.matrix(~ as.factor(z_in) - 1)
-  Y <- sparse.model.matrix(~ as.factor(z_out) - 1)
+  X <- sparse.model.matrix(~ z_in + 0)
+  Y <- sparse.model.matrix(~ z_out + 0)
 
   if (sort_nodes) {
     z_in <- sort(z_in)
     z_out <- sort(z_out)
-
 
     # sort by degree within community as well as community
 
@@ -136,7 +137,7 @@ di_dc_sbm_params <- function(theta_in, theta_out, pi_in, pi_out, B,
   Y@x <- theta_out
 
   if (is.null(avg_deg)) {
-    return(list(X = X, S = B, Y = Y))
+    return(list(X = X, S = B, Y = Y, z_in = z_in, z_out = z_out))
   }
 
   # scale B just like in fastRG()

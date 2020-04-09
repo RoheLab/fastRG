@@ -68,6 +68,10 @@ sbm_params <- function(n, pi, B, avg_deg = NULL, poisson_edges = TRUE,
   # block memberships
   z <- sample(K, n, replace = TRUE, prob = pi)
 
+  # essential! see issue #14, otherwise we will generate
+  # a sparse model matrix with too few columns
+  z <- factor(z, levels = 1:K)
+
   # sort(z) orders the nodes so that all nodes in the first
   # block are together, nodes in the second block are all together, etc
   if (sort_nodes) {
@@ -75,13 +79,14 @@ sbm_params <- function(n, pi, B, avg_deg = NULL, poisson_edges = TRUE,
   }
 
   # X is a dummy matrix for the block memberships
-  X <- sparse.model.matrix(~ as.factor(z) - 1)
+  # be sure to exclude the intercept column with + 0
+  X <- sparse.model.matrix(~ z + 0)
 
   # now we handle avg_deg specially to make sure we don't get a matrix B
   # with probabilities outside of [0, 1]
 
   if (is.null(avg_deg)) {
-    return(list(X = X, S = B, Y = X))
+    return(list(X = X, S = B, Y = X, z = z))
   }
 
   # scale B just like in fastRG()
