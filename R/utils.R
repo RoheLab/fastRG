@@ -33,6 +33,9 @@
 #' S <- matrix(runif(n = k1 * k2, 0, .1), nrow = k1)
 #'
 #' expected(X, S, Y)
+#' expected_degrees(X, S, Y)
+#' expected_svds(X, S, Y)
+#'
 expected <- function(X, S, Y = X) {
 
   if (any(X < 0) || any(S < 0) || any(Y < 0)) {
@@ -59,6 +62,7 @@ expected <- function(X, S, Y = X) {
 }
 
 # TODO: ask Karl if there is a better way to do this
+#' @rdname expected
 #' @export
 expected_degrees <- function(X, S, Y = X) {
 
@@ -72,3 +76,51 @@ expected_degrees <- function(X, S, Y = X) {
 
   list(in_degree = in_degree, out_degree = out_degree)
 }
+
+# after the object orientation transformation, make this an
+# S3 generic for RSpectra::svds()
+
+#' @rdname expected
+#' @export
+expected_svds <- function(X, S, Y = X, ..., k = NULL) {
+
+  if (any(X < 0) || any(S < 0) || any(Y < 0)) {
+    stop("`X`, `S`, `Y` can only contain non-negative elements.", call. = FALSE)
+  }
+
+  n <- nrow(X)
+  d <- nrow(Y)
+
+  if (is.null(k))
+    k <- ncol(X)
+
+  # using closures rather than args
+
+  SYt <- tcrossprod(S, Y)
+
+  Ax <- function(x, args) X %*% (SYt %*% x)
+  Atx <- function(x, args) (x %*% X) %*% SYt
+
+  svds(Ax, k, Atrans = Atx, dim = c(n, d))
+}
+
+#' @rdname expected
+#' @export
+expected_eigs_sym <- function(X, S, ..., k = NULL) {
+
+  if (any(X < 0) || any(S < 0)) {
+    stop("`X`, `S`, `Y` can only contain non-negative elements.", call. = FALSE)
+  }
+
+  n <- nrow(X)
+
+  if (is.null(k))
+    k <- ncol(S)
+
+  SXt <- tcrossprod(S, X)
+
+  Ax <- function(x, args) as.numeric(args$X %*% (args$SXt %*% x))
+
+  eigs_sym(Ax, k, n = n, args = list(X = X, SXt = SXt))
+}
+

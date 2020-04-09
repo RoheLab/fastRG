@@ -2,9 +2,18 @@
 % Please edit documentation in R/utils.R
 \name{expected}
 \alias{expected}
+\alias{expected_degrees}
+\alias{expected_svds}
+\alias{expected_eigs_sym}
 \title{Calculate the expected number of edges in Poisson RDPG graph}
 \usage{
 expected(X, S, Y = X)
+
+expected_degrees(X, S, Y = X)
+
+expected_svds(X, S, Y = X, ..., k = NULL)
+
+expected_eigs_sym(X, S, ..., k = NULL)
 }
 \arguments{
 \item{X}{An \code{n} by \code{k_1} matrix.}
@@ -44,4 +53,7 @@ Y <- matrix(rpois(n = d * k2, 1), nrow = d)
 S <- matrix(runif(n = k1 * k2, 0, .1), nrow = k1)
 
 expected(X, S, Y)
+expected_degrees(X, S, Y)
+expected_svds(X, S, Y)
+
 }
