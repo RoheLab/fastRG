@@ -63,7 +63,6 @@ disbm <- function(n, pi_in, pi_out, B, avg_deg = NULL, poisson_edges = TRUE,
          avg_deg = NULL, ...)
 }
 
-#' @rdname sbm
 #' @export
 disbm_params <- function(n, pi_in, pi_out, B, avg_deg = NULL,
                          poisson_edges = TRUE, sort_nodes = FALSE, ...) {

@@ -1,0 +1,171 @@
+#' Sample a random dot product graph as a sparse Matrix
+#'
+#' There are two steps to using the `FastRG` package. First,
+#' you must parameterize a random dot product graph by
+#' specifying its expected adjacency matrix. Use functions such as
+#' [dcsbm()], [sbm()], etc, to perform this specification.
+#' Then, use [sample_matrix()] to generate a random graph,
+#' represented as a [Matrix::Matrix()], with that expectation.
+#'
+#' @inherit sample_edgelist params details references examples
+#'
+#' @return A sparse [Matrix::Matrix()] of class `dsCMatrix`.
+#'   In particular, this means the graph is `Matrix` that
+#'   (1) has double data type, (2) is symmetric, and (3) is in
+#'   column compressed storage format.
+#'
+#' @export
+#' @family samplers
+#'
+sample_sparse <- function(
+  factor_model,
+  ...,
+  poisson_edges = TRUE,
+  allow_self_loops = TRUE) {
+  ellipsis::check_dots_unnamed()
+  UseMethod("sample_sparse")
+}
+
+#' @rdname sample_sparse
+#' @export
+sample_sparse.undirected_factor_model <- function(
+  factor_model,
+  ...,
+  poisson_edges = TRUE,
+  allow_self_loops = TRUE) {
+
+  # to construct a symmetric sparseMatrix, we only pass in elements
+  # of either the upper or lower diagonal (otherwise we'll get an error)
+  # so we're going to sample as we want a directed graph, and then
+  # flop all edges to the lower diagonal
+
+  X <- factor_model$X
+  S <- factor_model$S
+
+  edgelist <- sample_edgelist(
+    X, S, X,
+    TRUE,                                # directed!!
+    poisson_edges = poisson_edges,
+    allow_self_loops = allow_self_loops
+  )
+
+  n <- factor_model$n
+
+  if (nrow(edgelist) == 0)
+    return(sparseMatrix(1:n, 1:n, x = 0, dims = c(n, n)))
+
+  # flop to lower diagonal by sorting with each row of
+  # of the edgelist
+
+  from <- pmin(edgelist$from, edgelist$to)
+  to <- pmax(edgelist$from, edgelist$to)
+
+  if (poisson_edges) {
+
+    # NOTE: x = 1 is correct to create a multigraph adjacency matrix
+    # here. see ?Matrix::sparseMatrix for details, in particular the
+    # documentation for arguments `i, j` and `x`
+    #
+    # in the poisson_edges = FALSE case, sample_edgelist will have
+    # removed duplicate directed edges, but not duplicate undirected
+    # edges, so we must still consider this case here
+    A <- sparseMatrix(from, to, x = 1, dims = c(n, n), symmetric = TRUE)
+  } else {
+    A <- sparseMatrix(from, to, dims = c(n, n), symmetric = TRUE)
+  }
+
+  ### some comments on type-stability
+
+  # there are three components of a Matrix object:
+  #
+  #   1. the data type (binary, integer, double)
+  #   2. whether or not the Matrix is symmetric
+  #   3. the storage format of the matrix
+  #
+  # the storage formats are: triplet, row compressed, column compressed
+  #
+  # sparseMatrix will give us a column-compressed (i.e. CSC) Matrix
+  # by default, an a symmetric one, since we set symmetric = TRUE
+  #
+  # however the data type, and thus the corresponding Matrix class,
+  # can vary. for bernoulli graphs (poisson_edges = FALSE) we
+  # will get a binary data type, and for poisson graphs we get either
+  # integer or double data (I forget which)
+  #
+  # further, Matrix provides tools to coerce between storage formats,
+  # but casting between data types is only done implicitly. so
+  # we are going to cast to matrix of doubles since that's
+  # what has the widest support in extensions to the Matrix package
+
+  A * 1.0 # LMAO
+}
+
+#' @rdname sample_sparse
+#' @export
+sample_sparse.directed_factor_model <- function(
+  factor_model,
+  ...,
+  poisson_edges = TRUE,
+  allow_self_loops = TRUE) {
+
+  .NotYetImplemented()
+
+  edgelist <- sample_edgelist(
+    factor_model,
+    poisson_edges = poisson_edges,
+    allow_self_loops = allow_self_loops,
+    ...
+  )
+
+  # density
+
+  # warn when creating very dense matrices
+
+  if (nrow(edgelist) == 0)
+    return(sparseMatrix(1:n, 1:d, x = 0, dims = c(n, d)))
+
+
+  # matrix return case
+
+  # to construct a symmetric sparseMatrix, we only pass in elements
+  # of either the upper or lower diagonal (otherwise we'll get an error).
+  # flop all edges to the lower diagonal
+
+  if (!directed) {
+    from_new <- pmin(from, to)
+    to <- pmax(from, to)
+    from <- from_new
+  }
+
+  n <- factor_model$n
+  if (inherits(factor_model, "directed_factor_model")) {
+    d <- factor_model$d
+  } else {
+    d <- n
+  }
+
+  if (poisson_edges) {
+
+    # NOTE: x = 1 is correct to create a multigraph adjacency matrix
+    # here. see ?Matrix::sparseMatrix for details, in particular the
+    # documentation for arguments `i, j` and `x`
+
+    A <- sparseMatrix(
+      edgelist$from,
+      edgelist$to,
+      x = 1,
+      dims = c(n, d),
+      symmetric = !directed
+    )
+
+  } else {
+    A <- sparseMatrix(
+      edgelist$from,
+      edgelist$to,
+      dims = c(n, d),
+      symmetric = !directed
+    )
+  }
+
+  A
+}

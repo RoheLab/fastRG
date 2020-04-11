@@ -71,7 +71,6 @@ di_dc_sbm <- function(theta_in, theta_out, pi_in, pi_out, B, avg_deg = NULL,
          avg_deg = NULL, ...)
 }
 
-#' @rdname dcsbm
 #' @export
 di_dc_sbm_params <- function(theta_in, theta_out, pi_in, pi_out, B,
                              avg_deg = NULL, poisson_edges = TRUE,
