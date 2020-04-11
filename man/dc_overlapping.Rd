@@ -25,39 +25,31 @@ dc_overlapping_params(
 )
 }
 \arguments{
-\item{theta}{A vector specified the degree distribution parameters.
-The resulting graph will have \code{length(theta)} nodes. Setting
-\code{theta = rep(1, n)} recovers a stochastic blockmodel without
-degree correction.}
+\item{theta}{(degree heterogeneity) A numeric vector
+explicitly specifying the degree heterogeneity
+parameters. This implicitly determines the number of nodes
+in the resulting graph, i.e. it will have \code{length(theta)} nodes.
+Must be positive. Setting to a vector of ones recovers
+a stochastic blockmodel without degree correction.
+Defaults to \code{NULL}. You must specify either \code{n} or \code{theta},
+but not both.}
 
 \item{p}{Community membership parameter. For each node, membership in
 each community is consider separately. Each node has probability
 \code{p[i]} of being in the \code{i^th} community. \code{length(p)} implicitly
 specifies the number of communities.}
 
-\item{B}{A \code{length(pi)} by \code{length(pi)} matrix of block connection
-probabilities. \code{B[i, j]} contains the probability that a node in
-community \code{i} links to a node in community \code{j}. Does not need to
-be symmetric.}
-
-\item{avg_deg}{When specified, rescales parameter such that the
-expected degree is \code{avg_deg} in the Poisson multi-graph. When
-\code{poisson_edges = FALSE}, the resulting graph will have lower a
-average degree than \code{avg_deg} due to lack of multi-edges. When
-the graph is sparse, the expected number of edges for the Poisson
-multi-graph and Bernoulli graph are nearly the
-same. Defaults to \code{NULL}, such that no scaling occurs.}
-
-\item{poisson_edges}{Logical indicating whether or not multi-edges are
-allowed. Defaults to \code{TRUE}, which keeps multi-edges and produces
-a multi-graph. When \code{FALSE}, only single edges are allowed, resulting
-in a graph. See \strong{details} for some additional comments. Effected by
-\code{simple} argument.}
+\item{B}{(mixing matrix) A \code{k} by \code{k} matrix of block connection
+probabilities. The probability that a node in block \code{i} connects
+to a node in community \code{j} is \code{Poisson(B[i, j])}. Must be square
+a square matrix. \code{matrix} and \code{Matrix} objects are both
+acceptable. If \code{B} is not symmetric, it will be
+symmetrized via the update \code{B := B + t(B)}. Defaults to \code{NULL}.
+You must specify either \code{k} or \code{B}, but not both.}
 
 \item{sort_nodes}{Logical indicating whether or not to sort the nodes
-so that they are grouped by block. This incurs the the cost of a
-radix sort, which is linear in the number of nodes in the graph.
-Defaults to \code{FALSE}. Useful for plotting.}
+so that they are grouped by block. Useful for plotting.
+Defaults to \code{TRUE}.}
 
 \item{...}{
   Arguments passed on to \code{\link[=fastRG]{fastRG}}
@@ -65,11 +57,23 @@ Defaults to \code{FALSE}. Useful for plotting.}
     \item{\code{X}}{An \code{n} by \code{k_1} matrix.}
     \item{\code{S}}{A \code{k_1} by \code{k_2} matrix.}
     \item{\code{Y}}{A \code{d} by \code{k_2} matrix. Defaults to \code{X}.}
+    \item{\code{avg_deg}}{When specified, rescales parameter such that the
+expected degree is \code{avg_deg} in the Poisson multi-graph. When
+\code{poisson_edges = FALSE}, the resulting graph will have lower a
+average degree than \code{avg_deg} due to lack of multi-edges. When
+the graph is sparse, the expected number of edges for the Poisson
+multi-graph and Bernoulli graph are nearly the
+same. Defaults to \code{NULL}, such that no scaling occurs.}
     \item{\code{simple}}{When \code{TRUE}, indicates that you want to work with undirected
 graphs where self-loops and multi-edges are prohibited. Accomplishes
 this by setting \code{directed = FALSE}, \code{allow_self_loops = FALSE}, and
 \code{poisson_edges = FALSE}, and then ignoring arguments \code{directed},
 \code{allow_self_loops} and \code{poisson_edges}. Defaults to \code{FALSE}.}
+    \item{\code{poisson_edges}}{Logical indicating whether or not multi-edges are
+allowed. Defaults to \code{TRUE}, which keeps multi-edges and produces
+a multi-graph. When \code{FALSE}, only single edges are allowed, resulting
+in a graph. See \strong{details} for some additional comments. Effected by
+\code{simple} argument.}
     \item{\code{directed}}{Logical indicating whether or not the graph should be
 directed. Default is \code{directed = TRUE}. When \code{directed = FALSE},
 symmetrizes \code{S} internally. When \code{X = Y} (which is the default when
@@ -137,7 +141,7 @@ Other stochastic block models:
 \code{\link{di_dc_sbm}()},
 \code{\link{di_planted_partition_params}()},
 \code{\link{di_planted_partition}()},
-\code{\link{disbm_params}()},
-\code{\link{disbm}()}
+\code{\link{disbm}()},
+\code{\link{sbm}()}
 }
 \concept{stochastic block models}

@@ -260,6 +260,10 @@ dcsbm <- function(
     stop("Must specify either `k` or `B`.", call. = FALSE)
   } else if (is.null(B)) {
 
+    if (k < 1) {
+      stop("`k` must be a positive integer.", call. = FALSE)
+    }
+
     message(
       "Generating random mixing matrix `B` with independent ",
       "Uniform(0, 1) entries. This distribution may change ",

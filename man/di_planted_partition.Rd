@@ -132,12 +132,11 @@ Other stochastic block models:
 \code{\link{dcsbm}()},
 \code{\link{di_dc_sbm}()},
 \code{\link{di_planted_partition_params}()},
-\code{\link{disbm_params}()},
-\code{\link{disbm}()}
+\code{\link{disbm}()},
+\code{\link{sbm}()}
 
 Other bernoulli graphs: 
 \code{\link{chung_lu}()},
-\code{\link{di_planted_partition_params}()},
 \code{\link{erdos_renyi}()}
 
 Other directed graphs: 

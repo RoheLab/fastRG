@@ -37,7 +37,7 @@ validate_undirected_sbm <- function(x) {
 
 #' Create an undirected stochastic blockmodel object
 #'
-#' To specify a degree-corrected stochastic blockmodel, you must specify
+#' To specify a stochastic blockmodel, you must specify
 #' the number of nodes (via `n`), the mixing matrix (via `k` or `B`),
 #' and the relative block probabilites (optional, via `pi`).
 #' We provide sane defaults for most of these options to enable

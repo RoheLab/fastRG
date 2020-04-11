@@ -153,8 +153,8 @@ Other stochastic block models:
 \code{\link{dcsbm}()},
 \code{\link{di_planted_partition_params}()},
 \code{\link{di_planted_partition}()},
-\code{\link{disbm_params}()},
-\code{\link{disbm}()}
+\code{\link{disbm}()},
+\code{\link{sbm}()}
 
 Other directed graphs: 
 \code{\link{di_planted_partition}()},

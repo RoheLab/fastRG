@@ -78,7 +78,6 @@ B <- erdos_renyi(n = 10^6, avg_deg = 5)
 
 Other bernoulli graphs: 
 \code{\link{chung_lu}()},
-\code{\link{di_planted_partition_params}()},
 \code{\link{di_planted_partition}()}
 }
 \concept{bernoulli graphs}

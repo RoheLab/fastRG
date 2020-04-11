@@ -213,8 +213,8 @@ sample_edgelist.matrix <- function(
   Cy <- Diagonal(n = k2, x = colSums(Y))
 
   # passed to rmultinom, so Matrix objects will break things
-  St <- as.matrix(Cx %*% S %*% Cy)
-  expected_edges <- sum(St)
+  S_tilde <- as.matrix(Cx %*% S %*% Cy)
+  expected_edges <- sum(S_tilde)
 
   m <- rpois(n = 1, lambda = expected_edges)
 
@@ -271,6 +271,8 @@ sample_edgelist.matrix <- function(
     if (v_block_sizes[v] > 0) {
 
       indices <- v_block_start:(v_block_start + v_block_sizes[v] - 1)
+
+      # note same lack of \tilde Y as in the X/U case
 
       to_tmp[indices] <- sample(
         d,
