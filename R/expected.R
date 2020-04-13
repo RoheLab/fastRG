@@ -56,7 +56,6 @@ expected_edges.undirected_factor_model <- function(factor_model, ...) {
 
   X <- factor_model$X
   S <- factor_model$S
-  n <- factor_model$n
 
   Cx <- Diagonal(n = ncol(X), x = colSums(X))
   sum(Cx %*% S %*% Cx)
@@ -100,4 +99,79 @@ eigs_sym.undirected_factor_model <- function(
   Ax <- function(x, args) as.numeric(args$X %*% (args$SXt %*% x))
 
   eigs_sym(Ax, k, n = A$n, args = list(X = A$X, SXt = tcrossprod(A$S, A$X)))
+}
+
+
+#' @export
+expected_edges.directed_factor_model <- function(factor_model, ...) {
+
+  X <- factor_model$X
+  S <- factor_model$S
+  Y <- factor_model$Y
+
+  Cx <- Diagonal(n = ncol(X), x = colSums(X))
+  Cy <- Diagonal(n = ncol(Y), x = colSums(Y))
+  sum(Cx %*% S %*% Cy)
+}
+
+# TODO: sanity check if dividing by n and d are right in the following
+
+#' @export
+expected_in_degree.directed_factor_model <- function(factor_model, ...) {
+  expected_edges(factor_model) / as.numeric(factor_model$n)
+}
+
+#' @export
+expected_out_degree.directed_factor_model <- function(factor_model, ...) {
+  expected_edges(factor_model) / as.numeric(factor_model$d)
+}
+
+#' @export
+expected_density.directed_factor_model <- function(factor_model, ...) {
+
+  n <- factor_model$n
+  d <- factor_model$d
+
+  expected_edges(factor_model) / (as.numeric(n) * as.numeric(d))
+}
+
+#' @importFrom RSpectra svds
+#' @export
+RSpectra::svds
+
+#' @export
+svds.directed_factor_model <- function(
+  A,
+  k = min(A$k1, A$k2),
+  nu = k,
+  nv = k,
+  opts = list(),
+  ...) {
+
+  if (!requireNamespace("RSpectra", quietly = TRUE)) {
+    stop(
+      "Must install `RSpectra` for this functionality.",
+      call. = FALSE
+    )
+  }
+
+  Ax <- function(x, args) {
+    as.numeric(args$X %*% (tcrossprod(S, Y) %*% x))
+  }
+
+  Atx <- function(x, args) {
+    as.numeric(tcrossprod(args$Y, args$S) %*% crossprod(args$X, x))
+  }
+
+  svds(
+    A = Ax,
+    k = k,
+    nu = nu,
+    nv = nv,
+    opts = opts,
+    ...,
+    Atrans = Atx,
+    dim = c(A$n, A$d),
+    args = list(X = A$X, S = A$S, Y = A$Y)
+  )
 }

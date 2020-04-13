@@ -75,11 +75,11 @@ validate_undirected_factor_model <- function(x) {
 #' *with lots of helpful input validation*.
 #'
 #' @param X A [matrix()] or [Matrix()] representing real-valued
-#'   latent node positions.
+#'   latent node positions. Entries must be positive.
 #'
 #' @param S A [matrix()] or [Matrix()] mixing matrix. `S` is
 #'   symmetrized if it is not already, as this is the undirected
-#'   case.
+#'   case. Entries must be positive.
 #'
 #' @param ... Ignored. For internal developer use only.
 #'

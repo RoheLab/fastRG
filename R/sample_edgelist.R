@@ -28,6 +28,16 @@
 #'   Dot Product Graph, represent as a [tibble::tibble()] with two
 #'   integer columns, `from` and `to`.
 #'
+#'   In the undirected case, `from` and `to` do not encode
+#'   information about edge direction. That is, if there is a
+#'   single edge between nodes `i` and `j`, either `(i, j)`
+#'   or `(j, i)` will appear as a row in the edgelist, but not both.
+#'   If both `(i, j)` and `(j, i)` appear in the edgelist, this indicates
+#'   the presence of a multi-edge. To avoid handling these
+#'   considerations yourself, we recommend using
+#'   [sample_sparse()], [sample_igraph()], and [sample_tidygraph()]
+#'   over [sample_edgelist()].
+#'
 #' @export
 #' @family samplers
 #'
@@ -43,6 +53,8 @@
 #' @examples
 #'
 #' set.seed(27)
+#'
+#' ##### undirected examples ----------------------------
 #'
 #' n <- 1000
 #' k <- 5
@@ -73,7 +85,7 @@
 #' B <- sample_sparse(ufm, poisson_edges = FALSE)
 #'
 #' inherits(B, "dsCMatrix")  # TRUE
-#' isSymmetric(A)            # TRUE
+#' isSymmetric(B)            # TRUE
 #'
 #' ### sampling graphs as igraph graphs ------------------
 #'
@@ -84,6 +96,49 @@
 #' sample_tidygraph(ufm)
 #'
 #' sample_tidygraph(ufm, poisson_edges = FALSE)
+#'
+#' ##### directed examples ----------------------------
+#'
+#' n2 <- 10000
+#'
+#' k1 <- 5
+#' k2 <- 3
+#'
+#' d <- 5000
+#'
+#' X <- matrix(rpois(n = n2 * k1, 1), nrow = n2)
+#' S <- matrix(runif(n = k1 * k2, 0, .1), nrow = k1, ncol = k2)
+#' Y <- matrix(rexp(n = k2 * d, 1), nrow = d)
+#'
+#' fm <- directed_factor_model(X, S, Y, expected_in_degree = 50)
+#' fm
+#'
+#' ### sampling graphs as edgelists ----------------------
+#'
+#' edgelist2 <- sample_edgelist(fm)
+#' edgelist2
+#'
+#' ### sampling graphs as sparse matrices ----------------
+#'
+#' A2 <- sample_sparse(fm)
+#'
+#' inherits(A2, "dgCMatrix") # TRUE
+#' isSymmetric(A2)           # FALSE
+#'
+#' B2 <- sample_sparse(fm, poisson_edges = FALSE)
+#'
+#' inherits(B2, "dgCMatrix")  # TRUE
+#' isSymmetric(B2)            # TRUE
+#'
+#' ### sampling graphs as igraph graphs ------------------
+#'
+#' sample_igraph(fm)
+#'
+#' ### sampling graphs as tidygraph graphs ---------------
+#'
+#' sample_tidygraph(fm)
+#'
+#' sample_tidygraph(fm, poisson_edges = FALSE)
 #'
 sample_edgelist <- function(
   factor_model,
@@ -301,16 +356,6 @@ sample_edgelist.matrix <- function(
         u_block_start <- u_block_start + block_sizes[u, v]
       }
     }
-  }
-
-  if (!directed) {
-
-    # add edges to achieve symmetry!
-
-    from_copy <- from
-    from <- c(from, to)
-    to <- c(to, from_copy)
-
   }
 
   edgelist <- tibble(from = from, to = to)

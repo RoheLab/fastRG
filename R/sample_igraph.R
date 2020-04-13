@@ -64,5 +64,5 @@ sample_igraph.directed_factor_model <- function(
     allow_self_loops = allow_self_loops
   )
 
-  igraph::graph_from_data(as.matrix(edgelist), directed = TRUE)
+  igraph::graph_from_edgelist(as.matrix(edgelist), directed = TRUE)
 }

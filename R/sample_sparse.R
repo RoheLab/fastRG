@@ -1,6 +1,6 @@
 #' Sample a random dot product graph as a sparse Matrix
 #'
-#' There are two steps to using the `FastRG` package. First,
+#' There are two steps to using the `fastRG` package. First,
 #' you must parameterize a random dot product graph by
 #' specifying its expected adjacency matrix. Use functions such as
 #' [dcsbm()], [sbm()], etc, to perform this specification.
@@ -9,10 +9,21 @@
 #'
 #' @inherit sample_edgelist params details references examples
 #'
-#' @return A sparse [Matrix::Matrix()] of class `dsCMatrix`.
-#'   In particular, this means the graph is `Matrix` that
-#'   (1) has double data type, (2) is symmetric, and (3) is in
+#' @return For undirected factor models, a sparse
+#'   [Matrix::Matrix()] of class `dsCMatrix`. In particular,
+#'   this means the `Matrix` object (1) has
+#'   double data type, (2) is symmetric, and (3) is in
 #'   column compressed storage format.
+#'
+#'   For directed factor models, a sparse
+#'   [Matrix::Matrix()] of class `dgCMatrix`. This means
+#'   the `Matrix` object (1) has double data type,
+#'   (2) in *not* symmetric, and (3) is in column
+#'   compressed storage format.
+#'
+#'   To reiterate: for undirected graphs, you will get
+#'   a symmetric matrix. For directed graphs, you will
+#'   get a general sparse matrix.
 #'
 #' @export
 #' @family samplers
@@ -43,10 +54,10 @@ sample_sparse.undirected_factor_model <- function(
   S <- factor_model$S
 
   edgelist <- sample_edgelist(
-    X, S, X,
-    TRUE,                                # directed!!
+    factor_model,
     poisson_edges = poisson_edges,
-    allow_self_loops = allow_self_loops
+    allow_self_loops = allow_self_loops,
+    ...
   )
 
   n <- factor_model$n
@@ -108,8 +119,6 @@ sample_sparse.directed_factor_model <- function(
   poisson_edges = TRUE,
   allow_self_loops = TRUE) {
 
-  .NotYetImplemented()
-
   edgelist <- sample_edgelist(
     factor_model,
     poisson_edges = poisson_edges,
@@ -117,32 +126,11 @@ sample_sparse.directed_factor_model <- function(
     ...
   )
 
-  # density
-
-  # warn when creating very dense matrices
+  n <- factor_model$n
+  d <- factor_model$d
 
   if (nrow(edgelist) == 0)
     return(sparseMatrix(1:n, 1:d, x = 0, dims = c(n, d)))
-
-
-  # matrix return case
-
-  # to construct a symmetric sparseMatrix, we only pass in elements
-  # of either the upper or lower diagonal (otherwise we'll get an error).
-  # flop all edges to the lower diagonal
-
-  if (!directed) {
-    from_new <- pmin(from, to)
-    to <- pmax(from, to)
-    from <- from_new
-  }
-
-  n <- factor_model$n
-  if (inherits(factor_model, "directed_factor_model")) {
-    d <- factor_model$d
-  } else {
-    d <- n
-  }
 
   if (poisson_edges) {
 
@@ -155,7 +143,7 @@ sample_sparse.directed_factor_model <- function(
       edgelist$to,
       x = 1,
       dims = c(n, d),
-      symmetric = !directed
+      symmetric = FALSE
     )
 
   } else {
@@ -163,9 +151,16 @@ sample_sparse.directed_factor_model <- function(
       edgelist$from,
       edgelist$to,
       dims = c(n, d),
-      symmetric = !directed
+      symmetric = FALSE
     )
   }
 
-  A
+  # see comments on type-stability of output in
+  # sample_sparse.undirected_factor_model()
+  #
+  # here we will get double data type and CSC storage format
+  # (which is as before), but the resulting matrix will no
+  # longer be symmetric
+
+  A * 1.0
 }
