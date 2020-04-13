@@ -141,7 +141,8 @@ Other bernoulli graphs:
 
 Other directed graphs: 
 \code{\link{di_dc_sbm}()},
-\code{\link{disbm}()}
+\code{\link{disbm}()},
+\code{\link{erdos_renyi}()}
 }
 \concept{bernoulli graphs}
 \concept{directed graphs}

@@ -158,7 +158,8 @@ Other stochastic block models:
 
 Other directed graphs: 
 \code{\link{di_planted_partition}()},
-\code{\link{disbm}()}
+\code{\link{disbm}()},
+\code{\link{erdos_renyi}()}
 }
 \concept{directed graphs}
 \concept{stochastic block models}

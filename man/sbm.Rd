@@ -136,7 +136,8 @@ Other stochastic block models:
 
 Other undirected graphs: 
 \code{\link{dcsbm}()},
-\code{\link{di_planted_partition_params}()}
+\code{\link{di_planted_partition_params}()},
+\code{\link{erdos_renyi}()}
 }
 \concept{stochastic block models}
 \concept{undirected graphs}

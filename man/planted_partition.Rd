@@ -148,6 +148,7 @@ Other stochastic block models:
 
 Other undirected graphs: 
 \code{\link{dcsbm}()},
+\code{\link{erdos_renyi}()},
 \code{\link{sbm}()}
 }
 \concept{stochastic block models}

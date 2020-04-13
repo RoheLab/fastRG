@@ -14,11 +14,11 @@ undirected_factor_model(
 }
 \arguments{
 \item{X}{A \code{\link[=matrix]{matrix()}} or \link[=matrix]{Matrix()} representing real-valued
-latent node positions.}
+latent node positions. Entries must be positive.}
 
 \item{S}{A \code{\link[=matrix]{matrix()}} or \link[=matrix]{Matrix()} mixing matrix. \code{S} is
 symmetrized if it is not already, as this is the undirected
-case.}
+case. Entries must be positive.}
 
 \item{...}{Ignored. For internal developer use only.}
 

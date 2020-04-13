@@ -169,6 +169,58 @@ print.undirected_sbm <- function(x, ...) {
   cat(glue("Expected density: {round(expected_density(x), 5)}", .trim = FALSE))
 }
 
+
+# dispatch hacks to respect type of edges---------------------------------------
+
+#' @rdname sample_edgelist
+#' @export
+sample_edgelist.undirected_sbm <- function(
+  factor_model,
+  ...,
+  poisson_edges = TRUE,
+  allow_self_loops = TRUE) {
+
+  poisson_edges <- factor_model$edge_distribution == "poisson"
+
+  NextMethod()
+
+  NextMethod("sample_edgelist", factor_model, ..., poisson_edges = FALSE)
+}
+
+#' @rdname sample_sparse
+#' @export
+sample_sparse.undirected_erdos_renyi <- function(
+  factor_model,
+  ...,
+  poisson_edges = FALSE,
+  allow_self_loops = TRUE) {
+
+  NextMethod("sample_sparse", factor_model, ..., poisson_edges = FALSE)
+}
+
+#' @rdname sample_igraph
+#' @export
+sample_igraph.undirected_erdos_renyi <- function(
+  factor_model,
+  ...,
+  poisson_edges = FALSE,
+  allow_self_loops = TRUE) {
+
+  NextMethod("sample_igraph", factor_model, ..., poisson_edges = FALSE)
+}
+
+#' @rdname sample_tidygraph
+#' @export
+sample_tidygraph.undirected_erdos_renyi <- function(
+  factor_model,
+  ...,
+  poisson_edges = FALSE,
+  allow_self_loops = TRUE) {
+
+  NextMethod("sample_tidygraph", factor_model, ..., poisson_edges = FALSE)
+}
+
+
 #' @rdname sample_edgelist
 #' @export
 sample_edgelist.undirected_sbm <- function(

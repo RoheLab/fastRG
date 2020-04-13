@@ -1,73 +1,103 @@
-new_undirected_dcsbm <- function(
-  X, S,
-  theta,
-  z,
+new_directed_dcsbm <- function(
+  X, S, Y,
+  theta_in,
+  theta_out,
+  z_in,
+  z_out,
   pi,
   sorted,
   ...,
   subclass = character()) {
-  subclass <- c(subclass, "undirected_dcsbm")
-  dcsbm <- undirected_factor_model(X, S, ..., subclass = subclass)
-  dcsbm$theta <- theta
-  dcsbm$z <- z
+  subclass <- c(subclass, "directed_dcsbm")
+  dcsbm <- directed_factor_model(X, S, Y, ..., subclass = subclass)
+  dcsbm$theta_in <- theta_in
+  dcsbm$theta_out <- theta_out
+  dcsbm$z_in <- z_in
+  dcsbm$z_out <- z_out
   dcsbm$pi <- pi
   dcsbm$sorted <- sorted
   dcsbm
 }
 
-validate_undirected_dcsbm <- function(x) {
+validate_directed_dcsbm <- function(x) {
 
   values <- unclass(x)
 
-  if (!is.factor(values$z)) {
-    stop("`z` must be a factor.", call. = FALSE)
+  if (!is.factor(values$z_in)) {
+    stop("`z_in` must be a factor.", call. = FALSE)
   }
 
-  if (length(values$z) != nrow(values$X)) {
-    stop("There must be one element of `z` for each row of `X`.")
+  if (!is.factor(values$z_out)) {
+    stop("`z_out` must be a factor.", call. = FALSE)
   }
 
-  if (!is.numeric(values$theta)) {
-    stop("`theta` must be a numeric.", call. = FALSE)
-  }
-
-  if (length(values$theta) != nrow(values$X)) {
+  if (length(levels(values$z_in)) != values$k1) {
     stop(
-      "There must be one element of `theta` for each row of `X`.",
+      "Number of levels of `z1` must match the incoming rank of the model.",
       call. = FALSE
     )
   }
 
-  if (any(values$theta < 0)) {
-    stop("Elements of `theta` must be strictly positive.", call. = FALSE)
-  }
-
-  if (length(levels(values$z)) != values$k) {
+  if (length(levels(values$z_out)) != values$k2) {
     stop(
-      "The number of levels of `z` must match the rank of the model.",
+      "Number of levels of `z_out` must match the outgoing rank of the model.",
       call. = FALSE
     )
   }
 
-  if (length(levels(values$z)) != values$k) {
+  if (length(values$z_in) != nrow(values$X)) {
+    stop("There must be one element of `z_in` for each row of `X`.")
+  }
+
+  if (length(values$z_out) != nrow(values$Y)) {
+    stop("There must be one element of `z_out` for each row of `Y`.")
+  }
+
+  if (!is.numeric(values$theta_in)) {
+    stop("`theta_in` must be a numeric.", call. = FALSE)
+  }
+
+  if (!is.numeric(values$theta_out)) {
+    stop("`theta_out` must be a numeric.", call. = FALSE)
+  }
+
+  if (any(values$theta_in < 0)) {
+    stop("Elements of `theta_in` must be strictly positive.", call. = FALSE)
+  }
+
+  if (any(values$theta_out < 0)) {
+    stop("Elements of `theta_out` must be strictly positive.", call. = FALSE)
+  }
+
+  if (length(values$theta_in) != nrow(values$X)) {
     stop(
-    "The number of levels of `z` must match the rank of the model.",
-    call. = FALSE
+      "There must be one element of `theta_in` for each row of `X`.",
+      call. = FALSE
+    )
+  }
+
+  if (length(values$theta_out) != nrow(values$Y)) {
+    stop(
+      "There must be one element of `theta_out` for each row of `Y`.",
+      call. = FALSE
     )
   }
 
   x
 }
 
-#' Create an undirected degree corrected stochastic blockmodel object
+#' Create a directed degree corrected stochastic blockmodel object
 #'
 #' To specify a degree-corrected stochastic blockmodel, you must specify
-#' the degree-heterogeneity parameters (via `n` or `theta`),
-#' the mixing matrix (via `k` or `B`), and the relative block
-#' probabilites (optional, via `pi`). We provide sane defaults for most of these
+#' the degree-heterogeneity parameters (via `n_in` or `theta_in`, and
+#' `n_out` or `theta_out`), the mixing matrix
+#' (via `k_in` and `k_out`, or `B`), and the relative block
+#' probabilites (optional, via `p_in` and `pi_out`).
+#' We provide sane defaults for most of these
 #' options to enable rapid exploration, or you can invest the effort
 #' for more control over the model parameters. We **strongly recommend**
-#' setting the `expected_degree` or `expected_density` argument
+#' setting the `expected_in_degree`, `expected_out_degree`,
+#' or `expected_density` argument
 #' to avoid large memory allocations associated with
 #' sampling large, dense graphs.
 #'
@@ -114,20 +144,36 @@ validate_undirected_dcsbm <- function(x) {
 #'   so that they are grouped by block. Useful for plotting.
 #'   Defaults to `TRUE`.
 #'
-#' @inheritDotParams undirected_factor_model expected_degree expected_density
+#' @inheritDotParams directed_factor_model expected_in_degree expected_density
+#' @inheritDotParams directed_factor_model expected_out_degree
 #'
-#' @return An `undirected_dcsbm` S3 object, a subclass of the
-#'   [undirected_factor_model()] with the following additional
+#' @return A `directed_dcsbm` S3 object, a subclass of the
+#'   [directed_factor_model()] with the following additional
 #'   fields:
 #'
-#'   - `theta`: A numeric vector of degree-heterogeneity parameters.
+#'   - `theta_in`: A numeric vector of incoming community
+#'     degree-heterogeneity parameters.
 #'
-#'   - `z`: The community memberships of each node, as a [factor()].
-#'     The factor will have `k` levels, where `k` is the number of
+#'   - `theta_out`: A numeric vector of outgoing community
+#'     degree-heterogeneity parameters.
+#'
+#'   - `z_in`: The incoming community memberships of each node,
+#'     as a [factor()]. The factor will have `k_in` levels,
+#'     where `k_in` is the number of incoming
 #'     communities in the stochastic blockmodel. There will not
 #'     always necessarily be observed nodes in each community.
 #'
-#'   - `pi`: Sampling probabilities for each block.
+#'   - `z_out`: The outgoing community memberships of each node,
+#'     as a [factor()]. The factor will have `k_out` levels,
+#'     where `k_out` is the number of outgoing
+#'     communities in the stochastic blockmodel. There will not
+#'     always necessarily be observed nodes in each community.
+#'
+#'   - `pi_in`: Sampling probabilities for each incoming
+#'     community.
+#'
+#'   - `pi_out`: Sampling probabilities for each outgoing
+#'     community.
 #'
 #'   - `sorted`: Logical indicating where nodes are arranged by
 #'     block (and additionally by degree heterogeneity parameter)
@@ -136,7 +182,7 @@ validate_undirected_dcsbm <- function(x) {
 #' @export
 #' @seealso [fastRG()]
 #' @family stochastic block models
-#' @family undirected graphs
+#' @family directed graphs
 #'
 #' @details
 #'
@@ -192,8 +238,14 @@ validate_undirected_dcsbm <- function(x) {
 #'
 #' set.seed(27)
 #'
-#' lazy_dcsbm <- dcsbm(n = 1000, k = 5, expected_density = 0.01)
-#' lazy_dcsbm
+#' dcsbm <- directed_dcsbm(
+#'   n_in = 1000,
+#'   k_in = 5,
+#'   k_out = 8
+#'   expected_density = 0.01
+#' )
+#'
+#' dcsbm
 #'
 #' # sometimes you gotta let the world burn and
 #' # sample a wildly dense graph
@@ -223,42 +275,67 @@ validate_undirected_dcsbm <- function(x) {
 #' edgelist <- sample_edgelist(custom_dcsbm)
 #' edgelist
 #'
-#' # efficient eigendecompostion that leverages low-rank structure in
-#' # E(A) so that you don't have to form E(A) to find eigenvectors,
-#' # as E(A) is typically dense. computation is
+#' # efficient SVD that leverages low-rank structure in
+#' # E(A) so that you don't have to form E(A) to take an
+#' # SVD, as E(A) is typically dense. computation is
 #' # handled via RSpectra
 #'
-#' population_eigs <- eigs_sym(custom_dcsbm)
+#' population_svd <- svds(custom_dcsbm)
 #'
 dcsbm <- function(
-  n = NULL, theta = NULL,
-  k = NULL, B = NULL,
+  n_in = NULL, theta_in = NULL,
+  n_out = NULL, theta_out = NULL,
+  k_in = NULL, k_out = NULL, B = NULL,
   ...,
-  pi = rep(1 / k, k),
+  pi_in = rep(1 / k_in, k_in),
+  pi_out = rep(1 / k_out, k_out),
   sort_nodes = TRUE) {
 
-  ### degree heterogeneity parameters
+  ### in degree heterogeneity parameters
 
-  if (is.null(n) && is.null(theta)) {
-    stop("Must specify either `n` or `theta`.", call. = FALSE)
-  } else if (is.null(theta)) {
+  if (is.null(n_in) && is.null(theta_in)) {
+    stop("Must specify either `n_in` or `theta_in`.", call. = FALSE)
+  } else if (is.null(theta_in)) {
 
-    if (n < 1) {
-      stop("`n` must be a positive integer.", call. = FALSE)
+    if (n_in < 1) {
+      stop("`n_in` must be a positive integer.", call. = FALSE)
     }
 
     message(
-      "Generating random degree heterogeneity parameters `theta` from a ",
+      "Generating random degree heterogeneity parameters `theta_in` from a ",
       "LogNormal(2, 1) distribution. This distribution may change ",
-      "in the future. Explicitly set `theta` for reproducible results.\n"
+      "in the future. Explicitly set `theta_in` for reproducible results.\n"
     )
 
-    theta <- rlnorm(n, meanlog = 2, sdlog = 1)
-  } else if (is.null(n)) {
-    n <- length(theta)
+    theta_in <- rlnorm(n_in, meanlog = 2, sdlog = 1)
+  } else if (is.null(n_in)) {
+    n_in <- length(theta)
+  }
+
+  ### out degree heterogeneity parameters
+
+  if (is.null(n_out) && is.null(theta_out)) {
+    stop("Must specify either `n_out` or `theta_out`.", call. = FALSE)
+  } else if (is.null(theta_out)) {
+
+    if (n_out < 1) {
+      stop("`n_out` must be a positive integer.", call. = FALSE)
+    }
+
+    message(
+      "Generating random degree heterogeneity parameters `theta_out` from a ",
+      "LogNormal(2, 1) distribution. This distribution may change ",
+      "in the future. Explicitly set `theta_out` for reproducible results.\n"
+    )
+
+    theta_out <- rlnorm(n_out, meanlog = 2, sdlog = 1)
+  } else if (is.null(n_out)) {
+    n_out <- length(theta_out)
   }
 
   ### mixing matrix
+
+  # NOTE: STOPPED HERE AHHHHHHH
 
   if (is.null(k) && is.null(B)) {
     stop("Must specify either `k` or `B`.", call. = FALSE)
@@ -324,23 +401,27 @@ dcsbm <- function(
 
   X@x <- theta
 
-  dcsbm <- new_undirected_dcsbm(
+  dcsbm <- new_directed_dcsbm(
     X = X,
     S = B,
-    theta = theta,
-    z = z,
-    pi = pi,
+    Y = Y,
+    theta_in = theta_in,
+    theta_out = theta_out,
+    z_in = z_in,
+    z_out = z_out,
+    pi_in = pi_in,
+    pi_out = pi_out,
     sorted = sort_nodes,
     ...
   )
 
-  validate_undirected_dcsbm(dcsbm)
+  validate_directed_dcsbm(dcsbm)
 }
 
-print.undirected_dcsbm <- function(x, ...) {
+print.directed_dcsbm <- function(x, ...) {
 
-  cat(glue("Undirected Degree-Corrected Stochastic Blockmodel\n", .trim = FALSE))
-  cat(glue("-------------------------------------------------\n\n", .trim = FALSE))
+  cat(glue("Directed Degree-Corrected Stochastic Blockmodel\n", .trim = FALSE))
+  cat(glue("-----------------------------------------------\n\n", .trim = FALSE))
 
   sorted <- if (x$sorted) "arranged by block" else "not arranged by block"
 

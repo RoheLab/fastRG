@@ -4,6 +4,7 @@
 \name{reexports}
 \alias{reexports}
 \alias{eigs_sym}
+\alias{svds}
 \title{Objects exported from other packages}
 \keyword{internal}
 \description{
@@ -11,6 +12,6 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{RSpectra}{\code{\link[RSpectra]{eigs_sym}}}
+  \item{RSpectra}{\code{\link[RSpectra]{eigs_sym}}, \code{\link[RSpectra]{svds}}}
 }}
 

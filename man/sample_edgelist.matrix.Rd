@@ -62,6 +62,16 @@ as usual, and self-loops are removed afterwards.}
 A single realization of a random Poisson (or Bernoulli)
 Dot Product Graph, represent as a \code{\link[tibble:tibble]{tibble::tibble()}} with two
 integer columns, \code{from} and \code{to}.
+
+In the undirected case, \code{from} and \code{to} do not encode
+information about edge direction. That is, if there is a
+single edge between nodes \code{i} and \code{j}, either \verb{(i, j)}
+or \verb{(j, i)} will appear as a row in the edgelist, but not both.
+If both \verb{(i, j)} and \verb{(j, i)} appear in the edgelist, this indicates
+the presence of a multi-edge. To avoid handling these
+considerations yourself, we recommend using
+\code{\link[=sample_sparse]{sample_sparse()}}, \code{\link[=sample_igraph]{sample_igraph()}}, and \code{\link[=sample_tidygraph]{sample_tidygraph()}}
+over \code{\link[=sample_edgelist]{sample_edgelist()}}.
 }
 \description{
 \strong{This is a breaks-off, no safety checks interface.}
@@ -103,9 +113,9 @@ Journal of Machine Learning Research; 19(77):1-13, 2018.
 }
 \seealso{
 Other samplers: 
-\code{\link{sample_edgelist}()},
-\code{\link{sample_igraph}()},
-\code{\link{sample_sparse}()},
-\code{\link{sample_tidygraph}()}
+\code{\link{sample_edgelist.undirected_erdos_renyi}()},
+\code{\link{sample_igraph.undirected_erdos_renyi}()},
+\code{\link{sample_sparse.undirected_erdos_renyi}()},
+\code{\link{sample_tidygraph.undirected_erdos_renyi}()}
 }
 \concept{samplers}

@@ -1,19 +1,33 @@
-#' Sample an Erdos-Renyi graph
+new_undirected_erdos_renyi <- function(X, S, p, ...) {
+  er <- undirected_factor_model(
+    X, S, ...,
+    subclass = "undirected_erdos_renyi"
+  )
+  er$p <- p
+  er
+}
+
+validate_undirected_erdos_renyi <- function(x) {
+
+  values <- unclass(x)
+
+  if (ncol(values$X) != 1) {
+    stop("`X` must have a single column.", call. = FALSE)
+  }
+
+  if (values$p <= 0 || 1 <= values$p) {
+    stop("`p` must be strictly between zero and one.", call. = FALSE)
+  }
+
+  x
+}
+
+#' Create an undirected erdos renyi object
 #'
 #' @param n Number of nodes in graph.
 #'
 #' @param p Probability of an edge between any two nodes. You must specify
-#'   either `p` or `avg_deg`. If you do not specify `p`, uses `avg_deg / n`.
-#'
-#' @param avg_deg Desired average out degree. When specified, rescales
-#'   sampling probabilities to achieve the desired average out degree.
-#'   Defaults to `NULL`, such that there is no rescaling.
-#'
-#' @param directed Defaults to `FALSE` for Erdos-Renyi graphs. The default
-#'   in the more general [fastRG()] is `TRUE`.
-#'
-#' @inheritDotParams fastRG
-#' @inherit fastRG return
+#'   either `p` or `expected_degree`.
 #'
 #' @return Never returns Poisson edges.
 #'
@@ -21,51 +35,84 @@
 #'
 #' @seealso [fastRG()]
 #' @family bernoulli graphs
+#' @family erdos renyi
+#' @family undirected graphs
 #'
 #' @examples
 #'
-#' set.seed(27)
+#' set.seed(87)
 #'
-#' # get the random dot product parameters
-#' erdos_renyi_params(n = 10, p = 0.1)
+#' er <- erdos_renyi(n = 10, p = 0.1)
+#' er
 #'
-#' # sample a small graph
-#' A <- erdos_renyi(n = 10, p = 0.1)
+#' big_er <- erdos_renyi(n = 10^6, expected_degree = 5)
+#' big_er
+#'
+#' A <- sample_sparse(er)
 #' A
 #'
-#' # out degree of each node
-#' rowSums(A)
-#'
-#' # in degree of each node
-#' colSums(A)
-#'
-#' # sample a much larger graph
-#' B <- erdos_renyi(n = 10^6, avg_deg = 5)
-#'
-erdos_renyi <- function(n, p = NULL, avg_deg = NULL, directed = FALSE, ...) {
+erdos_renyi <- function(
+  n, ..., p = NULL) {
 
-  params <- erdos_renyi_params(
-    n = n, p = p, avg_deg = avg_deg,
-    directed = directed, ...
-  )
-  fastRG(params$X, params$S, poisson_edges = FALSE, directed = directed, ...)
-}
+  X <- Matrix(1, nrow = n, ncol = 1)
 
-#' @rdname erdos_renyi
-#' @export
-erdos_renyi_params <- function(n, p = NULL, avg_deg = NULL, directed = FALSE, ...) {
-  X <- matrix(1, nrow = n, ncol = 1)
-
-  if (is.null(p) && is.null(avg_deg)) {
-    stop("Must specify either `avg_deg` or `p`.", call. = FALSE)
+  if (is.null(p) && is.null(expected_degree)) {
+    stop("Must specify either `p` or `expected_degree`.", call. = FALSE)
   }
 
   if (is.null(p)) {
-    p <- avg_deg / n
+    p <- 0.5  # doesn't matter, will get rescaled anyway
   }
 
   poisson_p <- -log(1 - p)
   S <- matrix(poisson_p, nrow = 1, ncol = 1)
 
-  list(X = X, S = S, Y = X)
+  er <- new_undirected_erdos_renyi(X, S, p = p, ...)
+  validate_undirected_erdos_renyi(er)
+}
+
+# dispatch hacks to always avoid Poisson edges ---------------------------------
+
+#' @rdname sample_edgelist
+#' @export
+sample_edgelist.undirected_erdos_renyi <- function(
+  factor_model,
+  ...,
+  poisson_edges = FALSE,
+  allow_self_loops = TRUE) {
+
+  NextMethod("sample_edgelist", factor_model, ..., poisson_edges = FALSE)
+}
+
+#' @rdname sample_sparse
+#' @export
+sample_sparse.undirected_erdos_renyi <- function(
+  factor_model,
+  ...,
+  poisson_edges = FALSE,
+  allow_self_loops = TRUE) {
+
+  NextMethod("sample_sparse", factor_model, ..., poisson_edges = FALSE)
+}
+
+#' @rdname sample_igraph
+#' @export
+sample_igraph.undirected_erdos_renyi <- function(
+  factor_model,
+  ...,
+  poisson_edges = FALSE,
+  allow_self_loops = TRUE) {
+
+  NextMethod("sample_igraph", factor_model, ..., poisson_edges = FALSE)
+}
+
+#' @rdname sample_tidygraph
+#' @export
+sample_tidygraph.undirected_erdos_renyi <- function(
+  factor_model,
+  ...,
+  poisson_edges = FALSE,
+  allow_self_loops = TRUE) {
+
+  NextMethod("sample_tidygraph", factor_model, ..., poisson_edges = FALSE)
 }
