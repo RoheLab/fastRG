@@ -14,7 +14,8 @@ new_directed_dcsbm <- function(
   dcsbm$theta_out <- theta_out
   dcsbm$z_in <- z_in
   dcsbm$z_out <- z_out
-  dcsbm$pi <- pi
+  dcsbm$pi_in <- pi_in
+  dcsbm$pi_out <- pi_out
   dcsbm$sorted <- sorted
   dcsbm
 }
@@ -82,6 +83,8 @@ validate_directed_dcsbm <- function(x) {
       call. = FALSE
     )
   }
+
+  # TODO: check dimensions of pi_in and pi_out
 
   x
 }
