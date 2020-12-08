@@ -104,7 +104,7 @@ validate_undirected_sbm <- function(x) {
 #' edgelist <- sample_edgelist(bernoulli_sbm)
 #' edgelist
 #'
-#' A <- sample_matrix(bernoulli_sbm)
+#' A <- sample_sparse(bernoulli_sbm)
 #'
 #' # only zeroes and ones!
 #' unique(A)

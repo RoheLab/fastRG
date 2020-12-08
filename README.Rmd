@@ -16,8 +16,8 @@ knitr::opts_chunk$set(
 # fastRG
 
 <!-- badges: start -->
-[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
-[![Travis build status](https://travis-ci.org/RoheLab/fastRG.svg?branch=master)](https://travis-ci.org/RoheLab/fastRG)
+[![Codecov test coverage](https://codecov.io/gh/RoheLab/fastRG/branch/master/graph/badge.svg)](https://codecov.io/gh/RoheLab/fastRG?branch=master)
+[![R build status](https://github.com/RoheLab/fastRG/workflows/R-CMD-check/badge.svg)](https://github.com/RoheLab/fastRG/actions)
 <!-- badges: end -->
 
 `fastRG` quickly samples a broad class of network models known as generalized random product graphs. In particular, for matrices `X`, `S` and `Y`, `fastRG` samples a matrix `A` with expectation `X S Y^T` where individual entries are Poisson distributed. We recommend that you think of `A` as the adjacency matrix for a graph (or a multi-graph). Crucially, the sampling is `O(m)`, where `m` is the number of the edges in graph. Other algorithms are `O(n^2)`, where `n` is the number of nodes in the network. For additional details, see the [paper](https://arxiv.org/abs/1703.02998).
@@ -34,7 +34,7 @@ devtools::install_github("RoheLab/fastRG")
 
 ## Example Usage
 
-`FastRG` takes an object oriented approach to simulation. First
+`fastRG` takes an object oriented approach to simulation. First
 
 
 also--factor model
@@ -57,7 +57,9 @@ We *strongly* advise that you always set `avg_deg`, as it is easy to request ver
 ```{r}
 library(fastRG)
 
-A <- erdos_renyi(n = 10^6, avg_deg = 5)
+er <- erdos_renyi(n = 10^6, p = 1 / n)
+sample_edgelist(er, avg_deg = 2)
+expected_edges(er)
 ```
 
 By default we always get a `Matrix::sparseMatrix()`, but we can also ask for the graph as an edgelist as well.
@@ -74,7 +76,7 @@ g <- igraph::graph_from_edgelist(el)
 g
 ```
 
-## Other languages
+## Related work
 
-The `fastRG` sampler has been implemented in Python [here](https://github.com/yunjhongwu/matrix-routines/blob/master/fastRG.py).
+You can find the original research code associated with `fastRG` [here][https://github.com/raningtky/sampleRDPG]. There is also a Python translation of the original code in Python [here](https://github.com/yunjhongwu/matrix-routines/blob/master/fastRG.py). Both of these implementations are bare bones.
 
