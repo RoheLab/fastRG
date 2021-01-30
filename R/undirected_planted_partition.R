@@ -157,6 +157,8 @@ planted_partition <- function(
   validate_undirected_planted_partition(pp)
 }
 
+#' @method print undirected_planted_partition
+#' @export
 print.undirected_planted_partition <- function(x, ...) {
 
   cat(glue("Undirected Planted Partition Model\n", .trim = FALSE))

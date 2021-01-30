@@ -421,6 +421,8 @@ dcsbm <- function(
   validate_directed_dcsbm(dcsbm)
 }
 
+#' @method print directed_dcsbm
+#' @export
 print.directed_dcsbm <- function(x, ...) {
 
   cat(glue("Directed Degree-Corrected Stochastic Blockmodel\n", .trim = FALSE))

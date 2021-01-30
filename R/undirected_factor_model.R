@@ -182,6 +182,8 @@ dim_and_class <- function(x, ...) {
     paste0(length(x), " [", class(x)[1], "]")
 }
 
+#' @method print undirected_factor_model
+#' @export
 print.undirected_factor_model <- function(x, ...) {
 
   cat(glue("Undirected Factor Model\n", .trim = FALSE))

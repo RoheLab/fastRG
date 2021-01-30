@@ -337,6 +337,8 @@ dcsbm <- function(
   validate_undirected_dcsbm(dcsbm)
 }
 
+#' @method print undirected_dcsbm
+#' @export
 print.undirected_dcsbm <- function(x, ...) {
 
   cat(glue("Undirected Degree-Corrected Stochastic Blockmodel\n", .trim = FALSE))

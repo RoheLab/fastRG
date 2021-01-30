@@ -145,6 +145,8 @@ sbm <- function(
   validate_undirected_sbm(sbm)
 }
 
+#' @method print undirected_sbm
+#' @export
 print.undirected_sbm <- function(x, ...) {
 
   cat(glue("Undirected Stochastic Blockmodel\n", .trim = FALSE))
