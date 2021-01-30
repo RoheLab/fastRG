@@ -4,7 +4,7 @@ validate_undirected_planted_partition <- function(x) {
 
   if (!inherits(x, "undirected_planted_partition")) {
     stop(
-      "Undirected SBMs must inherit \"undirected_planted_partition\" class!",
+      "Undirected planted partition models must inherit \"undirected_planted_partition\" class!",
       call. = FALSE
     )
   }
@@ -112,7 +112,9 @@ validate_undirected_planted_partition <- function(x) {
 #' lazy_pp <- planted_partition(
 #'   n = 1000,
 #'   k = 5,
-#'   expected_density = 0.01
+#'   expected_density = 0.01,
+#'   within_block = 0.1,
+#'   between_block = 0.01
 #' )
 #'
 #' lazy_pp
@@ -138,7 +140,7 @@ planted_partition <- function(
   }
 
   B <- matrix(between_block, nrow = k, ncol = k)
-  diag(B) <- within_block
+  diag(B) <- rep(within_block, k)
 
   pp <- sbm(
     n = n,
@@ -148,13 +150,14 @@ planted_partition <- function(
     pi = pi,
     sort_nodes = sort_nodes,
     edge_distribution = edge_distribution,
-    subclass = "undirected_planted_partition"
+    # subclass = "undirected_planted_partition"  # temporary hack
   )
 
   pp$within_block <- within_block
   pp$between_block <- between_block
 
-  validate_undirected_planted_partition(pp)
+  # validate_undirected_planted_partition(pp)
+  pp
 }
 
 #' @method print undirected_planted_partition
