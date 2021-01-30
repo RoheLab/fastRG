@@ -107,7 +107,7 @@ validate_undirected_sbm <- function(x) {
 #' A <- sample_sparse(bernoulli_sbm)
 #'
 #' # only zeroes and ones!
-#' unique(A)
+#' sign(A)
 #'
 sbm <- function(
   n,
