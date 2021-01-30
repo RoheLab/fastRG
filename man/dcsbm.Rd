@@ -2,7 +2,7 @@
 % Please edit documentation in R/directed_dcsbm.R, R/undirected_dcsbm.R
 \name{dcsbm}
 \alias{dcsbm}
-\title{Create an undirected degree corrected stochastic blockmodel object}
+\title{Create a directed degree corrected stochastic blockmodel object}
 \usage{
 dcsbm(
   n = NULL,
@@ -59,14 +59,14 @@ symmetrized via the update \code{B := B + t(B)}. Defaults to \code{NULL}.
 You must specify either \code{k} or \code{B}, but not both.}
 
 \item{...}{
-  Arguments passed on to \code{\link[=undirected_factor_model]{undirected_factor_model}}, \code{\link[=undirected_factor_model]{undirected_factor_model}}
+  Arguments passed on to \code{\link[=directed_factor_model]{directed_factor_model}}, \code{\link[=directed_factor_model]{directed_factor_model}}, \code{\link[=undirected_factor_model]{undirected_factor_model}}
   \describe{
-    \item{\code{expected_degree}}{If specified, the desired expected degree
-of the graph. Specifying \code{expected_degree} simply rescales \code{S}
-to achieve this. Defaults to \code{NULL}. Do not specify both
-\code{expected_degree} and \code{expected_density} at the same time.}
     \item{\code{expected_density}}{If specified, the desired expected density
 of the graph. Specifying \code{expected_density} simply rescales \code{S}
+to achieve this. Defaults to \code{NULL}. Do not specify both
+\code{expected_degree} and \code{expected_density} at the same time.}
+    \item{\code{expected_degree}}{If specified, the desired expected degree
+of the graph. Specifying \code{expected_degree} simply rescales \code{S}
 to achieve this. Defaults to \code{NULL}. Do not specify both
 \code{expected_degree} and \code{expected_density} at the same time.}
   }}
@@ -82,16 +82,28 @@ so that they are grouped by block. Useful for plotting.
 Defaults to \code{TRUE}.}
 }
 \value{
-An \code{undirected_dcsbm} S3 object, a subclass of the
-\code{\link[=undirected_factor_model]{undirected_factor_model()}} with the following additional
+A \code{directed_dcsbm} S3 object, a subclass of the
+\code{\link[=directed_factor_model]{directed_factor_model()}} with the following additional
 fields:
 \itemize{
-\item \code{theta}: A numeric vector of degree-heterogeneity parameters.
-\item \code{z}: The community memberships of each node, as a \code{\link[=factor]{factor()}}.
-The factor will have \code{k} levels, where \code{k} is the number of
+\item \code{theta_in}: A numeric vector of incoming community
+degree-heterogeneity parameters.
+\item \code{theta_out}: A numeric vector of outgoing community
+degree-heterogeneity parameters.
+\item \code{z_in}: The incoming community memberships of each node,
+as a \code{\link[=factor]{factor()}}. The factor will have \code{k_in} levels,
+where \code{k_in} is the number of incoming
 communities in the stochastic blockmodel. There will not
 always necessarily be observed nodes in each community.
-\item \code{pi}: Sampling probabilities for each block.
+\item \code{z_out}: The outgoing community memberships of each node,
+as a \code{\link[=factor]{factor()}}. The factor will have \code{k_out} levels,
+where \code{k_out} is the number of outgoing
+communities in the stochastic blockmodel. There will not
+always necessarily be observed nodes in each community.
+\item \code{pi_in}: Sampling probabilities for each incoming
+community.
+\item \code{pi_out}: Sampling probabilities for each outgoing
+community.
 \item \code{sorted}: Logical indicating where nodes are arranged by
 block (and additionally by degree heterogeneity parameter)
 within each block.
@@ -114,12 +126,15 @@ within each block.
 }
 \description{
 To specify a degree-corrected stochastic blockmodel, you must specify
-the degree-heterogeneity parameters (via \code{n} or \code{theta}),
-the mixing matrix (via \code{k} or \code{B}), and the relative block
-probabilites (optional, via \code{pi}). We provide sane defaults for most of these
+the degree-heterogeneity parameters (via \code{n_in} or \code{theta_in}, and
+\code{n_out} or \code{theta_out}), the mixing matrix
+(via \code{k_in} and \code{k_out}, or \code{B}), and the relative block
+probabilites (optional, via \code{p_in} and \code{pi_out}).
+We provide sane defaults for most of these
 options to enable rapid exploration, or you can invest the effort
 for more control over the model parameters. We \strong{strongly recommend}
-setting the \code{expected_degree} or \code{expected_density} argument
+setting the \code{expected_in_degree}, \code{expected_out_degree},
+or \code{expected_density} argument
 to avoid large memory allocations associated with
 sampling large, dense graphs.
 
@@ -235,8 +250,14 @@ between nodes in block \code{i} and block \code{j}. Then each edge
 
 set.seed(27)
 
-lazy_dcsbm <- dcsbm(n = 1000, k = 5, expected_density = 0.01)
-lazy_dcsbm
+dcsbm <- directed_dcsbm(
+  n_in = 1000,
+  k_in = 5,
+  k_out = 8
+  expected_density = 0.01
+)
+
+dcsbm
 
 # sometimes you gotta let the world burn and
 # sample a wildly dense graph
@@ -271,7 +292,7 @@ edgelist
 # SVD, as E(A) is typically dense. computation is
 # handled via RSpectra
 
-population_svd <- eigs_sym(custom_dcsbm)
+population_svd <- svds(custom_dcsbm)
 
 
 set.seed(27)
@@ -307,12 +328,12 @@ custom_dcsbm
 edgelist <- sample_edgelist(custom_dcsbm)
 edgelist
 
-# efficient SVD that leverages low-rank structure in
-# E(A) so that you don't have to form E(A) to take an
-# SVD, as E(A) is typically dense. computation is
+# efficient eigendecompostion that leverages low-rank structure in
+# E(A) so that you don't have to form E(A) to find eigenvectors,
+# as E(A) is typically dense. computation is
 # handled via RSpectra
 
-population_svd <- eigs_sym(custom_dcsbm)
+population_eigs <- eigs_sym(custom_dcsbm)
 
 }
 \seealso{
@@ -321,32 +342,21 @@ population_svd <- eigs_sym(custom_dcsbm)
 \code{\link[=fastRG]{fastRG()}}
 
 Other stochastic block models: 
-\code{\link{dc_mixed}()},
-\code{\link{dc_overlapping}()},
-\code{\link{di_dc_sbm}()},
-\code{\link{di_planted_partition_params}()},
-\code{\link{di_planted_partition}()},
-\code{\link{disbm}()},
+\code{\link{planted_partition}()},
 \code{\link{sbm}()}
 
-Other undirected graphs: 
-\code{\link{di_planted_partition_params}()},
-\code{\link{erdos_renyi}()},
-\code{\link{sbm}()}
+Other directed graphs: 
+\code{\link{directed_erdos_renyi}()}
 
 Other stochastic block models: 
-\code{\link{dc_mixed}()},
-\code{\link{dc_overlapping}()},
-\code{\link{di_dc_sbm}()},
-\code{\link{di_planted_partition_params}()},
-\code{\link{di_planted_partition}()},
-\code{\link{disbm}()},
+\code{\link{planted_partition}()},
 \code{\link{sbm}()}
 
 Other undirected graphs: 
-\code{\link{di_planted_partition_params}()},
 \code{\link{erdos_renyi}()},
+\code{\link{planted_partition}()},
 \code{\link{sbm}()}
 }
+\concept{directed graphs}
 \concept{stochastic block models}
 \concept{undirected graphs}

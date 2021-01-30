@@ -12,6 +12,6 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{RSpectra}{\code{\link[RSpectra]{eigs_sym}}, \code{\link[RSpectra]{svds}}}
+  \item{RSpectra}{\code{\link[RSpectra:eigs]{eigs_sym}}, \code{\link[RSpectra]{svds}}}
 }}
 

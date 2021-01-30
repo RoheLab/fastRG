@@ -47,7 +47,7 @@ Defaults to \code{TRUE}. When \code{FALSE}, sampling proceeds
 as usual, and self-loops are removed afterwards.}
 }
 \value{
-An \code{\link[igraph:igraph]{igraph::igraph()}} graph object.
+An \code{\link[igraph:aaa-igraph-package]{igraph::igraph()}} graph object.
 }
 \description{
 There are two steps to using the \code{FastRG} package. First,
@@ -55,7 +55,7 @@ you must parameterize a random dot product graph by
 specifying its expected adjacency matrix. Use functions such as
 \code{\link[=dcsbm]{dcsbm()}}, \code{\link[=sbm]{sbm()}}, etc, to perform this specification.
 Then, use \code{\link[=sample_matrix]{sample_matrix()}} to generate a random graph,
-represented as an \code{\link[igraph:igraph]{igraph::igraph()}}, with that expectation.
+represented as an \code{\link[igraph:aaa-igraph-package]{igraph::igraph()}}, with that expectation.
 }
 \details{
 This function implements the \code{fastRG} algorithm as

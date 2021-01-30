@@ -110,7 +110,7 @@ bernoulli_sbm
 edgelist <- sample_edgelist(bernoulli_sbm)
 edgelist
 
-A <- sample_matrix(bernoulli_sbm)
+A <- sample_sparse(bernoulli_sbm)
 
 # only zeroes and ones!
 unique(A)
@@ -126,18 +126,13 @@ Journal of Machine Learning Research; 19(77):1-13, 2018.
 \code{\link[=fastRG]{fastRG()}}
 
 Other stochastic block models: 
-\code{\link{dc_mixed}()},
-\code{\link{dc_overlapping}()},
 \code{\link{dcsbm}()},
-\code{\link{di_dc_sbm}()},
-\code{\link{di_planted_partition_params}()},
-\code{\link{di_planted_partition}()},
-\code{\link{disbm}()}
+\code{\link{planted_partition}()}
 
 Other undirected graphs: 
 \code{\link{dcsbm}()},
-\code{\link{di_planted_partition_params}()},
-\code{\link{erdos_renyi}()}
+\code{\link{erdos_renyi}()},
+\code{\link{planted_partition}()}
 }
 \concept{stochastic block models}
 \concept{undirected graphs}
