@@ -8,11 +8,24 @@ template:
     bootswatch: paper
 
 reference:
-  - title: Key function
+  - title: Sampling
     desc: ~
     contents:
-      - "fastRG"
-  - title: Stochastic blockmodels
+      - "sample_edgelist"
+      - "sample_sparse"
+      - "sample_igraph"
+      - "sample_tidygraph"
+  - title: Graph properties conditional on latent representations
+    desc: ~
+    contents:
+      - "eigs_syms"
+      - "svds"
+      - "expected_degree"
+      - "expected_edges"
+      - "expected_edges"
+      - "expected_in_degree"
+      - "expected_out_degree"
+  - title: Graph properties conditional on latent representations
     desc: ~
     contents:
       - "dc_mixed"
@@ -20,18 +33,17 @@ reference:
       - "dcsbm"
       - "sbm"
       - "planted_partition"
-  - title: Directed stochastic blockmodels
+  - title: Undirected graphs
     desc: ~
     contents:
-      - "di_dc_sbm"
-      - "disbm"
-  - title: Bernoulli graphs
-    desc: ~
-    contents:
-      - "planted_partition"
-      - "chung_lu"
       - "erdos_renyi"
-  - title: Utilities
+      - "planted_partition"
+      - "sbm"
+      - "dcsbm"
+      - "undirected_factor_model"
+  - title: Directed graphs
     desc: ~
     contents:
-    - "expected"
+      - "directed_erdos_renyi"
+      - "directed_factor_model"
+
