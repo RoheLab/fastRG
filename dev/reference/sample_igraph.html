@@ -168,8 +168,8 @@ represented as an <code><a href='https://rdrr.io/pkg/igraph/man/aaa-igraph-packa
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>factor_model</th>
-      <td><p>A <code><a href='directed_factor_model.html'>directed_factor_model()</a></code>,
-<code><a href='undirected_factor_model.html'>undirected_factor_model()</a></code>, or one of the many subclasses.</p></td>
+      <td><p>A <code><a href='directed_factor_model.html'>directed_factor_model()</a></code> or
+<code><a href='undirected_factor_model.html'>undirected_factor_model()</a></code>.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -249,20 +249,20 @@ Journal of Machine Learning Research; 19(77):1-13, 2018.
 
 <span class='va'>edgelist</span> <span class='op'>&lt;-</span> <span class='fu'><a href='sample_edgelist.html'>sample_edgelist</a></span><span class='op'>(</span><span class='va'>ufm</span><span class='op'>)</span>
 <span class='va'>edgelist</span>
-</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 49,931 x 2</span><span>
+</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 24,951 x 2</span><span>
 #&gt;     from    to
 #&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>
-#&gt; </span><span style='color: #555555;'> 1</span><span>   691   298
-#&gt; </span><span style='color: #555555;'> 2</span><span>   309   629
-#&gt; </span><span style='color: #555555;'> 3</span><span>   469   143
-#&gt; </span><span style='color: #555555;'> 4</span><span>   109   953
-#&gt; </span><span style='color: #555555;'> 5</span><span>    74   478
-#&gt; </span><span style='color: #555555;'> 6</span><span>   400    61
-#&gt; </span><span style='color: #555555;'> 7</span><span>    47    70
-#&gt; </span><span style='color: #555555;'> 8</span><span>   116   453
-#&gt; </span><span style='color: #555555;'> 9</span><span>   384   161
-#&gt; </span><span style='color: #555555;'>10</span><span>   854   229
-#&gt; </span><span style='color: #555555;'># … with 49,921 more rows</span><span></div><div class='input'>
+#&gt; </span><span style='color: #555555;'> 1</span><span>   691   831
+#&gt; </span><span style='color: #555555;'> 2</span><span>   309   988
+#&gt; </span><span style='color: #555555;'> 3</span><span>   469   371
+#&gt; </span><span style='color: #555555;'> 4</span><span>   109   954
+#&gt; </span><span style='color: #555555;'> 5</span><span>    74   397
+#&gt; </span><span style='color: #555555;'> 6</span><span>   400   982
+#&gt; </span><span style='color: #555555;'> 7</span><span>    47   952
+#&gt; </span><span style='color: #555555;'> 8</span><span>   116   600
+#&gt; </span><span style='color: #555555;'> 9</span><span>   384   652
+#&gt; </span><span style='color: #555555;'>10</span><span>   854   818
+#&gt; </span><span style='color: #555555;'># … with 24,941 more rows</span><span></div><div class='input'>
 <span class='co'>### sampling graphs as sparse matrices ----------------</span>
 
 <span class='va'>A</span> <span class='op'>&lt;-</span> <span class='fu'><a href='sample_sparse.html'>sample_sparse</a></span><span class='op'>(</span><span class='va'>ufm</span><span class='op'>)</span>
@@ -279,66 +279,66 @@ Journal of Machine Learning Research; 19(77):1-13, 2018.
 <span class='co'>### sampling graphs as igraph graphs ------------------</span>
 
 <span class='fu'>sample_igraph</span><span class='op'>(</span><span class='va'>ufm</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; IGRAPH a73e52a U--- 1000 49931 -- 
-#&gt; + edges from a73e52a:
-#&gt;  [1] 248--784 284--466 262--362 435--714 122--134 143--388 375--760 977--982
-#&gt;  [9]  85--808 384--722 496--903 238--268  80--147 858--880  86--207 864--952
-#&gt; [17] 854--929 691--784 623--903 127--240 399--612 566--687 447--823  36--112
-#&gt; [25] 736--857 331--589 195--766 399--777 502--637 404--474 102--844 184--799
-#&gt; [33]  47--235 354--864  17--219  16--298 735--947 147--839 538--766 714--868
-#&gt; [41] 112--857  17--399 197--753 287--562 474--515  73--883 911--914 784--922
-#&gt; [49] 100--961 111--634 135--375 743--998 399--594 204--833 206--745 225--826
-#&gt; [57] 278--654 188--697  14--915  27-- 75 135--465 182--354 362--818 426--695
-#&gt; [65] 554--658 144--203 634--855 257--320  47--203 655--821  95--890 117--807
+</div><div class='output co'>#&gt; IGRAPH 2b3bd85 U--- 1000 25027 -- 
+#&gt; + edges from 2b3bd85:
+#&gt;  [1] 758--982 702--912 113--509 326--428 158--185 638--707 110--497  86--538
+#&gt;  [9] 130--362  75--486 388--845 184--270 231--979 442--624 756--965 115--278
+#&gt; [17] 313--773 597--780  22--508 552--597 531--927 929--931 331--639 120--215
+#&gt; [25] 435--966   1--780 554--722 580--695 233--284 105--708  65--213 597--720
+#&gt; [33]  13--708 445--750 172--526 171--702   1--326 668--929   1--770 325--527
+#&gt; [41] 159--956 233--773 758--929 163--562 339--753 761--929 755--929  45--766
+#&gt; [49] 690--769 268--354 115--855 184--209  55--381 947--952 449--460 282--831
+#&gt; [57] 821--844  27--872 702--839 318--783 435--872 133--402 547--796 486--756
+#&gt; [65] 496--554 161--453  77--982 471--600 595--638  73--968 341--447 262--731
 #&gt; + ... omitted several edges</div><div class='input'>
 <span class='co'>### sampling graphs as tidygraph graphs ---------------</span>
 
 <span class='fu'><a href='sample_tidygraph.html'>sample_tidygraph</a></span><span class='op'>(</span><span class='va'>ufm</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tbl_graph: 986 nodes and 49790 edges
+</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tbl_graph: 986 nodes and 24921 edges
 #&gt; #
 #&gt; # An undirected multigraph with 1 component
 #&gt; #
 #&gt; # Node Data: 986 x 1 (active)</span><span>
 #&gt;   name 
 #&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>1</span><span> 888  
-#&gt; </span><span style='color: #555555;'>2</span><span> 399  
-#&gt; </span><span style='color: #555555;'>3</span><span> 497  
-#&gt; </span><span style='color: #555555;'>4</span><span> 552  
-#&gt; </span><span style='color: #555555;'>5</span><span> 887  
-#&gt; </span><span style='color: #555555;'>6</span><span> 789  
+#&gt; </span><span style='color: #555555;'>1</span><span> 485  
+#&gt; </span><span style='color: #555555;'>2</span><span> 355  
+#&gt; </span><span style='color: #555555;'>3</span><span> 368  
+#&gt; </span><span style='color: #555555;'>4</span><span> 722  
+#&gt; </span><span style='color: #555555;'>5</span><span> 914  
+#&gt; </span><span style='color: #555555;'>6</span><span> 375  
 #&gt; </span><span style='color: #555555;'># … with 980 more rows</span><span>
 #&gt; </span><span style='color: #555555;'>#
-#&gt; # Edge Data: 49,790 x 2</span><span>
+#&gt; # Edge Data: 24,921 x 2</span><span>
 #&gt;    from    to
 #&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>1</span><span>     1    72
-#&gt; </span><span style='color: #555555;'>2</span><span>     2   627
-#&gt; </span><span style='color: #555555;'>3</span><span>     3   307
-#&gt; </span><span style='color: #555555;'># … with 49,787 more rows</span><span></div><div class='input'>
+#&gt; </span><span style='color: #555555;'>1</span><span>     1    66
+#&gt; </span><span style='color: #555555;'>2</span><span>     2   182
+#&gt; </span><span style='color: #555555;'>3</span><span>     3   429
+#&gt; </span><span style='color: #555555;'># … with 24,918 more rows</span><span></div><div class='input'>
 <span class='fu'><a href='sample_tidygraph.html'>sample_tidygraph</a></span><span class='op'>(</span><span class='va'>ufm</span>, poisson_edges <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tbl_graph: 986 nodes and 47702 edges
+</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tbl_graph: 986 nodes and 24570 edges
 #&gt; #
 #&gt; # An undirected multigraph with 1 component
 #&gt; #
 #&gt; # Node Data: 986 x 1 (active)</span><span>
 #&gt;   name 
 #&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>1</span><span> 186  
-#&gt; </span><span style='color: #555555;'>2</span><span> 157  
-#&gt; </span><span style='color: #555555;'>3</span><span> 996  
-#&gt; </span><span style='color: #555555;'>4</span><span> 788  
-#&gt; </span><span style='color: #555555;'>5</span><span> 753  
-#&gt; </span><span style='color: #555555;'>6</span><span> 209  
+#&gt; </span><span style='color: #555555;'>1</span><span> 983  
+#&gt; </span><span style='color: #555555;'>2</span><span> 658  
+#&gt; </span><span style='color: #555555;'>3</span><span> 253  
+#&gt; </span><span style='color: #555555;'>4</span><span> 844  
+#&gt; </span><span style='color: #555555;'>5</span><span> 221  
+#&gt; </span><span style='color: #555555;'>6</span><span> 720  
 #&gt; </span><span style='color: #555555;'># … with 980 more rows</span><span>
 #&gt; </span><span style='color: #555555;'>#
-#&gt; # Edge Data: 47,702 x 2</span><span>
+#&gt; # Edge Data: 24,570 x 2</span><span>
 #&gt;    from    to
 #&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>1</span><span>     1   105
-#&gt; </span><span style='color: #555555;'>2</span><span>     2   525
-#&gt; </span><span style='color: #555555;'>3</span><span>     3   593
-#&gt; </span><span style='color: #555555;'># … with 47,699 more rows</span><span></div><div class='input'>
+#&gt; </span><span style='color: #555555;'>1</span><span>     1   266
+#&gt; </span><span style='color: #555555;'>2</span><span>     2   350
+#&gt; </span><span style='color: #555555;'>3</span><span>     3   135
+#&gt; </span><span style='color: #555555;'># … with 24,567 more rows</span><span></div><div class='input'>
 <span class='co'>##### directed examples ----------------------------</span>
 
 <span class='va'>n2</span> <span class='op'>&lt;-</span> <span class='fl'>10000</span>
@@ -374,20 +374,20 @@ Journal of Machine Learning Research; 19(77):1-13, 2018.
 
 <span class='va'>edgelist2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='sample_edgelist.html'>sample_edgelist</a></span><span class='op'>(</span><span class='va'>fm</span><span class='op'>)</span>
 <span class='va'>edgelist2</span>
-</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 499,727 x 2</span><span>
+</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tibble: 500,592 x 2</span><span>
 #&gt;     from    to
 #&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>
-#&gt; </span><span style='color: #555555;'> 1</span><span>  </span><span style='text-decoration: underline;'>3</span><span>607  </span><span style='text-decoration: underline;'>4</span><span>512
-#&gt; </span><span style='color: #555555;'> 2</span><span>  </span><span style='text-decoration: underline;'>4</span><span>580  </span><span style='text-decoration: underline;'>4</span><span>583
-#&gt; </span><span style='color: #555555;'> 3</span><span>  </span><span style='text-decoration: underline;'>1</span><span>876  </span><span style='text-decoration: underline;'>1</span><span>989
-#&gt; </span><span style='color: #555555;'> 4</span><span>   994  </span><span style='text-decoration: underline;'>2</span><span>945
-#&gt; </span><span style='color: #555555;'> 5</span><span>  </span><span style='text-decoration: underline;'>7</span><span>665  </span><span style='text-decoration: underline;'>2</span><span>347
-#&gt; </span><span style='color: #555555;'> 6</span><span>  </span><span style='text-decoration: underline;'>9</span><span>038  </span><span style='text-decoration: underline;'>4</span><span>582
-#&gt; </span><span style='color: #555555;'> 7</span><span>   663  </span><span style='text-decoration: underline;'>1</span><span>491
-#&gt; </span><span style='color: #555555;'> 8</span><span>  </span><span style='text-decoration: underline;'>6</span><span>465   709
-#&gt; </span><span style='color: #555555;'> 9</span><span>  </span><span style='text-decoration: underline;'>7</span><span>074  </span><span style='text-decoration: underline;'>3</span><span>241
-#&gt; </span><span style='color: #555555;'>10</span><span>  </span><span style='text-decoration: underline;'>2</span><span>922   101
-#&gt; </span><span style='color: #555555;'># … with 499,717 more rows</span><span></div><div class='input'>
+#&gt; </span><span style='color: #555555;'> 1</span><span>   351  </span><span style='text-decoration: underline;'>4</span><span>865
+#&gt; </span><span style='color: #555555;'> 2</span><span>  </span><span style='text-decoration: underline;'>6</span><span>482  </span><span style='text-decoration: underline;'>2</span><span>676
+#&gt; </span><span style='color: #555555;'> 3</span><span>  </span><span style='text-decoration: underline;'>2</span><span>742  </span><span style='text-decoration: underline;'>2</span><span>316
+#&gt; </span><span style='color: #555555;'> 4</span><span>  </span><span style='text-decoration: underline;'>9</span><span>406  </span><span style='text-decoration: underline;'>4</span><span>523
+#&gt; </span><span style='color: #555555;'> 5</span><span>  </span><span style='text-decoration: underline;'>1</span><span>412  </span><span style='text-decoration: underline;'>1</span><span>706
+#&gt; </span><span style='color: #555555;'> 6</span><span>  </span><span style='text-decoration: underline;'>1</span><span>819  </span><span style='text-decoration: underline;'>2</span><span>960
+#&gt; </span><span style='color: #555555;'> 7</span><span>  </span><span style='text-decoration: underline;'>4</span><span>000  </span><span style='text-decoration: underline;'>3</span><span>484
+#&gt; </span><span style='color: #555555;'> 8</span><span>  </span><span style='text-decoration: underline;'>3</span><span>986  </span><span style='text-decoration: underline;'>3</span><span>948
+#&gt; </span><span style='color: #555555;'> 9</span><span>  </span><span style='text-decoration: underline;'>8</span><span>587  </span><span style='text-decoration: underline;'>2</span><span>823
+#&gt; </span><span style='color: #555555;'>10</span><span>  </span><span style='text-decoration: underline;'>5</span><span>481  </span><span style='text-decoration: underline;'>4</span><span>134
+#&gt; </span><span style='color: #555555;'># … with 500,582 more rows</span><span></div><div class='input'>
 <span class='co'>### sampling graphs as sparse matrices ----------------</span>
 
 <span class='va'>A2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='sample_sparse.html'>sample_sparse</a></span><span class='op'>(</span><span class='va'>fm</span><span class='op'>)</span>
@@ -403,66 +403,66 @@ Journal of Machine Learning Research; 19(77):1-13, 2018.
 <span class='co'>### sampling graphs as igraph graphs ------------------</span>
 
 <span class='fu'>sample_igraph</span><span class='op'>(</span><span class='va'>fm</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; IGRAPH 46b308d D--- 10000 499235 -- 
-#&gt; + edges from 46b308d:
-#&gt;  [1]   51-&gt;2177 2924-&gt; 227 7482-&gt;4484 8282-&gt;3871 9902-&gt; 297 5457-&gt; 392
-#&gt;  [7] 9669-&gt;4585 7374-&gt;2869 5666-&gt;3145 6725-&gt;1926 8604-&gt;1820 9027-&gt; 254
-#&gt; [13] 9292-&gt; 297 6115-&gt; 295  478-&gt;3650 8177-&gt;1148 7798-&gt; 209 7423-&gt;3280
-#&gt; [19] 7996-&gt;3386 8079-&gt;4774 8164-&gt;3990 9028-&gt;1349   71-&gt;2178 3493-&gt;3837
-#&gt; [25] 3857-&gt;4148 8878-&gt;4802 8124-&gt;4582 2493-&gt;1795 5355-&gt;4073  858-&gt;4563
-#&gt; [31] 3213-&gt;3147 4126-&gt;4666 1928-&gt;1350  304-&gt;4582    5-&gt;1543 2272-&gt;1543
-#&gt; [37] 2786-&gt; 128  243-&gt; 126 5580-&gt;1246 7315-&gt;2671 7021-&gt;2396 7174-&gt;3938
-#&gt; [43] 6855-&gt;1628 9799-&gt; 415 8442-&gt;4865  321-&gt;3856 6313-&gt; 447 4539-&gt;2828
-#&gt; [49] 2726-&gt;4013 3173-&gt;1597  959-&gt;3589 5150-&gt;1651 5603-&gt;4268  775-&gt;1600
+</div><div class='output co'>#&gt; IGRAPH 929a41c D--- 10000 500118 -- 
+#&gt; + edges from 929a41c:
+#&gt;  [1] 2082-&gt;3989 1055-&gt;3991  804-&gt;1998 8479-&gt;4066 1458-&gt;2982 2811-&gt;4904
+#&gt;  [7] 2929-&gt;1865 4684-&gt; 925 7940-&gt;  24 5506-&gt;4450 8351-&gt;1442 2496-&gt;1323
+#&gt; [13] 3991-&gt; 564 9403-&gt;3582 6450-&gt; 536 5448-&gt;4120 3445-&gt;1770 4089-&gt;2303
+#&gt; [19] 9381-&gt;1625  199-&gt; 677 7827-&gt;3224  727-&gt;1989 7823-&gt;2606 8035-&gt;3149
+#&gt; [25] 2496-&gt;3813 1507-&gt;2378 3248-&gt; 838 2688-&gt;3513 5485-&gt;3895 7531-&gt;3719
+#&gt; [31] 6582-&gt;3325 6422-&gt;3656 9118-&gt;2276 4069-&gt;4621 7281-&gt;1454 7116-&gt;2901
+#&gt; [37] 9030-&gt;4520 9195-&gt;1620 4458-&gt; 364 6071-&gt;2233 7873-&gt;4780 9952-&gt;2510
+#&gt; [43] 2106-&gt;4167  305-&gt;3456  280-&gt;3010 2578-&gt;4165 1033-&gt; 391 7411-&gt;1403
+#&gt; [49] 3460-&gt; 793 7787-&gt;2557 2282-&gt;3786 3207-&gt;4748   15-&gt;3408 1113-&gt;2056
 #&gt; + ... omitted several edges</div><div class='input'>
 <span class='co'>### sampling graphs as tidygraph graphs ---------------</span>
 
 <span class='fu'><a href='sample_tidygraph.html'>sample_tidygraph</a></span><span class='op'>(</span><span class='va'>fm</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tbl_graph: 9966 nodes and 501048 edges
+</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tbl_graph: 9968 nodes and 499069 edges
 #&gt; #
 #&gt; # A directed multigraph with 1 component
 #&gt; #
-#&gt; # Node Data: 9,966 x 1 (active)</span><span>
+#&gt; # Node Data: 9,968 x 1 (active)</span><span>
 #&gt;   name 
 #&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>1</span><span> 2095 
-#&gt; </span><span style='color: #555555;'>2</span><span> 1390 
-#&gt; </span><span style='color: #555555;'>3</span><span> 1512 
-#&gt; </span><span style='color: #555555;'>4</span><span> 8988 
-#&gt; </span><span style='color: #555555;'>5</span><span> 5340 
-#&gt; </span><span style='color: #555555;'>6</span><span> 3962 
-#&gt; </span><span style='color: #555555;'># … with 9,960 more rows</span><span>
+#&gt; </span><span style='color: #555555;'>1</span><span> 3632 
+#&gt; </span><span style='color: #555555;'>2</span><span> 2604 
+#&gt; </span><span style='color: #555555;'>3</span><span> 4309 
+#&gt; </span><span style='color: #555555;'>4</span><span> 3249 
+#&gt; </span><span style='color: #555555;'>5</span><span> 1382 
+#&gt; </span><span style='color: #555555;'>6</span><span> 5229 
+#&gt; </span><span style='color: #555555;'># … with 9,962 more rows</span><span>
 #&gt; </span><span style='color: #555555;'>#
-#&gt; # Edge Data: 501,048 x 2</span><span>
+#&gt; # Edge Data: 499,069 x 2</span><span>
 #&gt;    from    to
 #&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>1</span><span>     1  </span><span style='text-decoration: underline;'>1</span><span>148
-#&gt; </span><span style='color: #555555;'>2</span><span>     2  </span><span style='text-decoration: underline;'>1</span><span>153
-#&gt; </span><span style='color: #555555;'>3</span><span>     3  </span><span style='text-decoration: underline;'>8</span><span>969
-#&gt; </span><span style='color: #555555;'># … with 501,045 more rows</span><span></div><div class='input'>
+#&gt; </span><span style='color: #555555;'>1</span><span>     1  </span><span style='text-decoration: underline;'>4</span><span>225
+#&gt; </span><span style='color: #555555;'>2</span><span>     2  </span><span style='text-decoration: underline;'>6</span><span>136
+#&gt; </span><span style='color: #555555;'>3</span><span>     3  </span><span style='text-decoration: underline;'>9</span><span>327
+#&gt; </span><span style='color: #555555;'># … with 499,066 more rows</span><span></div><div class='input'>
 <span class='fu'><a href='sample_tidygraph.html'>sample_tidygraph</a></span><span class='op'>(</span><span class='va'>fm</span>, poisson_edges <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tbl_graph: 9966 nodes and 495220 edges
+</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tbl_graph: 9968 nodes and 496828 edges
 #&gt; #
 #&gt; # A directed multigraph with 1 component
 #&gt; #
-#&gt; # Node Data: 9,966 x 1 (active)</span><span>
+#&gt; # Node Data: 9,968 x 1 (active)</span><span>
 #&gt;   name 
 #&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>1</span><span> 8587 
-#&gt; </span><span style='color: #555555;'>2</span><span> 976  
-#&gt; </span><span style='color: #555555;'>3</span><span> 9527 
-#&gt; </span><span style='color: #555555;'>4</span><span> 3685 
-#&gt; </span><span style='color: #555555;'>5</span><span> 7136 
-#&gt; </span><span style='color: #555555;'>6</span><span> 3246 
-#&gt; </span><span style='color: #555555;'># … with 9,960 more rows</span><span>
+#&gt; </span><span style='color: #555555;'>1</span><span> 5956 
+#&gt; </span><span style='color: #555555;'>2</span><span> 332  
+#&gt; </span><span style='color: #555555;'>3</span><span> 3660 
+#&gt; </span><span style='color: #555555;'>4</span><span> 8314 
+#&gt; </span><span style='color: #555555;'>5</span><span> 7285 
+#&gt; </span><span style='color: #555555;'>6</span><span> 9882 
+#&gt; </span><span style='color: #555555;'># … with 9,962 more rows</span><span>
 #&gt; </span><span style='color: #555555;'>#
-#&gt; # Edge Data: 495,220 x 2</span><span>
+#&gt; # Edge Data: 496,828 x 2</span><span>
 #&gt;    from    to
 #&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>1</span><span>     1  </span><span style='text-decoration: underline;'>8</span><span>102
-#&gt; </span><span style='color: #555555;'>2</span><span>     2  </span><span style='text-decoration: underline;'>1</span><span>224
-#&gt; </span><span style='color: #555555;'>3</span><span>     3  </span><span style='text-decoration: underline;'>1</span><span>072
-#&gt; </span><span style='color: #555555;'># … with 495,217 more rows</span><span></div><div class='input'>
+#&gt; </span><span style='color: #555555;'>1</span><span>     1  </span><span style='text-decoration: underline;'>6</span><span>565
+#&gt; </span><span style='color: #555555;'>2</span><span>     2  </span><span style='text-decoration: underline;'>1</span><span>028
+#&gt; </span><span style='color: #555555;'>3</span><span>     3  </span><span style='text-decoration: underline;'>3</span><span>649
+#&gt; </span><span style='color: #555555;'># … with 496,825 more rows</span><span></div><div class='input'>
 </div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
