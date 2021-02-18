@@ -126,8 +126,8 @@ or an igraph object
 
 ``` r
 sample_igraph(sbm)
-#> IGRAPH 5f14e68 U--- 1000 10072 -- 
-#> + edges from 5f14e68:
+#> IGRAPH 2f4c43f U--- 1000 10072 -- 
+#> + edges from 2f4c43f:
 #>  [1]  50-- 54  90--202  94--165 115--210 171--189   7-- 38  86--184  91--215
 #>  [9]   3-- 92  35--111   9--159   3--158  66--131  11-- 28 164--214  48--163
 #> [17] 116--141   8--189  10--170 102--193  14--207  99--209  36-- 89  72--213
@@ -195,7 +195,7 @@ In the second stage of graph sampling, the options are:
 ## Related work
 
 [`igraph`](https://igraph.org/r/) also users to sample SBMs (in
-𝒪(*m* + *n* + *K*<sup>2</sup>) time) and random dot product graphs (in
+𝒪(*m* + *n* + *k*<sup>2</sup>) time) and random dot product graphs (in
 𝒪(*n*<sup>2</sup>*k*) time). You can find the original research code
 associated with `fastRG`
 [here](https://github.com/raningtky/sampleRDPG). There is also a Python
