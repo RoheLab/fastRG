@@ -20,7 +20,7 @@ latent node positions. Entries must be positive.}
 symmetrized if it is not already, as this is the undirected
 case. Entries must be positive.}
 
-\item{...}{Ignored. For internal developer use only.}
+\item{...}{Ignored. Must be empty.}
 
 \item{expected_degree}{If specified, the desired expected degree
 of the graph. Specifying \code{expected_degree} simply rescales \code{S}
@@ -46,10 +46,10 @@ the dimension of the latent node position vectors.
 \description{
 An undirected factor model graph is an undirected
 generalized Poisson random dot product graph. The edges
-in this graph are assumpted to be independent and Poisson
+in this graph are assumed to be independent and Poisson
 distributed. The graph is parameterized by its expected
-adjacency matrix, with is \verb{E[A] = X S X'}. We do not recommend
-that causal users use this function, see instead \code{\link[=dcsbm]{dcsbm()}}
+adjacency matrix, with is \verb{E[A|X] = X S X'}. We do not recommend
+that casual users use this function, see instead \code{\link[=dcsbm]{dcsbm()}}
 and related functions, which will formulate common variants
 of the stochastic blockmodels as undirected factor models
 \emph{with lots of helpful input validation}.

@@ -7,8 +7,8 @@
 #' Then, use [sample_edgelist()] to generate a random graph,
 #' represented as an edgelist, with that expectation.
 #'
-#' @param factor_model A [directed_factor_model()],
-#'   [undirected_factor_model()], or one of the many subclasses.
+#' @param factor_model A [directed_factor_model()] or
+#'   [undirected_factor_model()].
 #'
 #' @param ... Ignored. Do not use.
 #'
@@ -253,9 +253,10 @@ sample_edgelist.matrix <- function(
   stopifnot(is.logical(allow_self_loops))
 
   # symmetrization of S in the undirected case
+  # are we accidentally double symmetrize when get an undirected model?
 
   if (!directed) {
-    S <- (S + t(S)) / 2
+    S <- (S + t(S)) / 4
   }
 
   n <- nrow(X)
@@ -360,6 +361,18 @@ sample_edgelist.matrix <- function(
 
   edgelist <- tibble(from = from, to = to)
 
+  # TODO: symmetrization
+  # if (!directed) {
+  #
+  #   # warn on rectangular graph, which cannot be symmetrized
+  #   if(n!=d) break
+  #   # if it is directed and has self-loops, the current implementation has the corrected expected number of edges... but it is required to be an even number... not poisson.
+  #   # symmetrization doubles edge probabiilties!
+  #   eoOLD = eo
+  #   eo = c(eo, ei)
+  #   ei = c(ei, eoOLD)
+  # }
+
   if (!poisson_edges) {
 
     # need to deduplicate edgelist. the number of times a given
@@ -367,6 +380,10 @@ sample_edgelist.matrix <- function(
     # that edge (i.e. we're really working with a multigraph)
 
     edgelist <- dplyr::distinct(edgelist)
+  }
+
+  if (!allow_self_loops) {
+    edgelist <- dplyr::filter(edgelist, to != from)
   }
 
   edgelist

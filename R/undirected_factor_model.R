@@ -66,10 +66,10 @@ validate_undirected_factor_model <- function(x) {
 #'
 #' An undirected factor model graph is an undirected
 #' generalized Poisson random dot product graph. The edges
-#' in this graph are assumpted to be independent and Poisson
+#' in this graph are assumed to be independent and Poisson
 #' distributed. The graph is parameterized by its expected
-#' adjacency matrix, with is `E[A] = X S X'`. We do not recommend
-#' that causal users use this function, see instead [dcsbm()]
+#' adjacency matrix, with is `E[A|X] = X S X'`. We do not recommend
+#' that casual users use this function, see instead [dcsbm()]
 #' and related functions, which will formulate common variants
 #' of the stochastic blockmodels as undirected factor models
 #' *with lots of helpful input validation*.
@@ -81,7 +81,7 @@ validate_undirected_factor_model <- function(x) {
 #'   symmetrized if it is not already, as this is the undirected
 #'   case. Entries must be positive.
 #'
-#' @param ... Ignored. For internal developer use only.
+#' @param ... Ignored. Must be empty.
 #'
 #' @param expected_degree If specified, the desired expected degree
 #'   of the graph. Specifying `expected_degree` simply rescales `S`

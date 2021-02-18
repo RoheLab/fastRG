@@ -2,9 +2,24 @@
 % Please edit documentation in R/expected.R
 \name{expected_edges}
 \alias{expected_edges}
+\alias{expected_degree}
+\alias{expected_degrees}
+\alias{expected_in_degree}
+\alias{expected_out_degree}
+\alias{expected_density}
 \title{Calculate the expected number of edges in Poisson RDPG graph}
 \usage{
 expected_edges(factor_model, ...)
+
+expected_degree(factor_model, ...)
+
+expected_degrees(factor_model, ...)
+
+expected_in_degree(factor_model, ...)
+
+expected_out_degree(factor_model, ...)
+
+expected_density(factor_model, ...)
 }
 \arguments{
 \item{factor_model}{TODO}

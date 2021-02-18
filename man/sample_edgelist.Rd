@@ -42,8 +42,8 @@ sample_edgelist(
 \method{sample_edgelist}{undirected_sbm}(factor_model, ..., allow_self_loops = TRUE)
 }
 \arguments{
-\item{factor_model}{A \code{\link[=directed_factor_model]{directed_factor_model()}},
-\code{\link[=undirected_factor_model]{undirected_factor_model()}}, or one of the many subclasses.}
+\item{factor_model}{A \code{\link[=directed_factor_model]{directed_factor_model()}} or
+\code{\link[=undirected_factor_model]{undirected_factor_model()}}.}
 
 \item{...}{Ignored. Do not use.}
 

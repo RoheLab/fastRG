@@ -36,26 +36,31 @@ expected_edges <- function(factor_model, ...) {
   UseMethod("expected_edges")
 }
 
+#' @rdname expected_edges
 #' @export
 expected_degree <- function(factor_model, ...) {
   UseMethod("expected_degree")
 }
 
+#' @rdname expected_edges
 #' @export
 expected_degrees <- function(factor_model, ...) {
   UseMethod("expected_degrees")
 }
 
+#' @rdname expected_edges
 #' @export
 expected_in_degree <- function(factor_model, ...) {
   UseMethod("expected_in_degree")
 }
 
+#' @rdname expected_edges
 #' @export
 expected_out_degree <- function(factor_model, ...) {
   UseMethod("expected_out_degree")
 }
 
+#' @rdname expected_edges
 #' @export
 expected_density <- function(factor_model, ...) {
   UseMethod("expected_density")

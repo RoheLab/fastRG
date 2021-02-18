@@ -53,7 +53,7 @@ validate_directed_factor_model <- function(x) {
 #' in this graph are assumpted to be independent and Poisson
 #' distributed. The graph is parameterized by its expected
 #' adjacency matrix, with is `E[A] = X S Y'`. We do not recommend
-#' that causal users use this function, see instead [directed_dcsbm()]
+#' that causal users use this function, see instead `directed_dcsbm()`
 #' and related functions, which will formulate common variants
 #' of the stochastic blockmodels as undirected factor models
 #' *with lots of helpful input validation*.

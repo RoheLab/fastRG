@@ -66,7 +66,7 @@ generalized Poisson random dot product graph. The edges
 in this graph are assumpted to be independent and Poisson
 distributed. The graph is parameterized by its expected
 adjacency matrix, with is \verb{E[A] = X S Y'}. We do not recommend
-that causal users use this function, see instead \code{\link[=directed_dcsbm]{directed_dcsbm()}}
+that causal users use this function, see instead \code{directed_dcsbm()}
 and related functions, which will formulate common variants
 of the stochastic blockmodels as undirected factor models
 \emph{with lots of helpful input validation}.
