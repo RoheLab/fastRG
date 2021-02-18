@@ -20,7 +20,9 @@ knitr::opts_chunk$set(
 [![R build status](https://github.com/RoheLab/fastRG/workflows/R-CMD-check/badge.svg)](https://github.com/RoheLab/fastRG/actions)
 <!-- badges: end -->
 
-`fastRG` quickly samples a broad class of network models known as generalized random product graphs. In particular, for matrices `X`, `S` and `Y`, `fastRG` samples a matrix `A` with expectation `X S Y^T` where individual entries are Poisson distributed. We recommend that you think of `A` as the adjacency matrix for a graph (or a multi-graph). Crucially, the sampling is `O(m)`, where `m` is the number of the edges in graph. Other algorithms are `O(n^2)`, where `n` is the number of nodes in the network. For additional details, see the [paper](https://arxiv.org/abs/1703.02998).
+`fastRG` quickly samples a broad class of network models known as generalized random dot product graphs (GRDPGs). In particular, for matrices $X$, $S$ and $Y$, `fastRG` samples a matrix $A$ with expectation $X S Y^T$ where the entries are independently Poisson distributed conditional on $X$ and $Y$. This is primarily useful when $A$ is the adjacency matrix of a graph. Crucially, the sampling is $\mathcal O(m)$, where $m$ is the number of the edges in graph, as opposed to the naive sampling approach, which is $\mathcal O(n^2)$, where $n$ is the number of nodes in the network.
+
+For additional details, see the [paper](https://arxiv.org/abs/1703.02998).
 
 ## Installation
 
@@ -32,51 +34,77 @@ with:
 devtools::install_github("RoheLab/fastRG")
 ```
 
-## Example Usage
+## Usage
 
-`fastRG` takes an object oriented approach to simulation. First
-
-
-also--factor model
-
-considerably faster than `igraph` at sampling random dot product graphs and SBMs. is this true?
-
-igraph: SBM sampling
-
- * Time complexity: O(|V|+|E|+K^2), where |V| is the number of
- * vertices, |E| is the number of edges, and K is the number of
- * groups.
- 
-  * Time complexity: O(n*n*m), where n is the number of vertices,
- * and m is the length of the latent vectors.
-
-The easiest way to use `fastRG` is to use wrapper functions that sample from popular graph models. For example, to sample from an Erdos-Renyi graph `n = 1,000,000` nodes and expected degree of five, we can use the `erdos_renyi()` function.
-
-We *strongly* advise that you always set `avg_deg`, as it is easy to request very large and dense graphs without this scaling.
+There are two stages to sampling from generalized random dot product graphs. First, we sample the latent factors $X$ and $Y$. Then we sample $A$ conditional on those latent factors. `fastRG` mimics this two-stage sample structure. For example, to sample from a stochastic blockmodel, we first create the latent factors. 
 
 ```{r}
 library(fastRG)
 
-er <- erdos_renyi(n = 10^6, p = 1 / n)
-sample_edgelist(er, avg_deg = 2)
-expected_edges(er)
+set.seed(27)
+
+sbm <- sbm(n = 1000, k = 5, expected_density = 0.01)
 ```
 
-By default we always get a `Matrix::sparseMatrix()`, but we can also ask for the graph as an edgelist as well.
+You can specify the latent factors and the mixing matrix $B$ yourself, but there are also defaults to enable fast prototyping. Here $B$ was randomly generated with `Uniform[0, 1]` entries and nodes were assigned randomly to communities with equal probability of falling in all communities. Printing the result object gives us some additional information:
 
 ```{r}
-el <- erdos_renyi(n = 1000, avg_deg = 5, return_edge_list = TRUE)
-head(el)
+sbm
 ```
-
-This results in a fast way to create `igraph` objects using `igraph::graph_from_edgelist()`.
+Now, conditional on this latent representation, we can sample graphs. `fastRG` supports several different output types, each of which is specified by the suffix to `sample_*()` functions. For example, we can obtain an edgelist in a `tibble` with:
 
 ```{r}
-g <- igraph::graph_from_edgelist(el)
-g
+sample_edgelist(sbm)
 ```
+
+but we can just as easily obtain the graph as a sparse matrix
+
+```{r}
+A <- sample_sparse(sbm)
+A[1:10, 1:10]
+```
+
+or an igraph object
+
+```{r}
+sample_igraph(sbm)
+```
+
+Note that every time we call `sample_*()` we draw a new sample.
+
+```{r}
+A <- sample_sparse(sbm)
+B <- sample_sparse(sbm)
+
+all(A == B)  # random realizations from the SBM don't match!
+```
+
+## Efficient spectral decompositions
+
+If you would like to obtain the singular value decomposition of the population adjacency matrix conditional on latent factors, that is straightforward:
+
+```{r}
+s <- eigs_sym(sbm)
+s$values
+```
+
+Note that eigendecompositions and SVDS (for directed graphs) use `RSpectra` and do not require explicitly forming large dense population adjacency matrices; the population decompositions should be efficient in both time and space for even large graphs.
+
+## Key sampling options
+
+There are several essential tools to modify graph sampling that you should know about. First there are options that affect the latent factor sampling:
+
+- `expected_degree`: Set the expected average degree of the graph by scaling sampling probabilities. We *strongly, strongly* recommend that you always set this option. If you do not, it is easy accidentally sample from large and dense graphs.
+
+- `expected_density`: Set the expected density of the graph by scaling sampling probabilities. You cannot specify both `expected_degree` and `expected_density` at the same time.
+
+In the second stage of graph sampling, the options are:
+
+- `poisson_edges`: Either `TRUE` or `FALSE` depending on whether you would like a Bernoulli graph or a Poisson multi-graph. Scaling via `expected_degree` assumes a Poisson multi-graph, with some limited exceptions.
+
+- `allow_self_edges`: Whether nodes should be allowed to connect to themselves. Either `TRUE` or `FALSE`.
 
 ## Related work
 
-You can find the original research code associated with `fastRG` [here][https://github.com/raningtky/sampleRDPG]. There is also a Python translation of the original code in Python [here](https://github.com/yunjhongwu/matrix-routines/blob/master/fastRG.py). Both of these implementations are bare bones.
+You can find the original research code associated with `fastRG` [here](https://github.com/raningtky/sampleRDPG). There is also a Python translation of the original code in Python [here](https://github.com/yunjhongwu/matrix-routines/blob/master/fastRG.py). Both of these implementations are bare bones.
 
