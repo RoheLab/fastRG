@@ -134,7 +134,6 @@ validate_undirected_dcsbm <- function(x) {
 #'     within each block.
 #'
 #' @export
-#' @seealso [fastRG()]
 #' @family stochastic block models
 #' @family undirected graphs
 #'
@@ -148,7 +147,7 @@ validate_undirected_dcsbm <- function(x) {
 #' handled by `dcsbm()`. Then, given these block memberships,
 #' we randomly sample edges between nodes. This second
 #' operation is handled by [sample_edgelist()],
-#' [sample_matrix()], [sample_igraph()] and
+#' [sample_sparse()], [sample_igraph()] and
 #' [sample_tidygraph()], depending your desirable
 #' graph representation.
 #'
@@ -205,9 +204,11 @@ validate_undirected_dcsbm <- function(x) {
 #' # mixing matrix, and relative community sizes rather
 #' # than using randomly generated defaults
 #'
-#' B <- matrix(runif(k * k), nrow = k, ncol = k)
+#' k <- 5
+#' n <- 1000
+#' B <- matrix(stats::runif(k * k), nrow = k, ncol = k)
 #'
-#' theta <- round(rlnorm(n, 2))
+#' theta <- round(stats::rlnorm(n, 2))
 #'
 #' pi <- c(1, 2, 4, 1, 1)
 #'
@@ -253,7 +254,7 @@ dcsbm <- function(
       "in the future. Explicitly set `theta` for reproducible results.\n"
     )
 
-    theta <- rlnorm(n, meanlog = 2, sdlog = 1)
+    theta <- stats::rlnorm(n, meanlog = 2, sdlog = 1)
   } else if (is.null(n)) {
     n <- length(theta)
   }
@@ -274,7 +275,7 @@ dcsbm <- function(
       "in the future. Explicitly set `B` for reproducible results."
     )
 
-    B <- Matrix(data = runif(k * k), nrow = k, ncol = k)
+    B <- Matrix(data = stats::runif(k * k), nrow = k, ncol = k)
 
   } else if (is.null(k)) {
 

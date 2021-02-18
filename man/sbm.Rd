@@ -113,7 +113,7 @@ edgelist
 A <- sample_sparse(bernoulli_sbm)
 
 # only zeroes and ones!
-unique(A)
+sign(A)
 
 }
 \references{
@@ -123,8 +123,6 @@ Journal of Machine Learning Research; 19(77):1-13, 2018.
 \url{http://www.jmlr.org/papers/v19/17-128.html}
 }
 \seealso{
-\code{\link[=fastRG]{fastRG()}}
-
 Other stochastic block models: 
 \code{\link{dcsbm}()},
 \code{\link{planted_partition}()}

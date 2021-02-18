@@ -109,7 +109,9 @@ set.seed(27)
 lazy_pp <- planted_partition(
   n = 1000,
   k = 5,
-  expected_density = 0.01
+  expected_density = 0.01,
+  within_block = 0.1,
+  between_block = 0.01
 )
 
 lazy_pp
@@ -122,8 +124,6 @@ Journal of Machine Learning Research; 19(77):1-13, 2018.
 \url{http://www.jmlr.org/papers/v19/17-128.html}
 }
 \seealso{
-\code{\link[=fastRG]{fastRG()}}
-
 Other stochastic block models: 
 \code{\link{dcsbm}()},
 \code{\link{sbm}()}

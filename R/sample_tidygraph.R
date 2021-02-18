@@ -1,10 +1,10 @@
 #' Sample a random dot product graph as a tidygraph graph
 #'
-#' There are two steps to using the `FastRG` package. First,
+#' There are two steps to using the `fastRG` package. First,
 #' you must parameterize a random dot product graph by
 #' specifying its expected adjacency matrix. Use functions such as
 #' [dcsbm()], [sbm()], etc, to perform this specification.
-#' Then, use [sample_matrix()] to generate a random graph,
+#' Then, use [sample_tidygraph()] to generate a random graph,
 #' represented as an [tidygraph::tbl_graph()] with that expectation.
 #'
 #' @inherit sample_edgelist params details references examples

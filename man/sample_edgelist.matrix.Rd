@@ -113,9 +113,9 @@ Journal of Machine Learning Research; 19(77):1-13, 2018.
 }
 \seealso{
 Other samplers: 
-\code{\link{sample_edgelist.undirected_erdos_renyi}()},
-\code{\link{sample_igraph.undirected_erdos_renyi}()},
-\code{\link{sample_sparse.undirected_erdos_renyi}()},
-\code{\link{sample_tidygraph.undirected_erdos_renyi}()}
+\code{\link{sample_edgelist}()},
+\code{\link{sample_igraph}()},
+\code{\link{sample_sparse}()},
+\code{\link{sample_tidygraph}()}
 }
 \concept{samplers}

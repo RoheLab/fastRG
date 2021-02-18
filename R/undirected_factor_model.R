@@ -167,7 +167,7 @@ undirected_factor_model <- function(
   # then divide by 2 again this doubles edge probabilities. if S
   # is already symmetric, this leaves S unchanged
 
-  S <- (S + t(S)) / 2
+  S <- (S + t(S)) / 4
 
   ufm$S <- S
 

@@ -15,10 +15,12 @@ expected_edges(factor_model, ...)
 underestimate when edge distribution is bernoulli
 }
 \details{
-Note that the running time of \code{\link[=fastRG]{fastRG()}} is proportional to
+Note that the runtime of the \code{fastRG} algorithm is proportional to
 \code{count}, the expected number of edges in the graph.
 }
 \examples{
+
+# TODO: undirected examples
 
 n <- 10000
 d <- 1000
@@ -30,8 +32,11 @@ X <- matrix(rpois(n = n * k1, 1), nrow = n)
 Y <- matrix(rpois(n = d * k2, 1), nrow = d)
 S <- matrix(runif(n = k1 * k2, 0, .1), nrow = k1)
 
-expected(X, S, Y)
-expected_degrees(X, S, Y)
-expected_svds(X, S, Y)
+dfm <- directed_factor_model(X = X, S = S, Y = Y)
+
+expected_edges(dfm)
+expected_in_degree(dfm)
+expected_out_degree(dfm)
+svds(dfm)
 
 }

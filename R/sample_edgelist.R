@@ -1,6 +1,6 @@
 #' Sample a random edgelist from a random dot product graph
 #'
-#' There are two steps to using the `FastRG` package. First,
+#' There are two steps to using the `fastRG` package. First,
 #' you must parameterize a random dot product graph by
 #' specifying its expected adjacency matrix. Use functions such as
 #' [dcsbm()], [sbm()], etc, to perform this specification.

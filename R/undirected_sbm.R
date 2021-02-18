@@ -21,7 +21,7 @@ validate_undirected_sbm <- function(x) {
   if (!(values$edge_distribution %in% c("poisson", "bernoulli"))) {
     stop(
       "`edge_distribution` must be either \"poisson\" or \"bernoulli\".",
-      call. = fALSE
+      call. = FALSE
     )
   }
 
@@ -71,7 +71,6 @@ validate_undirected_sbm <- function(x) {
 #'   - `edge_distribution`: Either "poisson" or "bernoulli".
 #'
 #' @export
-#' @seealso [fastRG()]
 #' @family stochastic block models
 #' @family undirected graphs
 #'
@@ -117,7 +116,7 @@ sbm <- function(
   edge_distribution = c("poisson", "bernoulli"),
   sort_nodes = TRUE) {
 
-  edge_distribution <- rlang::arg_match(edge_distribution)
+  edge_distribution <- match.arg(edge_distribution)
 
   sbm <- dcsbm(
     n = n,

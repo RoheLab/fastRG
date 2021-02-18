@@ -9,31 +9,31 @@ validate_undirected_planted_partition <- function(x) {
     )
   }
 
-  if (k > n) {
+  if (x$k > x$n) {
     stop("`k` must be less than or equal to `n`.", call. = FALSE)
   }
 
-  if (!is.null(within_block) && length(within_block) != 1) {
+  if (!is.null(x$within_block) && length(x$within_block) != 1) {
     stop("`within_block` must be a scalar.", call. = FALSE)
   }
 
-  if (!is.null(between_block) && length(between_block) != 1) {
+  if (!is.null(x$between_block) && length(x$between_block) != 1) {
     stop("`between_block` must be a scalar.", call. = FALSE)
   }
 
-  if (!is.null(within_block) && (within_block < 0 || within_block > 1)) {
+  if (!is.null(x$within_block) && (x$within_block < 0 || x$within_block > 1)) {
     stop("`within_block` must be between zero and one.", call. = FALSE)
   }
 
-  if (!is.null(between_block) && (between_block < 0 || between_block > 1)) {
+  if (!is.null(x$between_block) && (x$between_block < 0 || x$between_block > 1)) {
     stop("`between_block` must be between zero and one.", call. = FALSE)
   }
 
-  if (!is.null(a) && a < 0) {
+  if (!is.null(x$a) && x$a < 0) {
     stop("`a` must be greater than zero.", call. = FALSE)
   }
 
-  if (!is.null(b) && b < 0) {
+  if (!is.null(x$b) && x$b < 0) {
     stop("`b` must be greater than zero.", call. = FALSE)
   }
 
@@ -92,7 +92,6 @@ validate_undirected_planted_partition <- function(x) {
 #'   - `between_block`: TODO
 #'
 #' @export
-#' @seealso [fastRG()]
 #' @family stochastic block models
 #' @family undirected graphs
 #'

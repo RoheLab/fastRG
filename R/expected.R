@@ -5,12 +5,14 @@
 #' @param factor_model TODO
 #' @param ... Ignored.
 #'
-#' @details Note that the running time of [fastRG()] is proportional to
+#' @details Note that the runtime of the `fastRG` algorithm is proportional to
 #'   `count`, the expected number of edges in the graph.
 #'
 #' @export
 #'
 #' @examples
+#'
+#' # TODO: undirected examples
 #'
 #' n <- 10000
 #' d <- 1000
@@ -22,31 +24,39 @@
 #' Y <- matrix(rpois(n = d * k2, 1), nrow = d)
 #' S <- matrix(runif(n = k1 * k2, 0, .1), nrow = k1)
 #'
-#' expected(X, S, Y)
-#' expected_degrees(X, S, Y)
-#' expected_svds(X, S, Y)
+#' dfm <- directed_factor_model(X = X, S = S, Y = Y)
+#'
+#' expected_edges(dfm)
+#' expected_in_degree(dfm)
+#' expected_out_degree(dfm)
+#' svds(dfm)
 #'
 expected_edges <- function(factor_model, ...) {
   ellipsis::check_dots_empty()
   UseMethod("expected_edges")
 }
 
+#' @export
 expected_degree <- function(factor_model, ...) {
   UseMethod("expected_degree")
 }
 
+#' @export
 expected_degrees <- function(factor_model, ...) {
   UseMethod("expected_degrees")
 }
 
+#' @export
 expected_in_degree <- function(factor_model, ...) {
   UseMethod("expected_in_degree")
 }
 
+#' @export
 expected_out_degree <- function(factor_model, ...) {
   UseMethod("expected_out_degree")
 }
 
+#' @export
 expected_density <- function(factor_model, ...) {
   UseMethod("expected_density")
 }
@@ -156,7 +166,7 @@ svds.directed_factor_model <- function(
   }
 
   Ax <- function(x, args) {
-    as.numeric(args$X %*% (tcrossprod(S, Y) %*% x))
+    as.numeric(args$X %*% (tcrossprod(args$S, args$Y) %*% x))
   }
 
   Atx <- function(x, args) {

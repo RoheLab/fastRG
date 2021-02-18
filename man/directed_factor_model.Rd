@@ -28,15 +28,20 @@ outgoing edges. Entries must be positive.}
 
 \item{...}{Ignored. For internal developer use only.}
 
+\item{expected_in_degree}{If specified, the desired expected degree
+of the graph. Specifying \code{expected_degree} simply rescales \code{S}
+to achieve this. Defaults to \code{NULL}. Do not specify both
+\code{expected_degree} and \code{expected_density} at the same time. TODO}
+
+\item{expected_out_degree}{If specified, the desired expected degree
+of the graph. Specifying \code{expected_degree} simply rescales \code{S}
+to achieve this. Defaults to \code{NULL}. Do not specify both
+\code{expected_degree} and \code{expected_density} at the same time. TODO}
+
 \item{expected_density}{If specified, the desired expected density
 of the graph. Specifying \code{expected_density} simply rescales \code{S}
 to achieve this. Defaults to \code{NULL}. Do not specify both
-\code{expected_degree} and \code{expected_density} at the same time.}
-
-\item{expected_degree}{If specified, the desired expected degree
-of the graph. Specifying \code{expected_degree} simply rescales \code{S}
-to achieve this. Defaults to \code{NULL}. Do not specify both
-\code{expected_degree} and \code{expected_density} at the same time.}
+\code{expected_degree} and \code{expected_density} at the same time. TODO}
 }
 \value{
 An \code{undirected_factor_model} S3 class based on a list
