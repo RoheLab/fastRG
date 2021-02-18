@@ -105,5 +105,5 @@ In the second stage of graph sampling, the options are:
 
 ## Related work
 
-You can find the original research code associated with `fastRG` [here](https://github.com/raningtky/sampleRDPG). There is also a Python translation of the original code in Python [here](https://github.com/yunjhongwu/matrix-routines/blob/master/fastRG.py). Both of these implementations are bare bones.
+[`igraph`](https://igraph.org/r/) also users to sample SBMs (in $\mathcal O(m + n + K^2)$ time) and random dot product graphs (in $\mathcal O(n^2 k)$ time). You can find the original research code associated with `fastRG` [here](https://github.com/raningtky/sampleRDPG). There is also a Python translation of the original code in Python [here](https://github.com/yunjhongwu/matrix-routines/blob/master/fastRG.py). Both of these implementations are bare bones.
 
