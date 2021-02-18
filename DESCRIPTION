@@ -1,6 +1,7 @@
 Package: fastRG
-Title: Sample Generalized Random Dot Product Graphs in Linear Time
-Version: 0.1.0.9003
+Title: Sample Generalized Random Dot Product Graphs in Linear
+    Time
+Version: 0.2.0.9000
 Authors@R: 
     c(person(given = "Karl",
              family = "Rohe",
@@ -35,16 +36,21 @@ BugReports: https://github.com/RoheLab/fastRG/issues
 Depends: 
     Matrix
 Imports: 
+    ellipsis,
+    glue,
     igraph,
-    magrittr
-Suggests: 
-    knitr,
-    rmarkdown,
+    magrittr,
     RSpectra,
-    testthat (>= 2.1.0),
+    stats,
+    tibble
+Suggests: 
+    covr,
     dplyr,
     ggplot2,
-    covr
+    knitr,
+    rmarkdown,
+    testthat (>= 2.1.0),
+    tidygraph
 VignetteBuilder: 
     knitr
 Encoding: UTF-8
