@@ -10,5 +10,7 @@ test_that("doesn't fail // sufficient dummy columns in SBMs", {
 
   B <- diag(rep(0.5, k))
 
-  sbm(n, pi, B)
+  sbm <- sbm(n = n, pi = pi, B = B)
+
+  expect_silent(sample_sparse(sbm))
 })
