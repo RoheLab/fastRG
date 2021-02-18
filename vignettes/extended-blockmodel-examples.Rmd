@@ -1,0 +1,241 @@
+---
+title: "extended-blockmodel-examples"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{extended-blockmodel-examples}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  eval = FALSE
+)
+```
+
+```{r setup}
+library(fastRG)
+
+```
+
+## Some blockmodel examples
+
+WARNING: content below here is rough!
+
+
+```{r}
+K <- 10
+n <- 500
+pi <- rexp(K) + 1
+pi <- pi / sum(pi) * 3
+B <- matrix(rexp(K^2) + 1, nrow = K)
+diag(B) <- diag(B) + mean(B) * K
+theta <- rexp(n)
+
+dcsbm <- dcsbm(theta = theta, pi = pi, B = B, expected_degree = 50)
+A <- sample_sparse(dcsbm)
+A
+mean(rowSums(A))  # average degree
+```
+
+If we remove multiple edges, the expected_degree parameter is not trustworthy:
+
+```{r}
+bernoulli_dcsbm <- dcsbm(theta = theta, pi = pi, B = B, expected_degree = 50)
+A <- sample_sparse(bernoulli_dcsbm, poisson_edges = FALSE)
+mean(rowSums(A))
+```
+
+but it is a good upper bound when the graph is sparse:
+
+```{r}
+n <- 10000
+A <- dcsbm(theta = rexp(n), pi = pi, B = B, expected_degree = 50, poisson_edges = FALSE)
+mean(rowSums(A))
+```
+
+This draws a 100 x 100 adjacency matrix from each model. Each image might take around 5 seconds to render.
+
+```{r}
+# helper to plot adjacency matrices
+
+plot_matrix <- function(A) {
+  image(as.matrix(A), col = grey(seq(1, 0, len = 20)))
+}
+```
+
+
+
+```{r}
+K <- 10
+n <- 100
+pi <- rexp(K) + 1
+pi <- pi / sum(pi) * 3
+B <- matrix(rexp(K^2) + 1, nrow = K)
+diag(B) <- diag(B) + mean(B) * K
+theta <- rexp(n)
+A <- sample_sparse(dcsbm(theta = theta, pi = pi, B = B, expected_degree = 50))
+
+plot_matrix(A[, n:1])
+```
+
+
+```{r}
+K <- 2
+n <- 100
+alpha <- c(1, 1) / 5
+B <- diag(c(1, 1))
+theta <- n
+A <- dc_mixed(theta, alpha, B, expected_degree = 50, sort_nodes = TRUE)
+
+plot_matrix(A[, theta:1] / max(A))
+```
+
+
+```{r}
+n <- 100
+K <- 2
+pi <- c(.7, .7)
+B <- diag(c(1, 1))
+theta <- n
+A <- dc_overlapping(theta, pi, B, expected_degree = 50, sort_nodes = TRUE)
+
+plot_matrix(t(A[, 1:n] / max(A)))
+```
+
+
+```{r}
+K <- 10
+n <- 100
+pi <- rexp(K) + 1
+pi <- pi / sum(pi)
+B <- matrix(rexp(K^2), nrow = K)
+B <- B / (3 * max(B))
+diag(B) <- diag(B) + mean(B) * K
+A <- fastRG::sbm(n, pi, B, sort_nodes = TRUE)
+
+plot_matrix(A)
+```
+
+Next sample a DC-SBM with 10,000 nodes. Then compute and plot the leading eigenspace.
+
+```{r}
+library(RSpectra)
+
+K <- 10
+n <- 10000
+pi <- rexp(K) + 1
+pi <- pi / sum(pi)
+pi <- -sort(-pi)
+B <- matrix(rexp(K^2) + 1, nrow = K)
+diag(B) <- diag(B) + mean(B) * K
+A <- dcsbm(rgamma(n, shape = 2, scale = .4), pi, B, expected_degree = 20, simple = TRUE)
+mean(rowSums(A))
+```
+
+
+```{r}
+K <- 10
+n <- 10000
+pi <- rexp(K) + 1
+pi <- pi / sum(pi)
+pi <- -sort(-pi)
+B <- matrix(rexp(K^2) + 1, nrow = K)
+diag(B) <- diag(B) + mean(B) * K
+A <- dcsbm(rgamma(n, shape = 2, scale = .4), pi, B, expected_degree = 20, simple = TRUE, sort_nodes = TRUE)
+mean(rowSums(A))
+```
+
+
+```{r}
+# leading eigen of regularized Laplacian with tau = 1
+D <- Diagonal(n, 1 / sqrt(rowSums(A) + 1))
+ei <- eigs_sym(D %*% A %*% D, 10)
+
+# normalize the rows of X:
+X <- t(apply(ei$vectors[, 1:K], 1, function(x) return(x / sqrt(sum(x^2) + 1 / n))))
+
+par(mfrow = c(5, 1), mar = c(1, 2, 2, 2), xaxt = "n", yaxt = "n")
+
+# plot 1000 elements of the leading eigenvectors:
+s <- sort(sample(n, 1000))
+
+for (i in 1:5) {
+  plot(X[s, i], pch = ".")
+}
+```
+
+or
+
+
+
+```{r}
+# This samples a 1M node graph.
+# Depending on the computer, sampling the graph should take between 10 and 30 seconds
+#   Then, taking the eigendecomposition of the regularized graph laplacian should take between 1 and 3 minutes
+# The resulting adjacency matrix is a bit larger than 100MB.
+# The leading eigenvectors of A are highly localized
+K <- 3
+n <- 1000000
+pi <- rexp(K) + 1
+pi <- pi / sum(pi)
+pi <- -sort(-pi)
+B <- matrix(rexp(K^2) + 1, nrow = K)
+diag(B) <- diag(B) + mean(B) * K
+A <- dcsbm(rgamma(n, shape = 2, scale = .4), pi, B, expected_degree = 10, sort_nodes = TRUE)
+D <- Diagonal(n, 1 / sqrt(rowSums(A) + 10))
+L <- D %*% A %*% D
+ei <- eigs_sym(L, 4)
+```
+
+
+```{r}
+s <- sort(sample(n, 10000))
+X <- t(apply(ei$vectors[, 1:K], 1, function(x) return(x / sqrt(sum(x^2) + 1 / n))))
+plot(X[s, 3]) # highly localized eigenvectors
+```
+
+To sample from a degree corrected and node contextualized graph...
+
+```{r}
+n <- 10000 # number of nodes
+d <- 1000 # number of features
+K <- 5 # number of blocks
+
+# Here are the parameters for the graph:
+
+pi <- rexp(K) + 1
+pi <- pi / sum(pi) * 3
+B <- matrix(rexp(K^2) + 1, nrow = K)
+diag(B) <- diag(B) + mean(B) * K
+theta <- rexp(n)
+paraG <- dcsbm_params(theta = theta, pi = pi, B = B)
+```
+
+
+```{r}
+# Here are the parameters for the features:
+
+thetaY <- rexp(d)
+piFeatures <- rexp(K) + 1
+piFeatures <- piFeatures / sum(piFeatures) * 3
+BFeatures <- matrix(rexp(K^2) + 1, nrow = K)
+diag(BFeatures) <- diag(BFeatures) + mean(BFeatures) * K
+
+paraFeat <- dcsbm_params(theta = thetaY, pi = piFeatures, B = BFeatures)
+```
+
+
+```{r}
+# the node "degrees" in the features, should be related to their degrees in the graph.
+X <- paraG$X
+X@x <- paraG$X@x + rexp(n) # the degree parameter should be different. X@x + rexp(n) makes feature degrees correlated to degrees in graph.
+
+# generate the graph and features
+A <- fastRG(paraG$X, paraG$S, expected_degree = 10)
+features <- fastRG(X, paraFeat$S, paraFeat$X, expected_degree = 20)
+```
+
+```
