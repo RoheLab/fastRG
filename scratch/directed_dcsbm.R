@@ -4,7 +4,8 @@ new_directed_dcsbm <- function(
   theta_out,
   z_in,
   z_out,
-  pi,
+  pi_in,
+  pi_out,
   sorted,
   ...,
   subclass = character()) {
@@ -104,7 +105,7 @@ validate_directed_dcsbm <- function(x) {
 #' to avoid large memory allocations associated with
 #' sampling large, dense graphs.
 #'
-#' @param n (degree heterogeneity) The number of nodes in the blockmodel.
+#' @param n_in (degree heterogeneity) The number of nodes in the blockmodel.
 #'   Use when you don't want to specify the degree-heterogeneity
 #'   parameters `theta` by hand. When `n` is specified, `theta`
 #'   is randomly generated from a `LogNormal(2, 1)` distribution.
@@ -112,7 +113,15 @@ validate_directed_dcsbm <- function(x) {
 #'   `n` defaults to `NULL`. You must specify either `n`
 #'   or `theta`, but not both.
 #'
-#' @param theta (degree heterogeneity) A numeric vector
+#' @param n_out (degree heterogeneity) The number of nodes in the blockmodel.
+#'   Use when you don't want to specify the degree-heterogeneity
+#'   parameters `theta` by hand. When `n` is specified, `theta`
+#'   is randomly generated from a `LogNormal(2, 1)` distribution.
+#'   This is subject to change, and may not be reproducible.
+#'   `n` defaults to `NULL`. You must specify either `n`
+#'   or `theta`, but not both.
+#'
+#' @param theta_in (degree heterogeneity) A numeric vector
 #'   explicitly specifying the degree heterogeneity
 #'   parameters. This implicitly determines the number of nodes
 #'   in the resulting graph, i.e. it will have `length(theta)` nodes.
@@ -121,7 +130,24 @@ validate_directed_dcsbm <- function(x) {
 #'   Defaults to `NULL`. You must specify either `n` or `theta`,
 #'   but not both.
 #'
-#' @param k (mixing matrix) The number of blocks in the blockmodel.
+#' @param theta_out (degree heterogeneity) A numeric vector
+#'   explicitly specifying the degree heterogeneity
+#'   parameters. This implicitly determines the number of nodes
+#'   in the resulting graph, i.e. it will have `length(theta)` nodes.
+#'   Must be positive. Setting to a vector of ones recovers
+#'   a stochastic blockmodel without degree correction.
+#'   Defaults to `NULL`. You must specify either `n` or `theta`,
+#'   but not both.
+#'
+#' @param k_in (mixing matrix) The number of blocks in the blockmodel.
+#'   Use when you don't want to specify the mixing-matrix by hand.
+#'   When `k` is specified, the elements of `B` are drawn
+#'   randomly from a `Uniform(0, 1)` distribution.
+#'   This is subject to change, and may not be reproducible.
+#'   `k` defaults to `NULL`. You must specify either `k`
+#'   or `B`, but not both.
+#'
+#' @param k_out (mixing matrix) The number of blocks in the blockmodel.
 #'   Use when you don't want to specify the mixing-matrix by hand.
 #'   When `k` is specified, the elements of `B` are drawn
 #'   randomly from a `Uniform(0, 1)` distribution.
@@ -137,7 +163,13 @@ validate_directed_dcsbm <- function(x) {
 #'   symmetrized via the update `B := B + t(B)`. Defaults to `NULL`.
 #'   You must specify either `k` or `B`, but not both.
 #'
-#' @param pi (relative block probabilities) Relative block
+#' @param pi_in (relative block probabilities) Relative block
+#'   probabilities. Must be positive, but do not need to sum
+#'   to one, as they will be normalized internally.
+#'   Must match the dimensions of `B` or `k`. Defaults to
+#'   `rep(1 / k, k)`, or a balanced blocks.
+#'
+#' @param pi_out (relative block probabilities) Relative block
 #'   probabilities. Must be positive, but do not need to sum
 #'   to one, as they will be normalized internally.
 #'   Must match the dimensions of `B` or `k`. Defaults to
@@ -183,7 +215,6 @@ validate_directed_dcsbm <- function(x) {
 #'     within each block.
 #'
 #' @export
-#' @seealso [fastRG()]
 #' @family stochastic block models
 #' @family directed graphs
 #'
@@ -197,7 +228,7 @@ validate_directed_dcsbm <- function(x) {
 #' handled by `dcsbm()`. Then, given these block memberships,
 #' we randomly sample edges between nodes. This second
 #' operation is handled by [sample_edgelist()],
-#' [sample_matrix()], [sample_igraph()] and
+#' [sample_sparse()], [sample_igraph()] and
 #' [sample_tidygraph()], depending your desirable
 #' graph representation.
 #'
@@ -244,48 +275,15 @@ validate_directed_dcsbm <- function(x) {
 #' dcsbm <- directed_dcsbm(
 #'   n_in = 1000,
 #'   k_in = 5,
-#'   k_out = 8
+#'   k_out = 8,
 #'   expected_density = 0.01
 #' )
 #'
 #' dcsbm
 #'
-#' # sometimes you gotta let the world burn and
-#' # sample a wildly dense graph
+#' population_svd <- svds(dcsbm)
 #'
-#' dense_lazy_dcsbm <- dcsbm(n = 500, k = 3, expected_density = 0.8)
-#' dense_lazy_dcsbm
-#'
-#' # explicitly setting the degree heterogeneity parameter,
-#' # mixing matrix, and relative community sizes rather
-#' # than using randomly generated defaults
-#'
-#' B <- matrix(runif(k * k), nrow = k, ncol = k)
-#'
-#' theta <- round(rlnorm(n, 2))
-#'
-#' pi <- c(1, 2, 4, 1, 1)
-#'
-#' custom_dcsbm <- dcsbm(
-#'   theta = theta,
-#'   B = B,
-#'   pi = pi,
-#'   expected_degree = 50
-#' )
-#'
-#' custom_dcsbm
-#'
-#' edgelist <- sample_edgelist(custom_dcsbm)
-#' edgelist
-#'
-#' # efficient SVD that leverages low-rank structure in
-#' # E(A) so that you don't have to form E(A) to take an
-#' # SVD, as E(A) is typically dense. computation is
-#' # handled via RSpectra
-#'
-#' population_svd <- svds(custom_dcsbm)
-#'
-dcsbm <- function(
+directed_dcsbm <- function(
   n_in = NULL, theta_in = NULL,
   n_out = NULL, theta_out = NULL,
   k_in = NULL, k_out = NULL, B = NULL,
@@ -310,7 +308,7 @@ dcsbm <- function(
       "in the future. Explicitly set `theta_in` for reproducible results.\n"
     )
 
-    theta_in <- rlnorm(n_in, meanlog = 2, sdlog = 1)
+    theta_in <- stats::rlnorm(n_in, meanlog = 2, sdlog = 1)
   } else if (is.null(n_in)) {
     n_in <- length(theta)
   }
@@ -331,7 +329,7 @@ dcsbm <- function(
       "in the future. Explicitly set `theta_out` for reproducible results.\n"
     )
 
-    theta_out <- rlnorm(n_out, meanlog = 2, sdlog = 1)
+    theta_out <- stats::rlnorm(n_out, meanlog = 2, sdlog = 1)
   } else if (is.null(n_out)) {
     n_out <- length(theta_out)
   }
@@ -354,7 +352,7 @@ dcsbm <- function(
       "in the future. Explicitly set `B` for reproducible results."
     )
 
-    B <- Matrix(data = runif(k * k), nrow = k, ncol = k)
+    B <- Matrix(data = stats::runif(k * k), nrow = k, ncol = k)
 
   } else if (is.null(k)) {
 

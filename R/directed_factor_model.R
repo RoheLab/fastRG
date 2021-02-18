@@ -71,15 +71,20 @@ validate_directed_factor_model <- function(x) {
 #'
 #' @param ... Ignored. For internal developer use only.
 #'
-#' @param expected_degree If specified, the desired expected degree
+#' @param expected_in_degree If specified, the desired expected degree
 #'   of the graph. Specifying `expected_degree` simply rescales `S`
 #'   to achieve this. Defaults to `NULL`. Do not specify both
-#'   `expected_degree` and `expected_density` at the same time.
+#'   `expected_degree` and `expected_density` at the same time. TODO
+#'
+#' @param expected_out_degree If specified, the desired expected degree
+#'   of the graph. Specifying `expected_degree` simply rescales `S`
+#'   to achieve this. Defaults to `NULL`. Do not specify both
+#'   `expected_degree` and `expected_density` at the same time. TODO
 #'
 #' @param expected_density If specified, the desired expected density
 #'   of the graph. Specifying `expected_density` simply rescales `S`
 #'   to achieve this. Defaults to `NULL`. Do not specify both
-#'   `expected_degree` and `expected_density` at the same time.
+#'   `expected_degree` and `expected_density` at the same time. TODO
 #'
 #' @return An `undirected_factor_model` S3 class based on a list
 #'   with the following elements:

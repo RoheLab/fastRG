@@ -35,11 +35,12 @@ validate_directed_erdos_renyi <- function(x) {
 #' @param p Probability of an edge between any two nodes. You must specify
 #'   either `p`, `expected_in_degree`, or `expected_out_degree`.
 #'
+#' @inheritDotParams directed_factor_model
+#'
 #' @return Never returns Poisson edges.
 #'
 #' @export
 #'
-#' @seealso [fastRG()]
 #' @family bernoulli graphs
 #' @family erdos renyi
 #' @family directed graphs
