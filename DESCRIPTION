@@ -3,15 +3,15 @@ Title: Sample Generalized Random Dot Product Graphs in Linear
     Time
 Version: 0.2.0.9000
 Authors@R: 
-    c(person(given = "Karl",
-             family = "Rohe",
-             role = "aut",
-             email = "KarlRohe@stat.wisc.edu"),
-      person(given = "Alex",
+    c(person(given = "Alex",
              family = "Hayes",
              role = c("aut", "cre"),
              email = "alexpghayes@gmail.com",
              comment = c(ORCID = "0000-0002-4985-5160")),
+      person(given = "Karl",
+             family = "Rohe",
+             role = "aut",
+             email = "KarlRohe@stat.wisc.edu"),
       person(given = "Jun",
              family = "Tao",
              role = "aut"),
@@ -34,11 +34,12 @@ License: MIT + file LICENSE
 URL: https://github.com/RoheLab/fastRG
 BugReports: https://github.com/RoheLab/fastRG/issues
 Depends: 
-    Matrix
+    Matrix,
+    igraph,
+    tidygraph
 Imports: 
     ellipsis,
     glue,
-    igraph,
     magrittr,
     RSpectra,
     stats,
@@ -49,8 +50,7 @@ Suggests:
     ggplot2,
     knitr,
     rmarkdown,
-    testthat (>= 2.1.0),
-    tidygraph
+    testthat (>= 2.1.0)
 VignetteBuilder: 
     knitr
 Encoding: UTF-8
