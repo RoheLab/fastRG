@@ -5,10 +5,7 @@
 
 <!-- badges: start -->
 
-[![Codecov test
-coverage](https://codecov.io/gh/RoheLab/fastRG/branch/master/graph/badge.svg)](https://codecov.io/gh/RoheLab/fastRG?branch=master)
-[![R build
-status](https://github.com/RoheLab/fastRG/workflows/R-CMD-check/badge.svg)](https://github.com/RoheLab/fastRG/actions)
+[![R-CMD-check](https://github.com/alexpghayes/fastRG/workflows/R-CMD-check/badge.svg)](https://github.com/alexpghayes/fastRG/actions)
 <!-- badges: end -->
 
 `fastRG` quickly samples a broad class of network models known as
@@ -129,8 +126,8 @@ or an igraph object
 
 ``` r
 sample_igraph(sbm)
-#> IGRAPH 07e1a72 U--- 1000 10072 -- 
-#> + edges from 07e1a72:
+#> IGRAPH 3c36869 U--- 1000 10072 -- 
+#> + edges from 3c36869:
 #>  [1]  50-- 54  90--202  94--165 115--210 171--189   7-- 38  86--184  91--215
 #>  [9]   3-- 92  35--111   9--159   3--158  66--131  11-- 28 164--214  48--163
 #> [17] 116--141   8--189  10--170 102--193  14--207  99--209  36-- 89  72--213
@@ -198,7 +195,7 @@ In the second stage of graph sampling, the options are:
 ## Related work
 
 You can find the original research code associated with `fastRG`
-\[here\]\[<https://github.com/raningtky/sampleRDPG>\]. There is also a
-Python translation of the original code in Python
+[here](https://github.com/raningtky/sampleRDPG). There is also a Python
+translation of the original code in Python
 [here](https://github.com/yunjhongwu/matrix-routines/blob/master/fastRG.py).
 Both of these implementations are bare bones.

@@ -16,8 +16,7 @@ knitr::opts_chunk$set(
 # fastRG
 
 <!-- badges: start -->
-[![Codecov test coverage](https://codecov.io/gh/RoheLab/fastRG/branch/master/graph/badge.svg)](https://codecov.io/gh/RoheLab/fastRG?branch=master)
-[![R build status](https://github.com/RoheLab/fastRG/workflows/R-CMD-check/badge.svg)](https://github.com/RoheLab/fastRG/actions)
+[![R-CMD-check](https://github.com/alexpghayes/fastRG/workflows/R-CMD-check/badge.svg)](https://github.com/alexpghayes/fastRG/actions)
 <!-- badges: end -->
 
 `fastRG` quickly samples a broad class of network models known as generalized random dot product graphs (GRDPGs). In particular, for matrices $X$, $S$ and $Y$, `fastRG` samples a matrix $A$ with expectation $X S Y^T$ where the entries are independently Poisson distributed conditional on $X$ and $Y$. This is primarily useful when $A$ is the adjacency matrix of a graph. Crucially, the sampling is $\mathcal O(m)$, where $m$ is the number of the edges in graph, as opposed to the naive sampling approach, which is $\mathcal O(n^2)$, where $n$ is the number of nodes in the network.
