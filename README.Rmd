@@ -104,7 +104,11 @@ In the second stage of graph sampling, the options are:
 
 - `allow_self_edges`: Whether nodes should be allowed to connect to themselves. Either `TRUE` or `FALSE`.
 
+## Known issues
+
+Sampling blockmodels with very small numbers of nodes (or blockmodels with the number of blocks `k` on the same order as `n`) results in a degeneracy that can cause issues.
+
 ## Related work
 
-[`igraph`](https://igraph.org/r/) also users to sample SBMs (in $\mathcal O(m + n + k^2)$ time) and random dot product graphs (in $\mathcal O(n^2 k)$ time). You can find the original research code associated with `fastRG` [here](https://github.com/raningtky/sampleRDPG). There is also a Python translation of the original code in Python [here](https://github.com/yunjhongwu/matrix-routines/blob/master/fastRG.py). Both of these implementations are bare bones.
+[`igraph`](https://igraph.org/r/) allows users to sample SBMs (in $\mathcal O(m + n + k^2)$ time) and random dot product graphs (in $\mathcal O(n^2 k)$ time). You can find the original research code associated with `fastRG` [here](https://github.com/raningtky/sampleRDPG). There is also a Python translation of the original code in Python [here](https://github.com/yunjhongwu/matrix-routines/blob/master/fastRG.py). Both of these implementations are bare bones.
 
