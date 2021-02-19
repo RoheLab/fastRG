@@ -1,3 +1,5 @@
+library(igraph)
+
 test_that("undirected graphs poisson_edges = FALSE", {
 
   set.seed(6)

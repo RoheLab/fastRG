@@ -1,3 +1,5 @@
+library(igraph)
+
 test_that("undirected graphs are undirected", {
 
   set.seed(3)

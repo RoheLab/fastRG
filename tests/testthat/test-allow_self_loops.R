@@ -1,3 +1,5 @@
+library(igraph)
+
 test_that("undirected graphs allow_self_loops = FALSE", {
 
   set.seed(1)
