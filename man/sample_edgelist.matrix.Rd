@@ -31,7 +31,9 @@ of latent node positions encoding incoming edge community membership.
 The \code{X} matrix in Rohe et al (2017). Naming differs only for
 consistency with the S3 generic.}
 
-\item{S}{A \code{k1} by \code{k2} mixing \code{\link[=matrix]{matrix()}} or \code{\link[Matrix:Matrix]{Matrix::Matrix()}}}
+\item{S}{A \code{k1} by \code{k2} mixing \code{\link[=matrix]{matrix()}} or \code{\link[Matrix:Matrix]{Matrix::Matrix()}}. In
+the undirect case this is assumed to be symmetric but \strong{we do not
+check that this is the case}.}
 
 \item{Y}{A \code{d} by \code{k2} \code{\link[=matrix]{matrix()}} or \code{\link[Matrix:Matrix]{Matrix::Matrix()}} of latent
 node positions encoding outgoing edge community membership.}

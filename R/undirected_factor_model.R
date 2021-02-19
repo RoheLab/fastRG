@@ -139,6 +139,8 @@ undirected_factor_model <- function(
 
   ufm <- new_undirected_factor_model(X, S, ...)
 
+  ufm$S <- (S + t(S)) / 2  # symmetrize S
+
   if (!is.null(expected_degree)) {
 
     if (expected_degree <= 0) {
@@ -148,7 +150,7 @@ undirected_factor_model <- function(
       )
     }
 
-    S <- S * expected_degree / expected_degree(ufm)
+    ufm$S <- ufm$S * expected_degree / expected_degree(ufm)
   }
 
   if (!is.null(expected_density)) {
@@ -160,16 +162,8 @@ undirected_factor_model <- function(
       )
     }
 
-    S <- S * expected_density / expected_density(ufm)
+    ufm$S <- ufm$S * expected_density / expected_density(ufm)
   }
-
-  # symmetrize edge probabilities by setting S := (S + t(S)) / 2
-  # then divide by 2 again this doubles edge probabilities. if S
-  # is already symmetric, this leaves S unchanged
-
-  S <- (S + t(S)) / 4
-
-  ufm$S <- S
 
   validate_undirected_factor_model(ufm)
 }

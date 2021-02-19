@@ -96,8 +96,6 @@ expected_density <- function(factor_model, ...) {
   UseMethod("expected_density")
 }
 
-
-
 #' @export
 expected_degree.undirected_factor_model <- function(factor_model, ...) {
   expected_edges(factor_model) / as.numeric(factor_model$n)
@@ -144,8 +142,6 @@ eigs_sym.undirected_factor_model <- function(
 
   eigs_sym(Ax, k, n = A$n, args = list(X = A$X, SXt = tcrossprod(A$S, A$X)))
 }
-
-# TODO: sanity check if dividing by n and d are right in the following
 
 #' @export
 expected_in_degree.directed_factor_model <- function(factor_model, ...) {

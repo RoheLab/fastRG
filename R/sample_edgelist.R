@@ -201,7 +201,9 @@ sample_edgelist.directed_factor_model <- function(
 #'   The `X` matrix in Rohe et al (2017). Naming differs only for
 #'   consistency with the S3 generic.
 #'
-#' @param S A `k1` by `k2` mixing [matrix()] or [Matrix::Matrix()]
+#' @param S A `k1` by `k2` mixing [matrix()] or [Matrix::Matrix()]. In
+#'   the undirect case this is assumed to be symmetric but **we do not
+#'   check that this is the case**.
 #'
 #' @param Y A `d` by `k2` [matrix()] or [Matrix::Matrix()] of latent
 #'   node positions encoding outgoing edge community membership.
@@ -234,7 +236,7 @@ sample_edgelist.directed_factor_model <- function(
 #' S <- matrix(runif(n = k1 * k2, 0, .1), nrow = k1)
 #' Y <- matrix(rpois(n = d * k2, 1), nrow = d)
 #'
-#' sample_edgelist(X, S, Y, TRUE)
+#' sample_edgelist(X, S, Y, directed = TRUE)
 #'
 sample_edgelist.matrix <- function(
   factor_model, S, Y,
@@ -248,13 +250,6 @@ sample_edgelist.matrix <- function(
   stopifnot(is.logical(directed))
   stopifnot(is.logical(poisson_edges))
   stopifnot(is.logical(allow_self_loops))
-
-  # symmetrization of S in the undirected case
-  # are we accidentally double symmetrize when get an undirected model?
-
-  if (!directed) {
-    S <- (S + t(S)) / 4
-  }
 
   n <- nrow(X)
   d <- nrow(Y)
