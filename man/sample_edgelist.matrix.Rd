@@ -55,12 +55,12 @@ details.}
 
 \item{allow_self_loops}{Logical indicating whether or not
 nodes should be allowed to form edges with themselves.
-Defaults to \code{TRUE}. When \code{FALSE}, sampling proceeds
-as usual, and self-loops are removed afterwards.}
+Defaults to \code{TRUE}. When \code{FALSE}, sampling proceeds allowing
+self-loops, and these are then removed after the fact.}
 }
 \value{
 A single realization of a random Poisson (or Bernoulli)
-Dot Product Graph, represent as a \code{\link[tibble:tibble]{tibble::tibble()}} with two
+Dot Product Graph, represented as a \code{\link[tibble:tibble]{tibble::tibble()}} with two
 integer columns, \code{from} and \code{to}.
 
 In the undirected case, \code{from} and \code{to} do not encode

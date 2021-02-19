@@ -58,8 +58,8 @@ details.}
 
 \item{allow_self_loops}{Logical indicating whether or not
 nodes should be allowed to form edges with themselves.
-Defaults to \code{TRUE}. When \code{FALSE}, sampling proceeds
-as usual, and self-loops are removed afterwards.}
+Defaults to \code{TRUE}. When \code{FALSE}, sampling proceeds allowing
+self-loops, and these are then removed after the fact.}
 }
 \value{
 A \code{\link[tidygraph:tbl_graph]{tidygraph::tbl_graph()}} object.

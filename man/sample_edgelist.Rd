@@ -56,12 +56,12 @@ details.}
 
 \item{allow_self_loops}{Logical indicating whether or not
 nodes should be allowed to form edges with themselves.
-Defaults to \code{TRUE}. When \code{FALSE}, sampling proceeds
-as usual, and self-loops are removed afterwards.}
+Defaults to \code{TRUE}. When \code{FALSE}, sampling proceeds allowing
+self-loops, and these are then removed after the fact.}
 }
 \value{
 A single realization of a random Poisson (or Bernoulli)
-Dot Product Graph, represent as a \code{\link[tibble:tibble]{tibble::tibble()}} with two
+Dot Product Graph, represented as a \code{\link[tibble:tibble]{tibble::tibble()}} with two
 integer columns, \code{from} and \code{to}.
 
 In the undirected case, \code{from} and \code{to} do not encode
@@ -77,10 +77,10 @@ over \code{\link[=sample_edgelist]{sample_edgelist()}}.
 \description{
 There are two steps to using the \code{fastRG} package. First,
 you must parameterize a random dot product graph by
-specifying its expected adjacency matrix. Use functions such as
+sampling the latent factors. Use functions such as
 \code{\link[=dcsbm]{dcsbm()}}, \code{\link[=sbm]{sbm()}}, etc, to perform this specification.
 Then, use \code{\link[=sample_edgelist]{sample_edgelist()}} to generate a random graph,
-represented as an edgelist, with that expectation.
+represented as an edgelist.
 }
 \details{
 This function implements the \code{fastRG} algorithm as
