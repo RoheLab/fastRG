@@ -361,17 +361,19 @@ sample_edgelist.matrix <- function(
 
   edgelist <- tibble(from = from, to = to)
 
-  # TODO: symmetrization
-  # if (!directed) {
-  #
-  #   # warn on rectangular graph, which cannot be symmetrized
-  #   if(n!=d) break
-  #   # if it is directed and has self-loops, the current implementation has the corrected expected number of edges... but it is required to be an even number... not poisson.
-  #   # symmetrization doubles edge probabiilties!
-  #   eoOLD = eo
-  #   eo = c(eo, ei)
-  #   ei = c(ei, eoOLD)
-  # }
+  if (directed) {
+    edgelist <- tibble(from = from, to = to)
+  } else {
+
+    # in the undirected case, sort the indices so that the *directed*
+    # representations lives all in the same triangle (upper or lower i
+    # didn't work it out)
+
+    edgelist <- tibble(
+      from = pmin(from, to),
+      to = pmax(from, to)
+    )
+  }
 
   if (!poisson_edges) {
 
