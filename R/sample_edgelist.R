@@ -2,10 +2,10 @@
 #'
 #' There are two steps to using the `fastRG` package. First,
 #' you must parameterize a random dot product graph by
-#' specifying its expected adjacency matrix. Use functions such as
+#' sampling the latent factors. Use functions such as
 #' [dcsbm()], [sbm()], etc, to perform this specification.
 #' Then, use [sample_edgelist()] to generate a random graph,
-#' represented as an edgelist, with that expectation.
+#' represented as an edgelist.
 #'
 #' @param factor_model A [directed_factor_model()] or
 #'   [undirected_factor_model()].
@@ -21,11 +21,11 @@
 #'
 #' @param allow_self_loops Logical indicating whether or not
 #'   nodes should be allowed to form edges with themselves.
-#'   Defaults to `TRUE`. When `FALSE`, sampling proceeds
-#'   as usual, and self-loops are removed afterwards.
+#'   Defaults to `TRUE`. When `FALSE`, sampling proceeds allowing
+#'   self-loops, and these are then removed after the fact.
 #'
 #' @return A single realization of a random Poisson (or Bernoulli)
-#'   Dot Product Graph, represent as a [tibble::tibble()] with two
+#'   Dot Product Graph, represented as a [tibble::tibble()] with two
 #'   integer columns, `from` and `to`.
 #'
 #'   In the undirected case, `from` and `to` do not encode
