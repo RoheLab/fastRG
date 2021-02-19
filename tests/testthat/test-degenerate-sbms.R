@@ -1,6 +1,6 @@
 test_that("degenerate SBMs", {
 
-  set.seed(5)
+  set.seed(27)
 
   n <- 10
   k <- 10
