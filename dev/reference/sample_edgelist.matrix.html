@@ -211,15 +211,15 @@ details.</p></td>
       <th>allow_self_loops</th>
       <td><p>Logical indicating whether or not
 nodes should be allowed to form edges with themselves.
-Defaults to <code>TRUE</code>. When <code>FALSE</code>, sampling proceeds
-as usual, and self-loops are removed afterwards.</p></td>
+Defaults to <code>TRUE</code>. When <code>FALSE</code>, sampling proceeds allowing
+self-loops, and these are then removed after the fact.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A single realization of a random Poisson (or Bernoulli)
-Dot Product Graph, represent as a <code><a href='https://tibble.tidyverse.org/reference/tibble.html'>tibble::tibble()</a></code> with two
+Dot Product Graph, represented as a <code><a href='https://tibble.tidyverse.org/reference/tibble.html'>tibble::tibble()</a></code> with two
 integer columns, <code>from</code> and <code>to</code>.</p>
 <p>In the undirected case, <code>from</code> and <code>to</code> do not encode
 information about edge direction. That is, if there is a

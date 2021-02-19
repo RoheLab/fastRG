@@ -42,10 +42,10 @@
 <meta property="og:title" content="Sample a random edgelist from a random dot product graph — sample_edgelist" />
 <meta property="og:description" content="There are two steps to using the fastRG package. First,
 you must parameterize a random dot product graph by
-specifying its expected adjacency matrix. Use functions such as
+sampling the latent factors. Use functions such as
 dcsbm(), sbm(), etc, to perform this specification.
 Then, use sample_edgelist() to generate a random graph,
-represented as an edgelist, with that expectation." />
+represented as an edgelist." />
 
 
 <meta name="robots" content="noindex">
@@ -133,10 +133,10 @@ represented as an edgelist, with that expectation." />
     <div class="ref-description">
     <p>There are two steps to using the <code>fastRG</code> package. First,
 you must parameterize a random dot product graph by
-specifying its expected adjacency matrix. Use functions such as
+sampling the latent factors. Use functions such as
 <code><a href='dcsbm.html'>dcsbm()</a></code>, <code><a href='sbm.html'>sbm()</a></code>, etc, to perform this specification.
 Then, use <code>sample_edgelist()</code> to generate a random graph,
-represented as an edgelist, with that expectation.</p>
+represented as an edgelist.</p>
     </div>
 
     <pre class="usage"><span class='fu'>sample_edgelist</span><span class='op'>(</span>
@@ -201,15 +201,15 @@ details.</p></td>
       <th>allow_self_loops</th>
       <td><p>Logical indicating whether or not
 nodes should be allowed to form edges with themselves.
-Defaults to <code>TRUE</code>. When <code>FALSE</code>, sampling proceeds
-as usual, and self-loops are removed afterwards.</p></td>
+Defaults to <code>TRUE</code>. When <code>FALSE</code>, sampling proceeds allowing
+self-loops, and these are then removed after the fact.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>A single realization of a random Poisson (or Bernoulli)
-Dot Product Graph, represent as a <code><a href='https://tibble.tidyverse.org/reference/tibble.html'>tibble::tibble()</a></code> with two
+Dot Product Graph, represented as a <code><a href='https://tibble.tidyverse.org/reference/tibble.html'>tibble::tibble()</a></code> with two
 integer columns, <code>from</code> and <code>to</code>.</p>
 <p>In the undirected case, <code>from</code> and <code>to</code> do not encode
 information about edge direction. That is, if there is a
@@ -278,14 +278,14 @@ Journal of Machine Learning Research; 19(77):1-13, 2018.
 #&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>
 #&gt; </span><span style='color: #555555;'> 1</span><span>   691   831
 #&gt; </span><span style='color: #555555;'> 2</span><span>   309   988
-#&gt; </span><span style='color: #555555;'> 3</span><span>   469   371
+#&gt; </span><span style='color: #555555;'> 3</span><span>   371   371
 #&gt; </span><span style='color: #555555;'> 4</span><span>   109   954
 #&gt; </span><span style='color: #555555;'> 5</span><span>    74   397
 #&gt; </span><span style='color: #555555;'> 6</span><span>   400   982
 #&gt; </span><span style='color: #555555;'> 7</span><span>    47   952
 #&gt; </span><span style='color: #555555;'> 8</span><span>   116   600
 #&gt; </span><span style='color: #555555;'> 9</span><span>   384   652
-#&gt; </span><span style='color: #555555;'>10</span><span>   854   818
+#&gt; </span><span style='color: #555555;'>10</span><span>   818   818
 #&gt; </span><span style='color: #555555;'># … with 24,941 more rows</span><span></div><div class='input'>
 <span class='co'>### sampling graphs as sparse matrices ----------------</span>
 
@@ -303,17 +303,17 @@ Journal of Machine Learning Research; 19(77):1-13, 2018.
 <span class='co'>### sampling graphs as igraph graphs ------------------</span>
 
 <span class='fu'><a href='sample_igraph.html'>sample_igraph</a></span><span class='op'>(</span><span class='va'>ufm</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; IGRAPH b1bf502 U--- 1000 25027 -- 
-#&gt; + edges from b1bf502:
-#&gt;  [1] 758--982 702--912 113--509 326--428 158--185 638--707 110--497  86--538
-#&gt;  [9] 130--362  75--486 388--845 184--270 231--979 442--624 756--965 115--278
-#&gt; [17] 313--773 597--780  22--508 552--597 531--927 929--931 331--639 120--215
-#&gt; [25] 435--966   1--780 554--722 580--695 233--284 105--708  65--213 597--720
-#&gt; [33]  13--708 445--750 172--526 171--702   1--326 668--929   1--770 325--527
-#&gt; [41] 159--956 233--773 758--929 163--562 339--753 761--929 755--929  45--766
-#&gt; [49] 690--769 268--354 115--855 184--209  55--381 947--952 449--460 282--831
-#&gt; [57] 821--844  27--872 702--839 318--783 435--872 133--402 547--796 486--756
-#&gt; [65] 496--554 161--453  77--982 471--600 595--638  73--968 341--447 262--731
+</div><div class='output co'>#&gt; IGRAPH 8286e40 UN-- 986 25027 -- 
+#&gt; + attr: name (v/c)
+#&gt; + edges from 8286e40 (vertex names):
+#&gt;  [1] 758--758 702--702 113--509 326--428 158--185 638--707 110--110 86 --86 
+#&gt;  [9] 130--130 75 --486 388--845 184--270 231--231 442--624 756--756 115--278
+#&gt; [17] 313--773 597--597 22 --22  597--552 531--927 929--931 331--639 120--120
+#&gt; [25] 435--966 1  --780 554--554 580--580 233--284 105--105 65 --213 597--597
+#&gt; [33] 13 --13  445--750 172--172 702--171 326--1   929--668 1  --770 325--527
+#&gt; [41] 159--956 233--233 758--758 163--562 339--753 761--761 755--755 45 --766
+#&gt; [49] 690--690 268--354 115--115 184--184 55 --55  947--952 449--460 282--831
+#&gt; [57] 821--844 27 --872 702--702 318--318 435--872 133--402 547--547 756--486
 #&gt; + ... omitted several edges</div><div class='input'>
 <span class='co'>### sampling graphs as tidygraph graphs ---------------</span>
 
@@ -328,41 +328,41 @@ Journal of Machine Learning Research; 19(77):1-13, 2018.
 #&gt; </span><span style='color: #555555;'>1</span><span> 485  
 #&gt; </span><span style='color: #555555;'>2</span><span> 355  
 #&gt; </span><span style='color: #555555;'>3</span><span> 368  
-#&gt; </span><span style='color: #555555;'>4</span><span> 722  
-#&gt; </span><span style='color: #555555;'>5</span><span> 914  
+#&gt; </span><span style='color: #555555;'>4</span><span> 200  
+#&gt; </span><span style='color: #555555;'>5</span><span> 653  
 #&gt; </span><span style='color: #555555;'>6</span><span> 375  
 #&gt; </span><span style='color: #555555;'># … with 980 more rows</span><span>
 #&gt; </span><span style='color: #555555;'>#
 #&gt; # Edge Data: 24,921 x 2</span><span>
 #&gt;    from    to
 #&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>1</span><span>     1    66
-#&gt; </span><span style='color: #555555;'>2</span><span>     2   182
-#&gt; </span><span style='color: #555555;'>3</span><span>     3   429
+#&gt; </span><span style='color: #555555;'>1</span><span>     1   881
+#&gt; </span><span style='color: #555555;'>2</span><span>     2   706
+#&gt; </span><span style='color: #555555;'>3</span><span>     3   749
 #&gt; </span><span style='color: #555555;'># … with 24,918 more rows</span><span></div><div class='input'>
 <span class='fu'><a href='sample_tidygraph.html'>sample_tidygraph</a></span><span class='op'>(</span><span class='va'>ufm</span>, poisson_edges <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tbl_graph: 986 nodes and 24570 edges
+</div><div class='output co'>#&gt; </span><span style='color: #555555;'># A tbl_graph: 986 nodes and 13140 edges
 #&gt; #
 #&gt; # An undirected multigraph with 1 component
 #&gt; #
 #&gt; # Node Data: 986 x 1 (active)</span><span>
 #&gt;   name 
 #&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>1</span><span> 983  
-#&gt; </span><span style='color: #555555;'>2</span><span> 658  
+#&gt; </span><span style='color: #555555;'>1</span><span> 650  
+#&gt; </span><span style='color: #555555;'>2</span><span> 376  
 #&gt; </span><span style='color: #555555;'>3</span><span> 253  
-#&gt; </span><span style='color: #555555;'>4</span><span> 844  
+#&gt; </span><span style='color: #555555;'>4</span><span> 706  
 #&gt; </span><span style='color: #555555;'>5</span><span> 221  
-#&gt; </span><span style='color: #555555;'>6</span><span> 720  
+#&gt; </span><span style='color: #555555;'>6</span><span> 117  
 #&gt; </span><span style='color: #555555;'># … with 980 more rows</span><span>
 #&gt; </span><span style='color: #555555;'>#
-#&gt; # Edge Data: 24,570 x 2</span><span>
+#&gt; # Edge Data: 13,140 x 2</span><span>
 #&gt;    from    to
 #&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>
-#&gt; </span><span style='color: #555555;'>1</span><span>     1   266
-#&gt; </span><span style='color: #555555;'>2</span><span>     2   350
-#&gt; </span><span style='color: #555555;'>3</span><span>     3   135
-#&gt; </span><span style='color: #555555;'># … with 24,567 more rows</span><span></div><div class='input'>
+#&gt; </span><span style='color: #555555;'>1</span><span>     1     1
+#&gt; </span><span style='color: #555555;'>2</span><span>     2     2
+#&gt; </span><span style='color: #555555;'>3</span><span>     3   130
+#&gt; </span><span style='color: #555555;'># … with 13,137 more rows</span><span></div><div class='input'>
 <span class='co'>##### directed examples ----------------------------</span>
 
 <span class='va'>n2</span> <span class='op'>&lt;-</span> <span class='fl'>10000</span>
@@ -427,17 +427,17 @@ Journal of Machine Learning Research; 19(77):1-13, 2018.
 <span class='co'>### sampling graphs as igraph graphs ------------------</span>
 
 <span class='fu'><a href='sample_igraph.html'>sample_igraph</a></span><span class='op'>(</span><span class='va'>fm</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; IGRAPH 9b3000b D--- 10000 500118 -- 
-#&gt; + edges from 9b3000b:
-#&gt;  [1] 2082-&gt;3989 1055-&gt;3991  804-&gt;1998 8479-&gt;4066 1458-&gt;2982 2811-&gt;4904
-#&gt;  [7] 2929-&gt;1865 4684-&gt; 925 7940-&gt;  24 5506-&gt;4450 8351-&gt;1442 2496-&gt;1323
-#&gt; [13] 3991-&gt; 564 9403-&gt;3582 6450-&gt; 536 5448-&gt;4120 3445-&gt;1770 4089-&gt;2303
-#&gt; [19] 9381-&gt;1625  199-&gt; 677 7827-&gt;3224  727-&gt;1989 7823-&gt;2606 8035-&gt;3149
-#&gt; [25] 2496-&gt;3813 1507-&gt;2378 3248-&gt; 838 2688-&gt;3513 5485-&gt;3895 7531-&gt;3719
+</div><div class='output co'>#&gt; IGRAPH f5ec644 DN-- 9968 500118 -- 
+#&gt; + attr: name (v/c)
+#&gt; + edges from f5ec644 (vertex names):
+#&gt;  [1] 2082-&gt;3989 1055-&gt;3991 804 -&gt;1998 8479-&gt;4066 1458-&gt;2982 2811-&gt;4904
+#&gt;  [7] 2929-&gt;1865 4684-&gt;925  7940-&gt;24   5506-&gt;4450 8351-&gt;1442 2496-&gt;1323
+#&gt; [13] 3991-&gt;564  9403-&gt;3582 6450-&gt;536  5448-&gt;4120 3445-&gt;1770 4089-&gt;2303
+#&gt; [19] 9381-&gt;1625 199 -&gt;677  7827-&gt;3224 727 -&gt;1989 7823-&gt;2606 8035-&gt;3149
+#&gt; [25] 2496-&gt;3813 1507-&gt;2378 3248-&gt;838  2688-&gt;3513 5485-&gt;3895 7531-&gt;3719
 #&gt; [31] 6582-&gt;3325 6422-&gt;3656 9118-&gt;2276 4069-&gt;4621 7281-&gt;1454 7116-&gt;2901
-#&gt; [37] 9030-&gt;4520 9195-&gt;1620 4458-&gt; 364 6071-&gt;2233 7873-&gt;4780 9952-&gt;2510
-#&gt; [43] 2106-&gt;4167  305-&gt;3456  280-&gt;3010 2578-&gt;4165 1033-&gt; 391 7411-&gt;1403
-#&gt; [49] 3460-&gt; 793 7787-&gt;2557 2282-&gt;3786 3207-&gt;4748   15-&gt;3408 1113-&gt;2056
+#&gt; [37] 9030-&gt;4520 9195-&gt;1620 4458-&gt;364  6071-&gt;2233 7873-&gt;4780 9952-&gt;2510
+#&gt; [43] 2106-&gt;4167 305 -&gt;3456 280 -&gt;3010 2578-&gt;4165 1033-&gt;391  7411-&gt;1403
 #&gt; + ... omitted several edges</div><div class='input'>
 <span class='co'>### sampling graphs as tidygraph graphs ---------------</span>
 
