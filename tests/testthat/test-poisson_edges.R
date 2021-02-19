@@ -1,5 +1,7 @@
 test_that("undirected graphs poisson_edges = FALSE", {
 
+  set.seed(6)
+
   library(dplyr)
 
   n <- 1000
@@ -16,7 +18,7 @@ test_that("undirected graphs poisson_edges = FALSE", {
   edgelist <- sample_edgelist(ufm, poisson_edges = FALSE)
 
   max_element_A <- edgelist %>%
-    count(to, from) %>%
+    count(to, from, sort = TRUE) %>%
     pull(n) %>%
     max()
 
@@ -31,10 +33,12 @@ test_that("undirected graphs poisson_edges = FALSE", {
   ### sampling graphs as tidygraph graphs ---------------
 
   tbl_graph <- sample_tidygraph(ufm, poisson_edges = FALSE)
-  expect_equal(max(get.adjacency(igraph)), 1)
+  expect_equal(max(get.adjacency(tbl_graph)), 1)
 })
 
 test_that("directed graphs poisson_edges = FALSE", {
+
+  set.seed(7)
 
   library(dplyr)
 
@@ -69,5 +73,5 @@ test_that("directed graphs poisson_edges = FALSE", {
   ### sampling graphs as tidygraph graphs ---------------
 
   tbl_graph <- sample_tidygraph(fm, poisson_edges = FALSE)
-  expect_equal(max(get.adjacency(igraph)), 1)
+  expect_equal(max(get.adjacency(tbl_graph)), 1)
 })
