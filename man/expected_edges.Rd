@@ -3,39 +3,53 @@
 \name{expected_edges}
 \alias{expected_edges}
 \alias{expected_degree}
-\alias{expected_degrees}
 \alias{expected_in_degree}
 \alias{expected_out_degree}
 \alias{expected_density}
-\title{Calculate the expected number of edges in Poisson RDPG graph}
+\alias{expected_degrees}
+\title{Calculate the expected edges in Poisson RDPG graph}
 \usage{
 expected_edges(factor_model, ...)
 
 expected_degree(factor_model, ...)
-
-expected_degrees(factor_model, ...)
 
 expected_in_degree(factor_model, ...)
 
 expected_out_degree(factor_model, ...)
 
 expected_density(factor_model, ...)
+
+expected_degrees(factor_model, ...)
 }
 \arguments{
-\item{factor_model}{TODO}
+\item{factor_model}{A \code{\link[=directed_factor_model]{directed_factor_model()}} or
+\code{\link[=undirected_factor_model]{undirected_factor_model()}}.}
 
-\item{...}{Ignored.}
+\item{...}{Ignored. Do not use.}
 }
 \description{
-underestimate when edge distribution is bernoulli
+These calculations are conditional on the latent factors
+\code{X} and \code{Y}.
 }
 \details{
 Note that the runtime of the \code{fastRG} algorithm is proportional to
-\code{count}, the expected number of edges in the graph.
+the expected number of edges in the graph. Expected edge count will be
+an underestimate of expected number of edges for Bernoulli
+graphs. See the Rohe et al for details.
 }
 \examples{
 
-# TODO: undirected examples
+n <- 10000
+k <- 5
+
+X <- matrix(rpois(n = n * k, 1), nrow = n)
+S <- matrix(runif(n = k * k, 0, .1), nrow = k)
+
+ufm <- undirected_factor_model(X, S)
+
+expected_edges(ufm)
+expected_degree(ufm)
+eigs_sym(ufm)
 
 n <- 10000
 d <- 1000
@@ -52,6 +66,13 @@ dfm <- directed_factor_model(X = X, S = S, Y = Y)
 expected_edges(dfm)
 expected_in_degree(dfm)
 expected_out_degree(dfm)
+
 svds(dfm)
 
+}
+\references{
+Rohe, Karl, Jun Tao, Xintian Han, and Norbert Binkiewicz. 2017.
+"A Note on Quickly Sampling a Sparse Matrix with Low Rank Expectation."
+Journal of Machine Learning Research; 19(77):1-13, 2018.
+\url{http://www.jmlr.org/papers/v19/17-128.html}
 }

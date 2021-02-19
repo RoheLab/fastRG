@@ -12,17 +12,8 @@ erdos_renyi(n, ..., p = NULL)
 \item{...}{
   Arguments passed on to \code{\link[=undirected_factor_model]{undirected_factor_model}}
   \describe{
-    \item{\code{X}}{A \code{\link[=matrix]{matrix()}} or \link[=matrix]{Matrix()} representing real-valued
-latent node positions. Entries must be positive.}
-    \item{\code{S}}{A \code{\link[=matrix]{matrix()}} or \link[=matrix]{Matrix()} mixing matrix. \code{S} is
-symmetrized if it is not already, as this is the undirected
-case. Entries must be positive.}
     \item{\code{expected_degree}}{If specified, the desired expected degree
 of the graph. Specifying \code{expected_degree} simply rescales \code{S}
-to achieve this. Defaults to \code{NULL}. Do not specify both
-\code{expected_degree} and \code{expected_density} at the same time.}
-    \item{\code{expected_density}}{If specified, the desired expected density
-of the graph. Specifying \code{expected_density} simply rescales \code{S}
 to achieve this. Defaults to \code{NULL}. Do not specify both
 \code{expected_degree} and \code{expected_density} at the same time.}
   }}
@@ -41,6 +32,10 @@ Create an undirected erdos renyi object
 set.seed(87)
 
 er <- erdos_renyi(n = 10, p = 0.1)
+er
+
+
+er <- erdos_renyi(n = 10, expected_density = 0.1)
 er
 
 big_er <- erdos_renyi(n = 10^6, expected_degree = 5)

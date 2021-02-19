@@ -78,8 +78,9 @@ Defaults to \code{TRUE}.}
 An \code{undirected_planted_partition} S3 object, which is a subclass
 of the \code{\link[=sbm]{sbm()}} object, with additional fields:
 \itemize{
-\item \code{within_block}: TODO
-\item \code{between_block}: TODO
+\item \code{within_block}: The probability of edge formation within a block.
+\item \code{between_block}: The probability of edge formation between two distinct
+blocks.
 }
 }
 \description{

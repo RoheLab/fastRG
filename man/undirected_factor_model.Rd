@@ -48,7 +48,7 @@ An undirected factor model graph is an undirected
 generalized Poisson random dot product graph. The edges
 in this graph are assumed to be independent and Poisson
 distributed. The graph is parameterized by its expected
-adjacency matrix, with is \verb{E[A|X] = X S X'}. We do not recommend
+adjacency matrix, which is \verb{E[A|X] = X S X'}. We do not recommend
 that casual users use this function, see instead \code{\link[=dcsbm]{dcsbm()}}
 and related functions, which will formulate common variants
 of the stochastic blockmodels as undirected factor models

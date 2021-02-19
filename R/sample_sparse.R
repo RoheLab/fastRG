@@ -1,13 +1,6 @@
 #' Sample a random dot product graph as a sparse Matrix
 #'
-#' There are two steps to using the `fastRG` package. First,
-#' you must parameterize a random dot product graph by
-#' specifying its expected adjacency matrix. Use functions such as
-#' [dcsbm()], [sbm()], etc, to perform this specification.
-#' Then, use [sample_sparse()] to generate a random graph,
-#' represented as a [Matrix::Matrix()], with that expectation.
-#'
-#' @inherit sample_edgelist params details references examples
+#' @inherit sample_edgelist params details references examples description
 #'
 #' @return For undirected factor models, a sparse
 #'   [Matrix::Matrix()] of class `dsCMatrix`. In particular,

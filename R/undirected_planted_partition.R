@@ -87,9 +87,10 @@ validate_undirected_planted_partition <- function(x) {
 #' @return An `undirected_planted_partition` S3 object, which is a subclass
 #'   of the [sbm()] object, with additional fields:
 #'
-#'   - `within_block`: TODO
+#'   - `within_block`: The probability of edge formation within a block.
 #'
-#'   - `between_block`: TODO
+#'   - `between_block`: The probability of edge formation between two distinct
+#'     blocks.
 #'
 #' @export
 #' @family stochastic block models

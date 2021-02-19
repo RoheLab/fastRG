@@ -12,26 +12,14 @@ directed_erdos_renyi(n, ..., p = NULL)
 \item{...}{
   Arguments passed on to \code{\link[=directed_factor_model]{directed_factor_model}}
   \describe{
-    \item{\code{X}}{A \code{\link[=matrix]{matrix()}} or \link[=matrix]{Matrix()} representing real-valued
-latent node positions encoding community structure of
-incoming edges. Entries must be positive.}
-    \item{\code{S}}{A \code{\link[=matrix]{matrix()}} or \link[=matrix]{Matrix()} mixing matrix. Entries
-must be positive.}
-    \item{\code{Y}}{A \code{\link[=matrix]{matrix()}} or \link[=matrix]{Matrix()} representing real-valued
-latent node positions encoding community structure of
-outgoing edges. Entries must be positive.}
-    \item{\code{expected_in_degree}}{If specified, the desired expected degree
-of the graph. Specifying \code{expected_degree} simply rescales \code{S}
-to achieve this. Defaults to \code{NULL}. Do not specify both
-\code{expected_degree} and \code{expected_density} at the same time. TODO}
-    \item{\code{expected_out_degree}}{If specified, the desired expected degree
-of the graph. Specifying \code{expected_degree} simply rescales \code{S}
-to achieve this. Defaults to \code{NULL}. Do not specify both
-\code{expected_degree} and \code{expected_density} at the same time. TODO}
-    \item{\code{expected_density}}{If specified, the desired expected density
-of the graph. Specifying \code{expected_density} simply rescales \code{S}
-to achieve this. Defaults to \code{NULL}. Do not specify both
-\code{expected_degree} and \code{expected_density} at the same time. TODO}
+    \item{\code{expected_in_degree}}{If specified, the desired expected in degree
+of the graph. Specifying \code{expected_in_degree} simply rescales \code{S}
+to achieve this. Defaults to \code{NULL}. Specify only one of
+\code{expected_in_degree}, \code{expected_out_degree}, and \code{expected_density}.}
+    \item{\code{expected_out_degree}}{If specified, the desired expected out degree
+of the graph. Specifying \code{expected_out_degree} simply rescales \code{S}
+to achieve this. Defaults to \code{NULL}. Specify only one of
+\code{expected_in_degree}, \code{expected_out_degree}, and \code{expected_density}.}
   }}
 
 \item{p}{Probability of an edge between any two nodes. You must specify

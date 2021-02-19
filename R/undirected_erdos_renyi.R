@@ -29,8 +29,7 @@ validate_undirected_erdos_renyi <- function(x) {
 #' @param p Probability of an edge between any two nodes. You must specify
 #'   either `p` or `expected_degree`.
 #'
-#'
-#' @inheritDotParams undirected_factor_model
+#' @inheritDotParams undirected_factor_model expected_degree
 #'
 #' @return Never returns Poisson edges.
 #'
@@ -45,6 +44,10 @@ validate_undirected_erdos_renyi <- function(x) {
 #' set.seed(87)
 #'
 #' er <- erdos_renyi(n = 10, p = 0.1)
+#' er
+#'
+#'
+#' er <- erdos_renyi(n = 10, expected_density = 0.1)
 #' er
 #'
 #' big_er <- erdos_renyi(n = 10^6, expected_degree = 5)

@@ -35,7 +35,7 @@ validate_directed_erdos_renyi <- function(x) {
 #' @param p Probability of an edge between any two nodes. You must specify
 #'   either `p`, `expected_in_degree`, or `expected_out_degree`.
 #'
-#' @inheritDotParams directed_factor_model
+#' @inheritDotParams directed_factor_model expected_in_degree expected_out_degree
 #'
 #' @return Never returns Poisson edges.
 #'
@@ -84,4 +84,44 @@ directed_erdos_renyi <- function(
   validate_directed_erdos_renyi(er)
 }
 
-# TODO: hacks to avoid Poisson edges
+# dispatch hacks to always avoid Poisson edges ---------------------------------
+
+#' @rdname sample_edgelist
+#' @export
+sample_edgelist.directed_erdos_renyi <- function(
+  factor_model,
+  ...,
+  allow_self_loops = TRUE) {
+
+  NextMethod("sample_edgelist", factor_model, ..., poisson_edges = FALSE)
+}
+
+#' @rdname sample_sparse
+#' @export
+sample_sparse.directed_erdos_renyi <- function(
+  factor_model,
+  ...,
+  allow_self_loops = TRUE) {
+
+  NextMethod("sample_sparse", factor_model, ..., poisson_edges = FALSE)
+}
+
+#' @rdname sample_igraph
+#' @export
+sample_igraph.directed_erdos_renyi <- function(
+  factor_model,
+  ...,
+  allow_self_loops = TRUE) {
+
+  NextMethod("sample_igraph", factor_model, ..., poisson_edges = FALSE)
+}
+
+#' @rdname sample_tidygraph
+#' @export
+sample_tidygraph.directed_erdos_renyi <- function(
+  factor_model,
+  ...,
+  allow_self_loops = TRUE) {
+
+  NextMethod("sample_tidygraph", factor_model, ..., poisson_edges = FALSE)
+}

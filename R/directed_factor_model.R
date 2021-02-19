@@ -71,22 +71,22 @@ validate_directed_factor_model <- function(x) {
 #'
 #' @param ... Ignored. For internal developer use only.
 #'
-#' @param expected_in_degree If specified, the desired expected degree
-#'   of the graph. Specifying `expected_degree` simply rescales `S`
-#'   to achieve this. Defaults to `NULL`. Do not specify both
-#'   `expected_degree` and `expected_density` at the same time. TODO
+#' @param expected_in_degree If specified, the desired expected in degree
+#'   of the graph. Specifying `expected_in_degree` simply rescales `S`
+#'   to achieve this. Defaults to `NULL`. Specify only one of
+#'   `expected_in_degree`, `expected_out_degree`, and `expected_density`.
 #'
-#' @param expected_out_degree If specified, the desired expected degree
-#'   of the graph. Specifying `expected_degree` simply rescales `S`
-#'   to achieve this. Defaults to `NULL`. Do not specify both
-#'   `expected_degree` and `expected_density` at the same time. TODO
+#' @param expected_out_degree If specified, the desired expected out degree
+#'   of the graph. Specifying `expected_out_degree` simply rescales `S`
+#'   to achieve this. Defaults to `NULL`. Specify only one of
+#'   `expected_in_degree`, `expected_out_degree`, and `expected_density`.
 #'
 #' @param expected_density If specified, the desired expected density
 #'   of the graph. Specifying `expected_density` simply rescales `S`
-#'   to achieve this. Defaults to `NULL`. Do not specify both
-#'   `expected_degree` and `expected_density` at the same time. TODO
+#'   to achieve this. Defaults to `NULL`. Specify only one of
+#'   `expected_in_degree`, `expected_out_degree`, and `expected_density`.
 #'
-#' @return An `undirected_factor_model` S3 class based on a list
+#' @return A `directed_factor_model` S3 class based on a list
 #'   with the following elements:
 #'
 #'   - `X`: The incoming latent positions as a [Matrix()] object.

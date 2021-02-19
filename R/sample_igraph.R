@@ -1,13 +1,6 @@
 #' Sample a random dot product graph as an igraph graph
 #'
-#' There are two steps to using the `fastRG` package. First,
-#' you must parameterize a random dot product graph by
-#' specifying its expected adjacency matrix. Use functions such as
-#' [dcsbm()], [sbm()], etc, to perform this specification.
-#' Then, use [sample_igraph()] to generate a random graph,
-#' represented as an [igraph::igraph()], with that expectation.
-#'
-#' @inherit sample_edgelist params details references examples
+#' @inherit sample_edgelist params details references examples description
 #'
 #' @return An [igraph::igraph()] graph object.
 #'
@@ -47,7 +40,7 @@ sample_igraph.undirected_factor_model <- function(
     allow_self_loops = allow_self_loops
   )
 
-  graph_from_data_frame(edgelist, directed = FALSE)
+  igraph::graph_from_data_frame(edgelist, directed = FALSE)
 }
 
 #' @rdname sample_igraph
@@ -64,5 +57,5 @@ sample_igraph.directed_factor_model <- function(
     allow_self_loops = allow_self_loops
   )
 
-  graph_from_data_frame(edgelist, directed = TRUE)
+  igraph::graph_from_data_frame(edgelist, directed = TRUE)
 }

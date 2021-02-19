@@ -4,8 +4,8 @@
 #' you must parameterize a random dot product graph by
 #' sampling the latent factors. Use functions such as
 #' [dcsbm()], [sbm()], etc, to perform this specification.
-#' Then, use [sample_edgelist()] to generate a random graph,
-#' represented as an edgelist.
+#' Then, use `sample_*()` functions to generate a random graph
+#' in your preferred format.
 #'
 #' @param factor_model A [directed_factor_model()] or
 #'   [undirected_factor_model()].
@@ -29,12 +29,9 @@
 #'   integer columns, `from` and `to`.
 #'
 #'   In the undirected case, `from` and `to` do not encode
-#'   information about edge direction. That is, if there is a
-#'   single edge between nodes `i` and `j`, either `(i, j)`
-#'   or `(j, i)` will appear as a row in the edgelist, but not both.
-#'   If both `(i, j)` and `(j, i)` appear in the edgelist, this indicates
-#'   the presence of a multi-edge. To avoid handling these
-#'   considerations yourself, we recommend using
+#'   information about edge direction, but we will always have
+#'   `from <= to` for convenience of edge identification.
+#'   To avoid handling such considerations yourself, we recommend using
 #'   [sample_sparse()], [sample_igraph()], and [sample_tidygraph()]
 #'   over [sample_edgelist()].
 #'
