@@ -1,5 +1,7 @@
 test_that("undirected graphs allow_self_loops = FALSE", {
 
+  set.seed(1)
+
   n <- 1000
   k <- 5
 
@@ -27,6 +29,8 @@ test_that("undirected graphs allow_self_loops = FALSE", {
 })
 
 test_that("directed graphs poisson_edges = FALSE", {
+
+  set.seed(2)
 
   n2 <- 1000
 

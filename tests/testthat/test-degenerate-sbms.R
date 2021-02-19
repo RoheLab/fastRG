@@ -1,8 +1,6 @@
-library(fastRG)
+test_that("degenerate SBMs", {
 
-set.seed(27)
-
-test_that("doesn't fail // sufficient dummy columns in SBMs", {
+  set.seed(5)
 
   n <- 10
   k <- 10
