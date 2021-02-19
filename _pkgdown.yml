@@ -25,14 +25,6 @@ reference:
       - "expected_edges"
       - "expected_in_degree"
       - "expected_out_degree"
-  - title: Graph properties conditional on latent representations
-    desc: ~
-    contents:
-      - "dc_mixed"
-      - "dc_overlapping"
-      - "dcsbm"
-      - "sbm"
-      - "planted_partition"
   - title: Undirected graphs
     desc: ~
     contents:
