@@ -1,7 +1,7 @@
 Package: fastRG
 Title: Sample Generalized Random Dot Product Graphs in Linear
     Time
-Version: 0.2.0.9000
+Version: 0.2.0.9002
 Authors@R: 
     c(person(given = "Alex",
              family = "Hayes",
@@ -54,6 +54,7 @@ Suggests:
 VignetteBuilder: 
     knitr
 Config/testthat/edition: 3
+Config/testthat/parallel: true
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
