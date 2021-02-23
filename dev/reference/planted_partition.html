@@ -96,17 +96,8 @@ sampling large, dense graphs." />
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/extended-blockmodel-examples.html">extended-blockmodel-examples</a>
-    </li>
-  </ul>
+<li>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -244,8 +235,9 @@ Defaults to <code>TRUE</code>.</p></td>
 
     <p>An <code>undirected_planted_partition</code> S3 object, which is a subclass
 of the <code><a href='sbm.html'>sbm()</a></code> object, with additional fields:</p><ul>
-<li><p><code>within_block</code>: TODO</p></li>
-<li><p><code>between_block</code>: TODO</p></li>
+<li><p><code>within_block</code>: The probability of edge formation within a block.</p></li>
+<li><p><code>between_block</code>: The probability of edge formation between two distinct
+blocks.</p></li>
 </ul>
 
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
@@ -302,9 +294,9 @@ Journal of Machine Learning Research; 19(77):1-13, 2018.
 #&gt; X: 1000 x 5 [dgCMatrix] 
 #&gt; S: 5 x 5 [dsyMatrix] 
 #&gt; 
-#&gt; Expected edges: 5000
-#&gt; Expected degree: 5
-#&gt; Expected density: 0.005</div><div class='input'>
+#&gt; Expected edges: 10000
+#&gt; Expected degree: 10
+#&gt; Expected density: 0.01</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

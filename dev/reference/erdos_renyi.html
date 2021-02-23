@@ -87,17 +87,8 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/extended-blockmodel-examples.html">extended-blockmodel-examples</a>
-    </li>
-  </ul>
+<li>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -141,17 +132,8 @@
     <tr>
       <th>...</th>
       <td><p>Arguments passed on to <code><a href='undirected_factor_model.html'>undirected_factor_model</a></code></p><dl>
-    <dt><code>X</code></dt><dd><p>A <code><a href='https://rdrr.io/r/base/matrix.html'>matrix()</a></code> or <a href='https://rdrr.io/r/base/matrix.html'>Matrix()</a> representing real-valued
-latent node positions. Entries must be positive.</p></dd>
-    <dt><code>S</code></dt><dd><p>A <code><a href='https://rdrr.io/r/base/matrix.html'>matrix()</a></code> or <a href='https://rdrr.io/r/base/matrix.html'>Matrix()</a> mixing matrix. <code>S</code> is
-symmetrized if it is not already, as this is the undirected
-case. Entries must be positive.</p></dd>
     <dt><code>expected_degree</code></dt><dd><p>If specified, the desired expected degree
 of the graph. Specifying <code>expected_degree</code> simply rescales <code>S</code>
-to achieve this. Defaults to <code>NULL</code>. Do not specify both
-<code>expected_degree</code> and <code>expected_density</code> at the same time.</p></dd>
-    <dt><code>expected_density</code></dt><dd><p>If specified, the desired expected density
-of the graph. Specifying <code>expected_density</code> simply rescales <code>S</code>
 to achieve this. Defaults to <code>NULL</code>. Do not specify both
 <code>expected_degree</code> and <code>expected_density</code> at the same time.</p></dd>
   
@@ -193,9 +175,24 @@ either <code>p</code> or <code>expected_degree</code>.</p></td>
 #&gt; X: 10 x 1 [dgeMatrix] 
 #&gt; S: 1 x 1 [ddiMatrix] 
 #&gt; 
-#&gt; Expected edges: 5
-#&gt; Expected degree: 0.5
-#&gt; Expected density: 0.05268</div><div class='input'>
+#&gt; Expected edges: 21
+#&gt; Expected degree: 2.1
+#&gt; Expected density: 0.21072</div><div class='input'>
+
+<span class='va'>er</span> <span class='op'>&lt;-</span> <span class='fu'>erdos_renyi</span><span class='op'>(</span>n <span class='op'>=</span> <span class='fl'>10</span>, expected_density <span class='op'>=</span> <span class='fl'>0.1</span><span class='op'>)</span>
+<span class='va'>er</span>
+</div><div class='output co'>#&gt; Undirected Factor Model
+#&gt; -----------------------
+#&gt; 
+#&gt; Nodes (n): 10
+#&gt; Rank (k): 1
+#&gt; 
+#&gt; X: 10 x 1 [dgeMatrix] 
+#&gt; S: 1 x 1 [ddiMatrix] 
+#&gt; 
+#&gt; Expected edges: 10
+#&gt; Expected degree: 1
+#&gt; Expected density: 0.1</div><div class='input'>
 <span class='va'>big_er</span> <span class='op'>&lt;-</span> <span class='fu'>erdos_renyi</span><span class='op'>(</span>n <span class='op'>=</span> <span class='fl'>10</span><span class='op'>^</span><span class='fl'>6</span>, expected_degree <span class='op'>=</span> <span class='fl'>5</span><span class='op'>)</span>
 <span class='va'>big_er</span>
 </div><div class='output co'>#&gt; Undirected Factor Model
@@ -207,23 +204,23 @@ either <code>p</code> or <code>expected_degree</code>.</p></td>
 #&gt; X: 1000000 x 1 [dgeMatrix] 
 #&gt; S: 1 x 1 [ddiMatrix] 
 #&gt; 
-#&gt; Expected edges: 2500000
-#&gt; Expected degree: 2.5
+#&gt; Expected edges: 5e+06
+#&gt; Expected degree: 5
 #&gt; Expected density: 0</div><div class='input'>
-<span class='va'>A</span> <span class='op'>&lt;-</span> <span class='fu'><a href='sample_sparse.html'>sample_sparse</a></span><span class='op'>(</span><span class='va'>er</span><span class='op'>)</span>
+<span class='va'>A</span> <span class='op'>&lt;-</span> <span class='fu'><a href='sample_sparse.directed_erdos_renyi.html'>sample_sparse</a></span><span class='op'>(</span><span class='va'>er</span><span class='op'>)</span>
 <span class='va'>A</span>
-</div><div class='output co'>#&gt; 10 x 10 sparse Matrix of class "dgCMatrix"
+</div><div class='output co'>#&gt; 10 x 10 sparse Matrix of class "dsCMatrix"
 #&gt;                          
-#&gt;  [1,] 0 . . . . . . . . .
-#&gt;  [2,] . 0 . . . . . . . .
-#&gt;  [3,] . . 0 . . . . . . .
-#&gt;  [4,] . . . 0 . . . . . .
-#&gt;  [5,] . . . . 0 . . . . .
-#&gt;  [6,] . . . . . 0 . . . .
-#&gt;  [7,] . . . . . . 0 . . .
-#&gt;  [8,] . . . . . . . 0 . .
-#&gt;  [9,] . . . . . . . . 0 .
-#&gt; [10,] . . . . . . . . . 0</div><div class='input'>
+#&gt;  [1,] . . . . . . . . . .
+#&gt;  [2,] . . . 1 . . . . . .
+#&gt;  [3,] . . . . . . . . . .
+#&gt;  [4,] . 1 . . . . . . . .
+#&gt;  [5,] . . . . . . . . . .
+#&gt;  [6,] . . . . . . . . . .
+#&gt;  [7,] . . . . . . . . . .
+#&gt;  [8,] . . . . . . . . . .
+#&gt;  [9,] . . . . . . . . . .
+#&gt; [10,] . . . . . . . . . .</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

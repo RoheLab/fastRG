@@ -44,7 +44,7 @@
 generalized Poisson random dot product graph. The edges
 in this graph are assumed to be independent and Poisson
 distributed. The graph is parameterized by its expected
-adjacency matrix, with is E[A|X] = X S X'. We do not recommend
+adjacency matrix, which is E[A|X] = X S X'. We do not recommend
 that casual users use this function, see instead dcsbm()
 and related functions, which will formulate common variants
 of the stochastic blockmodels as undirected factor models
@@ -95,17 +95,8 @@ with lots of helpful input validation." />
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/extended-blockmodel-examples.html">extended-blockmodel-examples</a>
-    </li>
-  </ul>
+<li>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -138,7 +129,7 @@ with lots of helpful input validation." />
 generalized Poisson random dot product graph. The edges
 in this graph are assumed to be independent and Poisson
 distributed. The graph is parameterized by its expected
-adjacency matrix, with is <code>E[A|X] = X S X'</code>. We do not recommend
+adjacency matrix, which is <code>E[A|X] = X S X'</code>. We do not recommend
 that casual users use this function, see instead <code><a href='dcsbm.html'>dcsbm()</a></code>
 and related functions, which will formulate common variants
 of the stochastic blockmodels as undirected factor models
@@ -218,9 +209,9 @@ the dimension of the latent node position vectors.</p></li>
 #&gt; X: 10000 x 5 [dgeMatrix] 
 #&gt; S: 5 x 5 [dgeMatrix] 
 #&gt; 
-#&gt; Expected edges: 59633410
-#&gt; Expected degree: 5963.3
-#&gt; Expected density: 0.59633</div><div class='input'>
+#&gt; Expected edges: 243221894
+#&gt; Expected degree: 24322.2
+#&gt; Expected density: 2.43222</div><div class='input'>
 <span class='va'>sane_ufm</span> <span class='op'>&lt;-</span> <span class='fu'>undirected_factor_model</span><span class='op'>(</span><span class='va'>X</span>, <span class='va'>S</span>, expected_degree <span class='op'>=</span> <span class='fl'>50</span><span class='op'>)</span>
 <span class='va'>sane_ufm</span>
 </div><div class='output co'>#&gt; Undirected Factor Model
@@ -232,9 +223,9 @@ the dimension of the latent node position vectors.</p></li>
 #&gt; X: 10000 x 5 [dgeMatrix] 
 #&gt; S: 5 x 5 [dgeMatrix] 
 #&gt; 
-#&gt; Expected edges: 250000
-#&gt; Expected degree: 25
-#&gt; Expected density: 0.0025</div><div class='input'>
+#&gt; Expected edges: 5e+05
+#&gt; Expected degree: 50
+#&gt; Expected density: 0.005</div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

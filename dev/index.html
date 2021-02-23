@@ -57,17 +57,8 @@
 <li>
   <a href="reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="articles/extended-blockmodel-examples.html">extended-blockmodel-examples</a>
-    </li>
-  </ul>
+  <a href="news/index.html">Changelog</a>
 </li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
@@ -141,7 +132,7 @@
 <span class="co">#&gt; Expected density: 0.01</span></code></pre></div>
 <p>Now, conditional on this latent representation, we can sample graphs. <code>fastRG</code> supports several different output types, each of which is specified by the suffix to <code>sample_*()</code> functions. For example, we can obtain an edgelist in a <code>tibble</code> with:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/sample_edgelist.html">sample_edgelist</a></span><span class="op">(</span><span class="va">sbm</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="reference/sample_edgelist.directed_erdos_renyi.html">sample_edgelist</a></span><span class="op">(</span><span class="va">sbm</span><span class="op">)</span>
 <span class="co">#&gt; # A tibble: 9,986 x 2</span>
 <span class="co">#&gt;     from    to</span>
 <span class="co">#&gt;    &lt;int&gt; &lt;int&gt;</span>
@@ -158,7 +149,7 @@
 <span class="co">#&gt; # … with 9,976 more rows</span></code></pre></div>
 <p>but we can just as easily obtain the graph as a sparse matrix</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">A</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/sample_sparse.html">sample_sparse</a></span><span class="op">(</span><span class="va">sbm</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">A</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/sample_sparse.directed_erdos_renyi.html">sample_sparse</a></span><span class="op">(</span><span class="va">sbm</span><span class="op">)</span>
 <span class="va">A</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>, <span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span>
 <span class="co">#&gt; 10 x 10 sparse Matrix of class "dsCMatrix"</span>
 <span class="co">#&gt;                          </span>
@@ -174,7 +165,7 @@
 <span class="co">#&gt; [10,] . . . . . . . . . .</span></code></pre></div>
 <p>or an igraph object</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="reference/sample_igraph.html">sample_igraph</a></span><span class="op">(</span><span class="va">sbm</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="reference/sample_igraph.directed_erdos_renyi.html">sample_igraph</a></span><span class="op">(</span><span class="va">sbm</span><span class="op">)</span>
 <span class="co">#&gt; IGRAPH 662cde7 U--- 1000 10072 -- </span>
 <span class="co">#&gt; + edges from 662cde7:</span>
 <span class="co">#&gt;  [1]  50-- 54  90--202  94--165 115--210 171--189   7-- 38  86--184  91--215</span>
@@ -189,8 +180,8 @@
 <span class="co">#&gt; + ... omitted several edges</span></code></pre></div>
 <p>Note that every time we call <code>sample_*()</code> we draw a new sample.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">A</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/sample_sparse.html">sample_sparse</a></span><span class="op">(</span><span class="va">sbm</span><span class="op">)</span>
-<span class="va">B</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/sample_sparse.html">sample_sparse</a></span><span class="op">(</span><span class="va">sbm</span><span class="op">)</span>
+<code class="sourceCode R"><span class="va">A</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/sample_sparse.directed_erdos_renyi.html">sample_sparse</a></span><span class="op">(</span><span class="va">sbm</span><span class="op">)</span>
+<span class="va">B</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/sample_sparse.directed_erdos_renyi.html">sample_sparse</a></span><span class="op">(</span><span class="va">sbm</span><span class="op">)</span>
 
 <span class="fu"><a href="https://rdrr.io/r/base/all.html">all</a></span><span class="op">(</span><span class="va">A</span> <span class="op">==</span> <span class="va">B</span><span class="op">)</span>  <span class="co"># random realizations from the SBM don't match!</span>
 <span class="co">#&gt; [1] FALSE</span></code></pre></div>

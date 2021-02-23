@@ -95,17 +95,8 @@ sampling large, dense graphs." />
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/extended-blockmodel-examples.html">extended-blockmodel-examples</a>
-    </li>
-  </ul>
+<li>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -252,9 +243,9 @@ stochastic blockmodel. First, we randomly chosen a block
 membership for each node in the blockmodel. This is
 handled by <code>dcsbm()</code>. Then, given these block memberships,
 we randomly sample edges between nodes. This second
-operation is handled by <code><a href='sample_edgelist.html'>sample_edgelist()</a></code>,
-<code><a href='sample_sparse.html'>sample_sparse()</a></code>, <code><a href='sample_igraph.html'>sample_igraph()</a></code> and
-<code><a href='sample_tidygraph.html'>sample_tidygraph()</a></code>, depending your desirable
+operation is handled by <code><a href='sample_edgelist.directed_erdos_renyi.html'>sample_edgelist()</a></code>,
+<code><a href='sample_sparse.directed_erdos_renyi.html'>sample_sparse()</a></code>, <code><a href='sample_igraph.directed_erdos_renyi.html'>sample_igraph()</a></code> and
+<code><a href='sample_tidygraph.directed_erdos_renyi.html'>sample_tidygraph()</a></code>, depending your desirable
 graph representation.</p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Block memberships</h3>
 
 
@@ -324,9 +315,9 @@ $$</p>
 #&gt; X: 1000 x 5 [dgCMatrix] 
 #&gt; S: 5 x 5 [dgeMatrix] 
 #&gt; 
-#&gt; Expected edges: 5000
-#&gt; Expected degree: 5
-#&gt; Expected density: 0.005</div><div class='input'>
+#&gt; Expected edges: 10000
+#&gt; Expected degree: 10
+#&gt; Expected density: 0.01</div><div class='input'>
 <span class='co'># sometimes you gotta let the world burn and</span>
 <span class='co'># sample a wildly dense graph</span>
 
@@ -349,9 +340,9 @@ $$</p>
 #&gt; X: 500 x 3 [dgCMatrix] 
 #&gt; S: 3 x 3 [dgeMatrix] 
 #&gt; 
-#&gt; Expected edges: 1e+05
-#&gt; Expected degree: 200
-#&gt; Expected density: 0.4</div><div class='input'>
+#&gt; Expected edges: 2e+05
+#&gt; Expected degree: 400
+#&gt; Expected density: 0.8</div><div class='input'>
 <span class='co'># explicitly setting the degree heterogeneity parameter,</span>
 <span class='co'># mixing matrix, and relative community sizes rather</span>
 <span class='co'># than using randomly generated defaults</span>
@@ -389,25 +380,25 @@ $$</p>
 #&gt; X: 1000 x 5 [dgCMatrix] 
 #&gt; S: 5 x 5 [dgeMatrix] 
 #&gt; 
-#&gt; Expected edges: 25000
-#&gt; Expected degree: 25
-#&gt; Expected density: 0.025</div><div class='input'>
-<span class='va'>edgelist</span> <span class='op'>&lt;-</span> <span class='fu'><a href='sample_edgelist.html'>sample_edgelist</a></span><span class='op'>(</span><span class='va'>custom_dcsbm</span><span class='op'>)</span>
+#&gt; Expected edges: 50000
+#&gt; Expected degree: 50
+#&gt; Expected density: 0.05</div><div class='input'>
+<span class='va'>edgelist</span> <span class='op'>&lt;-</span> <span class='fu'><a href='sample_edgelist.directed_erdos_renyi.html'>sample_edgelist</a></span><span class='op'>(</span><span class='va'>custom_dcsbm</span><span class='op'>)</span>
 <span class='va'>edgelist</span>
-</div><div class='output co'>#&gt; <span style='color: #555555;'># A tibble: 12,419 x 2</span><span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 24,885 x 2</span><span>
 #&gt;     from    to
-#&gt;    </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>
-#&gt; </span><span style='color: #555555;'> 1</span><span>    31    31
-#&gt; </span><span style='color: #555555;'> 2</span><span>    19    19
-#&gt; </span><span style='color: #555555;'> 3</span><span>     2    17
-#&gt; </span><span style='color: #555555;'> 4</span><span>     8     8
-#&gt; </span><span style='color: #555555;'> 5</span><span>     7     7
-#&gt; </span><span style='color: #555555;'> 6</span><span>    13    26
-#&gt; </span><span style='color: #555555;'> 7</span><span>    15    48
-#&gt; </span><span style='color: #555555;'> 8</span><span>     6     6
-#&gt; </span><span style='color: #555555;'> 9</span><span>    19    64
-#&gt; </span><span style='color: #555555;'>10</span><span>     6     6
-#&gt; </span><span style='color: #555555;'># … with 12,409 more rows</span><span></div><div class='input'>
+#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'> 1</span><span>    43    61
+#&gt; </span><span style='color: #BCBCBC;'> 2</span><span>    22    59
+#&gt; </span><span style='color: #BCBCBC;'> 3</span><span>    22    41
+#&gt; </span><span style='color: #BCBCBC;'> 4</span><span>    15    50
+#&gt; </span><span style='color: #BCBCBC;'> 5</span><span>     4    33
+#&gt; </span><span style='color: #BCBCBC;'> 6</span><span>    13    77
+#&gt; </span><span style='color: #BCBCBC;'> 7</span><span>     1    35
+#&gt; </span><span style='color: #BCBCBC;'> 8</span><span>     1    31
+#&gt; </span><span style='color: #BCBCBC;'> 9</span><span>     2    28
+#&gt; </span><span style='color: #BCBCBC;'>10</span><span>     1    47
+#&gt; </span><span style='color: #949494;'># … with 24,875 more rows</span><span></div><div class='input'>
 <span class='co'># efficient eigendecompostion that leverages low-rank structure in</span>
 <span class='co'># E(A) so that you don't have to form E(A) to find eigenvectors,</span>
 <span class='co'># as E(A) is typically dense. computation is</span>
