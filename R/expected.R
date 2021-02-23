@@ -145,12 +145,12 @@ eigs_sym.undirected_factor_model <- function(
 
 #' @export
 expected_in_degree.directed_factor_model <- function(factor_model, ...) {
-  expected_edges(factor_model) / as.numeric(factor_model$n)
+  expected_edges(factor_model) / as.numeric(factor_model$d)
 }
 
 #' @export
 expected_out_degree.directed_factor_model <- function(factor_model, ...) {
-  expected_edges(factor_model) / as.numeric(factor_model$d)
+  expected_edges(factor_model) / as.numeric(factor_model$n)
 }
 
 #' @export
