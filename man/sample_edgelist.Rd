@@ -89,6 +89,9 @@ described in Rohe et al (2017). Please see the paper
 }
 \examples{
 
+library(igraph)
+library(tidygraph)
+
 set.seed(27)
 
 ##### undirected examples ----------------------------
@@ -98,6 +101,9 @@ k <- 5
 
 X <- matrix(rpois(n = n * k, 1), nrow = n)
 S <- matrix(runif(n = k * k, 0, .1), nrow = k)
+
+# S will be symmetrized internal here, or left unchanged if
+# it is already symmetric
 
 ufm <- undirected_factor_model(
   X, S,
@@ -115,14 +121,15 @@ edgelist
 
 A <- sample_sparse(ufm)
 
-inherits(A, "dsCMatrix")  # TRUE
-class(A[2, 1])            # "numeric" -- i.e. A has double data type
-isSymmetric(A)            # TRUE
+inherits(A, "dsCMatrix")
+isSymmetric(A)
+dim(A)
 
 B <- sample_sparse(ufm, poisson_edges = FALSE)
 
-inherits(B, "dsCMatrix")  # TRUE
-isSymmetric(B)            # TRUE
+inherits(B, "dsCMatrix")
+isSymmetric(B)
+dim(B)
 
 ### sampling graphs as igraph graphs ------------------
 
@@ -159,17 +166,28 @@ edgelist2
 
 A2 <- sample_sparse(fm)
 
-inherits(A2, "dgCMatrix") # TRUE
-isSymmetric(A2)           # FALSE
+inherits(A2, "dgCMatrix")
+isSymmetric(A2)
+dim(A2)
 
 B2 <- sample_sparse(fm, poisson_edges = FALSE)
 
-inherits(B2, "dgCMatrix")  # TRUE
-isSymmetric(B2)            # TRUE
+inherits(B2, "dgCMatrix")
+isSymmetric(B2)
+dim(B2)
 
 ### sampling graphs as igraph graphs ------------------
 
-sample_igraph(fm)
+# since the number of rows and the number of columns
+# in `fm` differ, we will get a bipartite igraph here
+
+# creating the bipartite igraph is slow relative to other
+# sampling -- if this is a blocker for
+# you please open an issue and we can investigate speedups
+
+dig <- sample_igraph(fm)
+
+is_bipartite(dig)
 
 ### sampling graphs as tidygraph graphs ---------------
 
