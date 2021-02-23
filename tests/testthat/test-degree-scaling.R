@@ -53,8 +53,8 @@ test_that("directed factor model", {
 
   library(dplyr)
 
-  n <- 10000
-  d <- 1000
+  n <- 5000
+  d <- 800
 
   k1 <- 5
   k2 <- 3
@@ -101,10 +101,10 @@ test_that("directed factor model", {
 
   el3 <- sample_edgelist(dfm3)
 
-  el3_density <- nrow(el3) / as.numeric(n * n)
+  el3_density <- nrow(el3) / as.numeric(n * d)
 
-  expect_lt(0.008, el3_density)
-  expect_lt(el3_density, 0.012)
+  expect_lt(0.08, el3_density)
+  expect_lt(el3_density, 0.12)
 
 
   ### sparse matrix tests ------------------------------------------------------
@@ -126,53 +126,59 @@ test_that("directed factor model", {
   A3 <- sample_sparse(dfm3)
   A3_density <- mean(A3)
 
-  expect_lt(0.008, A3_density)
-  expect_lt(A3_density, 0.012)
+  expect_lt(0.08, A3_density)
+  expect_lt(A3_density, 0.12)
 
   ### igraph tests --------------------------------------------------------------
 
   ig <- sample_igraph(dfm)
-  ig_mean_in_degree <- mean(igraph::degree(ig, mode = "in"))
+  A_ig <- igraph::as_incidence_matrix(ig, sparse = TRUE, names = FALSE)
+  ig_mean_in_degree <- mean(colSums(A_ig))
 
   expect_lt(9, ig_mean_in_degree)
   expect_lt(ig_mean_in_degree, 11)
 
 
   ig2 <- sample_igraph(dfm2)
-  ig2_mean_out_degree <- mean(igraph::degree(ig2, mode = "out"))
+  A2_ig <- igraph::as_incidence_matrix(ig2, sparse = TRUE, names = FALSE)
+  ig2_mean_out_degree <- mean(rowSums(A2_ig))
+
 
   expect_lt(95, ig2_mean_out_degree)
   expect_lt(ig2_mean_out_degree, 105)
 
 
   ig3 <- sample_igraph(dfm3)
-  ig3_density <- igraph::ecount(ig3) / as.numeric(n * n)
+  ig3_density <- igraph::ecount(ig3) / as.numeric(n * d)
 
-  expect_lt(0.008, ig3_density)
-  expect_lt(ig3_density, 0.012)
+  expect_lt(0.08, ig3_density)
+  expect_lt(ig3_density, 0.12)
 
 
   ### tidygraph tests ----------------------------------------------------------
 
   tg <- sample_tidygraph(dfm)
-  tg_mean_in_degree <- mean(igraph::degree(tg, mode = "in"))
+  A_tg <- igraph::as_incidence_matrix(tg, sparse = TRUE, names = FALSE)
+  tg_mean_in_degree <- mean(colSums(A_tg))
 
   expect_lt(9, tg_mean_in_degree)
   expect_lt(tg_mean_in_degree, 11)
 
 
   tg2 <- sample_tidygraph(dfm2)
-  tg2_mean_out_degree <- mean(igraph::degree(tg2, mode = "out"))
+  A2_tg <- igraph::as_incidence_matrix(tg2, sparse = TRUE, names = FALSE)
+  tg2_mean_out_degree <- mean(rowSums(A2_tg))
+
 
   expect_lt(95, tg2_mean_out_degree)
   expect_lt(tg2_mean_out_degree, 105)
 
 
   tg3 <- sample_tidygraph(dfm3)
-  tg3_density <- igraph::ecount(tg3) / as.numeric(n * n)
+  tg3_density <- igraph::ecount(tg3) / as.numeric(n * d)
 
-  expect_lt(0.008, tg3_density)
-  expect_lt(tg3_density, 0.012)
+  expect_lt(0.08, tg3_density)
+  expect_lt(tg3_density, 0.12)
 
 
   ### decomposition sanity check -----------------------------------------------

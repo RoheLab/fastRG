@@ -54,10 +54,10 @@ test_that("directed graphs are directed", {
   expect_false(isSymmetric(A))
 
   igraph <- sample_igraph(fm)
-  expect_true(is_directed(igraph))
+  expect_false(is_directed(igraph))
 
   ### sampling graphs as tidygraph graphs ---------------
 
   tbl_graph <- sample_tidygraph(fm)
-  expect_true(is_directed(tbl_graph))
+  expect_false(is_directed(tbl_graph))
 })
