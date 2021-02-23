@@ -11,3 +11,4 @@
 ^\.github$
 ^scratch$
 ^cran-comments\.md$
+^CRAN-RELEASE$
