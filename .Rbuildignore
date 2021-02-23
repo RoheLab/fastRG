@@ -10,3 +10,4 @@
 ^codecov\.yml$
 ^\.github$
 ^scratch$
+^cran-comments\.md$
