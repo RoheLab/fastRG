@@ -66,8 +66,8 @@ test_that("directed factor model", {
   dfm <- directed_factor_model(X = X, S = S, Y = Y, expected_in_degree = 10)
   expect_equal(expected_in_degree(dfm), 10)
 
-  dfm2 <- directed_factor_model(X = X, S = S, Y = Y, expected_out_degree = 10)
-  expect_equal(expected_out_degree(dfm2), 10)
+  dfm2 <- directed_factor_model(X = X, S = S, Y = Y, expected_out_degree = 100)
+  expect_equal(expected_out_degree(dfm2), 100)
 
   dfm3 <- directed_factor_model(X = X, S = S, Y = Y, expected_density = 0.1)
   expect_equal(expected_density(dfm3), 0.1)
