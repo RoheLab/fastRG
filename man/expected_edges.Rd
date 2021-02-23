@@ -27,6 +27,9 @@ expected_degrees(factor_model, ...)
 
 \item{...}{Ignored. Do not use.}
 }
+\value{
+Expected edge counts, or graph densities.
+}
 \description{
 These calculations are conditional on the latent factors
 \code{X} and \code{Y}.
@@ -74,5 +77,5 @@ svds(dfm)
 Rohe, Karl, Jun Tao, Xintian Han, and Norbert Binkiewicz. 2017.
 "A Note on Quickly Sampling a Sparse Matrix with Low Rank Expectation."
 Journal of Machine Learning Research; 19(77):1-13, 2018.
-\url{http://www.jmlr.org/papers/v19/17-128.html}
+\url{https://www.jmlr.org/papers/v19/17-128.html}
 }

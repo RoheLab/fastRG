@@ -116,12 +116,6 @@ A <- sample_sparse(bernoulli_sbm)
 sign(A)
 
 }
-\references{
-Rohe, Karl, Jun Tao, Xintian Han, and Norbert Binkiewicz. 2017.
-“A Note on Quickly Sampling a Sparse Matrix with Low Rank Expectation.”
-Journal of Machine Learning Research; 19(77):1-13, 2018.
-\url{http://www.jmlr.org/papers/v19/17-128.html}
-}
 \seealso{
 Other stochastic block models: 
 \code{\link{dcsbm}()},

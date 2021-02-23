@@ -22,7 +22,6 @@ reference:
       - "svds"
       - "expected_degree"
       - "expected_edges"
-      - "expected_edges"
       - "expected_in_degree"
       - "expected_out_degree"
   - title: Undirected graphs

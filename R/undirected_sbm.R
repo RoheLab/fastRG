@@ -60,11 +60,6 @@ validate_undirected_sbm <- function(x) {
 #' @inherit dcsbm params details
 #' @inheritDotParams undirected_factor_model expected_degree expected_density
 #'
-#' @references Rohe, Karl, Jun Tao, Xintian Han, and Norbert Binkiewicz. 2017.
-#'    “A Note on Quickly Sampling a Sparse Matrix with Low Rank Expectation.”
-#'    Journal of Machine Learning Research; 19(77):1-13, 2018.
-#'    <http://www.jmlr.org/papers/v19/17-128.html>
-#'
 #' @return An `undirected_sbm` S3 object, which is a subclass of the
 #'   [dcsbm()] object, with one additional field.
 #'

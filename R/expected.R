@@ -5,6 +5,8 @@
 #'
 #' @inherit sample_edgelist references params
 #'
+#' @return Expected edge counts, or graph densities.
+#'
 #' @details Note that the runtime of the `fastRG` algorithm is proportional to
 #'   the expected number of edges in the graph. Expected edge count will be
 #'   an underestimate of expected number of edges for Bernoulli
