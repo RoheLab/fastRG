@@ -42,7 +42,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">fastRG</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.2.0.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.2.0.9002</span>
       </span>
     </div>
 
@@ -85,8 +85,13 @@
 <a href="#fastrg" class="anchor"></a>fastRG</h1></div>
 <!-- badges: start -->
 
-<p><code>fastRG</code> quickly samples a broad class of network models known as generalized random dot product graphs (GRDPGs). In particular, for matrices <em>X</em>, <em>S</em> and <em>Y</em>, <code>fastRG</code> samples a matrix <em>A</em> with expectation <em>X<strong>S</strong>Y</em><sup><em>T</em></sup> where the entries are independently Poisson distributed conditional on <em>X</em> and <em>Y</em>. This is primarily useful when <em>A</em> is the adjacency matrix of a graph. Crucially, the sampling is 𝒪(<em>m</em>), where <em>m</em> is the number of the edges in graph, as opposed to the naive sampling approach, which is 𝒪(<em>n</em><sup>2</sup>), where <em>n</em> is the number of nodes in the network.</p>
-<p>For additional details, see the <a href="https://arxiv.org/abs/1703.02998">paper</a>.</p>
+<p><code>fastRG</code> quickly samples a broad class of network models known as generalized random dot product graphs (GRDPGs). In particular, for matrices <em>X</em>, <em>S</em> and <em>Y</em>, <code>fastRG</code> samples a matrix <em>A</em> with expectation <em>X<strong>S</strong>Y</em><sup><em>T</em></sup> where the entries are independently Poisson distributed conditional on <em>X</em> and <em>Y</em>. This is primarily useful when <em>A</em> is the adjacency matrix of a graph. Crucially, the sampling is 𝒪(<em>m</em>), where <em>m</em> is the number of the edges in graph, as opposed to the naive sampling approach, which is 𝒪(<em>n</em><sup>2</sup>), where <em>n</em> is the number of nodes in the network. For additional details, see the <a href="https://arxiv.org/abs/1703.02998">paper</a>.</p>
+<p><code>fastRG</code> has two primary use cases:</p>
+<ol>
+<li>Sampling enormous sparse graphs that cannot feasibly be sampled with existing samplers, and</li>
+<li>validating new methods for random dot product graphs (and variants).</li>
+</ol>
+<p><code>fastRG</code> makes the latent parameters of random dot product graphs readily available to users, such that simulation studies for community detection, subspace recovery, etc, are straightforward.</p>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
@@ -166,8 +171,8 @@
 <p>or an igraph object</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="reference/sample_igraph.directed_erdos_renyi.html">sample_igraph</a></span><span class="op">(</span><span class="va">sbm</span><span class="op">)</span>
-<span class="co">#&gt; IGRAPH 662cde7 U--- 1000 10072 -- </span>
-<span class="co">#&gt; + edges from 662cde7:</span>
+<span class="co">#&gt; IGRAPH 648f7fa U--- 1000 10072 -- </span>
+<span class="co">#&gt; + edges from 648f7fa:</span>
 <span class="co">#&gt;  [1]  50-- 54  90--202  94--165 115--210 171--189   7-- 38  86--184  91--215</span>
 <span class="co">#&gt;  [9]   3-- 92  35--111   9--159   3--158  66--131  11-- 28 164--214  48--163</span>
 <span class="co">#&gt; [17] 116--141   8--189  10--170 102--193  14--207  99--209  36-- 89  72--213</span>
@@ -210,10 +215,15 @@
 <li><p><code>allow_self_edges</code>: Whether nodes should be allowed to connect to themselves. Either <code>TRUE</code> or <code>FALSE</code>.</p></li>
 </ul>
 </div>
+<div id="known-issues" class="section level2">
+<h2 class="hasAnchor">
+<a href="#known-issues" class="anchor"></a>Known issues</h2>
+<p>Sampling blockmodels with very small numbers of nodes (or blockmodels with the number of blocks <code>k</code> on the same order as <code>n</code>) results in a degeneracy that can cause issues.</p>
+</div>
 <div id="related-work" class="section level2">
 <h2 class="hasAnchor">
 <a href="#related-work" class="anchor"></a>Related work</h2>
-<p><a href="https://igraph.org/r/"><code>igraph</code></a> also users to sample SBMs (in 𝒪(<em>m</em> + <em>n</em> + <em>k</em><sup>2</sup>) time) and random dot product graphs (in 𝒪(<em>n</em><sup>2</sup><em>k</em>) time). You can find the original research code associated with <code>fastRG</code> <a href="https://github.com/raningtky/sampleRDPG">here</a>. There is also a Python translation of the original code in Python <a href="https://github.com/yunjhongwu/matrix-routines/blob/master/fastRG.py">here</a>. Both of these implementations are bare bones.</p>
+<p><a href="https://igraph.org/r/"><code>igraph</code></a> allows users to sample SBMs (in 𝒪(<em>m</em> + <em>n</em> + <em>k</em><sup>2</sup>) time) and random dot product graphs (in 𝒪(<em>n</em><sup>2</sup><em>k</em>) time). You can find the original research code associated with <code>fastRG</code> <a href="https://github.com/raningtky/sampleRDPG">here</a>. There is also a Python translation of the original code in Python <a href="https://github.com/yunjhongwu/matrix-routines/blob/master/fastRG.py">here</a>. Both of these implementations are bare bones.</p>
 </div>
 </div>
   </div>

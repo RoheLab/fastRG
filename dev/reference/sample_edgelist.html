@@ -77,7 +77,7 @@ in your preferred format." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fastRG</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.2.0.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.2.0.9002</span>
       </span>
     </div>
 
@@ -232,6 +232,21 @@ Journal of Machine Learning Research; 19(77):1-13, 2018.
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://igraph.org'>igraph</a></span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>Attaching package: ‘igraph’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:fastRG’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    sbm</span></div><div class='output co'>#&gt; <span class='message'>The following objects are masked from ‘package:stats’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    decompose, spectrum</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:base’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    union</span></div><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://tidygraph.data-imaginist.com'>tidygraph</a></span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'></span>
+#&gt; <span class='message'>Attaching package: ‘tidygraph’</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:igraph’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    groups</span></div><div class='output co'>#&gt; <span class='message'>The following object is masked from ‘package:stats’:</span>
+#&gt; <span class='message'></span>
+#&gt; <span class='message'>    filter</span></div><div class='input'>
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>27</span><span class='op'>)</span>
 
 <span class='co'>##### undirected examples ----------------------------</span>
@@ -241,6 +256,9 @@ Journal of Machine Learning Research; 19(77):1-13, 2018.
 
 <span class='va'>X</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Poisson.html'>rpois</a></span><span class='op'>(</span>n <span class='op'>=</span> <span class='va'>n</span> <span class='op'>*</span> <span class='va'>k</span>, <span class='fl'>1</span><span class='op'>)</span>, nrow <span class='op'>=</span> <span class='va'>n</span><span class='op'>)</span>
 <span class='va'>S</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/stats/Uniform.html'>runif</a></span><span class='op'>(</span>n <span class='op'>=</span> <span class='va'>k</span> <span class='op'>*</span> <span class='va'>k</span>, <span class='fl'>0</span>, <span class='fl'>.1</span><span class='op'>)</span>, nrow <span class='op'>=</span> <span class='va'>k</span><span class='op'>)</span>
+
+<span class='co'># S will be symmetrized internal here, or left unchanged if</span>
+<span class='co'># it is already symmetric</span>
 
 <span class='va'>ufm</span> <span class='op'>&lt;-</span> <span class='fu'><a href='undirected_factor_model.html'>undirected_factor_model</a></span><span class='op'>(</span>
   <span class='va'>X</span>, <span class='va'>S</span>,
@@ -282,21 +300,22 @@ Journal of Machine Learning Research; 19(77):1-13, 2018.
 
 <span class='va'>A</span> <span class='op'>&lt;-</span> <span class='fu'><a href='sample_sparse.directed_erdos_renyi.html'>sample_sparse</a></span><span class='op'>(</span><span class='va'>ufm</span><span class='op'>)</span>
 
-<span class='fu'><a href='https://rdrr.io/r/base/class.html'>inherits</a></span><span class='op'>(</span><span class='va'>A</span>, <span class='st'>"dsCMatrix"</span><span class='op'>)</span>  <span class='co'># TRUE</span>
-</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/class.html'>class</a></span><span class='op'>(</span><span class='va'>A</span><span class='op'>[</span><span class='fl'>2</span>, <span class='fl'>1</span><span class='op'>]</span><span class='op'>)</span>            <span class='co'># "numeric" -- i.e. A has double data type</span>
-</div><div class='output co'>#&gt; [1] "numeric"</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/isSymmetric.html'>isSymmetric</a></span><span class='op'>(</span><span class='va'>A</span><span class='op'>)</span>            <span class='co'># TRUE</span>
-</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'>
+<span class='fu'><a href='https://rdrr.io/r/base/class.html'>inherits</a></span><span class='op'>(</span><span class='va'>A</span>, <span class='st'>"dsCMatrix"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/isSymmetric.html'>isSymmetric</a></span><span class='op'>(</span><span class='va'>A</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span><span class='op'>(</span><span class='va'>A</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] 1000 1000</div><div class='input'>
 <span class='va'>B</span> <span class='op'>&lt;-</span> <span class='fu'><a href='sample_sparse.directed_erdos_renyi.html'>sample_sparse</a></span><span class='op'>(</span><span class='va'>ufm</span>, poisson_edges <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
 
-<span class='fu'><a href='https://rdrr.io/r/base/class.html'>inherits</a></span><span class='op'>(</span><span class='va'>B</span>, <span class='st'>"dsCMatrix"</span><span class='op'>)</span>  <span class='co'># TRUE</span>
-</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/isSymmetric.html'>isSymmetric</a></span><span class='op'>(</span><span class='va'>B</span><span class='op'>)</span>            <span class='co'># TRUE</span>
-</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'>
+<span class='fu'><a href='https://rdrr.io/r/base/class.html'>inherits</a></span><span class='op'>(</span><span class='va'>B</span>, <span class='st'>"dsCMatrix"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/isSymmetric.html'>isSymmetric</a></span><span class='op'>(</span><span class='va'>B</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span><span class='op'>(</span><span class='va'>B</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] 1000 1000</div><div class='input'>
 <span class='co'>### sampling graphs as igraph graphs ------------------</span>
 
 <span class='fu'><a href='sample_igraph.directed_erdos_renyi.html'>sample_igraph</a></span><span class='op'>(</span><span class='va'>ufm</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; IGRAPH 2037051 UN-- 986 49931 -- 
+</div><div class='output co'>#&gt; IGRAPH 97cf2f1 UN-- 986 49931 -- 
 #&gt; + attr: name (v/c)
-#&gt; + edges from 2037051 (vertex names):
+#&gt; + edges from 97cf2f1 (vertex names):
 #&gt;  [1] 248--784 284--466 262--362 435--714 122--134 143--388 375--760 977--982
 #&gt;  [9] 85 --808 384--722 496--903 238--268 80 --147 858--880 86 --207 864--952
 #&gt; [17] 854--929 691--784 623--903 127--240 399--612 566--687 447--823 36 --112
@@ -381,103 +400,103 @@ Journal of Machine Learning Research; 19(77):1-13, 2018.
 #&gt; S: 5 x 3 [dgeMatrix] 
 #&gt; Y: 5000 x 3 [dgeMatrix] 
 #&gt; 
-#&gt; Expected edges: 5e+05
-#&gt; Expected density: 0.01
+#&gt; Expected edges: 250000
+#&gt; Expected density: 0.005
 #&gt; Expected in degree: 50
-#&gt; Expected out degree: 100</div><div class='input'>
+#&gt; Expected out degree: 25</div><div class='input'>
 <span class='co'>### sampling graphs as edgelists ----------------------</span>
 
 <span class='va'>edgelist2</span> <span class='op'>&lt;-</span> <span class='fu'>sample_edgelist</span><span class='op'>(</span><span class='va'>fm</span><span class='op'>)</span>
 <span class='va'>edgelist2</span>
-</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 499,727 x 2</span><span>
+</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 249,807 x 2</span><span>
 #&gt;     from    to
 #&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'> 1</span><span>  </span><span style='text-decoration: underline;'>3</span><span>607  </span><span style='text-decoration: underline;'>4</span><span>512
-#&gt; </span><span style='color: #BCBCBC;'> 2</span><span>  </span><span style='text-decoration: underline;'>4</span><span>580  </span><span style='text-decoration: underline;'>4</span><span>583
-#&gt; </span><span style='color: #BCBCBC;'> 3</span><span>  </span><span style='text-decoration: underline;'>1</span><span>876  </span><span style='text-decoration: underline;'>1</span><span>989
-#&gt; </span><span style='color: #BCBCBC;'> 4</span><span>   994  </span><span style='text-decoration: underline;'>2</span><span>945
-#&gt; </span><span style='color: #BCBCBC;'> 5</span><span>  </span><span style='text-decoration: underline;'>7</span><span>665  </span><span style='text-decoration: underline;'>2</span><span>347
-#&gt; </span><span style='color: #BCBCBC;'> 6</span><span>  </span><span style='text-decoration: underline;'>9</span><span>038  </span><span style='text-decoration: underline;'>4</span><span>582
-#&gt; </span><span style='color: #BCBCBC;'> 7</span><span>   663  </span><span style='text-decoration: underline;'>1</span><span>491
-#&gt; </span><span style='color: #BCBCBC;'> 8</span><span>  </span><span style='text-decoration: underline;'>6</span><span>465   709
-#&gt; </span><span style='color: #BCBCBC;'> 9</span><span>  </span><span style='text-decoration: underline;'>7</span><span>074  </span><span style='text-decoration: underline;'>3</span><span>241
-#&gt; </span><span style='color: #BCBCBC;'>10</span><span>  </span><span style='text-decoration: underline;'>2</span><span>922   101
-#&gt; </span><span style='color: #949494;'># … with 499,717 more rows</span><span></div><div class='input'>
+#&gt; </span><span style='color: #BCBCBC;'> 1</span><span>  </span><span style='text-decoration: underline;'>3</span><span>607  </span><span style='text-decoration: underline;'>4</span><span>964
+#&gt; </span><span style='color: #BCBCBC;'> 2</span><span>  </span><span style='text-decoration: underline;'>4</span><span>580  </span><span style='text-decoration: underline;'>4</span><span>094
+#&gt; </span><span style='color: #BCBCBC;'> 3</span><span>  </span><span style='text-decoration: underline;'>1</span><span>876  </span><span style='text-decoration: underline;'>3</span><span>836
+#&gt; </span><span style='color: #BCBCBC;'> 4</span><span>   994  </span><span style='text-decoration: underline;'>4</span><span>531
+#&gt; </span><span style='color: #BCBCBC;'> 5</span><span>  </span><span style='text-decoration: underline;'>7</span><span>665  </span><span style='text-decoration: underline;'>3</span><span>080
+#&gt; </span><span style='color: #BCBCBC;'> 6</span><span>  </span><span style='text-decoration: underline;'>9</span><span>038   496
+#&gt; </span><span style='color: #BCBCBC;'> 7</span><span>   663  </span><span style='text-decoration: underline;'>2</span><span>173
+#&gt; </span><span style='color: #BCBCBC;'> 8</span><span>  </span><span style='text-decoration: underline;'>6</span><span>465   673
+#&gt; </span><span style='color: #BCBCBC;'> 9</span><span>  </span><span style='text-decoration: underline;'>7</span><span>074  </span><span style='text-decoration: underline;'>3</span><span>877
+#&gt; </span><span style='color: #BCBCBC;'>10</span><span>  </span><span style='text-decoration: underline;'>2</span><span>922  </span><span style='text-decoration: underline;'>2</span><span>767
+#&gt; </span><span style='color: #949494;'># … with 249,797 more rows</span><span></div><div class='input'>
 <span class='co'>### sampling graphs as sparse matrices ----------------</span>
 
 <span class='va'>A2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='sample_sparse.directed_erdos_renyi.html'>sample_sparse</a></span><span class='op'>(</span><span class='va'>fm</span><span class='op'>)</span>
 
-<span class='fu'><a href='https://rdrr.io/r/base/class.html'>inherits</a></span><span class='op'>(</span><span class='va'>A2</span>, <span class='st'>"dgCMatrix"</span><span class='op'>)</span> <span class='co'># TRUE</span>
-</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/isSymmetric.html'>isSymmetric</a></span><span class='op'>(</span><span class='va'>A2</span><span class='op'>)</span>           <span class='co'># FALSE</span>
-</div><div class='output co'>#&gt; [1] FALSE</div><div class='input'>
+<span class='fu'><a href='https://rdrr.io/r/base/class.html'>inherits</a></span><span class='op'>(</span><span class='va'>A2</span>, <span class='st'>"dgCMatrix"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/isSymmetric.html'>isSymmetric</a></span><span class='op'>(</span><span class='va'>A2</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] FALSE</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span><span class='op'>(</span><span class='va'>A2</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] 10000  5000</div><div class='input'>
 <span class='va'>B2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='sample_sparse.directed_erdos_renyi.html'>sample_sparse</a></span><span class='op'>(</span><span class='va'>fm</span>, poisson_edges <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
 
-<span class='fu'><a href='https://rdrr.io/r/base/class.html'>inherits</a></span><span class='op'>(</span><span class='va'>B2</span>, <span class='st'>"dgCMatrix"</span><span class='op'>)</span>  <span class='co'># TRUE</span>
-</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/isSymmetric.html'>isSymmetric</a></span><span class='op'>(</span><span class='va'>B2</span><span class='op'>)</span>            <span class='co'># TRUE</span>
-</div><div class='output co'>#&gt; [1] FALSE</div><div class='input'>
+<span class='fu'><a href='https://rdrr.io/r/base/class.html'>inherits</a></span><span class='op'>(</span><span class='va'>B2</span>, <span class='st'>"dgCMatrix"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/isSymmetric.html'>isSymmetric</a></span><span class='op'>(</span><span class='va'>B2</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] FALSE</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span><span class='op'>(</span><span class='va'>B2</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] 10000  5000</div><div class='input'>
 <span class='co'>### sampling graphs as igraph graphs ------------------</span>
 
-<span class='fu'><a href='sample_igraph.directed_erdos_renyi.html'>sample_igraph</a></span><span class='op'>(</span><span class='va'>fm</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; IGRAPH 11417c8 DN-- 9965 499235 -- 
-#&gt; + attr: name (v/c)
-#&gt; + edges from 11417c8 (vertex names):
-#&gt;  [1] 51  -&gt;2177 2924-&gt;227  7482-&gt;4484 8282-&gt;3871 9902-&gt;297  5457-&gt;392 
-#&gt;  [7] 9669-&gt;4585 7374-&gt;2869 5666-&gt;3145 6725-&gt;1926 8604-&gt;1820 9027-&gt;254 
-#&gt; [13] 9292-&gt;297  6115-&gt;295  478 -&gt;3650 8177-&gt;1148 7798-&gt;209  7423-&gt;3280
-#&gt; [19] 7996-&gt;3386 8079-&gt;4774 8164-&gt;3990 9028-&gt;1349 71  -&gt;2178 3493-&gt;3837
-#&gt; [25] 3857-&gt;4148 8878-&gt;4802 8124-&gt;4582 2493-&gt;1795 5355-&gt;4073 858 -&gt;4563
-#&gt; [31] 3213-&gt;3147 4126-&gt;4666 1928-&gt;1350 304 -&gt;4582 5   -&gt;1543 2272-&gt;1543
-#&gt; [37] 2786-&gt;128  243 -&gt;126  5580-&gt;1246 7315-&gt;2671 7021-&gt;2396 7174-&gt;3938
-#&gt; [43] 6855-&gt;1628 9799-&gt;415  8442-&gt;4865 321 -&gt;3856 6313-&gt;447  4539-&gt;2828
-#&gt; + ... omitted several edges</div><div class='input'>
+<span class='co'># since the number of rows and the number of columns</span>
+<span class='co'># in `fm` differ, we will get a bipartite igraph here</span>
+
+<span class='co'># creating the bipartite igraph is slow relative to other</span>
+<span class='co'># sampling -- if this is a blocker for</span>
+<span class='co'># you please open an issue and we can investigate speedups</span>
+
+<span class='va'>dig</span> <span class='op'>&lt;-</span> <span class='fu'><a href='sample_igraph.directed_erdos_renyi.html'>sample_igraph</a></span><span class='op'>(</span><span class='va'>fm</span><span class='op'>)</span>
+
+<span class='fu'><a href='https://rdrr.io/pkg/igraph/man/make_bipartite_graph.html'>is_bipartite</a></span><span class='op'>(</span><span class='va'>dig</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'>
 <span class='co'>### sampling graphs as tidygraph graphs ---------------</span>
 
 <span class='fu'><a href='sample_tidygraph.directed_erdos_renyi.html'>sample_tidygraph</a></span><span class='op'>(</span><span class='va'>fm</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tbl_graph: 9966 nodes and 501048 edges
+</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tbl_graph: 15000 nodes and 250234 edges
 #&gt; #
-#&gt; # A directed multigraph with 1 component
+#&gt; # A bipartite multigraph with 89 components
 #&gt; #
-#&gt; # Node Data: 9,966 x 1 (active)</span><span>
-#&gt;   name 
-#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span> 2095 
-#&gt; </span><span style='color: #BCBCBC;'>2</span><span> 1390 
-#&gt; </span><span style='color: #BCBCBC;'>3</span><span> 1512 
-#&gt; </span><span style='color: #BCBCBC;'>4</span><span> 8988 
-#&gt; </span><span style='color: #BCBCBC;'>5</span><span> 5340 
-#&gt; </span><span style='color: #BCBCBC;'>6</span><span> 3962 
-#&gt; </span><span style='color: #949494;'># … with 9,960 more rows</span><span>
+#&gt; # Node Data: 15,000 x 1 (active)</span><span>
+#&gt;   type 
+#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;lgl&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'>1</span><span> FALSE
+#&gt; </span><span style='color: #BCBCBC;'>2</span><span> FALSE
+#&gt; </span><span style='color: #BCBCBC;'>3</span><span> FALSE
+#&gt; </span><span style='color: #BCBCBC;'>4</span><span> FALSE
+#&gt; </span><span style='color: #BCBCBC;'>5</span><span> FALSE
+#&gt; </span><span style='color: #BCBCBC;'>6</span><span> FALSE
+#&gt; </span><span style='color: #949494;'># … with 14,994 more rows</span><span>
 #&gt; </span><span style='color: #949494;'>#
-#&gt; # Edge Data: 501,048 x 2</span><span>
+#&gt; # Edge Data: 250,234 x 2</span><span>
 #&gt;    from    to
 #&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span>     1  </span><span style='text-decoration: underline;'>1</span><span>148
-#&gt; </span><span style='color: #BCBCBC;'>2</span><span>     2  </span><span style='text-decoration: underline;'>1</span><span>153
-#&gt; </span><span style='color: #BCBCBC;'>3</span><span>     3  </span><span style='text-decoration: underline;'>8</span><span>969
-#&gt; </span><span style='color: #949494;'># … with 501,045 more rows</span><span></div><div class='input'>
+#&gt; </span><span style='color: #BCBCBC;'>1</span><span>   307 </span><span style='text-decoration: underline;'>10</span><span>001
+#&gt; </span><span style='color: #BCBCBC;'>2</span><span>   355 </span><span style='text-decoration: underline;'>10</span><span>001
+#&gt; </span><span style='color: #BCBCBC;'>3</span><span>   736 </span><span style='text-decoration: underline;'>10</span><span>001
+#&gt; </span><span style='color: #949494;'># … with 250,231 more rows</span><span></div><div class='input'>
 <span class='fu'><a href='sample_tidygraph.directed_erdos_renyi.html'>sample_tidygraph</a></span><span class='op'>(</span><span class='va'>fm</span>, poisson_edges <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tbl_graph: 9966 nodes and 495220 edges
+</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tbl_graph: 15000 nodes and 248484 edges
 #&gt; #
-#&gt; # A directed multigraph with 1 component
+#&gt; # A bipartite simple graph with 85 components
 #&gt; #
-#&gt; # Node Data: 9,966 x 1 (active)</span><span>
-#&gt;   name 
-#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span> 8587 
-#&gt; </span><span style='color: #BCBCBC;'>2</span><span> 976  
-#&gt; </span><span style='color: #BCBCBC;'>3</span><span> 9527 
-#&gt; </span><span style='color: #BCBCBC;'>4</span><span> 3685 
-#&gt; </span><span style='color: #BCBCBC;'>5</span><span> 7136 
-#&gt; </span><span style='color: #BCBCBC;'>6</span><span> 3246 
-#&gt; </span><span style='color: #949494;'># … with 9,960 more rows</span><span>
+#&gt; # Node Data: 15,000 x 1 (active)</span><span>
+#&gt;   type 
+#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;lgl&gt;</span><span>
+#&gt; </span><span style='color: #BCBCBC;'>1</span><span> FALSE
+#&gt; </span><span style='color: #BCBCBC;'>2</span><span> FALSE
+#&gt; </span><span style='color: #BCBCBC;'>3</span><span> FALSE
+#&gt; </span><span style='color: #BCBCBC;'>4</span><span> FALSE
+#&gt; </span><span style='color: #BCBCBC;'>5</span><span> FALSE
+#&gt; </span><span style='color: #BCBCBC;'>6</span><span> FALSE
+#&gt; </span><span style='color: #949494;'># … with 14,994 more rows</span><span>
 #&gt; </span><span style='color: #949494;'>#
-#&gt; # Edge Data: 495,220 x 2</span><span>
+#&gt; # Edge Data: 248,484 x 2</span><span>
 #&gt;    from    to
 #&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span>     1  </span><span style='text-decoration: underline;'>8</span><span>102
-#&gt; </span><span style='color: #BCBCBC;'>2</span><span>     2  </span><span style='text-decoration: underline;'>1</span><span>224
-#&gt; </span><span style='color: #BCBCBC;'>3</span><span>     3  </span><span style='text-decoration: underline;'>1</span><span>072
-#&gt; </span><span style='color: #949494;'># … with 495,217 more rows</span><span></div><div class='input'>
+#&gt; </span><span style='color: #BCBCBC;'>1</span><span>   585 </span><span style='text-decoration: underline;'>10</span><span>001
+#&gt; </span><span style='color: #BCBCBC;'>2</span><span>   979 </span><span style='text-decoration: underline;'>10</span><span>001
+#&gt; </span><span style='color: #BCBCBC;'>3</span><span>  </span><span style='text-decoration: underline;'>1</span><span>065 </span><span style='text-decoration: underline;'>10</span><span>001
+#&gt; </span><span style='color: #949494;'># … with 248,481 more rows</span><span></div><div class='input'>
 </div></span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
