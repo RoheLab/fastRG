@@ -9,32 +9,22 @@ template:
 
 reference:
   - title: Sampling
-    desc: ~
     contents:
-      - "sample_edgelist"
-      - "sample_sparse"
-      - "sample_igraph"
-      - "sample_tidygraph"
+      - starts_with("sample_")
   - title: Graph properties conditional on latent representations
-    desc: ~
     contents:
-      - "eigs_syms"
-      - "svds"
-      - "expected_degree"
-      - "expected_edges"
-      - "expected_in_degree"
-      - "expected_out_degree"
+      - eigs_sym
+      - svds
+      - starts_with("expected_")
   - title: Undirected graphs
-    desc: ~
     contents:
-      - "erdos_renyi"
-      - "planted_partition"
-      - "sbm"
-      - "dcsbm"
-      - "undirected_factor_model"
+      - erdos_renyi
+      - planted_partition
+      - sbm
+      - dcsbm
+      - undirected_factor_model
   - title: Directed graphs
-    desc: ~
     contents:
-      - "directed_erdos_renyi"
-      - "directed_factor_model"
+      - directed_erdos_renyi
+      - directed_factor_model
 
