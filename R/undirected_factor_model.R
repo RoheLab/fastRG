@@ -59,6 +59,13 @@ validate_undirected_factor_model <- function(x) {
     )
   }
 
+  if (!isSymmetric(values$S)) {
+    stop(
+      "`S` must be a symmetric matrix.",
+      call. = FALSE
+    )
+  }
+
   x
 }
 

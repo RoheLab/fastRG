@@ -46,7 +46,7 @@ sample_sparse.undirected_factor_model <- function(
   X <- factor_model$X
   S <- factor_model$S
 
-  edgelist <- sample_edgelist(
+  el <- sample_edgelist(
     factor_model,
     poisson_edges = poisson_edges,
     allow_self_loops = allow_self_loops,
@@ -55,14 +55,8 @@ sample_sparse.undirected_factor_model <- function(
 
   n <- factor_model$n
 
-  if (nrow(edgelist) == 0)
+  if (nrow(el) == 0)
     return(sparseMatrix(1:n, 1:n, x = 0, dims = c(n, n)))
-
-  # flop to lower diagonal by sorting with each row of
-  # of the edgelist
-
-  from <- pmin(edgelist$from, edgelist$to)
-  to <- pmax(edgelist$from, edgelist$to)
 
   if (poisson_edges) {
 
@@ -73,10 +67,20 @@ sample_sparse.undirected_factor_model <- function(
     # in the poisson_edges = FALSE case, sample_edgelist will have
     # removed duplicate directed edges, but not duplicate undirected
     # edges, so we must still consider this case here
-    A <- sparseMatrix(from, to, x = 1, dims = c(n, n), symmetric = TRUE)
+    A <- sparseMatrix(el$from, el$to, x = 1, dims = c(n, n), symmetric = TRUE)
   } else {
-    A <- sparseMatrix(from, to, dims = c(n, n), symmetric = TRUE)
+    A <- sparseMatrix(el$from, el$to, dims = c(n, n), symmetric = TRUE)
   }
+#
+#   A <- sparseMatrix(el$from, el$to, x = 1, dims = c(n, n), symmetric = TRUE)
+#   mean(rowSums(A))
+#
+#   2 * nrow(el) / n
+#
+#   all(el$from <= el$to)
+#
+#   B <- sparseMatrix(el$from, el$to, dims = c(n, n), symmetric = TRUE)
+#   mean(rowSums(B))
 
   ### some comments on type-stability
 

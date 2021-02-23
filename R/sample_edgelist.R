@@ -236,7 +236,7 @@ sample_edgelist.directed_factor_model <- function(
 #' S <- matrix(runif(n = k1 * k2, 0, .1), nrow = k1)
 #' Y <- matrix(rpois(n = d * k2, 1), nrow = d)
 #'
-#' sample_edgelist(X, S, Y, directed = TRUE)
+#' sample_edgelist(X, S, Y, TRUE)
 #'
 sample_edgelist.matrix <- function(
   factor_model, S, Y,
@@ -271,8 +271,8 @@ sample_edgelist.matrix <- function(
     colnames(edge_list) <- c("from", "to")
     return(edge_list)
   }
-  # varpi in section 2.4 of Rohe et al (2017)
 
+  # varpi in section 2.4 of Rohe et al (2017)
   block_sizes <- matrix(
     rmultinom(n = 1, size = m, prob = S_tilde),
     nrow = k1,
@@ -351,8 +351,6 @@ sample_edgelist.matrix <- function(
     }
   }
 
-  edgelist <- tibble(from = from, to = to)
-
   if (directed) {
     edgelist <- tibble(from = from, to = to)
   } else {
@@ -361,9 +359,15 @@ sample_edgelist.matrix <- function(
     # representations lives all in the same triangle (upper or lower i
     # didn't work it out)
 
+    # *do not* move these into the tibble call otherwise you'll run
+    # into a nasty NSE scoping issue is that is super hard to detect
+
+    tibble_from <- pmin(from, to)
+    tibble_to <- pmax(from, to)
+
     edgelist <- tibble(
-      from = pmin(from, to),
-      to = pmax(from, to)
+      from = tibble_from,
+      to = tibble_to
     )
   }
 
