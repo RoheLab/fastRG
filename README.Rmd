@@ -20,9 +20,14 @@ knitr::opts_chunk$set(
 [![Codecov test coverage](https://codecov.io/gh/RoheLab/fastRG/branch/main/graph/badge.svg)](https://codecov.io/gh/RoheLab/fastRG?branch=main)
 <!-- badges: end -->
 
-`fastRG` quickly samples a broad class of network models known as generalized random dot product graphs (GRDPGs). In particular, for matrices $X$, $S$ and $Y$, `fastRG` samples a matrix $A$ with expectation $X S Y^T$ where the entries are independently Poisson distributed conditional on $X$ and $Y$. This is primarily useful when $A$ is the adjacency matrix of a graph. Crucially, the sampling is $\mathcal O(m)$, where $m$ is the number of the edges in graph, as opposed to the naive sampling approach, which is $\mathcal O(n^2)$, where $n$ is the number of nodes in the network.
+`fastRG` quickly samples a broad class of network models known as generalized random dot product graphs (GRDPGs). In particular, for matrices $X$, $S$ and $Y$, `fastRG` samples a matrix $A$ with expectation $X S Y^T$ where the entries are independently Poisson distributed conditional on $X$ and $Y$. This is primarily useful when $A$ is the adjacency matrix of a graph. Crucially, the sampling is $\mathcal O(m)$, where $m$ is the number of the edges in graph, as opposed to the naive sampling approach, which is $\mathcal O(n^2)$, where $n$ is the number of nodes in the network. For additional details, see the [paper](https://arxiv.org/abs/1703.02998).
 
-For additional details, see the [paper](https://arxiv.org/abs/1703.02998).
+`fastRG` has two primary use cases:
+
+  1. Sampling enormous sparse graphs that cannot feasibly be sampled with existing samplers, and
+  1. validating new methods for random dot product graphs (and variants).
+    
+`fastRG` makes the latent parameters of random dot product graphs readily available to users, such that simulation studies for community detection, subspace recovery, etc, are straightforward.
 
 ## Installation
 

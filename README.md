@@ -18,10 +18,18 @@ Poisson distributed conditional on *X* and *Y*. This is primarily useful
 when *A* is the adjacency matrix of a graph. Crucially, the sampling is
 𝒪(*m*), where *m* is the number of the edges in graph, as opposed to the
 naive sampling approach, which is 𝒪(*n*<sup>2</sup>), where *n* is the
-number of nodes in the network.
-
-For additional details, see the
+number of nodes in the network. For additional details, see the
 [paper](https://arxiv.org/abs/1703.02998).
+
+`fastRG` has two primary use cases:
+
+1.  Sampling enormous sparse graphs that cannot feasibly be sampled with
+    existing samplers, and
+2.  validating new methods for random dot product graphs (and variants).
+
+`fastRG` makes the latent parameters of random dot product graphs
+readily available to users, such that simulation studies for community
+detection, subspace recovery, etc, are straightforward.
 
 ## Installation
 
@@ -128,8 +136,8 @@ or an igraph object
 
 ``` r
 sample_igraph(sbm)
-#> IGRAPH 662cde7 U--- 1000 10072 -- 
-#> + edges from 662cde7:
+#> IGRAPH 648f7fa U--- 1000 10072 -- 
+#> + edges from 648f7fa:
 #>  [1]  50-- 54  90--202  94--165 115--210 171--189   7-- 38  86--184  91--215
 #>  [9]   3-- 92  35--111   9--159   3--158  66--131  11-- 28 164--214  48--163
 #> [17] 116--141   8--189  10--170 102--193  14--207  99--209  36-- 89  72--213
@@ -194,9 +202,15 @@ In the second stage of graph sampling, the options are:
 -   `allow_self_edges`: Whether nodes should be allowed to connect to
     themselves. Either `TRUE` or `FALSE`.
 
+## Known issues
+
+Sampling blockmodels with very small numbers of nodes (or blockmodels
+with the number of blocks `k` on the same order as `n`) results in a
+degeneracy that can cause issues.
+
 ## Related work
 
-[`igraph`](https://igraph.org/r/) also users to sample SBMs (in
+[`igraph`](https://igraph.org/r/) allows users to sample SBMs (in
 𝒪(*m* + *n* + *k*<sup>2</sup>) time) and random dot product graphs (in
 𝒪(*n*<sup>2</sup>*k*) time). You can find the original research code
 associated with `fastRG`
