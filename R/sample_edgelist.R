@@ -103,18 +103,18 @@
 #'
 #' ##### directed examples ----------------------------
 #'
-#' n2 <- 10000
+#' n2 <- 1000
 #'
 #' k1 <- 5
 #' k2 <- 3
 #'
-#' d <- 5000
+#' d <- 500
 #'
 #' X <- matrix(rpois(n = n2 * k1, 1), nrow = n2)
 #' S <- matrix(runif(n = k1 * k2, 0, .1), nrow = k1, ncol = k2)
 #' Y <- matrix(rexp(n = k2 * d, 1), nrow = d)
 #'
-#' fm <- directed_factor_model(X, S, Y, expected_in_degree = 50)
+#' fm <- directed_factor_model(X, S, Y, expected_in_degree = 20)
 #' fm
 #'
 #' ### sampling graphs as edgelists ----------------------
@@ -146,12 +146,9 @@
 #' # you please open an issue and we can investigate speedups
 #'
 #' dig <- sample_igraph(fm)
-#'
 #' is_bipartite(dig)
 #'
 #' ### sampling graphs as tidygraph graphs ---------------
-#'
-#' sample_tidygraph(fm)
 #'
 #' sample_tidygraph(fm, poisson_edges = FALSE)
 #'
