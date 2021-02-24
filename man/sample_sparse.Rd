@@ -88,7 +88,7 @@ set.seed(27)
 
 ##### undirected examples ----------------------------
 
-n <- 1000
+n <- 100
 k <- 5
 
 X <- matrix(rpois(n = n * k, 1), nrow = n)
@@ -135,18 +135,18 @@ sample_tidygraph(ufm, poisson_edges = FALSE)
 
 ##### directed examples ----------------------------
 
-n2 <- 1000
+n2 <- 100
 
 k1 <- 5
 k2 <- 3
 
-d <- 500
+d <- 50
 
 X <- matrix(rpois(n = n2 * k1, 1), nrow = n2)
 S <- matrix(runif(n = k1 * k2, 0, .1), nrow = k1, ncol = k2)
 Y <- matrix(rexp(n = k2 * d, 1), nrow = d)
 
-fm <- directed_factor_model(X, S, Y, expected_in_degree = 20)
+fm <- directed_factor_model(X, S, Y, expected_in_degree = 2)
 fm
 
 ### sampling graphs as edgelists ----------------------
