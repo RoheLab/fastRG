@@ -8,6 +8,8 @@
 [![R-CMD-check](https://github.com/RoheLab/fastRG/workflows/R-CMD-check/badge.svg)](https://github.com/RoheLab/fastRG/actions)
 [![Codecov test
 coverage](https://codecov.io/gh/RoheLab/fastRG/branch/main/graph/badge.svg)](https://codecov.io/gh/RoheLab/fastRG?branch=main)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/fastRG)](https://CRAN.R-project.org/package=fastRG)
 <!-- badges: end -->
 
 `fastRG` quickly samples a broad class of network models known as
@@ -19,7 +21,7 @@ when *A* is the adjacency matrix of a graph. Crucially, the sampling is
 𝒪(*m*), where *m* is the number of the edges in graph, as opposed to the
 naive sampling approach, which is 𝒪(*n*<sup>2</sup>), where *n* is the
 number of nodes in the network. For additional details, see the
-[paper](https://arxiv.org/abs/1703.02998).
+[paper](https://arxiv.org/abs/1703.02998) \[1\].
 
 `fastRG` has two primary use cases:
 
@@ -33,11 +35,17 @@ detection, subspace recovery, etc, are straightforward.
 
 ## Installation
 
-`fastRG` is not yet on CRAN. You can install the development version
-with:
+You can install the released version of fastRG from
+[CRAN](https://CRAN.R-project.org) with:
 
 ``` r
-# install.package("devtools")
+install.packages("fastRG")
+```
+
+And the development version from [GitHub](https://github.com/) with:
+
+``` r
+# install.packages("devtools")
 devtools::install_github("RoheLab/fastRG")
 ```
 
@@ -136,8 +144,8 @@ or an igraph object
 
 ``` r
 sample_igraph(sbm)
-#> IGRAPH b16ccb2 U--- 1000 10072 -- 
-#> + edges from b16ccb2:
+#> IGRAPH 9e27ff8 U--- 1000 10072 -- 
+#> + edges from 9e27ff8:
 #>  [1]  50-- 54  90--202  94--165 115--210 171--189   7-- 38  86--184  91--215
 #>  [9]   3-- 92  35--111   9--159   3--158  66--131  11-- 28 164--214  48--163
 #> [17] 116--141   8--189  10--170 102--193  14--207  99--209  36-- 89  72--213
@@ -218,3 +226,10 @@ associated with `fastRG`
 translation of the original code in Python
 [here](https://github.com/yunjhongwu/matrix-routines/blob/master/fastRG.py).
 Both of these implementations are bare bones.
+
+## References
+
+\[1\] Rohe, Karl, Jun Tao, Xintian Han, and Norbert Binkiewicz. 2017. “A
+Note on Quickly Sampling a Sparse Matrix with Low Rank Expectation.”
+Journal of Machine Learning Research; 19(77):1-13, 2018.
+<https://www.jmlr.org/papers/v19/17-128.html>
