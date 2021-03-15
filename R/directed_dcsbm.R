@@ -99,18 +99,16 @@ validate_directed_dcsbm <- function(x) {
     )
   }
 
-  # TODO: check dimensions of pi_in and pi_out. started below:
-
-  if (length(levels(values$z_in)) != values$k1) {
+  if (length(values$pi_in) != values$k1) {
     stop(
-      "Number of levels of `z1` must match the incoming rank of the model.",
+      "Dimension of `pi_in` must match the incoming rank of the model.",
       call. = FALSE
     )
   }
 
-  if (length(levels(values$z_out)) != values$k2) {
+  if (length(values$pi_out) != values$k2) {
     stop(
-      "Number of levels of `z_out` must match the outgoing rank of the model.",
+      "Dimension of `pi_out` must match the outgoing rank of the model.",
       call. = FALSE
     )
   }
@@ -133,21 +131,14 @@ validate_directed_dcsbm <- function(x) {
 #' to avoid large memory allocations associated with
 #' sampling large, dense graphs.
 #'
-#' @param n_in (degree heterogeneity) The number of nodes in the blockmodel.
+#' @param n (degree heterogeneity) The number of nodes in the blockmodel.
 #'   Use when you don't want to specify the degree-heterogeneity
-#'   parameters `theta` by hand. When `n` is specified, `theta`
-#'   is randomly generated from a `LogNormal(2, 1)` distribution.
+#'   parameters `theta_in` and `theta_out` by hand. When `n` is specified,
+#'   `theta_in` and `theta_out` are randomly generated from
+#'   a `LogNormal(2, 1)` distribution.
 #'   This is subject to change, and may not be reproducible.
 #'   `n` defaults to `NULL`. You must specify either `n`
-#'   or `theta`, but not both.
-#'
-#' @param n_out (degree heterogeneity) The number of nodes in the blockmodel.
-#'   Use when you don't want to specify the degree-heterogeneity
-#'   parameters `theta` by hand. When `n` is specified, `theta`
-#'   is randomly generated from a `LogNormal(2, 1)` distribution.
-#'   This is subject to change, and may not be reproducible.
-#'   `n` defaults to `NULL`. You must specify either `n`
-#'   or `theta`, but not both.
+#'   or `theta_in` and `theta_out` together, but not both.
 #'
 #' @param theta_in (degree heterogeneity) A numeric vector
 #'   explicitly specifying the degree heterogeneity
@@ -301,7 +292,7 @@ validate_directed_dcsbm <- function(x) {
 #' set.seed(27)
 #'
 #' dcsbm <- directed_dcsbm(
-#'   n_in = 1000,
+#'   n = 1000,
 #'   k_in = 5,
 #'   k_out = 8,
 #'   expected_density = 0.01
@@ -312,22 +303,25 @@ validate_directed_dcsbm <- function(x) {
 #' population_svd <- svds(dcsbm)
 #'
 directed_dcsbm <- function(
-  n_in = NULL, theta_in = NULL,
-  n_out = NULL, theta_out = NULL,
+  n = NULL,
+  theta_in = NULL, theta_out = NULL,
   k_in = NULL, k_out = NULL, B = NULL,
   ...,
   pi_in = rep(1 / k_in, k_in),
   pi_out = rep(1 / k_out, k_out),
   sort_nodes = TRUE) {
 
-  ### in degree heterogeneity parameters
+  ### heterogeneity parameters
 
-  if (is.null(n_in) && is.null(theta_in)) {
-    stop("Must specify either `n_in` or `theta_in`.", call. = FALSE)
-  } else if (is.null(theta_in)) {
+  if (is.null(n) && (is.null(theta_in) || is.null(theta_out))) {
+    stop(
+      "Must specify either `n` or both `theta_in` and `theta_out` together.",
+      call. = FALSE
+    )
+  } else if (!is.null(n)) {
 
-    if (n_in < 1) {
-      stop("`n_in` must be a positive integer.", call. = FALSE)
+    if (n < 1) {
+      stop("`n` must be a positive integer.", call. = FALSE)
     }
 
     message(
@@ -336,42 +330,35 @@ directed_dcsbm <- function(
       "in the future. Explicitly set `theta_in` for reproducible results.\n"
     )
 
-    theta_in <- stats::rlnorm(n_in, meanlog = 2, sdlog = 1)
-  } else if (is.null(n_in)) {
-    n_in <- length(theta)
-  }
+    theta_in <- stats::rlnorm(n, meanlog = 2, sdlog = 1)
+    theta_out <- stats::rlnorm(n, meanlog = 2, sdlog = 1)
+  } else if (is.null(n)) {
 
-  ### out degree heterogeneity parameters
-
-  if (is.null(n_out) && is.null(theta_out)) {
-    stop("Must specify either `n_out` or `theta_out`.", call. = FALSE)
-  } else if (is.null(theta_out)) {
-
-    if (n_out < 1) {
-      stop("`n_out` must be a positive integer.", call. = FALSE)
+    if (length(theta_in) != length(theta_out)) {
+      stop(
+        "Length of `theta_in` must match length of `theta_out`.",
+        call. = FALSE
+      )
     }
 
-    message(
-      "Generating random degree heterogeneity parameters `theta_out` from a ",
-      "LogNormal(2, 1) distribution. This distribution may change ",
-      "in the future. Explicitly set `theta_out` for reproducible results.\n"
-    )
-
-    theta_out <- stats::rlnorm(n_out, meanlog = 2, sdlog = 1)
-  } else if (is.null(n_out)) {
-    n_out <- length(theta_out)
+    n <- length(theta_in)
   }
 
   ### mixing matrix
 
-  # NOTE: STOPPED HERE AHHHHHHH
-
-  if (is.null(k) && is.null(B)) {
-    stop("Must specify either `k` or `B`.", call. = FALSE)
+  if (is.null(B) && (is.null(k_in) || is.null(k_out))) {
+    stop(
+      "Must specify either `k_in` and `k_out` together, or `B`.",
+      call. = FALSE
+    )
   } else if (is.null(B)) {
 
-    if (k < 1) {
-      stop("`k` must be a positive integer.", call. = FALSE)
+    if (k_in < 1) {
+      stop("`k_in` must be a positive integer.", call. = FALSE)
+    }
+
+    if (k_out < 1) {
+      stop("`k_out` must be a positive integer.", call. = FALSE)
     }
 
     message(
@@ -380,55 +367,75 @@ directed_dcsbm <- function(
       "in the future. Explicitly set `B` for reproducible results."
     )
 
-    B <- Matrix(data = stats::runif(k * k), nrow = k, ncol = k)
+    B <- Matrix(data = stats::runif(k_in * k_out), nrow = k_in, ncol = k_out)
 
-  } else if (is.null(k)) {
+  } else if (!is.null(B)) {
 
-    if (nrow(B) != ncol(B)) {
-      stop("`B` must be a square matrix.", call. = FALSE)
-    }
+    # TODO: sanity check that k_in corresponds to rows of B
 
-    k <- nrow(B)
+    k_in <- nrow(B)
+    k_out <- nrow(B)
   }
 
   ### block membership
 
-  if (length(pi) != nrow(B) || length(pi) != ncol(B)) {
-    stop("Length of `pi` must match dimensions of `B`.", call. = FALSE)
+  if (length(pi_in) != nrow(B)) {
+    stop("Length of `pi_in` must match number of rows in `B`.", call. = FALSE)
   }
 
-  if (any(pi < 0)) {
-    stop("All elements of `pi` must be >= 0.", call. = FALSE)
+  if (length(pi_out) != ncol(B)) {
+    stop(
+      "Length of `pi_out` must match number of columns in `B`.",
+      call. = FALSE
+    )
+  }
+
+  if (any(pi_in < 0)) {
+    stop("All elements of `pi_in` must be >= 0.", call. = FALSE)
+  }
+
+  if (any(pi_out < 0)) {
+    stop("All elements of `pi_out` must be >= 0.", call. = FALSE)
   }
 
   # order mixing matrix by expected group size
 
-  B <- B[order(pi), ]
-  B <- B[, order(pi)]
-  pi <- sort(pi / sum(pi))
+  B <- B[order(pi_in), ]
+  B <- B[, order(pi_out)]
+  pi_in <- sort(pi_in / sum(pi_in))
+  pi_out <- sort(pi_out / sum(pi_out))
 
   # sample block memberships
 
-  z <- sample(k, n, replace = TRUE, prob = pi)
-  z <- factor(z, levels = 1:k, labels = paste0("block", 1:k))
+  z_in <- sample(k_in, n, replace = TRUE, prob = pi_in)
+  z_in <- factor(z_in, levels = 1:k_in, labels = paste0("incoming_block", 1:k_in))
+
+  z_out <- sample(k_out, n, replace = TRUE, prob = pi_out)
+  z_out <- factor(z_out, levels = 1:k_out, labels = paste0("outgoing_block", 1:k_out))
 
   if (sort_nodes) {
-    z <- sort(z)
+    z_in <- sort(z_in)
+    z_out <- sort(z_out)
   }
 
-  X <- sparse.model.matrix(~z + 0)
+  X <- sparse.model.matrix(~z_in + 0)
+  Y <- sparse.model.matrix(~z_out + 0)
 
   if (sort_nodes) {
 
     # sort by degree within each block
-    ct <- c(0, cumsum(table(z)))
+    ct_in <- c(0, cumsum(table(z_in)))
 
-    for (i in 1:k) {
-      theta[(ct[i] + 1):ct[i + 1]] <- -sort(-theta[(ct[i] + 1):ct[i + 1]])
+    for (i in 1:k_in) {
+      theta_in[(ct_in[i] + 1):ct_in[i + 1]] <- -sort(-theta_in[(ct_in[i] + 1):ct_in[i + 1]])
+    }
+
+    ct_out <- c(0, cumsum(table(z_out)))
+
+    for (i in 1:k_out) {
+      theta_out[(ct_out[i] + 1):ct_out[i + 1]] <- -sort(-theta_out[(ct_out[i] + 1):ct_out[i + 1]])
     }
   }
-
-  X@x <- theta
 
   dcsbm <- new_directed_dcsbm(
     X = X,
@@ -457,18 +464,24 @@ print.directed_dcsbm <- function(x, ...) {
   sorted <- if (x$sorted) "arranged by block" else "not arranged by block"
 
   cat(glue("Nodes (n): {x$n} ({sorted})\n", .trim = FALSE))
-  cat(glue("Blocks (k): {x$k}\n\n", .trim = FALSE))
+  cat(glue("Incoming Blocks (k_in): {x$k1}\n\n", .trim = FALSE))
+  cat(glue("Outgoing Blocks (k_out): {x$k2}\n\n", .trim = FALSE))
 
   cat("Traditional DCSBM parameterization:\n\n")
-  cat("Block memberships (z):", dim_and_class(x$z), "\n")
-  cat("Degree heterogeneity (theta):", dim_and_class(x$theta), "\n")
-  cat("Block probabilities (pi):", dim_and_class(x$pi), "\n\n")
+  cat("Block memberships (z_in):", dim_and_class(x$z_in), "\n")
+  cat("Block memberships (z_out):", dim_and_class(x$z_out), "\n")
+  cat("Degree heterogeneity (theta_in):", dim_and_class(x$theta_in), "\n")
+  cat("Degree heterogeneity (theta_out):", dim_and_class(x$theta_out), "\n")
+  cat("Block probabilities (pi_in):", dim_and_class(x$pi_in), "\n")
+  cat("Block probabilities (pi_out):", dim_and_class(x$pi_out), "\n\n")
 
   cat("Factor model parameterization:\n\n")
   cat("X:", dim_and_class(x$X), "\n")
-  cat("S:", dim_and_class(x$S), "\n\n")
+  cat("S:", dim_and_class(x$S), "\n")
+  cat("Y:", dim_and_class(x$Y), "\n\n")
 
   cat(glue("Expected edges: {round(expected_edges(x))}\n", .trim = FALSE))
-  cat(glue("Expected degree: {round(expected_degree(x), 1)}\n", .trim = FALSE))
+  cat(glue("Expected in degree: {round(expected_in_degree(x), 1)}\n", .trim = FALSE))
+  cat(glue("Expected out degree: {round(expected_out_degree(x), 1)}\n", .trim = FALSE))
   cat(glue("Expected density: {round(expected_density(x), 5)}", .trim = FALSE))
 }
