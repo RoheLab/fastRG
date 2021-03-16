@@ -51,6 +51,9 @@ Other bernoulli graphs:
 
 Other erdos renyi: 
 \code{\link{erdos_renyi}()}
+
+Other directed graphs: 
+\code{\link{directed_dcsbm}()}
 }
 \concept{bernoulli graphs}
 \concept{directed graphs}

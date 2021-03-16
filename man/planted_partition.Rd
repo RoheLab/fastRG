@@ -121,6 +121,7 @@ lazy_pp
 \seealso{
 Other stochastic block models: 
 \code{\link{dcsbm}()},
+\code{\link{directed_dcsbm}()},
 \code{\link{sbm}()}
 
 Other undirected graphs: 
