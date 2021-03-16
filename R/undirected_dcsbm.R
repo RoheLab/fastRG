@@ -98,7 +98,7 @@ validate_undirected_dcsbm <- function(x) {
 #'
 #' @param B (mixing matrix) A `k` by `k` matrix of block connection
 #'   probabilities. The probability that a node in block `i` connects
-#'   to a node in community `j` is `Poisson(B[i, j])`. Must be square
+#'   to a node in community `j` is `Poisson(B[i, j])`. Must be
 #'   a square matrix. `matrix` and `Matrix` objects are both
 #'   acceptable. If `B` is not symmetric, it will be
 #'   symmetrized via the update `B := B + t(B)`. Defaults to `NULL`.
@@ -142,13 +142,13 @@ validate_undirected_dcsbm <- function(x) {
 #' # Generative Model
 #'
 #' There are two levels of randomness in a degree-corrected
-#' stochastic blockmodel. First, we randomly chosen a block
+#' stochastic blockmodel. First, we randomly chose a block
 #' membership for each node in the blockmodel. This is
 #' handled by `dcsbm()`. Then, given these block memberships,
 #' we randomly sample edges between nodes. This second
 #' operation is handled by [sample_edgelist()],
 #' [sample_sparse()], [sample_igraph()] and
-#' [sample_tidygraph()], depending your desirable
+#' [sample_tidygraph()], depending depending on your desired
 #' graph representation.
 #'
 #' ## Block memberships

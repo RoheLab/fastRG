@@ -42,7 +42,7 @@ or \code{B}, but not both.}
 
 \item{B}{(mixing matrix) A \code{k} by \code{k} matrix of block connection
 probabilities. The probability that a node in block \code{i} connects
-to a node in community \code{j} is \code{Poisson(B[i, j])}. Must be square
+to a node in community \code{j} is \code{Poisson(B[i, j])}. Must be
 a square matrix. \code{matrix} and \code{Matrix} objects are both
 acceptable. If \code{B} is not symmetric, it will be
 symmetrized via the update \code{B := B + t(B)}. Defaults to \code{NULL}.
@@ -100,13 +100,13 @@ sampling large, dense graphs.
 }
 \section{Generative Model}{
 There are two levels of randomness in a degree-corrected
-stochastic blockmodel. First, we randomly chosen a block
+stochastic blockmodel. First, we randomly chose a block
 membership for each node in the blockmodel. This is
 handled by \code{dcsbm()}. Then, given these block memberships,
 we randomly sample edges between nodes. This second
 operation is handled by \code{\link[=sample_edgelist]{sample_edgelist()}},
 \code{\link[=sample_sparse]{sample_sparse()}}, \code{\link[=sample_igraph]{sample_igraph()}} and
-\code{\link[=sample_tidygraph]{sample_tidygraph()}}, depending your desirable
+\code{\link[=sample_tidygraph]{sample_tidygraph()}}, depending depending on your desired
 graph representation.
 \subsection{Block memberships}{
 
@@ -195,6 +195,7 @@ population_eigs <- eigs_sym(custom_dcsbm)
 }
 \seealso{
 Other stochastic block models: 
+\code{\link{directed_dcsbm}()},
 \code{\link{planted_partition}()},
 \code{\link{sbm}()}
 

@@ -28,7 +28,7 @@ or \code{B}, but not both.}
 
 \item{B}{(mixing matrix) A \code{k} by \code{k} matrix of block connection
 probabilities. The probability that a node in block \code{i} connects
-to a node in community \code{j} is \code{Poisson(B[i, j])}. Must be square
+to a node in community \code{j} is \code{Poisson(B[i, j])}. Must be
 a square matrix. \code{matrix} and \code{Matrix} objects are both
 acceptable. If \code{B} is not symmetric, it will be
 symmetrized via the update \code{B := B + t(B)}. Defaults to \code{NULL}.
@@ -119,6 +119,7 @@ sign(A)
 \seealso{
 Other stochastic block models: 
 \code{\link{dcsbm}()},
+\code{\link{directed_dcsbm}()},
 \code{\link{planted_partition}()}
 
 Other undirected graphs: 

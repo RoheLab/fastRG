@@ -143,11 +143,11 @@ validate_directed_dcsbm <- function(x) {
 #' @param theta_in (degree heterogeneity) A numeric vector
 #'   explicitly specifying the degree heterogeneity
 #'   parameters. This implicitly determines the number of nodes
-#'   in the resulting graph, i.e. it will have `length(theta)` nodes.
+#'   in the resulting graph, i.e. it will have `length(theta_in)` nodes.
 #'   Must be positive. Setting to a vector of ones recovers
 #'   a stochastic blockmodel without degree correction.
-#'   Defaults to `NULL`. You must specify either `n` or `theta`,
-#'   but not both.
+#'   Defaults to `NULL`. You must specify either `n`
+#'   or `theta_in` and `theta_out` together, but not both.
 #'
 #' @param theta_out (degree heterogeneity) A numeric vector
 #'   explicitly specifying the degree heterogeneity
@@ -155,51 +155,49 @@ validate_directed_dcsbm <- function(x) {
 #'   in the resulting graph, i.e. it will have `length(theta)` nodes.
 #'   Must be positive. Setting to a vector of ones recovers
 #'   a stochastic blockmodel without degree correction.
-#'   Defaults to `NULL`. You must specify either `n` or `theta`,
-#'   but not both.
+#'   Defaults to `NULL`. You must specify either `n`
+#'   or `theta_in` and `theta_out` together, but not both.
 #'
 #' @param k_in (mixing matrix) The number of blocks in the blockmodel.
 #'   Use when you don't want to specify the mixing-matrix by hand.
-#'   When `k` is specified, the elements of `B` are drawn
+#'   When `k_in` is specified, the elements of `B` are drawn
 #'   randomly from a `Uniform(0, 1)` distribution.
 #'   This is subject to change, and may not be reproducible.
-#'   `k` defaults to `NULL`. You must specify either `k`
-#'   or `B`, but not both.
+#'   `k_in` defaults to `NULL`. You must specify either `k_in` and
+#'   `k_out` together, or `B`, but not both.
 #'
 #' @param k_out (mixing matrix) The number of blocks in the blockmodel.
 #'   Use when you don't want to specify the mixing-matrix by hand.
-#'   When `k` is specified, the elements of `B` are drawn
+#'   When `k_out` is specified, the elements of `B` are drawn
 #'   randomly from a `Uniform(0, 1)` distribution.
 #'   This is subject to change, and may not be reproducible.
-#'   `k` defaults to `NULL`. You must specify either `k`
-#'   or `B`, but not both.
+#'   `k_out` defaults to `NULL`. You must specify either `k_in` and
+#'   `k_out` together, or `B`, but not both.
 #'
-#' @param B (mixing matrix) A `k` by `k` matrix of block connection
+#' @param B (mixing matrix) A `k_in` by `k_out` matrix of block connection
 #'   probabilities. The probability that a node in block `i` connects
-#'   to a node in community `j` is `Poisson(B[i, j])`. Must be square
-#'   a square matrix. `matrix` and `Matrix` objects are both
-#'   acceptable. If `B` is not symmetric, it will be
-#'   symmetrized via the update `B := B + t(B)`. Defaults to `NULL`.
-#'   You must specify either `k` or `B`, but not both.
+#'   to a node in community `j` is `Poisson(B[i, j])`.
+#'   `matrix` and `Matrix` objects are both acceptable.
+#'   Defaults to `NULL`. You must specify either `k_in` and
+#'   `k_out` together, or `B`, but not both.
 #'
 #' @param pi_in (relative block probabilities) Relative block
 #'   probabilities. Must be positive, but do not need to sum
 #'   to one, as they will be normalized internally.
-#'   Must match the dimensions of `B` or `k`. Defaults to
-#'   `rep(1 / k, k)`, or a balanced blocks.
+#'   Must match the rows of `B`, or `k_in`. Defaults to
+#'   `rep(1 / k_in, k_in)`, or a balanced incoming blocks.
 #'
 #' @param pi_out (relative block probabilities) Relative block
 #'   probabilities. Must be positive, but do not need to sum
 #'   to one, as they will be normalized internally.
-#'   Must match the dimensions of `B` or `k`. Defaults to
-#'   `rep(1 / k, k)`, or a balanced blocks.
+#'   Must match the columns of `B`, or `k_out`. Defaults to
+#'   `rep(1 / k_out, k_out)`, or a balanced outgoing blocks.
 #'
 #' @param sort_nodes Logical indicating whether or not to sort the nodes
 #'   so that they are grouped by block. Useful for plotting.
 #'   Defaults to `TRUE`.
 #'
-#' @inheritDotParams directed_factor_model expected_in_degree expected_density
-#' @inheritDotParams directed_factor_model expected_out_degree
+#' @inheritDotParams directed_factor_model expected_in_degree expected_density expected_out_degree
 #'
 #' @return A `directed_dcsbm` S3 object, a subclass of the
 #'   [directed_factor_model()] with the following additional
@@ -241,50 +239,53 @@ validate_directed_dcsbm <- function(x) {
 #'
 #' # Generative Model
 #'
-#' There are two levels of randomness in a degree-corrected
-#' stochastic blockmodel. First, we randomly chosen a block
-#' membership for each node in the blockmodel. This is
-#' handled by `dcsbm()`. Then, given these block memberships,
+#' There are two levels of randomness in a directed degree-corrected
+#' stochastic blockmodel. First, we randomly chose a incoming
+#' block membership and an outgoing block membership
+#' for each node in the blockmodel. This is
+#' handled by `directed_dcsbm()`. Then, given these block memberships,
 #' we randomly sample edges between nodes. This second
 #' operation is handled by [sample_edgelist()],
 #' [sample_sparse()], [sample_igraph()] and
-#' [sample_tidygraph()], depending your desirable
+#' [sample_tidygraph()], depending on your desired
 #' graph representation.
 #'
 #' ## Block memberships
 #'
-#' Let \eqn{z_i} represent the block membership of node \eqn{i}.
-#' To generate \eqn{z_i} we sample from a categorical
-#' distribution (note that this is a special case of a
-#' multinomial) with parameter \eqn{\pi}, such that
-#' \eqn{\pi_i} represents the probability of ending up in
-#' the ith block. Block memberships for each node are independent.
+#' Let \eqn{x} represent the incoming block membership of a node
+#' and \eqn{y} represent the outgoing block membership of a node.
+#' To generate \eqn{x} we sample from a categorical
+#' distribution with parameter \eqn{\pi_in}.
+#' To generate \eqn{y} we sample from a categorical
+#' distribution with parameter \eqn{\pi_out}.
+#' Block memberships are independent across nodes. Incoming and outgoing
+#' block memberships of the same node are also independent.
 #'
 #' ## Degree heterogeneity
 #'
-#' In addition to block membership, the DCSBM also allows
-#' nodes to have different propensities for edge formation.
-#' We represent this propensity for node \eqn{i} by a positive
-#' number \eqn{\theta_i}. Typically the \eqn{\theta_i} are
+#' In addition to block membership, the DCSBM also
+#' nodes to have different propensities for incoming and
+#' outgoing edge formation.
+#' We represent the propensity to form incoming edges for a
+#' given node by a positive number \eqn{\theta_in}.
+#' We represent the propensity to form outgoing edges for a
+#' given node by a positive number \eqn{\theta_out}.
+#' Typically the \eqn{\theta_in} (and \eqn{theta_out}) across all nodes are
 #' constrained to sum to one for identifiability purposes,
-#' but this doesn't really matter during sampling (i.e.
-#' without the sum constraint scaling \eqn{B} and \eqn{\theta}
-#' has the same effect on edge probabilities, but whether
-#' \eqn{B} or \eqn{\theta} is responsible for this change
-#' is uncertain).
+#' but this doesn't really matter during sampling.
 #'
 #' ## Edge formulation
 #'
-#' Once we know the block memberships \eqn{z} and the degree
-#' heterogeneity parameters \eqn{theta}, we need one more
+#' Once we know the block memberships \eqn{x} and \eqn{y}
+#' and the degree  heterogeneity parameters \eqn{\theta_in} and
+#' \eqn{\theta_out}, we need one more
 #' ingredient, which is the baseline intensity of connections
-#' between nodes in block `i` and block `j`. Then each edge
-#' \eqn{A_{i,j}} is Poisson distributed with parameter
+#' between nodes in block `i` and block `j`. Then each edge forms
+#' indepedently according to a Poisson distribution with
+#' parameters
 #'
 #' \deqn{
-#'   \lambda[i, j] = \theta_i \cdot B_{z_i, z_j} \cdot \theta_j.
-#' }{
-#'   \lambda_{i, j} = \theta[i] * B[z[i], z[j]] * \theta[j].
+#'   \lambda = \theta_in * B[x, y] * \theta_out.
 #' }
 #'
 #' @examples
@@ -464,7 +465,7 @@ print.directed_dcsbm <- function(x, ...) {
   sorted <- if (x$sorted) "arranged by block" else "not arranged by block"
 
   cat(glue("Nodes (n): {x$n} ({sorted})\n", .trim = FALSE))
-  cat(glue("Incoming Blocks (k_in): {x$k1}\n\n", .trim = FALSE))
+  cat(glue("Incoming Blocks (k_in): {x$k1}\n", .trim = FALSE))
   cat(glue("Outgoing Blocks (k_out): {x$k2}\n\n", .trim = FALSE))
 
   cat("Traditional DCSBM parameterization:\n\n")
@@ -483,5 +484,5 @@ print.directed_dcsbm <- function(x, ...) {
   cat(glue("Expected edges: {round(expected_edges(x))}\n", .trim = FALSE))
   cat(glue("Expected in degree: {round(expected_in_degree(x), 1)}\n", .trim = FALSE))
   cat(glue("Expected out degree: {round(expected_out_degree(x), 1)}\n", .trim = FALSE))
-  cat(glue("Expected density: {round(expected_density(x), 5)}", .trim = FALSE))
+  cat(glue("Expected density: {round(expected_density(x), 5)\n", .trim = FALSE))
 }
