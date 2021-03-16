@@ -484,5 +484,5 @@ print.directed_dcsbm <- function(x, ...) {
   cat(glue("Expected edges: {round(expected_edges(x))}\n", .trim = FALSE))
   cat(glue("Expected in degree: {round(expected_in_degree(x), 1)}\n", .trim = FALSE))
   cat(glue("Expected out degree: {round(expected_out_degree(x), 1)}\n", .trim = FALSE))
-  cat(glue("Expected density: {round(expected_density(x), 5)\n", .trim = FALSE))
+  cat(glue("Expected density: {round(expected_density(x), 5)}\n", .trim = FALSE))
 }
