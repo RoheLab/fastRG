@@ -1,6 +1,6 @@
 # fastRG (development version)
 
-
+* Add directed degree-corrected stochastic blockmodels (#18)
 
 # fastRG 0.3.0
 
