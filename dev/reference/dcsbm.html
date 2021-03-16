@@ -184,7 +184,7 @@ or <code>B</code>, but not both.</p></td>
       <th>B</th>
       <td><p>(mixing matrix) A <code>k</code> by <code>k</code> matrix of block connection
 probabilities. The probability that a node in block <code>i</code> connects
-to a node in community <code>j</code> is <code><a href='https://rdrr.io/r/stats/Poisson.html'>Poisson(B[i, j])</a></code>. Must be square
+to a node in community <code>j</code> is <code><a href='https://rdrr.io/r/stats/Poisson.html'>Poisson(B[i, j])</a></code>. Must be
 a square matrix. <code>matrix</code> and <code>Matrix</code> objects are both
 acceptable. If <code>B</code> is not symmetric, it will be
 symmetrized via the update <code>B := B + t(B)</code>. Defaults to <code>NULL</code>.
@@ -239,13 +239,13 @@ within each block.</p></li>
     <h2 class="hasAnchor" id="generative-model"><a class="anchor" href="#generative-model"></a>Generative Model</h2>
 
     <p>There are two levels of randomness in a degree-corrected
-stochastic blockmodel. First, we randomly chosen a block
+stochastic blockmodel. First, we randomly chose a block
 membership for each node in the blockmodel. This is
 handled by <code>dcsbm()</code>. Then, given these block memberships,
 we randomly sample edges between nodes. This second
 operation is handled by <code><a href='sample_edgelist.directed_erdos_renyi.html'>sample_edgelist()</a></code>,
 <code><a href='sample_sparse.directed_erdos_renyi.html'>sample_sparse()</a></code>, <code><a href='sample_igraph.directed_erdos_renyi.html'>sample_igraph()</a></code> and
-<code><a href='sample_tidygraph.directed_erdos_renyi.html'>sample_tidygraph()</a></code>, depending your desirable
+<code><a href='sample_tidygraph.directed_erdos_renyi.html'>sample_tidygraph()</a></code>, depending depending on your desired
 graph representation.</p><h3 class='hasAnchor' id='arguments'><a class='anchor' href='#arguments'></a>Block memberships</h3>
 
 
@@ -285,6 +285,7 @@ $$</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p>Other stochastic block models: 
+<code><a href='directed_dcsbm.html'>directed_dcsbm</a>()</code>,
 <code><a href='planted_partition.html'>planted_partition</a>()</code>,
 <code><a href='sbm.html'>sbm</a>()</code></p>
 <p>Other undirected graphs: 
