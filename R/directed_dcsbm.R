@@ -164,15 +164,18 @@ validate_directed_dcsbm <- function(x) {
 #'   randomly from a `Uniform(0, 1)` distribution.
 #'   This is subject to change, and may not be reproducible.
 #'   `k_in` defaults to `NULL`. You must specify either `k_in` and
-#'   `k_out` together, or `B`, but not both.
+#'   `k_out` together, or `B`. You may specify all three at once, in which
+#'   case `k_in` is only used to set `pi_in` (when `pi_in` is
+#'   left at its default argument value).
 #'
 #' @param k_out (mixing matrix) The number of blocks in the blockmodel.
 #'   Use when you don't want to specify the mixing-matrix by hand.
 #'   When `k_out` is specified, the elements of `B` are drawn
 #'   randomly from a `Uniform(0, 1)` distribution.
 #'   This is subject to change, and may not be reproducible.
-#'   `k_out` defaults to `NULL`. You must specify either `k_in` and
-#'   `k_out` together, or `B`, but not both.
+#'   `k_out` defaults to `NULL`. You may specify all three at once, in which
+#'   case `k_out` is only used to set `pi_out` (when `pi_out` is
+#'   left at its default argument value).
 #'
 #' @param B (mixing matrix) A `k_in` by `k_out` matrix of block connection
 #'   probabilities. The probability that a node in block `i` connects
@@ -281,7 +284,7 @@ validate_directed_dcsbm <- function(x) {
 #' \eqn{\theta_out}, we need one more
 #' ingredient, which is the baseline intensity of connections
 #' between nodes in block `i` and block `j`. Then each edge forms
-#' indepedently according to a Poisson distribution with
+#' independently according to a Poisson distribution with
 #' parameters
 #'
 #' \deqn{
@@ -292,8 +295,12 @@ validate_directed_dcsbm <- function(x) {
 #'
 #' set.seed(27)
 #'
+#' B <- matrix(0.2, nrow = 5, ncol = 8)
+#' diag(B) <- 0.9
+#'
 #' dcsbm <- directed_dcsbm(
 #'   n = 1000,
+#'   B = B,
 #'   k_in = 5,
 #'   k_out = 8,
 #'   expected_density = 0.01
@@ -377,8 +384,6 @@ directed_dcsbm <- function(
     B <- Matrix(data = stats::runif(k_in * k_out), nrow = k_in, ncol = k_out)
 
   } else if (!is.null(B)) {
-
-    # TODO: sanity check that k_in corresponds to rows of B
 
     k_in <- nrow(B)
     k_out <- nrow(B)

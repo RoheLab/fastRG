@@ -51,15 +51,18 @@ When \code{k_in} is specified, the elements of \code{B} are drawn
 randomly from a \code{Uniform(0, 1)} distribution.
 This is subject to change, and may not be reproducible.
 \code{k_in} defaults to \code{NULL}. You must specify either \code{k_in} and
-\code{k_out} together, or \code{B}, but not both.}
+\code{k_out} together, or \code{B}. You may specify all three at once, in which
+case \code{k_in} is only used to set \code{pi_in} (when \code{pi_in} is
+left at its default argument value).}
 
 \item{k_out}{(mixing matrix) The number of blocks in the blockmodel.
 Use when you don't want to specify the mixing-matrix by hand.
 When \code{k_out} is specified, the elements of \code{B} are drawn
 randomly from a \code{Uniform(0, 1)} distribution.
 This is subject to change, and may not be reproducible.
-\code{k_out} defaults to \code{NULL}. You must specify either \code{k_in} and
-\code{k_out} together, or \code{B}, but not both.}
+\code{k_out} defaults to \code{NULL}. You may specify all three at once, in which
+case \code{k_out} is only used to set \code{pi_out} (when \code{pi_out} is
+left at its default argument value).}
 
 \item{B}{(mixing matrix) A \code{k_in} by \code{k_out} matrix of block connection
 probabilities. The probability that a node in block \code{i} connects
@@ -187,7 +190,7 @@ and the degree  heterogeneity parameters \eqn{\theta_in} and
 \eqn{\theta_out}, we need one more
 ingredient, which is the baseline intensity of connections
 between nodes in block \code{i} and block \code{j}. Then each edge forms
-indepedently according to a Poisson distribution with
+independently according to a Poisson distribution with
 parameters
 
 \deqn{
@@ -200,8 +203,12 @@ parameters
 
 set.seed(27)
 
+B <- matrix(0.2, nrow = 5, ncol = 8)
+diag(B) <- 0.9
+
 dcsbm <- directed_dcsbm(
   n = 1000,
+  B = B,
   k_in = 5,
   k_out = 8,
   expected_density = 0.01
