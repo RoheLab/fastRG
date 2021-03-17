@@ -319,7 +319,13 @@ directed_dcsbm <- function(
       "Must specify either `n` or both `theta_in` and `theta_out` together.",
       call. = FALSE
     )
-  } else if (!is.null(n)) {
+  } else if (!is.null(n) && !is.null(theta_in) && !is.null(theta_out)) {
+    stop(
+      "Must specify either `n`, or both `theta_in` and `theta_out` together,",
+      " but not all three at once.",
+      call. = FALSE
+    )
+  } else if (is.null(theta_in) && is.null(theta_out)) {
 
     if (n < 1) {
       stop("`n` must be a positive integer.", call. = FALSE)
