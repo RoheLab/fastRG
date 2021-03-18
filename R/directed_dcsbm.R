@@ -308,7 +308,7 @@ validate_directed_dcsbm <- function(x) {
 #'
 #' ddcsbm
 #'
-#' population_svd <- svds(dcsbm)
+#' population_svd <- svds(ddcsbm)
 #'
 directed_dcsbm <- function(
   n = NULL,

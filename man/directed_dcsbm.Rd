@@ -206,7 +206,7 @@ set.seed(27)
 B <- matrix(0.2, nrow = 5, ncol = 8)
 diag(B) <- 0.9
 
-dcsbm <- directed_dcsbm(
+ddcsbm <- directed_dcsbm(
   n = 1000,
   B = B,
   k_in = 5,
@@ -214,9 +214,9 @@ dcsbm <- directed_dcsbm(
   expected_density = 0.01
 )
 
-dcsbm
+ddcsbm
 
-population_svd <- svds(dcsbm)
+population_svd <- svds(ddcsbm)
 
 }
 \seealso{
