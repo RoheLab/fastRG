@@ -83,7 +83,7 @@ sampling large, dense graphs." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">fastRG</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.3.0.9002</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">0.3.0.9003</span>
       </span>
     </div>
 
@@ -360,7 +360,7 @@ $$</p>
 <span class='va'>B</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>matrix</a></span><span class='op'>(</span><span class='fl'>0.2</span>, nrow <span class='op'>=</span> <span class='fl'>5</span>, ncol <span class='op'>=</span> <span class='fl'>8</span><span class='op'>)</span>
 <span class='fu'><a href='https://rdrr.io/r/base/diag.html'>diag</a></span><span class='op'>(</span><span class='va'>B</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fl'>0.9</span>
 
-<span class='va'>dcsbm</span> <span class='op'>&lt;-</span> <span class='fu'>directed_dcsbm</span><span class='op'>(</span>
+<span class='va'>ddcsbm</span> <span class='op'>&lt;-</span> <span class='fu'>directed_dcsbm</span><span class='op'>(</span>
   n <span class='op'>=</span> <span class='fl'>1000</span>,
   B <span class='op'>=</span> <span class='va'>B</span>,
   k_in <span class='op'>=</span> <span class='fl'>5</span>,
@@ -368,7 +368,7 @@ $$</p>
   expected_density <span class='op'>=</span> <span class='fl'>0.01</span>
 <span class='op'>)</span>
 </div><div class='output co'>#&gt; <span class='message'>Generating random degree heterogeneity parameters `theta_in` from a LogNormal(2, 1) distribution. This distribution may change in the future. Explicitly set `theta_in` for reproducible results.</span></div><div class='input'>
-<span class='va'>dcsbm</span>
+<span class='va'>ddcsbm</span>
 </div><div class='output co'>#&gt; Directed Degree-Corrected Stochastic Blockmodel
 #&gt; -----------------------------------------------
 #&gt; 
@@ -395,7 +395,7 @@ $$</p>
 #&gt; Expected in degree: 10
 #&gt; Expected out degree: 10
 #&gt; Expected density: 0.01</div><div class='input'>
-<span class='va'>population_svd</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/RSpectra/man/svds.html'>svds</a></span><span class='op'>(</span><span class='va'>dcsbm</span><span class='op'>)</span>
+<span class='va'>population_svd</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/RSpectra/man/svds.html'>svds</a></span><span class='op'>(</span><span class='va'>ddcsbm</span><span class='op'>)</span>
 
 </div></pre>
   </div>
