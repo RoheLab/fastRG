@@ -298,7 +298,7 @@ validate_directed_dcsbm <- function(x) {
 #' B <- matrix(0.2, nrow = 5, ncol = 8)
 #' diag(B) <- 0.9
 #'
-#' dcsbm <- directed_dcsbm(
+#' ddcsbm <- directed_dcsbm(
 #'   n = 1000,
 #'   B = B,
 #'   k_in = 5,
@@ -306,7 +306,7 @@ validate_directed_dcsbm <- function(x) {
 #'   expected_density = 0.01
 #' )
 #'
-#' dcsbm
+#' ddcsbm
 #'
 #' population_svd <- svds(dcsbm)
 #'
@@ -346,6 +346,7 @@ directed_dcsbm <- function(
 
     theta_in <- stats::rlnorm(n, meanlog = 2, sdlog = 1)
     theta_out <- stats::rlnorm(n, meanlog = 2, sdlog = 1)
+
   } else if (is.null(n)) {
 
     if (length(theta_in) != length(theta_out)) {
@@ -386,7 +387,7 @@ directed_dcsbm <- function(
   } else if (!is.null(B)) {
 
     k_in <- nrow(B)
-    k_out <- nrow(B)
+    k_out <- ncol(B)
   }
 
   ### block membership
@@ -448,6 +449,9 @@ directed_dcsbm <- function(
       theta_out[(ct_out[i] + 1):ct_out[i + 1]] <- -sort(-theta_out[(ct_out[i] + 1):ct_out[i + 1]])
     }
   }
+
+  X@x <- theta_in
+  Y@x <- theta_out
 
   dcsbm <- new_directed_dcsbm(
     X = X,
