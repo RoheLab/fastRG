@@ -367,76 +367,36 @@ $$</p>
   k_out <span class='op'>=</span> <span class='fl'>8</span>,
   expected_density <span class='op'>=</span> <span class='fl'>0.01</span>
 <span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='message'>Generating random degree heterogeneity parameters `theta_in` from a LogNormal(2, 1) distribution. This distribution may change in the future. Explicitly set `theta_in` for reproducible results.</span></div><div class='output co'>#&gt; <span class='error'>Error: Length of `pi_out` must match number of columns in `B`.</span></div><div class='input'>
+</div><div class='output co'>#&gt; <span class='message'>Generating random degree heterogeneity parameters `theta_in` from a LogNormal(2, 1) distribution. This distribution may change in the future. Explicitly set `theta_in` for reproducible results.</span></div><div class='input'>
 <span class='va'>dcsbm</span>
-</div><div class='output co'>#&gt; function (n = NULL, theta = NULL, k = NULL, B = NULL, ..., pi = rep(1/k, 
-#&gt;     k), sort_nodes = TRUE) 
-#&gt; {
-#&gt;     if (is.null(n) &amp;&amp; is.null(theta)) {
-#&gt;         stop("Must specify either `n` or `theta`.", call. = FALSE)
-#&gt;     }
-#&gt;     else if (is.null(theta)) {
-#&gt;         if (n &lt; 1) {
-#&gt;             stop("`n` must be a positive integer.", call. = FALSE)
-#&gt;         }
-#&gt;         message("Generating random degree heterogeneity parameters `theta` from a ", 
-#&gt;             "LogNormal(2, 1) distribution. This distribution may change ", 
-#&gt;             "in the future. Explicitly set `theta` for reproducible results.\n")
-#&gt;         theta &lt;- stats::rlnorm(n, meanlog = 2, sdlog = 1)
-#&gt;     }
-#&gt;     else if (is.null(n)) {
-#&gt;         n &lt;- length(theta)
-#&gt;     }
-#&gt;     if (is.null(k) &amp;&amp; is.null(B)) {
-#&gt;         stop("Must specify either `k` or `B`.", call. = FALSE)
-#&gt;     }
-#&gt;     else if (is.null(B)) {
-#&gt;         if (k &lt; 1) {
-#&gt;             stop("`k` must be a positive integer.", call. = FALSE)
-#&gt;         }
-#&gt;         message("Generating random mixing matrix `B` with independent ", 
-#&gt;             "Uniform(0, 1) entries. This distribution may change ", 
-#&gt;             "in the future. Explicitly set `B` for reproducible results.")
-#&gt;         B &lt;- Matrix(data = stats::runif(k * k), nrow = k, ncol = k)
-#&gt;     }
-#&gt;     else if (is.null(k)) {
-#&gt;         if (nrow(B) != ncol(B)) {
-#&gt;             stop("`B` must be a square matrix.", call. = FALSE)
-#&gt;         }
-#&gt;         k &lt;- nrow(B)
-#&gt;     }
-#&gt;     if (length(pi) != nrow(B) || length(pi) != ncol(B)) {
-#&gt;         stop("Length of `pi` must match dimensions of `B`.", 
-#&gt;             call. = FALSE)
-#&gt;     }
-#&gt;     if (any(pi &lt; 0)) {
-#&gt;         stop("All elements of `pi` must be &gt;= 0.", call. = FALSE)
-#&gt;     }
-#&gt;     B &lt;- B[order(pi), ]
-#&gt;     B &lt;- B[, order(pi)]
-#&gt;     pi &lt;- sort(pi/sum(pi))
-#&gt;     z &lt;- sample(k, n, replace = TRUE, prob = pi)
-#&gt;     z &lt;- factor(z, levels = 1:k, labels = paste0("block", 1:k))
-#&gt;     if (sort_nodes) {
-#&gt;         z &lt;- sort(z)
-#&gt;     }
-#&gt;     X &lt;- sparse.model.matrix(~z + 0)
-#&gt;     if (sort_nodes) {
-#&gt;         ct &lt;- c(0, cumsum(table(z)))
-#&gt;         for (i in 1:k) {
-#&gt;             theta[(ct[i] + 1):ct[i + 1]] &lt;- -sort(-theta[(ct[i] + 
-#&gt;                 1):ct[i + 1]])
-#&gt;         }
-#&gt;     }
-#&gt;     X@x &lt;- theta
-#&gt;     dcsbm &lt;- new_undirected_dcsbm(X = X, S = B, theta = theta, 
-#&gt;         z = z, pi = pi, sorted = sort_nodes, ...)
-#&gt;     validate_undirected_dcsbm(dcsbm)
-#&gt; }
-#&gt; &lt;bytecode: 0x5597db31e8e0&gt;
-#&gt; &lt;environment: namespace:fastRG&gt;</div><div class='input'>
+</div><div class='output co'>#&gt; Directed Degree-Corrected Stochastic Blockmodel
+#&gt; -----------------------------------------------
+#&gt; 
+#&gt; Nodes (n): 1000 (arranged by block)
+#&gt; Incoming Blocks (k_in): 5
+#&gt; Outgoing Blocks (k_out): 8
+#&gt; 
+#&gt; Traditional DCSBM parameterization:
+#&gt; 
+#&gt; Block memberships (z_in): 1000 [factor] 
+#&gt; Block memberships (z_out): 1000 [factor] 
+#&gt; Degree heterogeneity (theta_in): 1000 [numeric] 
+#&gt; Degree heterogeneity (theta_out): 1000 [numeric] 
+#&gt; Block probabilities (pi_in): 5 [numeric] 
+#&gt; Block probabilities (pi_out): 8 [numeric] 
+#&gt; 
+#&gt; Factor model parameterization:
+#&gt; 
+#&gt; X: 1000 x 5 [dgCMatrix] 
+#&gt; S: 5 x 8 [dgeMatrix] 
+#&gt; Y: 1000 x 8 [dgCMatrix] 
+#&gt; 
+#&gt; Expected edges: 10000
+#&gt; Expected in degree: 10
+#&gt; Expected out degree: 10
+#&gt; Expected density: 0.01</div><div class='input'>
 <span class='va'>population_svd</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/RSpectra/man/svds.html'>svds</a></span><span class='op'>(</span><span class='va'>dcsbm</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='error'>Error in svds_real_gen(A, k, nu, nv, opts, mattype = "function", extra_args = list(Atrans = Atrans,     dim = dim, fun_args = args)): argument "Atrans" is missing, with no default</span></div><div class='input'>
+
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
