@@ -53,6 +53,7 @@ Other erdos renyi:
 \code{\link{directed_erdos_renyi}()}
 
 Other undirected graphs: 
+\code{\link{chung_lu}()},
 \code{\link{dcsbm}()},
 \code{\link{planted_partition}()},
 \code{\link{sbm}()}

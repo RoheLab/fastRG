@@ -111,7 +111,7 @@ validate_undirected_dcsbm <- function(x) {
 #'   `rep(1 / k, k)`, or a balanced blocks.
 #'
 #' @param sort_nodes Logical indicating whether or not to sort the nodes
-#'   so that they are grouped by block. Useful for plotting.
+#'   so that they are grouped by block and by `theta`. Useful for plotting.
 #'   Defaults to `TRUE`.
 #'
 #' @inheritDotParams undirected_factor_model expected_degree expected_density

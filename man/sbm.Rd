@@ -61,7 +61,7 @@ single edge is allowed between any pair of nodes. See Section 2.3
 of Rohe et al (2017) for details.}
 
 \item{sort_nodes}{Logical indicating whether or not to sort the nodes
-so that they are grouped by block. Useful for plotting.
+so that they are grouped by block and by \code{theta}. Useful for plotting.
 Defaults to \code{TRUE}.}
 }
 \value{
@@ -123,6 +123,7 @@ Other stochastic block models:
 \code{\link{planted_partition}()}
 
 Other undirected graphs: 
+\code{\link{chung_lu}()},
 \code{\link{dcsbm}()},
 \code{\link{erdos_renyi}()},
 \code{\link{planted_partition}()}

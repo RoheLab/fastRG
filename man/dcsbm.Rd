@@ -68,7 +68,7 @@ Must match the dimensions of \code{B} or \code{k}. Defaults to
 \code{rep(1 / k, k)}, or a balanced blocks.}
 
 \item{sort_nodes}{Logical indicating whether or not to sort the nodes
-so that they are grouped by block. Useful for plotting.
+so that they are grouped by block and by \code{theta}. Useful for plotting.
 Defaults to \code{TRUE}.}
 }
 \value{
@@ -200,6 +200,7 @@ Other stochastic block models:
 \code{\link{sbm}()}
 
 Other undirected graphs: 
+\code{\link{chung_lu}()},
 \code{\link{erdos_renyi}()},
 \code{\link{planted_partition}()},
 \code{\link{sbm}()}
