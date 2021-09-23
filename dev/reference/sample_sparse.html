@@ -261,20 +261,20 @@ Journal of Machine Learning Research; 19(77):1-13, 2018.
 
 <span class='va'>edgelist</span> <span class='op'>&lt;-</span> <span class='fu'><a href='sample_edgelist.directed_erdos_renyi.html'>sample_edgelist</a></span><span class='op'>(</span><span class='va'>ufm</span><span class='op'>)</span>
 <span class='va'>edgelist</span>
-</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 505 x 2</span><span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 505 × 2</span>
 #&gt;     from    to
-#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'> 1</span><span>    66    71
-#&gt; </span><span style='color: #BCBCBC;'> 2</span><span>    83    87
-#&gt; </span><span style='color: #BCBCBC;'> 3</span><span>    37    87
-#&gt; </span><span style='color: #BCBCBC;'> 4</span><span>    92    95
-#&gt; </span><span style='color: #BCBCBC;'> 5</span><span>    14    94
-#&gt; </span><span style='color: #BCBCBC;'> 6</span><span>    54    85
-#&gt; </span><span style='color: #BCBCBC;'> 7</span><span>    11    76
-#&gt; </span><span style='color: #BCBCBC;'> 8</span><span>    45    57
-#&gt; </span><span style='color: #BCBCBC;'> 9</span><span>    57    74
-#&gt; </span><span style='color: #BCBCBC;'>10</span><span>    11    22
-#&gt; </span><span style='color: #949494;'># … with 495 more rows</span><span></div><div class='input'>
+#&gt;    <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span>
+#&gt; <span style='color: #BCBCBC;'> 1</span>    66    71
+#&gt; <span style='color: #BCBCBC;'> 2</span>    83    87
+#&gt; <span style='color: #BCBCBC;'> 3</span>    37    87
+#&gt; <span style='color: #BCBCBC;'> 4</span>    92    95
+#&gt; <span style='color: #BCBCBC;'> 5</span>    14    94
+#&gt; <span style='color: #BCBCBC;'> 6</span>    54    85
+#&gt; <span style='color: #BCBCBC;'> 7</span>    11    76
+#&gt; <span style='color: #BCBCBC;'> 8</span>    45    57
+#&gt; <span style='color: #BCBCBC;'> 9</span>    57    74
+#&gt; <span style='color: #BCBCBC;'>10</span>    11    22
+#&gt; <span style='color: #949494;'># … with 495 more rows</span></div><div class='input'>
 <span class='co'>### sampling graphs as sparse matrices ----------------</span>
 
 <span class='va'>A</span> <span class='op'>&lt;-</span> <span class='fu'>sample_sparse</span><span class='op'>(</span><span class='va'>ufm</span><span class='op'>)</span>
@@ -292,9 +292,9 @@ Journal of Machine Learning Research; 19(77):1-13, 2018.
 <span class='co'>### sampling graphs as igraph graphs ------------------</span>
 
 <span class='fu'><a href='sample_igraph.directed_erdos_renyi.html'>sample_igraph</a></span><span class='op'>(</span><span class='va'>ufm</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; IGRAPH a68263c UN-- 100 526 -- 
+</div><div class='output co'>#&gt; IGRAPH 6449241 UN-- 100 526 -- 
 #&gt; + attr: name (v/c)
-#&gt; + edges from a68263c (vertex names):
+#&gt; + edges from 6449241 (vertex names):
 #&gt;  [1] 12--25  14--45  22--50  6 --68  1 --16  17--92  15--77  6 --44  94--94 
 #&gt; [10] 22--82  24--56  61--76  39--95  79--82  25--77  22--75  30--32  27--32 
 #&gt; [19] 22--85  30--44  54--87  25--47  32--75  55--100 83--84  28--80  64--71 
@@ -307,51 +307,51 @@ Journal of Machine Learning Research; 19(77):1-13, 2018.
 <span class='co'>### sampling graphs as tidygraph graphs ---------------</span>
 
 <span class='fu'><a href='sample_tidygraph.directed_erdos_renyi.html'>sample_tidygraph</a></span><span class='op'>(</span><span class='va'>ufm</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tbl_graph: 99 nodes and 438 edges
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tbl_graph: 99 nodes and 438 edges
 #&gt; #
 #&gt; # An undirected multigraph with 1 component
 #&gt; #
-#&gt; # Node Data: 99 x 1 (active)</span><span>
+#&gt; # Node Data: 99 × 1 (active)</span>
 #&gt;   name 
-#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span> 1    
-#&gt; </span><span style='color: #BCBCBC;'>2</span><span> 92   
-#&gt; </span><span style='color: #BCBCBC;'>3</span><span> 80   
-#&gt; </span><span style='color: #BCBCBC;'>4</span><span> 36   
-#&gt; </span><span style='color: #BCBCBC;'>5</span><span> 27   
-#&gt; </span><span style='color: #BCBCBC;'>6</span><span> 56   
-#&gt; </span><span style='color: #949494;'># … with 93 more rows</span><span>
-#&gt; </span><span style='color: #949494;'>#
-#&gt; # Edge Data: 438 x 2</span><span>
+#&gt;   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>
+#&gt; <span style='color: #BCBCBC;'>1</span> 1    
+#&gt; <span style='color: #BCBCBC;'>2</span> 92   
+#&gt; <span style='color: #BCBCBC;'>3</span> 80   
+#&gt; <span style='color: #BCBCBC;'>4</span> 36   
+#&gt; <span style='color: #BCBCBC;'>5</span> 27   
+#&gt; <span style='color: #BCBCBC;'>6</span> 56   
+#&gt; <span style='color: #949494;'># … with 93 more rows</span>
+#&gt; <span style='color: #949494;'>#
+#&gt; # Edge Data: 438 × 2</span>
 #&gt;    from    to
-#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span>     1    90
-#&gt; </span><span style='color: #BCBCBC;'>2</span><span>     1    72
-#&gt; </span><span style='color: #BCBCBC;'>3</span><span>     2     2
-#&gt; </span><span style='color: #949494;'># … with 435 more rows</span><span></div><div class='input'>
+#&gt;   <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span>
+#&gt; <span style='color: #BCBCBC;'>1</span>     1    90
+#&gt; <span style='color: #BCBCBC;'>2</span>     1    72
+#&gt; <span style='color: #BCBCBC;'>3</span>     2     2
+#&gt; <span style='color: #949494;'># … with 435 more rows</span></div><div class='input'>
 <span class='fu'><a href='sample_tidygraph.directed_erdos_renyi.html'>sample_tidygraph</a></span><span class='op'>(</span><span class='va'>ufm</span>, poisson_edges <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tbl_graph: 98 nodes and 441 edges
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tbl_graph: 98 nodes and 441 edges
 #&gt; #
 #&gt; # An undirected multigraph with 1 component
 #&gt; #
-#&gt; # Node Data: 98 x 1 (active)</span><span>
+#&gt; # Node Data: 98 × 1 (active)</span>
 #&gt;   name 
-#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span> 80   
-#&gt; </span><span style='color: #BCBCBC;'>2</span><span> 45   
-#&gt; </span><span style='color: #BCBCBC;'>3</span><span> 38   
-#&gt; </span><span style='color: #BCBCBC;'>4</span><span> 25   
-#&gt; </span><span style='color: #BCBCBC;'>5</span><span> 27   
-#&gt; </span><span style='color: #BCBCBC;'>6</span><span> 65   
-#&gt; </span><span style='color: #949494;'># … with 92 more rows</span><span>
-#&gt; </span><span style='color: #949494;'>#
-#&gt; # Edge Data: 441 x 2</span><span>
+#&gt;   <span style='color: #949494; font-style: italic;'>&lt;chr&gt;</span>
+#&gt; <span style='color: #BCBCBC;'>1</span> 80   
+#&gt; <span style='color: #BCBCBC;'>2</span> 45   
+#&gt; <span style='color: #BCBCBC;'>3</span> 38   
+#&gt; <span style='color: #BCBCBC;'>4</span> 25   
+#&gt; <span style='color: #BCBCBC;'>5</span> 27   
+#&gt; <span style='color: #BCBCBC;'>6</span> 65   
+#&gt; <span style='color: #949494;'># … with 92 more rows</span>
+#&gt; <span style='color: #949494;'>#
+#&gt; # Edge Data: 441 × 2</span>
 #&gt;    from    to
-#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span>     1    87
-#&gt; </span><span style='color: #BCBCBC;'>2</span><span>     1     2
-#&gt; </span><span style='color: #BCBCBC;'>3</span><span>     3    67
-#&gt; </span><span style='color: #949494;'># … with 438 more rows</span><span></div><div class='input'>
+#&gt;   <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span>
+#&gt; <span style='color: #BCBCBC;'>1</span>     1    87
+#&gt; <span style='color: #BCBCBC;'>2</span>     1     2
+#&gt; <span style='color: #BCBCBC;'>3</span>     3    67
+#&gt; <span style='color: #949494;'># … with 438 more rows</span></div><div class='input'>
 <span class='co'>##### directed examples ----------------------------</span>
 
 <span class='va'>n2</span> <span class='op'>&lt;-</span> <span class='fl'>100</span>
@@ -387,20 +387,20 @@ Journal of Machine Learning Research; 19(77):1-13, 2018.
 
 <span class='va'>edgelist2</span> <span class='op'>&lt;-</span> <span class='fu'><a href='sample_edgelist.directed_erdos_renyi.html'>sample_edgelist</a></span><span class='op'>(</span><span class='va'>fm</span><span class='op'>)</span>
 <span class='va'>edgelist2</span>
-</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tibble: 93 x 2</span><span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 93 × 2</span>
 #&gt;     from    to
-#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'> 1</span><span>     4    23
-#&gt; </span><span style='color: #BCBCBC;'> 2</span><span>    37    20
-#&gt; </span><span style='color: #BCBCBC;'> 3</span><span>    40    27
-#&gt; </span><span style='color: #BCBCBC;'> 4</span><span>    31    18
-#&gt; </span><span style='color: #BCBCBC;'> 5</span><span>    52    47
-#&gt; </span><span style='color: #BCBCBC;'> 6</span><span>    64    11
-#&gt; </span><span style='color: #BCBCBC;'> 7</span><span>    74    23
-#&gt; </span><span style='color: #BCBCBC;'> 8</span><span>    95    46
-#&gt; </span><span style='color: #BCBCBC;'> 9</span><span>    85    39
-#&gt; </span><span style='color: #BCBCBC;'>10</span><span>    79    30
-#&gt; </span><span style='color: #949494;'># … with 83 more rows</span><span></div><div class='input'>
+#&gt;    <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span>
+#&gt; <span style='color: #BCBCBC;'> 1</span>     4    23
+#&gt; <span style='color: #BCBCBC;'> 2</span>    37    20
+#&gt; <span style='color: #BCBCBC;'> 3</span>    40    27
+#&gt; <span style='color: #BCBCBC;'> 4</span>    31    18
+#&gt; <span style='color: #BCBCBC;'> 5</span>    52    47
+#&gt; <span style='color: #BCBCBC;'> 6</span>    64    11
+#&gt; <span style='color: #BCBCBC;'> 7</span>    74    23
+#&gt; <span style='color: #BCBCBC;'> 8</span>    95    46
+#&gt; <span style='color: #BCBCBC;'> 9</span>    85    39
+#&gt; <span style='color: #BCBCBC;'>10</span>    79    30
+#&gt; <span style='color: #949494;'># … with 83 more rows</span></div><div class='input'>
 <span class='co'>### sampling graphs as sparse matrices ----------------</span>
 
 <span class='va'>A2</span> <span class='op'>&lt;-</span> <span class='fu'>sample_sparse</span><span class='op'>(</span><span class='va'>fm</span><span class='op'>)</span>
@@ -430,29 +430,29 @@ Journal of Machine Learning Research; 19(77):1-13, 2018.
 <span class='co'>### sampling graphs as tidygraph graphs ---------------</span>
 
 <span class='fu'><a href='sample_tidygraph.directed_erdos_renyi.html'>sample_tidygraph</a></span><span class='op'>(</span><span class='va'>fm</span>, poisson_edges <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; </span><span style='color: #949494;'># A tbl_graph: 150 nodes and 97 edges
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tbl_graph: 150 nodes and 97 edges
 #&gt; #
 #&gt; # A bipartite simple graph with 59 components
 #&gt; #
-#&gt; # Node Data: 150 x 1 (active)</span><span>
+#&gt; # Node Data: 150 × 1 (active)</span>
 #&gt;   type 
-#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;lgl&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span> FALSE
-#&gt; </span><span style='color: #BCBCBC;'>2</span><span> FALSE
-#&gt; </span><span style='color: #BCBCBC;'>3</span><span> FALSE
-#&gt; </span><span style='color: #BCBCBC;'>4</span><span> FALSE
-#&gt; </span><span style='color: #BCBCBC;'>5</span><span> FALSE
-#&gt; </span><span style='color: #BCBCBC;'>6</span><span> FALSE
-#&gt; </span><span style='color: #949494;'># … with 144 more rows</span><span>
-#&gt; </span><span style='color: #949494;'>#
-#&gt; # Edge Data: 97 x 2</span><span>
+#&gt;   <span style='color: #949494; font-style: italic;'>&lt;lgl&gt;</span>
+#&gt; <span style='color: #BCBCBC;'>1</span> FALSE
+#&gt; <span style='color: #BCBCBC;'>2</span> FALSE
+#&gt; <span style='color: #BCBCBC;'>3</span> FALSE
+#&gt; <span style='color: #BCBCBC;'>4</span> FALSE
+#&gt; <span style='color: #BCBCBC;'>5</span> FALSE
+#&gt; <span style='color: #BCBCBC;'>6</span> FALSE
+#&gt; <span style='color: #949494;'># … with 144 more rows</span>
+#&gt; <span style='color: #949494;'>#
+#&gt; # Edge Data: 97 × 2</span>
 #&gt;    from    to
-#&gt;   </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'>1</span><span>     6   101
-#&gt; </span><span style='color: #BCBCBC;'>2</span><span>    43   101
-#&gt; </span><span style='color: #BCBCBC;'>3</span><span>    44   101
-#&gt; </span><span style='color: #949494;'># … with 94 more rows</span><span></div><div class='input'>
-</div></span></pre>
+#&gt;   <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span>
+#&gt; <span style='color: #BCBCBC;'>1</span>     6   101
+#&gt; <span style='color: #BCBCBC;'>2</span>    43   101
+#&gt; <span style='color: #BCBCBC;'>3</span>    44   101
+#&gt; <span style='color: #949494;'># … with 94 more rows</span></div><div class='input'>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Create an undirected planted partition object — planted_partition • fastRG</title>
+<title>Create an undirected Chung-Lu object — chung_lu • fastRG</title>
 
 
 <!-- jquery -->
@@ -39,13 +39,11 @@
 
 
 
-<meta property="og:title" content="Create an undirected planted partition object — planted_partition" />
-<meta property="og:description" content="To specify a planted partition model, you must specify
-the number of nodes (via n), the mixing matrix (optional, either via
-within_block/between_block or a/b),
-and the relative block probabilites (optional, via pi).
-We provide sane defaults for most of these options to enable
-rapid exploration, or you can invest the effort
+<meta property="og:title" content="Create an undirected Chung-Lu object — chung_lu" />
+<meta property="og:description" content="To specify a Chung-Lu graph, you must specify
+the degree-heterogeneity parameters (via n or theta).
+We provide reasonable defaults to enable rapid exploration
+or you can invest the effort
 for more control over the model parameters. We strongly recommend
 setting the expected_degree or expected_density argument
 to avoid large memory allocations associated with
@@ -120,49 +118,47 @@ sampling large, dense graphs." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Create an undirected planted partition object</h1>
-    <small class="dont-index">Source: <a href='https://github.com/RoheLab/fastRG/blob/master/R/undirected_planted_partition.R'><code>R/undirected_planted_partition.R</code></a></small>
-    <div class="hidden name"><code>planted_partition.Rd</code></div>
+    <h1>Create an undirected Chung-Lu object</h1>
+    <small class="dont-index">Source: <a href='https://github.com/RoheLab/fastRG/blob/master/R/undirected_chung_lu.R'><code>R/undirected_chung_lu.R</code></a></small>
+    <div class="hidden name"><code>chung_lu.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>To specify a planted partition model, you must specify
-the number of nodes (via <code>n</code>), the mixing matrix (optional, either via
-<code>within_block/between_block</code> or <code>a/b</code>),
-and the relative block probabilites (optional, via <code>pi</code>).
-We provide sane defaults for most of these options to enable
-rapid exploration, or you can invest the effort
+    <p>To specify a Chung-Lu graph, you must specify
+the degree-heterogeneity parameters (via <code>n</code> or <code>theta</code>).
+We provide reasonable defaults to enable rapid exploration
+or you can invest the effort
 for more control over the model parameters. We <strong>strongly recommend</strong>
 setting the <code>expected_degree</code> or <code>expected_density</code> argument
 to avoid large memory allocations associated with
 sampling large, dense graphs.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>planted_partition</span><span class='op'>(</span>
-  <span class='va'>n</span>,
-  <span class='va'>k</span>,
-  <span class='va'>...</span>,
-  within_block <span class='op'>=</span> <span class='cn'>NULL</span>,
-  between_block <span class='op'>=</span> <span class='cn'>NULL</span>,
-  a <span class='op'>=</span> <span class='cn'>NULL</span>,
-  b <span class='op'>=</span> <span class='cn'>NULL</span>,
-  pi <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>/</span><span class='va'>k</span>, <span class='va'>k</span><span class='op'>)</span>,
-  edge_distribution <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"poisson"</span>, <span class='st'>"bernoulli"</span><span class='op'>)</span>,
-  sort_nodes <span class='op'>=</span> <span class='cn'>TRUE</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>chung_lu</span><span class='op'>(</span>n <span class='op'>=</span> <span class='cn'>NULL</span>, theta <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span>, sort_nodes <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>n</th>
-      <td><p>The number of nodes in the network. Must be
-a positive integer. This argument is required.</p></td>
+      <td><p>(degree heterogeneity) The number of nodes in the graph.
+Use when you don't want to specify the degree-heterogeneity
+parameters <code>theta</code> by hand. When <code>n</code> is specified, <code>theta</code>
+is randomly generated from a <code>LogNormal(2, 1)</code> distribution.
+This is subject to change, and may not be reproducible.
+<code>n</code> defaults to <code>NULL</code>. You must specify either <code>n</code>
+or <code>theta</code>, but not both.</p></td>
     </tr>
     <tr>
-      <th>k</th>
-      <td><p>Number of planted partitions, as a positive integer.
-This argument is required.</p></td>
+      <th>theta</th>
+      <td><p>(degree heterogeneity) A numeric vector
+explicitly specifying the degree heterogeneity
+parameters. This implicitly determines the number of nodes
+in the resulting graph, i.e. it will have <code><a href='https://rdrr.io/r/base/length.html'>length(theta)</a></code> nodes.
+Must be positive. Setting to a vector of ones recovers
+an erdos renyi graph.
+Defaults to <code>NULL</code>. You must specify either <code>n</code> or <code>theta</code>,
+but not both.</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -179,51 +175,6 @@ to achieve this. Defaults to <code>NULL</code>. Do not specify both
 </dl></td>
     </tr>
     <tr>
-      <th>within_block</th>
-      <td><p>Probability of within block edges. Must be
-strictly between zero and one. Must specify either
-<code>within_block</code> and <code>between_block</code>, or <code>a</code> and <code>b</code> to determine
-edge probabilities.</p></td>
-    </tr>
-    <tr>
-      <th>between_block</th>
-      <td><p>Probability of between block edges. Must be
-strictly between zero and one. Must specify either
-<code>within_block</code> and <code>between_block</code>, or <code>a</code> and <code>b</code> to determine
-edge probabilities.</p></td>
-    </tr>
-    <tr>
-      <th>a</th>
-      <td><p>Integer such that <code>a/n</code> is the probability of edges
-within a block. Useful for sparse graphs. Must specify either
-<code>within_block</code> and <code>between_block</code>, or <code>a</code> and <code>b</code> to determine
-edge probabilities.</p></td>
-    </tr>
-    <tr>
-      <th>b</th>
-      <td><p>Integer such that <code>b/n</code> is the probability of edges
-between blocks. Useful for sparse graphs. Must specify either
-<code>within_block</code> and <code>between_block</code>, or <code>a</code> and <code>b</code> to determine
-edge probabilities.</p></td>
-    </tr>
-    <tr>
-      <th>pi</th>
-      <td><p>(relative block probabilities) Relative block
-probabilities. Must be positive, but do not need to sum
-to one, as they will be normalized internally.
-Must match the dimensions of <code>B</code> or <code>k</code>. Defaults to
-<code><a href='https://rdrr.io/r/base/rep.html'>rep(1 / k, k)</a></code>, or a balanced blocks.</p></td>
-    </tr>
-    <tr>
-      <th>edge_distribution</th>
-      <td><p>Either <code>"poisson"</code> or <code>"bernoulli"</code>. The
-default is <code>"poisson"</code>, in which case the SBM can be a
-multigraph, i.e. multiple edges between the same two nodes
-are allowed. If <code>edge_distribution == "bernoulli"</code> only a
-single edge is allowed between any pair of nodes. See Section 2.3
-of Rohe et al (2017) for details.</p></td>
-    </tr>
-    <tr>
       <th>sort_nodes</th>
       <td><p>Logical indicating whether or not to sort the nodes
 so that they are grouped by block and by <code>theta</code>. Useful for plotting.
@@ -233,66 +184,85 @@ Defaults to <code>TRUE</code>.</p></td>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>An <code>undirected_planted_partition</code> S3 object, which is a subclass
-of the <code><a href='sbm.html'>sbm()</a></code> object, with additional fields:</p><ul>
-<li><p><code>within_block</code>: The probability of edge formation within a block.</p></li>
-<li><p><code>between_block</code>: The probability of edge formation between two distinct
-blocks.</p></li>
-</ul>
-
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>A planted partition model is stochastic blockmodel in which
-the diagonal and the off-diagonal of the mixing matrix <code>B</code>
-are both constant. This means that edge probabilities
-depend only on whether two nodes belong to the same block,
-or to different blocks, but the particular blocks themselves
-don't have any impact apart from this.</p>
+    <p>An <code>undirected_chung_lu</code> S3 object, a subclass of <code><a href='dcsbm.html'>dcsbm()</a></code>.</p>
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p>Other stochastic block models: 
-<code><a href='dcsbm.html'>dcsbm</a>()</code>,
-<code><a href='directed_dcsbm.html'>directed_dcsbm</a>()</code>,
-<code><a href='sbm.html'>sbm</a>()</code></p>
-<p>Other undirected graphs: 
-<code><a href='chung_lu.html'>chung_lu</a>()</code>,
+    <div class='dont-index'><p>Other undirected graphs: 
 <code><a href='dcsbm.html'>dcsbm</a>()</code>,
 <code><a href='erdos_renyi.html'>erdos_renyi</a>()</code>,
+<code><a href='planted_partition.html'>planted_partition</a>()</code>,
 <code><a href='sbm.html'>sbm</a>()</code></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
 <span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>27</span><span class='op'>)</span>
 
-<span class='va'>lazy_pp</span> <span class='op'>&lt;-</span> <span class='fu'>planted_partition</span><span class='op'>(</span>
-  n <span class='op'>=</span> <span class='fl'>1000</span>,
-  k <span class='op'>=</span> <span class='fl'>5</span>,
-  expected_density <span class='op'>=</span> <span class='fl'>0.01</span>,
-  within_block <span class='op'>=</span> <span class='fl'>0.1</span>,
-  between_block <span class='op'>=</span> <span class='fl'>0.01</span>
-<span class='op'>)</span>
-
-<span class='va'>lazy_pp</span>
-</div><div class='output co'>#&gt; Undirected Stochastic Blockmodel
-#&gt; --------------------------------
+<span class='va'>cl</span> <span class='op'>&lt;-</span> <span class='fu'>chung_lu</span><span class='op'>(</span>n <span class='op'>=</span> <span class='fl'>1000</span>, expected_density <span class='op'>=</span> <span class='fl'>0.01</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>Generating random degree heterogeneity parameters `theta` from a LogNormal(2, 1) distribution. This distribution may change in the future. Explicitly set `theta` for reproducible results.</span></div><div class='input'><span class='va'>cl</span>
+</div><div class='output co'>#&gt; Undirected Degree-Corrected Stochastic Blockmodel
+#&gt; -------------------------------------------------
 #&gt; 
 #&gt; Nodes (n): 1000 (arranged by block)
-#&gt; Blocks (k): 5
+#&gt; Blocks (k): 1
 #&gt; 
-#&gt; Traditional SBM parameterization:
+#&gt; Traditional DCSBM parameterization:
 #&gt; 
 #&gt; Block memberships (z): 1000 [factor] 
-#&gt; Block probabilities (pi): 5 [numeric] 
-#&gt; Edge distribution: poisson
+#&gt; Degree heterogeneity (theta): 1000 [numeric] 
+#&gt; Block probabilities (pi): 1 [numeric] 
 #&gt; 
 #&gt; Factor model parameterization:
 #&gt; 
-#&gt; X: 1000 x 5 [dgCMatrix] 
-#&gt; S: 5 x 5 [dsyMatrix] 
+#&gt; X: 1000 x 1 [dgeMatrix] 
+#&gt; S: 1 x 1 [ddiMatrix] 
 #&gt; 
 #&gt; Expected edges: 10000
 #&gt; Expected degree: 10
 #&gt; Expected density: 0.01</div><div class='input'>
+<span class='va'>theta</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/Round.html'>round</a></span><span class='op'>(</span><span class='fu'>stats</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/r/stats/Lognormal.html'>rlnorm</a></span><span class='op'>(</span><span class='fl'>100</span>, <span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>
+
+<span class='va'>cl2</span> <span class='op'>&lt;-</span> <span class='fu'>chung_lu</span><span class='op'>(</span>
+  theta <span class='op'>=</span> <span class='va'>theta</span>,
+  expected_degree <span class='op'>=</span> <span class='fl'>5</span>
+<span class='op'>)</span>
+
+<span class='va'>cl2</span>
+</div><div class='output co'>#&gt; Undirected Degree-Corrected Stochastic Blockmodel
+#&gt; -------------------------------------------------
+#&gt; 
+#&gt; Nodes (n): 100 (arranged by block)
+#&gt; Blocks (k): 1
+#&gt; 
+#&gt; Traditional DCSBM parameterization:
+#&gt; 
+#&gt; Block memberships (z): 100 [factor] 
+#&gt; Degree heterogeneity (theta): 100 [numeric] 
+#&gt; Block probabilities (pi): 1 [numeric] 
+#&gt; 
+#&gt; Factor model parameterization:
+#&gt; 
+#&gt; X: 100 x 1 [dgeMatrix] 
+#&gt; S: 1 x 1 [ddiMatrix] 
+#&gt; 
+#&gt; Expected edges: 500
+#&gt; Expected degree: 5
+#&gt; Expected density: 0.05</div><div class='input'>
+<span class='va'>edgelist</span> <span class='op'>&lt;-</span> <span class='fu'><a href='sample_edgelist.directed_erdos_renyi.html'>sample_edgelist</a></span><span class='op'>(</span><span class='va'>cl</span><span class='op'>)</span>
+<span class='va'>edgelist</span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 5,077 × 2</span>
+#&gt;     from    to
+#&gt;    <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span>
+#&gt; <span style='color: #BCBCBC;'> 1</span>    17    49
+#&gt; <span style='color: #BCBCBC;'> 2</span>    34    80
+#&gt; <span style='color: #BCBCBC;'> 3</span>     5     6
+#&gt; <span style='color: #BCBCBC;'> 4</span>   648   930
+#&gt; <span style='color: #BCBCBC;'> 5</span>    88   666
+#&gt; <span style='color: #BCBCBC;'> 6</span>   122   277
+#&gt; <span style='color: #BCBCBC;'> 7</span>     6    18
+#&gt; <span style='color: #BCBCBC;'> 8</span>    65   708
+#&gt; <span style='color: #BCBCBC;'> 9</span>    48   608
+#&gt; <span style='color: #BCBCBC;'>10</span>    59   309
+#&gt; <span style='color: #949494;'># … with 5,067 more rows</span></div><div class='input'>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

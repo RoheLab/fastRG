@@ -215,7 +215,7 @@ Must match the dimensions of <code>B</code> or <code>k</code>. Defaults to
     <tr>
       <th>sort_nodes</th>
       <td><p>Logical indicating whether or not to sort the nodes
-so that they are grouped by block. Useful for plotting.
+so that they are grouped by block and by <code>theta</code>. Useful for plotting.
 Defaults to <code>TRUE</code>.</p></td>
     </tr>
     </table>
@@ -289,6 +289,7 @@ $$</p>
 <code><a href='planted_partition.html'>planted_partition</a>()</code>,
 <code><a href='sbm.html'>sbm</a>()</code></p>
 <p>Other undirected graphs: 
+<code><a href='chung_lu.html'>chung_lu</a>()</code>,
 <code><a href='erdos_renyi.html'>erdos_renyi</a>()</code>,
 <code><a href='planted_partition.html'>planted_partition</a>()</code>,
 <code><a href='sbm.html'>sbm</a>()</code></p></div>
@@ -386,20 +387,20 @@ $$</p>
 #&gt; Expected density: 0.05</div><div class='input'>
 <span class='va'>edgelist</span> <span class='op'>&lt;-</span> <span class='fu'><a href='sample_edgelist.directed_erdos_renyi.html'>sample_edgelist</a></span><span class='op'>(</span><span class='va'>custom_dcsbm</span><span class='op'>)</span>
 <span class='va'>edgelist</span>
-</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 24,885 x 2</span><span>
+</div><div class='output co'>#&gt; <span style='color: #949494;'># A tibble: 24,885 × 2</span>
 #&gt;     from    to
-#&gt;    </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span><span>
-#&gt; </span><span style='color: #BCBCBC;'> 1</span><span>    43    61
-#&gt; </span><span style='color: #BCBCBC;'> 2</span><span>    22    59
-#&gt; </span><span style='color: #BCBCBC;'> 3</span><span>    22    41
-#&gt; </span><span style='color: #BCBCBC;'> 4</span><span>    15    50
-#&gt; </span><span style='color: #BCBCBC;'> 5</span><span>     4    33
-#&gt; </span><span style='color: #BCBCBC;'> 6</span><span>    13    77
-#&gt; </span><span style='color: #BCBCBC;'> 7</span><span>     1    35
-#&gt; </span><span style='color: #BCBCBC;'> 8</span><span>     1    31
-#&gt; </span><span style='color: #BCBCBC;'> 9</span><span>     2    28
-#&gt; </span><span style='color: #BCBCBC;'>10</span><span>     1    47
-#&gt; </span><span style='color: #949494;'># … with 24,875 more rows</span><span></div><div class='input'>
+#&gt;    <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span> <span style='color: #949494; font-style: italic;'>&lt;int&gt;</span>
+#&gt; <span style='color: #BCBCBC;'> 1</span>    43    61
+#&gt; <span style='color: #BCBCBC;'> 2</span>    22    59
+#&gt; <span style='color: #BCBCBC;'> 3</span>    22    41
+#&gt; <span style='color: #BCBCBC;'> 4</span>    15    50
+#&gt; <span style='color: #BCBCBC;'> 5</span>     4    33
+#&gt; <span style='color: #BCBCBC;'> 6</span>    13    77
+#&gt; <span style='color: #BCBCBC;'> 7</span>     1    35
+#&gt; <span style='color: #BCBCBC;'> 8</span>     1    31
+#&gt; <span style='color: #BCBCBC;'> 9</span>     2    28
+#&gt; <span style='color: #BCBCBC;'>10</span>     1    47
+#&gt; <span style='color: #949494;'># … with 24,875 more rows</span></div><div class='input'>
 <span class='co'># efficient eigendecompostion that leverages low-rank structure in</span>
 <span class='co'># E(A) so that you don't have to form E(A) to find eigenvectors,</span>
 <span class='co'># as E(A) is typically dense. computation is</span>
@@ -407,7 +408,7 @@ $$</p>
 
 <span class='va'>population_eigs</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/pkg/RSpectra/man/eigs.html'>eigs_sym</a></span><span class='op'>(</span><span class='va'>custom_dcsbm</span><span class='op'>)</span>
 
-</div></span></pre>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
