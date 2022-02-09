@@ -24,10 +24,11 @@ reference:
   - title: Undirected graphs
     contents:
       - erdos_renyi
+      - chung_lu
       - planted_partition
       - sbm
       - dcsbm
-      - undirected_factor_model
+      - contains("undirected")
   - title: Directed graphs
     contents:
       - contains("directed")
