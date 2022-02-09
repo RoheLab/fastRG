@@ -1,54 +1,69 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://rohelab.github.io/fastRG/index.html</loc>
+    <loc>https://rohelab.github.io/fastRG/dev/LICENSE-text.html</loc>
   </url>
   <url>
-    <loc>https://rohelab.github.io/fastRG/reference/chung_lu.html</loc>
+    <loc>https://rohelab.github.io/fastRG/dev/LICENSE.html</loc>
   </url>
   <url>
-    <loc>https://rohelab.github.io/fastRG/reference/dcsbm.html</loc>
+    <loc>https://rohelab.github.io/fastRG/dev/authors.html</loc>
   </url>
   <url>
-    <loc>https://rohelab.github.io/fastRG/reference/directed_dcsbm.html</loc>
+    <loc>https://rohelab.github.io/fastRG/dev/index.html</loc>
   </url>
   <url>
-    <loc>https://rohelab.github.io/fastRG/reference/directed_erdos_renyi.html</loc>
+    <loc>https://rohelab.github.io/fastRG/dev/news/index.html</loc>
   </url>
   <url>
-    <loc>https://rohelab.github.io/fastRG/reference/directed_factor_model.html</loc>
+    <loc>https://rohelab.github.io/fastRG/dev/reference/chung_lu.html</loc>
   </url>
   <url>
-    <loc>https://rohelab.github.io/fastRG/reference/erdos_renyi.html</loc>
+    <loc>https://rohelab.github.io/fastRG/dev/reference/dcsbm.html</loc>
   </url>
   <url>
-    <loc>https://rohelab.github.io/fastRG/reference/expected_edges.html</loc>
+    <loc>https://rohelab.github.io/fastRG/dev/reference/directed_dcsbm.html</loc>
   </url>
   <url>
-    <loc>https://rohelab.github.io/fastRG/reference/planted_partition.html</loc>
+    <loc>https://rohelab.github.io/fastRG/dev/reference/directed_erdos_renyi.html</loc>
   </url>
   <url>
-    <loc>https://rohelab.github.io/fastRG/reference/reexports.html</loc>
+    <loc>https://rohelab.github.io/fastRG/dev/reference/directed_factor_model.html</loc>
   </url>
   <url>
-    <loc>https://rohelab.github.io/fastRG/reference/sample_edgelist.html</loc>
+    <loc>https://rohelab.github.io/fastRG/dev/reference/erdos_renyi.html</loc>
   </url>
   <url>
-    <loc>https://rohelab.github.io/fastRG/reference/sample_edgelist.matrix.html</loc>
+    <loc>https://rohelab.github.io/fastRG/dev/reference/expected_edges.html</loc>
   </url>
   <url>
-    <loc>https://rohelab.github.io/fastRG/reference/sample_igraph.html</loc>
+    <loc>https://rohelab.github.io/fastRG/dev/reference/index.html</loc>
   </url>
   <url>
-    <loc>https://rohelab.github.io/fastRG/reference/sample_sparse.html</loc>
+    <loc>https://rohelab.github.io/fastRG/dev/reference/planted_partition.html</loc>
   </url>
   <url>
-    <loc>https://rohelab.github.io/fastRG/reference/sample_tidygraph.html</loc>
+    <loc>https://rohelab.github.io/fastRG/dev/reference/reexports.html</loc>
   </url>
   <url>
-    <loc>https://rohelab.github.io/fastRG/reference/sbm.html</loc>
+    <loc>https://rohelab.github.io/fastRG/dev/reference/sample_edgelist.html</loc>
   </url>
   <url>
-    <loc>https://rohelab.github.io/fastRG/reference/undirected_factor_model.html</loc>
+    <loc>https://rohelab.github.io/fastRG/dev/reference/sample_edgelist.matrix.html</loc>
+  </url>
+  <url>
+    <loc>https://rohelab.github.io/fastRG/dev/reference/sample_igraph.html</loc>
+  </url>
+  <url>
+    <loc>https://rohelab.github.io/fastRG/dev/reference/sample_sparse.html</loc>
+  </url>
+  <url>
+    <loc>https://rohelab.github.io/fastRG/dev/reference/sample_tidygraph.html</loc>
+  </url>
+  <url>
+    <loc>https://rohelab.github.io/fastRG/dev/reference/sbm.html</loc>
+  </url>
+  <url>
+    <loc>https://rohelab.github.io/fastRG/dev/reference/undirected_factor_model.html</loc>
   </url>
 </urlset>
