@@ -1,13 +1,16 @@
 url: https://rohelab.github.io/fastRG
 
-destination: docs
+authors:
+  Alex Hayes:
+    href: https://alexpghayes.com
 
 development:
   mode: auto
 
 template:
+  bootstrap: 5
   params:
-    bootswatch: paper
+    bootswatch: flatly
 
 reference:
   - title: Sampling
@@ -27,6 +30,5 @@ reference:
       - undirected_factor_model
   - title: Directed graphs
     contents:
-      - directed_erdos_renyi
-      - directed_factor_model
+      - contains("directed")
 

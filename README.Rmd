@@ -4,7 +4,7 @@
   
   <!-- README.md is generated from README.Rmd. Please edit that file -->
   
-  ```{r, include = FALSE}
+```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -16,16 +16,16 @@ knitr::opts_chunk$set(
 # fastRG
 
 <!-- badges: start -->
-  [![R-CMD-check](https://github.com/RoheLab/fastRG/workflows/R-CMD-check/badge.svg)](https://github.com/RoheLab/fastRG/actions)
+[![R-CMD-check](https://github.com/RoheLab/fastRG/workflows/R-CMD-check/badge.svg)](https://github.com/RoheLab/fastRG/actions)
 [![Codecov test coverage](https://codecov.io/gh/RoheLab/fastRG/branch/main/graph/badge.svg)](https://codecov.io/gh/RoheLab/fastRG?branch=main)
 [![CRAN status](https://www.r-pkg.org/badges/version/fastRG)](https://CRAN.R-project.org/package=fastRG)
 <!-- badges: end -->
   
-  `fastRG` quickly samples a broad class of network models known as generalized random dot product graphs (GRDPGs). In particular, for matrices $X$, $S$ and $Y$, `fastRG` samples a matrix $A$ with expectation $X S Y^T$ where the entries are independently Poisson distributed conditional on $X$ and $Y$. This is primarily useful when $A$ is the adjacency matrix of a graph. Crucially, the sampling is $\mathcal O(m)$, where $m$ is the number of the edges in graph, as opposed to the naive sampling approach, which is $\mathcal O(n^2)$, where $n$ is the number of nodes in the network. For additional details, see the [paper](https://arxiv.org/abs/1703.02998) [1].
+`fastRG` quickly samples a broad class of network models known as generalized random dot product graphs (GRDPGs). In particular, for matrices $X$, $S$ and $Y$, `fastRG` samples a matrix $A$ with expectation $X S Y^T$ where the entries are independently Poisson distributed conditional on $X$ and $Y$. This is primarily useful when $A$ is the adjacency matrix of a graph. Crucially, the sampling is $\mathcal O(m)$, where $m$ is the number of the edges in graph, as opposed to the naive sampling approach, which is $\mathcal O(n^2)$, where $n$ is the number of nodes in the network. For additional details, see the [paper](https://arxiv.org/abs/1703.02998) [1].
 
 `fastRG` has two primary use cases:
   
-  1. Sampling enormous sparse graphs that cannot feasibly be sampled with existing samplers, and
+1. Sampling enormous sparse graphs that cannot feasibly be sampled with existing samplers, and
 1. validating new methods for random dot product graphs (and variants).
 
 `fastRG` makes the latent parameters of random dot product graphs readily available to users, such that simulation studies for community detection, subspace recovery, etc, are straightforward.
@@ -34,13 +34,13 @@ knitr::opts_chunk$set(
 
 You can install the released version of fastRG from [CRAN](https://CRAN.R-project.org) with:
   
-  ``` r
+``` r
 install.packages("fastRG")
 ```
 
 And the development version from [GitHub](https://github.com/) with:
   
-  ``` r
+``` r
 # install.packages("devtools")
 devtools::install_github("RoheLab/fastRG")
 ```
@@ -59,12 +59,12 @@ sbm <- sbm(n = 1000, k = 5, expected_density = 0.01)
 
 You can specify the latent factors and the mixing matrix $B$ yourself, but there are also defaults to enable fast prototyping. Here $B$ was randomly generated with `Uniform[0, 1]` entries and nodes were assigned randomly to communities with equal probability of falling in all communities. Printing the result object gives us some additional information:
   
-  ```{r}
+```{r}
 sbm
 ```
 Now, conditional on this latent representation, we can sample graphs. `fastRG` supports several different output types, each of which is specified by the suffix to `sample_*()` functions. For example, we can obtain an edgelist in a `tibble` with:
   
-  ```{r}
+```{r}
 sample_edgelist(sbm)
 ```
 
@@ -94,7 +94,7 @@ all(A == B)  # random realizations from the SBM don't match!
 
 If you would like to obtain the singular value decomposition of the population adjacency matrix conditional on latent factors, that is straightforward:
   
-  ```{r}
+```{r}
 s <- eigs_sym(sbm)
 s$values
 ```
@@ -105,13 +105,13 @@ Note that eigendecompositions and SVDS (for directed graphs) use `RSpectra` and 
 
 There are several essential tools to modify graph sampling that you should know about. First there are options that affect the latent factor sampling:
   
-  - `expected_degree`: Set the expected average degree of the graph by scaling sampling probabilities. We *strongly, strongly* recommend that you always set this option. If you do not, it is easy accidentally sample from large and dense graphs.
+- `expected_degree`: Set the expected average degree of the graph by scaling sampling probabilities. We *strongly, strongly* recommend that you always set this option. If you do not, it is easy accidentally sample from large and dense graphs.
 
 - `expected_density`: Set the expected density of the graph by scaling sampling probabilities. You cannot specify both `expected_degree` and `expected_density` at the same time.
 
 In the second stage of graph sampling, the options are:
   
-  - `poisson_edges`: Either `TRUE` or `FALSE` depending on whether you would like a Bernoulli graph or a Poisson multi-graph. Scaling via `expected_degree` assumes a Poisson multi-graph, with some limited exceptions.
+- `poisson_edges`: Either `TRUE` or `FALSE` depending on whether you would like a Bernoulli graph or a Poisson multi-graph. Scaling via `expected_degree` assumes a Poisson multi-graph, with some limited exceptions.
 
 - `allow_self_edges`: Whether nodes should be allowed to connect to themselves. Either `TRUE` or `FALSE`.
 

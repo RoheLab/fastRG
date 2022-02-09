@@ -1,36 +1,24 @@
 Package: fastRG
-Title: Sample Generalized Random Dot Product Graphs in Linear
-    Time
+Title: Sample Generalized Random Dot Product Graphs in Linear Time
 Version: 0.3.0.9003
-Authors@R: 
-    c(person(given = "Alex",
-             family = "Hayes",
-             role = c("aut", "cre", "cph"),
-             email = "alexpghayes@gmail.com",
-             comment = c(ORCID = "0000-0002-4985-5160")),
-      person(given = "Karl",
-             family = "Rohe",
-             role = c("aut", "cph"),
-             email = "KarlRohe@stat.wisc.edu"),
-      person(given = "Jun",
-             family = "Tao",
-             role = "aut"),
-      person(given = "Xintian",
-             family = "Han",
-             role = "aut"),
-      person(given = "Norbert",
-             family = "Binkiewicz",
-             role = "aut"))
-Description: Samples generalized random product graph, a
-    generalization of a broad class of network models. Given matrices X,
-    S, and Y with with non-negative entries, samples a matrix with
-    expectation X S Y^T and independent Poisson or Bernoulli entries using
-    the fastRG algorithm of Rohe et al. (2017)
-    <https://www.jmlr.org/papers/v19/17-128.html>. The algorithm first
-    samples the number of edges and then puts them down one-by-one.  As a
-    result it is O(m) where m is the number of edges, a dramatic
-    improvement over element-wise algorithms that which require O(n^2)
-    operations to sample a random graph, where n is the number of nodes.
+Authors@R: c(
+    person("Alex", "Hayes", , "alexpghayes@gmail.com", role = c("aut", "cre", "cph"),
+           comment = c(ORCID = "0000-0002-4985-5160")),
+    person("Karl", "Rohe", , "KarlRohe@stat.wisc.edu", role = c("aut", "cph")),
+    person("Jun", "Tao", role = "aut"),
+    person("Xintian", "Han", role = "aut"),
+    person("Norbert", "Binkiewicz", role = "aut")
+  )
+Description: Samples generalized random product graph, a generalization of
+    a broad class of network models. Given matrices X, S, and Y with with
+    non-negative entries, samples a matrix with expectation X S Y^T and
+    independent Poisson or Bernoulli entries using the fastRG algorithm of
+    Rohe et al. (2017) <https://www.jmlr.org/papers/v19/17-128.html>. The
+    algorithm first samples the number of edges and then puts them down
+    one-by-one.  As a result it is O(m) where m is the number of edges, a
+    dramatic improvement over element-wise algorithms that which require
+    O(n^2) operations to sample a random graph, where n is the number of
+    nodes.
 License: MIT + file LICENSE
 URL: https://rohelab.github.io/fastRG, https://github.com/RoheLab/fastRG
 BugReports: https://github.com/RoheLab/fastRG/issues
