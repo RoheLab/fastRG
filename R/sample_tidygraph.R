@@ -51,13 +51,17 @@ sample_tidygraph.undirected_factor_model <- function(
   poisson_edges = TRUE,
   allow_self_loops = TRUE) {
 
-  edgelist <- sample_edgelist(
+  nodes <- tibble(
+    name = 1:nrow(factor_model$X)
+  )
+
+  edges <- sample_edgelist(
     factor_model,
     poisson_edges = poisson_edges,
     allow_self_loops = allow_self_loops
   )
 
-  tidygraph::as_tbl_graph(edgelist, directed = FALSE)
+  tidygraph::tbl_graph(nodes = nodes, edges = edges, directed = FALSE)
 }
 
 #' @rdname sample_tidygraph
