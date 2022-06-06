@@ -1,4 +1,5 @@
 library(igraph)
+library(magrittr)
 
 test_that("undirected graphs poisson_edges = FALSE", {
 

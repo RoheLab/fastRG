@@ -1,3 +1,5 @@
+library(magrittr)
+
 test_that("undirected factor model", {
 
   set.seed(7)

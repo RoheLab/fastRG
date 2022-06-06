@@ -1,6 +1,6 @@
 Package: fastRG
 Title: Sample Generalized Random Dot Product Graphs in Linear Time
-Version: 0.3.0.9003
+Version: 0.3.0.9004
 Authors@R: c(
     person("Alex", "Hayes", , "alexpghayes@gmail.com", role = c("aut", "cre", "cph"),
            comment = c(ORCID = "0000-0002-4985-5160")),
@@ -28,7 +28,6 @@ Imports:
     ellipsis,
     glue,
     igraph,
-    magrittr,
     RSpectra,
     stats,
     tibble,
@@ -38,6 +37,7 @@ Suggests:
     dplyr,
     ggplot2,
     knitr,
+    magrittr,
     rmarkdown,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
