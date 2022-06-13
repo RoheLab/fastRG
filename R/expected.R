@@ -126,6 +126,7 @@ expected_density.undirected_factor_model <- function(factor_model, ...) {
 #' @export
 RSpectra::eigs_sym
 
+#' @method eigs_sym undirected_factor_model
 #' @export
 eigs_sym.undirected_factor_model <- function(
   A, k = A$k,
@@ -168,6 +169,7 @@ expected_density.directed_factor_model <- function(factor_model, ...) {
 #' @export
 RSpectra::svds
 
+#' @method svds directed_factor_model
 #' @export
 svds.directed_factor_model <- function(
   A,

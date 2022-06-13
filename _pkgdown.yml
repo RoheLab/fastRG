@@ -29,8 +29,10 @@ reference:
       - sbm
       - dcsbm
       - overlapping_sbm
-      - contains("undirected")
+      - undirected_factor_model
   - title: Directed graphs
     contents:
-      - contains("directed")
+      - directed_erdos_renyi
+      - directed_dcsbm
+      - directed_factor_model
 

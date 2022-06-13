@@ -76,6 +76,8 @@ An \code{undirected_overlapping_sbm} S3 object, a subclass of the
 \code{\link[=undirected_factor_model]{undirected_factor_model()}} with the following additional
 fields:
 \itemize{
+\item \code{Z}: The community memberships of each node, as an \code{n} by \code{k}
+binary indicator matrix.
 \item \code{theta}: A numeric vector of degree-heterogeneity parameters.
 \item \code{pi}: Sampling probabilities for each block.
 \item \code{sorted}: Logical indicating where nodes are arranged by
@@ -105,6 +107,8 @@ operation is handled by \code{\link[=sample_edgelist]{sample_edgelist()}},
 \code{\link[=sample_tidygraph]{sample_tidygraph()}}, depending depending on your desired
 graph representation.
 \subsection{Block memberships}{
+
+Note that some nodes may not belong to any blocks.
 
 \strong{TODO}
 }
