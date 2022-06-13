@@ -28,6 +28,7 @@ reference:
       - planted_partition
       - sbm
       - dcsbm
+      - overlapping_sbm
       - contains("undirected")
   - title: Directed graphs
     contents:
