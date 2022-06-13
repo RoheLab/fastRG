@@ -120,12 +120,14 @@ sign(A)
 Other stochastic block models: 
 \code{\link{dcsbm}()},
 \code{\link{directed_dcsbm}()},
+\code{\link{overlapping_sbm}()},
 \code{\link{planted_partition}()}
 
 Other undirected graphs: 
 \code{\link{chung_lu}()},
 \code{\link{dcsbm}()},
 \code{\link{erdos_renyi}()},
+\code{\link{overlapping_sbm}()},
 \code{\link{planted_partition}()}
 }
 \concept{stochastic block models}

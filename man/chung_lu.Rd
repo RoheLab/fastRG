@@ -78,6 +78,7 @@ edgelist
 Other undirected graphs: 
 \code{\link{dcsbm}()},
 \code{\link{erdos_renyi}()},
+\code{\link{overlapping_sbm}()},
 \code{\link{planted_partition}()},
 \code{\link{sbm}()}
 }
