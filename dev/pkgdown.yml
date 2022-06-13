@@ -1,8 +1,8 @@
-pandoc: 2.7.3
+pandoc: 2.14.2
 pkgdown: 2.0.4
 pkgdown_sha: ~
 articles: {}
-last_built: 2022-06-13T20:19Z
+last_built: 2022-06-13T20:40Z
 urls:
   reference: https://rohelab.github.io/fastRG/reference
   article: https://rohelab.github.io/fastRG/articles
