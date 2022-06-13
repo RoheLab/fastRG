@@ -114,13 +114,19 @@ in your preferred format.</p>
     <dl><dt>factor_model</dt>
 <dd><p>A <code><a href="directed_factor_model.html">directed_factor_model()</a></code> or
 <code><a href="undirected_factor_model.html">undirected_factor_model()</a></code>.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Ignored. Do not use.</p></dd>
+
+
 <dt>allow_self_loops</dt>
 <dd><p>Logical indicating whether or not
 nodes should be allowed to form edges with themselves.
 Defaults to <code>TRUE</code>. When <code>FALSE</code>, sampling proceeds allowing
 self-loops, and these are then removed after the fact.</p></dd>
+
+
 <dt>poisson_edges</dt>
 <dd><p>Logical indicating whether or not
 multiple edges are allowed to form between a pair of
@@ -128,16 +134,33 @@ nodes. Defaults to <code>TRUE</code>. When <code>FALSE</code>, sampling proceeds
 as usual, and duplicate edges are removed afterwards.
 See Section 2.3 of Rohe et al (2017) for additional
 details.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A <code><a href="https://tidygraph.data-imaginist.com/reference/tbl_graph.html" class="external-link">tidygraph::tbl_graph()</a></code> object that is possibly a
+    
+
+<p>A <code><a href="https://tidygraph.data-imaginist.com/reference/tbl_graph.html" class="external-link">tidygraph::tbl_graph()</a></code> object that is possibly a
 multigraph (that is, we take there to be multiple edges
-rather than weighted edges).
-When <code>factor_model</code> is <strong>undirected</strong>:</p><div class="sourceCode"><pre><code>- the graph is undirected and one-mode.
-</code></pre></div><p>When <code>factor_model</code> is <strong>directed</strong> and <strong>square</strong>:</p><div class="sourceCode"><pre><code>- the graph is directed and one-mode.
-</code></pre></div><p>When <code>factor_model</code> is <strong>directed</strong> and <strong>rectangular</strong>:</p><div class="sourceCode"><pre><code>- the graph is undirected and bipartite.
-</code></pre></div><p>Note that working with bipartite graphs in <code>tidygraph</code> is more
+rather than weighted edges).</p>
+
+
+<p>When <code>factor_model</code> is <strong>undirected</strong>:</p><div class="sourceCode"><pre><code>- the graph is undirected and one-mode.
+</code></pre></div>
+
+
+
+<p>When <code>factor_model</code> is <strong>directed</strong> and <strong>square</strong>:</p><div class="sourceCode"><pre><code>- the graph is directed and one-mode.
+</code></pre></div>
+
+
+
+<p>When <code>factor_model</code> is <strong>directed</strong> and <strong>rectangular</strong>:</p><div class="sourceCode"><pre><code>- the graph is undirected and bipartite.
+</code></pre></div>
+
+
+
+<p>Note that working with bipartite graphs in <code>tidygraph</code> is more
 complex than working with one-mode graphs.</p>
     </div>
     <div class="section level2">
@@ -242,9 +265,9 @@ Journal of Machine Learning Research; 19(77):1-13, 2018.
 <span class="r-in"><span class="co">### sampling graphs as igraph graphs ------------------</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="sample_igraph.html">sample_igraph</a></span><span class="op">(</span><span class="va">ufm</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> IGRAPH f3a0c3a UN-- 100 526 -- </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> IGRAPH 277c372 UN-- 100 526 -- </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> + attr: name (v/c)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> + edges from f3a0c3a (vertex names):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> + edges from 277c372 (vertex names):</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 12--25  14--45  22--50  6 --68  1 --16  17--92  15--77  6 --44  94--94 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [10] 22--82  24--56  61--76  39--95  79--82  25--77  22--75  30--32  27--32 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [19] 22--85  30--44  54--87  25--47  32--75  55--100 83--84  28--80  64--71 </span>
@@ -426,7 +449,7 @@ Journal of Machine Learning Research; 19(77):1-13, 2018.
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
     </footer></div>

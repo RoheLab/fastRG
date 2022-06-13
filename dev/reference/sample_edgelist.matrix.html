@@ -102,13 +102,19 @@ validation suffer foolishly at their own hand.
 of latent node positions encoding incoming edge community membership.
 The <code>X</code> matrix in Rohe et al (2017). Naming differs only for
 consistency with the S3 generic.</p></dd>
+
+
 <dt>S</dt>
 <dd><p>A <code>k1</code> by <code>k2</code> mixing <code><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix()</a></code> or <code><a href="https://rdrr.io/pkg/Matrix/man/Matrix.html" class="external-link">Matrix::Matrix()</a></code>. In
 the undirect case this is assumed to be symmetric but <strong>we do not
 check that this is the case</strong>.</p></dd>
+
+
 <dt>Y</dt>
 <dd><p>A <code>d</code> by <code>k2</code> <code><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix()</a></code> or <code><a href="https://rdrr.io/pkg/Matrix/man/Matrix.html" class="external-link">Matrix::Matrix()</a></code> of latent
 node positions encoding outgoing edge community membership.</p></dd>
+
+
 <dt>directed</dt>
 <dd><p>Logical indicating whether or not the graph should be
 directed. When <code>directed = FALSE</code>, symmetrizes <code>S</code> internally.
@@ -117,8 +123,12 @@ expectation (although not necessarily an undirected graph).
 When <code>directed = FALSE</code>, samples a directed graph with
 symmetric expectation, and then adds edges until symmetry
 is achieved.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Ignored. Do not use.</p></dd>
+
+
 <dt>poisson_edges</dt>
 <dd><p>Logical indicating whether or not
 multiple edges are allowed to form between a pair of
@@ -126,22 +136,32 @@ nodes. Defaults to <code>TRUE</code>. When <code>FALSE</code>, sampling proceeds
 as usual, and duplicate edges are removed afterwards.
 See Section 2.3 of Rohe et al (2017) for additional
 details.</p></dd>
+
+
 <dt>allow_self_loops</dt>
 <dd><p>Logical indicating whether or not
 nodes should be allowed to form edges with themselves.
 Defaults to <code>TRUE</code>. When <code>FALSE</code>, sampling proceeds allowing
 self-loops, and these are then removed after the fact.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A single realization of a random Poisson (or Bernoulli)
+    
+
+<p>A single realization of a random Poisson (or Bernoulli)
 Dot Product Graph, represented as a <code><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble::tibble()</a></code> with two
-integer columns, <code>from</code> and <code>to</code>.
-In the undirected case, <code>from</code> and <code>to</code> do not encode
+integer columns, <code>from</code> and <code>to</code>.</p>
+
+
+<p>In the undirected case, <code>from</code> and <code>to</code> do not encode
 information about edge direction, but we will always have
 <code>from &lt;= to</code> for convenience of edge identification.
 To avoid handling such considerations yourself, we recommend using
-<code><a href="sample_sparse.html">sample_sparse()</a></code>, <code><a href="sample_igraph.html">sample_igraph()</a></code>, and <code><a href="sample_tidygraph.html">sample_tidygraph()</a></code>over <code><a href="sample_edgelist.html">sample_edgelist()</a></code>.</p>
+<code><a href="sample_sparse.html">sample_sparse()</a></code>, <code><a href="sample_igraph.html">sample_igraph()</a></code>, and <code><a href="sample_tidygraph.html">sample_tidygraph()</a></code></p>
+
+
+<p>over <code><a href="sample_edgelist.html">sample_edgelist()</a></code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -207,7 +227,7 @@ Journal of Machine Learning Research; 19(77):1-13, 2018.
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
     </footer></div>

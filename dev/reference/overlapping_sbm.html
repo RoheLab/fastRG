@@ -7,7 +7,7 @@ options to enable rapid exploration, or you can invest the effort
 for more control over the model parameters. We strongly recommend
 setting the expected_degree or expected_density argument
 to avoid large memory allocations associated with
-sampling large, dense graphs."><title>Create an undirected degree corrected stochastic blockmodel object — dcsbm • fastRG</title><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.1.0/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.1.0/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous"><!-- bootstrap-toc --><script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Create an undirected degree corrected stochastic blockmodel object — dcsbm"><meta property="og:description" content="To specify a degree-corrected stochastic blockmodel, you must specify
+sampling large, dense graphs."><title>Create an undirected degree corrected stochastic blockmodel object — overlapping_sbm • fastRG</title><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.1.0/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.1.0/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous"><!-- bootstrap-toc --><script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Create an undirected degree corrected stochastic blockmodel object — overlapping_sbm"><meta property="og:description" content="To specify a degree-corrected stochastic blockmodel, you must specify
 the degree-heterogeneity parameters (via n or theta),
 the mixing matrix (via k or B), and the relative block
 probabilites (optional, via pi). We provide sane defaults for most of these
@@ -57,8 +57,8 @@ sampling large, dense graphs."><meta name="robots" content="noindex"><!-- mathja
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Create an undirected degree corrected stochastic blockmodel object</h1>
-      <small class="dont-index">Source: <a href="https://github.com/RoheLab/fastRG/blob/HEAD/R/undirected_dcsbm.R" class="external-link"><code>R/undirected_dcsbm.R</code></a></small>
-      <div class="d-none name"><code>dcsbm.Rd</code></div>
+      <small class="dont-index">Source: <a href="https://github.com/RoheLab/fastRG/blob/HEAD/R/undirected_overlapping_sbm.R" class="external-link"><code>R/undirected_overlapping_sbm.R</code></a></small>
+      <div class="d-none name"><code>overlapping_sbm.Rd</code></div>
     </div>
 
     <div class="ref-description section level2">
@@ -75,7 +75,7 @@ sampling large, dense graphs.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">dcsbm</span><span class="op">(</span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">overlapping_sbm</span><span class="op">(</span>
   n <span class="op">=</span> <span class="cn">NULL</span>,
   theta <span class="op">=</span> <span class="cn">NULL</span>,
   k <span class="op">=</span> <span class="cn">NULL</span>,
@@ -164,13 +164,9 @@ Defaults to <code>TRUE</code>.</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>An <code>undirected_dcsbm</code> S3 object, a subclass of the
+<p>An <code>undirected_overlapping_sbm</code> S3 object, a subclass of the
 <code><a href="undirected_factor_model.html">undirected_factor_model()</a></code> with the following additional
 fields:</p><ul><li><p><code>theta</code>: A numeric vector of degree-heterogeneity parameters.</p></li>
-<li><p><code>z</code>: The community memberships of each node, as a <code><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor()</a></code>.
-The factor will have <code>k</code> levels, where <code>k</code> is the number of
-communities in the stochastic blockmodel. There will not
-always necessarily be observed nodes in each community.</p></li>
 <li><p><code>pi</code>: Sampling probabilities for each block.</p></li>
 <li><p><code>sorted</code>: Logical indicating where nodes are arranged by
 block (and additionally by degree heterogeneity parameter)
@@ -179,9 +175,9 @@ within each block.</p></li>
     <div class="section level2">
     <h2 id="generative-model">Generative Model<a class="anchor" aria-label="anchor" href="#generative-model"></a></h2>
     <p>There are two levels of randomness in a degree-corrected
-stochastic blockmodel. First, we randomly chose a block
-membership for each node in the blockmodel. This is
-handled by <code>dcsbm()</code>. Then, given these block memberships,
+overlapping stochastic blockmodel. First, for each node, we
+independently determine if that node is a member of each block. This is
+handled by <code>overlapping_sbm()</code>. Then, given these block memberships,
 we randomly sample edges between nodes. This second
 operation is handled by <code><a href="sample_edgelist.html">sample_edgelist()</a></code>,
 <code><a href="sample_sparse.html">sample_sparse()</a></code>, <code><a href="sample_igraph.html">sample_igraph()</a></code> and
@@ -190,56 +186,44 @@ graph representation.</p><div class="section">
 <h3 id="block-memberships">Block memberships<a class="anchor" aria-label="anchor" href="#block-memberships"></a></h3>
 
 
-<p>Let \(z_i\) represent the block membership of node \(i\).
-To generate \(z_i\) we sample from a categorical
-distribution (note that this is a special case of a
-multinomial) with parameter \(\pi\), such that
-\(\pi_i\) represents the probability of ending up in
-the ith block. Block memberships for each node are independent.</p>
+<p><strong>TODO</strong></p>
 </div>
 
 <div class="section">
 <h3 id="degree-heterogeneity">Degree heterogeneity<a class="anchor" aria-label="anchor" href="#degree-heterogeneity"></a></h3>
 
 
-<p>In addition to block membership, the DCSBM also allows
+<p>In addition to block membership, the overlapping SBM also allows
 nodes to have different propensities for edge formation.
 We represent this propensity for node \(i\) by a positive
-number \(\theta_i\). Typically the \(\theta_i\) are
-constrained to sum to one for identifiability purposes,
-but this doesn't really matter during sampling (i.e.
-without the sum constraint scaling \(B\) and \(\theta\)
-has the same effect on edge probabilities, but whether
-\(B\) or \(\theta\) is responsible for this change
-is uncertain).</p>
+number \(\theta_i\).</p>
+<p><strong>TODO</strong> identifiability constraint?</p>
 </div>
 
 <div class="section">
 <h3 id="edge-formulation">Edge formulation<a class="anchor" aria-label="anchor" href="#edge-formulation"></a></h3>
 
 
-<p>Once we know the block memberships \(z\) and the degree
+<p>Once we know the block memberships and the degree
 heterogeneity parameters \(theta\), we need one more
 ingredient, which is the baseline intensity of connections
 between nodes in block <code>i</code> and block <code>j</code>. Then each edge
 \(A_{i,j}\) is Poisson distributed with parameter</p>
-<p>$$
-  \lambda[i, j] = \theta_i \cdot B_{z_i, z_j} \cdot \theta_j.
-$$</p>
+<p><strong>TODO</strong></p>
 </div>
 
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>Other stochastic block models: 
+<code><a href="dcsbm.html">dcsbm</a>()</code>,
 <code><a href="directed_dcsbm.html">directed_dcsbm</a>()</code>,
-<code><a href="overlapping_sbm.html">overlapping_sbm</a>()</code>,
 <code><a href="planted_partition.html">planted_partition</a>()</code>,
 <code><a href="sbm.html">sbm</a>()</code></p>
 <p>Other undirected graphs: 
 <code><a href="chung_lu.html">chung_lu</a>()</code>,
+<code><a href="dcsbm.html">dcsbm</a>()</code>,
 <code><a href="erdos_renyi.html">erdos_renyi</a>()</code>,
-<code><a href="overlapping_sbm.html">overlapping_sbm</a>()</code>,
 <code><a href="planted_partition.html">planted_partition</a>()</code>,
 <code><a href="sbm.html">sbm</a>()</code></p></div>
     </div>
@@ -249,19 +233,19 @@ $$</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">27</span><span class="op">)</span></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="va">lazy_dcsbm</span> <span class="op">&lt;-</span> <span class="fu">dcsbm</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">1000</span>, k <span class="op">=</span> <span class="fl">5</span>, expected_density <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">lazy_overlapping_sbm</span> <span class="op">&lt;-</span> <span class="fu">overlapping_sbm</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">1000</span>, k <span class="op">=</span> <span class="fl">5</span>, expected_density <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Generating random degree heterogeneity parameters `theta` from a LogNormal(2, 1) distribution. This distribution may change in the future. Explicitly set `theta` for reproducible results.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Generating random mixing matrix `B` with independent Uniform(0, 1) entries. This distribution may change in the future. Explicitly set `B` for reproducible results.</span>
-<span class="r-in"><span class="va">lazy_dcsbm</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Undirected Degree-Corrected Stochastic Blockmodel</span>
+<span class="r-in"><span class="va">lazy_overlapping_sbm</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Undirected Degree-Corrected Overlapping Blockmodel</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Nodes (n): 1000 (arranged by block)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Nodes (n): 1000 (sorted)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Blocks (k): 5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Traditional DCSBM parameterization:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Traditional Overlapping SBM parameterization:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Block memberships (z): 1000 [factor] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Block memberships (Z): 1000 x 5 [dgCMatrix] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Degree heterogeneity (theta): 1000 [numeric] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Block probabilities (pi): 5 [numeric] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -277,19 +261,19 @@ $$</p>
 <span class="r-in"><span class="co"># sometimes you gotta let the world burn and</span></span>
 <span class="r-in"><span class="co"># sample a wildly dense graph</span></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="va">dense_lazy_dcsbm</span> <span class="op">&lt;-</span> <span class="fu">dcsbm</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">500</span>, k <span class="op">=</span> <span class="fl">3</span>, expected_density <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">dense_lazy_overlapping_sbm</span> <span class="op">&lt;-</span> <span class="fu">overlapping_sbm</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">500</span>, k <span class="op">=</span> <span class="fl">3</span>, expected_density <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Generating random degree heterogeneity parameters `theta` from a LogNormal(2, 1) distribution. This distribution may change in the future. Explicitly set `theta` for reproducible results.</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Generating random mixing matrix `B` with independent Uniform(0, 1) entries. This distribution may change in the future. Explicitly set `B` for reproducible results.</span>
-<span class="r-in"><span class="va">dense_lazy_dcsbm</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Undirected Degree-Corrected Stochastic Blockmodel</span>
+<span class="r-in"><span class="va">dense_lazy_overlapping_sbm</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Undirected Degree-Corrected Overlapping Blockmodel</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Nodes (n): 500 (arranged by block)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Nodes (n): 500 (sorted)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Blocks (k): 3</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Traditional DCSBM parameterization:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Traditional Overlapping SBM parameterization:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Block memberships (z): 500 [factor] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Block memberships (Z): 500 x 3 [dgCMatrix] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Degree heterogeneity (theta): 500 [numeric] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Block probabilities (pi): 3 [numeric] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -312,25 +296,25 @@ $$</p>
 <span class="r-in"></span>
 <span class="r-in"><span class="va">theta</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Round.html" class="external-link">round</a></span><span class="op">(</span><span class="fu">stats</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/stats/Lognormal.html" class="external-link">rlnorm</a></span><span class="op">(</span><span class="va">n</span>, <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="va">pi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">pi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span> <span class="op">/</span> <span class="fl">5</span></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="va">custom_dcsbm</span> <span class="op">&lt;-</span> <span class="fu">dcsbm</span><span class="op">(</span></span>
+<span class="r-in"><span class="va">custom_overlapping_sbm</span> <span class="op">&lt;-</span> <span class="fu">overlapping_sbm</span><span class="op">(</span></span>
 <span class="r-in">  theta <span class="op">=</span> <span class="va">theta</span>,</span>
 <span class="r-in">  B <span class="op">=</span> <span class="va">B</span>,</span>
 <span class="r-in">  pi <span class="op">=</span> <span class="va">pi</span>,</span>
 <span class="r-in">  expected_degree <span class="op">=</span> <span class="fl">50</span></span>
 <span class="r-in"><span class="op">)</span></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="va">custom_dcsbm</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Undirected Degree-Corrected Stochastic Blockmodel</span>
+<span class="r-in"><span class="va">custom_overlapping_sbm</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Undirected Degree-Corrected Overlapping Blockmodel</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Nodes (n): 1000 (arranged by block)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Nodes (n): 1000 (sorted)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Blocks (k): 5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Traditional DCSBM parameterization:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Traditional Overlapping SBM parameterization:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Block memberships (z): 1000 [factor] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Block memberships (Z): 1000 x 5 [dgCMatrix] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Degree heterogeneity (theta): 1000 [numeric] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Block probabilities (pi): 5 [numeric] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -343,29 +327,29 @@ $$</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected degree: 50</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected density: 0.05</span>
 <span class="r-in"></span>
-<span class="r-in"><span class="va">edgelist</span> <span class="op">&lt;-</span> <span class="fu"><a href="sample_edgelist.html">sample_edgelist</a></span><span class="op">(</span><span class="va">custom_dcsbm</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">edgelist</span> <span class="op">&lt;-</span> <span class="fu"><a href="sample_edgelist.html">sample_edgelist</a></span><span class="op">(</span><span class="va">custom_overlapping_sbm</span><span class="op">)</span></span>
 <span class="r-in"><span class="va">edgelist</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 24,885 × 2</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 24,953 × 2</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     from    to</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>    43    61</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>    22    59</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>    22    41</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>    15    50</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     4    33</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>    13    77</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>     1    35</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     1    31</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     2    28</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>     1    47</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 24,875 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     7    15</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     5    74</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     1   162</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     1    49</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     1    58</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     3    27</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>     1     9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     1     2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     6    14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>    50    54</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 24,943 more rows</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># efficient eigendecompostion that leverages low-rank structure in</span></span>
 <span class="r-in"><span class="co"># E(A) so that you don't have to form E(A) to find eigenvectors,</span></span>
 <span class="r-in"><span class="co"># as E(A) is typically dense. computation is</span></span>
 <span class="r-in"><span class="co"># handled via RSpectra</span></span>
 <span class="r-in"></span>
-<span class="r-in"><span class="va">population_eigs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/RSpectra/man/eigs.html" class="external-link">eigs_sym</a></span><span class="op">(</span><span class="va">custom_dcsbm</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">population_eigs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/RSpectra/man/eigs.html" class="external-link">eigs_sym</a></span><span class="op">(</span><span class="va">custom_overlapping_sbm</span><span class="op">)</span></span>
 <span class="r-in"></span>
 </code></pre></div>
     </div>

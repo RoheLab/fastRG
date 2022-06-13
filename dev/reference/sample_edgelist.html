@@ -112,13 +112,19 @@ in your preferred format.</p>
     <dl><dt>factor_model</dt>
 <dd><p>A <code><a href="directed_factor_model.html">directed_factor_model()</a></code> or
 <code><a href="undirected_factor_model.html">undirected_factor_model()</a></code>.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Ignored. Do not use.</p></dd>
+
+
 <dt>allow_self_loops</dt>
 <dd><p>Logical indicating whether or not
 nodes should be allowed to form edges with themselves.
 Defaults to <code>TRUE</code>. When <code>FALSE</code>, sampling proceeds allowing
 self-loops, and these are then removed after the fact.</p></dd>
+
+
 <dt>poisson_edges</dt>
 <dd><p>Logical indicating whether or not
 multiple edges are allowed to form between a pair of
@@ -126,17 +132,25 @@ nodes. Defaults to <code>TRUE</code>. When <code>FALSE</code>, sampling proceeds
 as usual, and duplicate edges are removed afterwards.
 See Section 2.3 of Rohe et al (2017) for additional
 details.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A single realization of a random Poisson (or Bernoulli)
+    
+
+<p>A single realization of a random Poisson (or Bernoulli)
 Dot Product Graph, represented as a <code><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble::tibble()</a></code> with two
-integer columns, <code>from</code> and <code>to</code>.
-In the undirected case, <code>from</code> and <code>to</code> do not encode
+integer columns, <code>from</code> and <code>to</code>.</p>
+
+
+<p>In the undirected case, <code>from</code> and <code>to</code> do not encode
 information about edge direction, but we will always have
 <code>from &lt;= to</code> for convenience of edge identification.
 To avoid handling such considerations yourself, we recommend using
-<code><a href="sample_sparse.html">sample_sparse()</a></code>, <code><a href="sample_igraph.html">sample_igraph()</a></code>, and <code><a href="sample_tidygraph.html">sample_tidygraph()</a></code>over <code>sample_edgelist()</code>.</p>
+<code><a href="sample_sparse.html">sample_sparse()</a></code>, <code><a href="sample_igraph.html">sample_igraph()</a></code>, and <code><a href="sample_tidygraph.html">sample_tidygraph()</a></code></p>
+
+
+<p>over <code>sample_edgelist()</code>.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
@@ -259,9 +273,9 @@ Journal of Machine Learning Research; 19(77):1-13, 2018.
 <span class="r-in"><span class="co">### sampling graphs as igraph graphs ------------------</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="fu"><a href="sample_igraph.html">sample_igraph</a></span><span class="op">(</span><span class="va">ufm</span><span class="op">)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> IGRAPH 0224300 UN-- 100 526 -- </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> IGRAPH 9ce2fd3 UN-- 100 526 -- </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> + attr: name (v/c)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> + edges from 0224300 (vertex names):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> + edges from 9ce2fd3 (vertex names):</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 12--25  14--45  22--50  6 --68  1 --16  17--92  15--77  6 --44  94--94 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [10] 22--82  24--56  61--76  39--95  79--82  25--77  22--75  30--32  27--32 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [19] 22--85  30--44  54--87  25--47  32--75  55--100 83--84  28--80  64--71 </span>
@@ -443,7 +457,7 @@ Journal of Machine Learning Research; 19(77):1-13, 2018.
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
     </footer></div>

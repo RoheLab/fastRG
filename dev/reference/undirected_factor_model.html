@@ -89,26 +89,37 @@ of the stochastic blockmodels as undirected factor models
     <dl><dt>X</dt>
 <dd><p>A <code><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix()</a></code> or <a href="https://rdrr.io/r/base/matrix.html" class="external-link">Matrix()</a> representing real-valued
 latent node positions. Entries must be positive.</p></dd>
+
+
 <dt>S</dt>
 <dd><p>A <code><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix()</a></code> or <a href="https://rdrr.io/r/base/matrix.html" class="external-link">Matrix()</a> mixing matrix. <code>S</code> is
 symmetrized if it is not already, as this is the undirected
 case. Entries must be positive.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>Ignored. Must be empty.</p></dd>
+
+
 <dt>expected_degree</dt>
 <dd><p>If specified, the desired expected degree
 of the graph. Specifying <code>expected_degree</code> simply rescales <code>S</code>
 to achieve this. Defaults to <code>NULL</code>. Do not specify both
 <code>expected_degree</code> and <code>expected_density</code> at the same time.</p></dd>
+
+
 <dt>expected_density</dt>
 <dd><p>If specified, the desired expected density
 of the graph. Specifying <code>expected_density</code> simply rescales <code>S</code>
 to achieve this. Defaults to <code>NULL</code>. Do not specify both
 <code>expected_degree</code> and <code>expected_density</code> at the same time.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>An <code>undirected_factor_model</code> S3 class based on a list
+    
+
+<p>An <code>undirected_factor_model</code> S3 class based on a list
 with the following elements:</p><ul><li><p><code>X</code>: The latent positions as a <code><a href="https://rdrr.io/pkg/Matrix/man/Matrix.html" class="external-link">Matrix()</a></code> object.</p></li>
 <li><p><code>S</code>: The mixing matrix as a <code><a href="https://rdrr.io/pkg/Matrix/man/Matrix.html" class="external-link">Matrix()</a></code> object.</p></li>
 <li><p><code>n</code>: The number of nodes in the network.</p></li>
@@ -166,7 +177,7 @@ the dimension of the latent node position vectors.</p></li>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
 </div>
 
     </footer></div>
