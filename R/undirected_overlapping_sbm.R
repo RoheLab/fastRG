@@ -1,5 +1,6 @@
 new_undirected_overlapping_sbm <- function(
     X, S,
+    Z,
     theta,
     pi,
     sorted,
@@ -7,6 +8,7 @@ new_undirected_overlapping_sbm <- function(
     subclass = character()) {
   subclass <- c(subclass, "undirected_overlapping_sbm")
   overlapping_sbm <- undirected_factor_model(X, S, ..., subclass = subclass)
+  overlapping_sbm$Z <- Z
   overlapping_sbm$theta <- theta
   overlapping_sbm$pi <- pi
   overlapping_sbm$sorted <- sorted
@@ -24,7 +26,7 @@ validate_undirected_overlapping_sbm <- function(x) {
     )
   }
 
-  # TODO: this probably should be done more thoroughly
+  # TODO: check Z
 
   if (!is.numeric(values$theta)) {
     stop("`theta` must be a numeric.", call. = FALSE)
@@ -105,6 +107,9 @@ validate_undirected_overlapping_sbm <- function(x) {
 #'   [undirected_factor_model()] with the following additional
 #'   fields:
 #'
+#'   - `Z`: The community memberships of each node, as an `n` by `k`
+#'     binary indicator matrix.
+#'
 #'   - `theta`: A numeric vector of degree-heterogeneity parameters.
 #'
 #'   - `pi`: Sampling probabilities for each block.
@@ -132,6 +137,8 @@ validate_undirected_overlapping_sbm <- function(x) {
 #' graph representation.
 #'
 #' ## Block memberships
+#'
+#' Note that some nodes may not belong to any blocks.
 #'
 #' **TODO**
 #'
@@ -271,12 +278,15 @@ overlapping_sbm <- function(
 
   # sample block memberships
 
-
   X <- Matrix(0, nrow = n, ncol = k)
+  Z <- Matrix(0, nrow = n, ncol = k)
   colnames(X) <- paste0("block", 1:k)
+  colnames(Z) <- paste0("block", 1:k)
 
   for (i in 1:k) {
-    X[, i] <- stats::rbinom(n, 1, pi[i]) * theta
+    ind <- stats::rbinom(n, 1, pi[i])
+    Z[, i] <- ind
+    X[, i] <- ind * theta
   }
 
   if (sort_nodes) {
@@ -290,6 +300,7 @@ overlapping_sbm <- function(
   overlapping_sbm <- new_undirected_overlapping_sbm(
     X = X,
     S = B,
+    Z = Z,
     theta = theta,
     pi = pi,
     sorted = sort_nodes,
@@ -312,6 +323,7 @@ print.undirected_overlapping_sbm <- function(x, ...) {
   cat(glue("Blocks (k): {x$k}\n\n", .trim = FALSE))
 
   cat("Traditional Overlapping SBM parameterization:\n\n")
+  cat("Block memberships (Z):", dim_and_class(x$Z), "\n")
   cat("Degree heterogeneity (theta):", dim_and_class(x$theta), "\n")
   cat("Block probabilities (pi):", dim_and_class(x$pi), "\n\n")
 
