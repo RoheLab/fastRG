@@ -166,7 +166,9 @@ Defaults to <code>TRUE</code>.</p></dd>
 
 <p>An <code>undirected_overlapping_sbm</code> S3 object, a subclass of the
 <code><a href="undirected_factor_model.html">undirected_factor_model()</a></code> with the following additional
-fields:</p><ul><li><p><code>theta</code>: A numeric vector of degree-heterogeneity parameters.</p></li>
+fields:</p><ul><li><p><code>Z</code>: The community memberships of each node, as an <code>n</code> by <code>k</code>
+binary indicator matrix.</p></li>
+<li><p><code>theta</code>: A numeric vector of degree-heterogeneity parameters.</p></li>
 <li><p><code>pi</code>: Sampling probabilities for each block.</p></li>
 <li><p><code>sorted</code>: Logical indicating where nodes are arranged by
 block (and additionally by degree heterogeneity parameter)
@@ -186,6 +188,7 @@ graph representation.</p><div class="section">
 <h3 id="block-memberships">Block memberships<a class="anchor" aria-label="anchor" href="#block-memberships"></a></h3>
 
 
+<p>Note that some nodes may not belong to any blocks.</p>
 <p><strong>TODO</strong></p>
 </div>
 
