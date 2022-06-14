@@ -2,7 +2,7 @@
 % Please edit documentation in R/undirected_overlapping_sbm.R
 \name{overlapping_sbm}
 \alias{overlapping_sbm}
-\title{Create an undirected degree corrected stochastic blockmodel object}
+\title{Create an undirected overlapping degree corrected stochastic blockmodel object}
 \usage{
 overlapping_sbm(
   n = NULL,

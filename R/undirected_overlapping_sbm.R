@@ -46,7 +46,7 @@ validate_undirected_overlapping_sbm <- function(x) {
   x
 }
 
-#' Create an undirected degree corrected stochastic blockmodel object
+#' Create an undirected overlapping degree corrected stochastic blockmodel object
 #'
 #' To specify a degree-corrected stochastic blockmodel, you must specify
 #' the degree-heterogeneity parameters (via `n` or `theta`),
