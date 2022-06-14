@@ -125,8 +125,10 @@ validate_undirected_factor_model <- function(x) {
 #' ufm <- undirected_factor_model(X, S)
 #' ufm
 #'
-#' sane_ufm <- undirected_factor_model(X, S, expected_degree = 50)
-#' sane_ufm
+#' ufm2 <- undirected_factor_model(X, S, expected_degree = 50)
+#' ufm2
+#'
+#' svds(ufm2)
 #'
 undirected_factor_model <- function(
   X, S,

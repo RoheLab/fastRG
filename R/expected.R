@@ -146,6 +146,44 @@ eigs_sym.undirected_factor_model <- function(
   eigs_sym(Ax, k, n = A$n, args = list(X = A$X, SXt = tcrossprod(A$S, A$X)))
 }
 
+#' @method svds undirected_factor_model
+#' @export
+svds.undirected_factor_model <- function(
+    A,
+    k = A$k,
+    nu = k,
+    nv = k,
+    opts = list(),
+    ...) {
+
+  if (!requireNamespace("RSpectra", quietly = TRUE)) {
+    stop(
+      "Must install `RSpectra` for this functionality.",
+      call. = FALSE
+    )
+  }
+
+  Ax <- function(x, args) {
+    as.numeric(args$X %*% (tcrossprod(args$S, args$X) %*% x))
+  }
+
+  Atx <- function(x, args) {
+    as.numeric(tcrossprod(args$X, args$S) %*% crossprod(args$X, x))
+  }
+
+  svds(
+    A = Ax,
+    k = k,
+    nu = nu,
+    nv = nv,
+    opts = opts,
+    ...,
+    Atrans = Atx,
+    dim = c(A$n, A$n),
+    args = list(X = A$X, S = A$S)
+  )
+}
+
 #' @export
 expected_in_degree.directed_factor_model <- function(factor_model, ...) {
   expected_edges(factor_model) / as.numeric(factor_model$d)
@@ -168,6 +206,9 @@ expected_density.directed_factor_model <- function(factor_model, ...) {
 #' @importFrom RSpectra svds
 #' @export
 RSpectra::svds
+
+
+
 
 #' @method svds directed_factor_model
 #' @export
