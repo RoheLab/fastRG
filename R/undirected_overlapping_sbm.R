@@ -134,7 +134,7 @@ validate_undirected_overlapping_sbm <- function(x) {
 #'
 #' Zhang, Yuan, Elizaveta Levina, and Ji Zhu. "Detecting
 #' Overlapping Communities in Networks Using Spectral Methods."
-#'  ArXiv:1412.3432 [Stat], December 10, 2014. http://arxiv.org/abs/1412.3432.
+#'  ArXiv:1412.3432, December 10, 2014. http://arxiv.org/abs/1412.3432.
 #'
 #' @export
 #' @family stochastic block models

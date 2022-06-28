@@ -97,6 +97,10 @@ to avoid large memory allocations associated with
 sampling large, dense graphs.
 }
 \section{Generative Model}{
+Note: we implement a slight generalization of the original overlapping
+stochastic blockmodel introduce in Zhang et al. (2014) called the
+Overlapping Continuous Community Assignment Model (OCCAM).
+
 There are two levels of randomness in a degree-corrected
 overlapping stochastic blockmodel. First, for each node, we
 independently determine if that node is a member of each block. This is
@@ -195,7 +199,7 @@ no. 1 (March 2011): 309–36. https://doi.org/10.1214/10-AOAS382.
 
 Zhang, Yuan, Elizaveta Levina, and Ji Zhu. "Detecting
 Overlapping Communities in Networks Using Spectral Methods."
-ArXiv:1412.3432 \link{Stat}, December 10, 2014. http://arxiv.org/abs/1412.3432.
+ArXiv:1412.3432, December 10, 2014. http://arxiv.org/abs/1412.3432.
 }
 \seealso{
 Other stochastic block models: 
