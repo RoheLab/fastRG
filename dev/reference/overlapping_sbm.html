@@ -176,7 +176,10 @@ within each block.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="generative-model">Generative Model<a class="anchor" aria-label="anchor" href="#generative-model"></a></h2>
-    <p>There are two levels of randomness in a degree-corrected
+    <p>Note: we implement a slight generalization of the original overlapping
+stochastic blockmodel introduce in Zhang et al. (2014) called the
+Overlapping Continuous Community Assignment Model (OCCAM).</p>
+<p>There are two levels of randomness in a degree-corrected
 overlapping stochastic blockmodel. First, for each node, we
 independently determine if that node is a member of each block. This is
 handled by <code>overlapping_sbm()</code>. Then, given these block memberships,
@@ -230,7 +233,7 @@ French Political Blogosphere." The Annals of Applied Statistics 5,
 no. 1 (March 2011): 309–36. https://doi.org/10.1214/10-AOAS382.</p>
 <p>Zhang, Yuan, Elizaveta Levina, and Ji Zhu. "Detecting
 Overlapping Communities in Networks Using Spectral Methods."
-ArXiv:1412.3432 Stat, December 10, 2014. http://arxiv.org/abs/1412.3432.</p>
+ArXiv:1412.3432, December 10, 2014. http://arxiv.org/abs/1412.3432.</p>
     </div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
