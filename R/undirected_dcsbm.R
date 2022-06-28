@@ -298,8 +298,11 @@ dcsbm <- function(
 
   # order mixing matrix by expected group size
 
-  B <- B[order(pi), ]
-  B <- B[, order(pi)]
+  if (k > 1) {
+    B <- B[order(pi), ]
+    B <- B[, order(pi)]
+  }
+
   pi <- sort(pi / sum(pi))
 
   # sample block memberships
@@ -311,7 +314,13 @@ dcsbm <- function(
     z <- sort(z)
   }
 
-  X <- sparse.model.matrix(~z + 0)
+  if (k > 1) {
+    X <- sparse.model.matrix(~z + 0)
+  } else {
+    X <- Matrix(1, nrow = n, ncol = 1)
+  }
+
+
 
   if (sort_nodes) {
 

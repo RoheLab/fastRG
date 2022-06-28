@@ -180,6 +180,23 @@ edgelist
 population_eigs <- eigs_sym(custom_overlapping_sbm)
 
 }
+\references{
+Kaufmann, Emilie, Thomas Bonald, and Marc Lelarge.
+"A Spectral Algorithm with Additive Clustering for the Recovery of
+Overlapping Communities in Networks," Vol. 9925.
+Lecture Notes in Computer Science.
+Cham: Springer International Publishing, 2016.
+https://doi.org/10.1007/978-3-319-46379-7.
+
+Latouche, Pierre, Etienne Birmelé, and Christophe Ambroise.
+"Overlapping Stochastic Block Models with Application to the
+French Political Blogosphere." The Annals of Applied Statistics 5,
+no. 1 (March 2011): 309–36. https://doi.org/10.1214/10-AOAS382.
+
+Zhang, Yuan, Elizaveta Levina, and Ji Zhu. "Detecting
+Overlapping Communities in Networks Using Spectral Methods."
+ArXiv:1412.3432 \link{Stat}, December 10, 2014. http://arxiv.org/abs/1412.3432.
+}
 \seealso{
 Other stochastic block models: 
 \code{\link{dcsbm}()},

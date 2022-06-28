@@ -118,6 +118,24 @@ validate_undirected_overlapping_sbm <- function(x) {
 #'     block (and additionally by degree heterogeneity parameter)
 #'     within each block.
 #'
+#' @references
+#'
+#' Kaufmann, Emilie, Thomas Bonald, and Marc Lelarge.
+#' "A Spectral Algorithm with Additive Clustering for the Recovery of
+#' Overlapping Communities in Networks," Vol. 9925.
+#' Lecture Notes in Computer Science.
+#' Cham: Springer International Publishing, 2016.
+#' https://doi.org/10.1007/978-3-319-46379-7.
+#'
+#' Latouche, Pierre, Etienne Birmelé, and Christophe Ambroise.
+#' "Overlapping Stochastic Block Models with Application to the
+#' French Political Blogosphere." The Annals of Applied Statistics 5,
+#' no. 1 (March 2011): 309–36. https://doi.org/10.1214/10-AOAS382.
+#'
+#' Zhang, Yuan, Elizaveta Levina, and Ji Zhu. "Detecting
+#' Overlapping Communities in Networks Using Spectral Methods."
+#'  ArXiv:1412.3432 [Stat], December 10, 2014. http://arxiv.org/abs/1412.3432.
+#'
 #' @export
 #' @family stochastic block models
 #' @family undirected graphs
@@ -125,6 +143,10 @@ validate_undirected_overlapping_sbm <- function(x) {
 #' @details
 #'
 #' # Generative Model
+#'
+#' Note: we implement a slight generalization of the original overlapping
+#' stochastic blockmodel introduce in Zhang et al. (2014) called the
+#' Overlapping Continuous Community Assignment Model (OCCAM).
 #'
 #' There are two levels of randomness in a degree-corrected
 #' overlapping stochastic blockmodel. First, for each node, we
@@ -272,8 +294,11 @@ overlapping_sbm <- function(
 
   # order mixing matrix by expected group size
 
-  B <- B[order(pi), ]
-  B <- B[, order(pi)]
+  if (k > 1) {
+    B <- B[order(pi), ]
+    B <- B[, order(pi)]
+  }
+
   pi <- sort(pi)        # do not normalize pi!
 
   # sample block memberships
