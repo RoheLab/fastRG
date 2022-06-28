@@ -51,7 +51,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">erdos_renyi</span><span class="op">(</span><span class="va">n</span>, <span class="va">...</span>, p <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">erdos_renyi</span><span class="op">(</span><span class="va">n</span>, <span class="va">...</span>, p <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -98,11 +98,11 @@ either <code>p</code> or <code>expected_degree</code>.</p></dd>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">87</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">er</span> <span class="op">&lt;-</span> <span class="fu">erdos_renyi</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">10</span>, p <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">er</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">87</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">er</span> <span class="op">&lt;-</span> <span class="fu">erdos_renyi</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">10</span>, p <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">er</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Undirected Factor Model</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -----------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -115,10 +115,10 @@ either <code>p</code> or <code>expected_degree</code>.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 21</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected degree: 2.1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected density: 0.21072</span>
-<span class="r-in"></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">er</span> <span class="op">&lt;-</span> <span class="fu">erdos_renyi</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">10</span>, expected_density <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">er</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">er</span> <span class="op">&lt;-</span> <span class="fu">erdos_renyi</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">10</span>, expected_density <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">er</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Undirected Factor Model</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -----------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -131,9 +131,9 @@ either <code>p</code> or <code>expected_degree</code>.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 10</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected degree: 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected density: 0.1</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">big_er</span> <span class="op">&lt;-</span> <span class="fu">erdos_renyi</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">10</span><span class="op">^</span><span class="fl">6</span>, expected_degree <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">big_er</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">big_er</span> <span class="op">&lt;-</span> <span class="fu">erdos_renyi</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">10</span><span class="op">^</span><span class="fl">6</span>, expected_degree <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">big_er</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Undirected Factor Model</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -----------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -146,9 +146,9 @@ either <code>p</code> or <code>expected_degree</code>.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 5e+06</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected degree: 5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected density: 0</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">A</span> <span class="op">&lt;-</span> <span class="fu"><a href="sample_sparse.html">sample_sparse</a></span><span class="op">(</span><span class="va">er</span><span class="op">)</span></span>
-<span class="r-in"><span class="va">A</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">A</span> <span class="op">&lt;-</span> <span class="fu"><a href="sample_sparse.html">sample_sparse</a></span><span class="op">(</span><span class="va">er</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">A</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 10 x 10 sparse Matrix of class "dsCMatrix"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                          </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1,] . . . . . . . . . .</span>
@@ -161,7 +161,7 @@ either <code>p</code> or <code>expected_degree</code>.</p></dd>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [8,] . . . . . . . . . .</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [9,] . . . . . . . . . .</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [10,] . . . . . . . . . .</span>
-<span class="r-in"></span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
@@ -173,7 +173,7 @@ either <code>p</code> or <code>expected_degree</code>.</p></dd>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.4.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.5.</p>
 </div>
 
     </footer></div>
