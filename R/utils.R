@@ -11,6 +11,13 @@ sort_by_all_columns <- function(X) {
   X
 }
 
+sort_by_all_columns_idx <- function(X) {
+  args <- as.list(as.data.frame(as.matrix(X)))
+  args$decreasing <- TRUE
+
+  do.call(order, args)
+}
+
 l1_normalize <- function(x) x / sum(x)
 
 # `x` and `block` should be vectors of the same length. `block` should be
