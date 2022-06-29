@@ -155,12 +155,7 @@ are chosen randomly as pure nodes, one for each block. Defaults to <code>TRUE</c
 
 <p>An <code>undirected_overlapping_sbm</code> S3 object, a subclass of the
 <code><a href="undirected_factor_model.html">undirected_factor_model()</a></code> with the following additional
-fields:</p><ul><li><p><code>Z</code>: The community memberships of each node, as an <code>n</code> by <code>k</code>
-binary indicator matrix. Node that some nodes may not belong
-to any community. The probability of any given node not
-belonging any community is given by <code>prod(1 - pi)</code>.</p></li>
-<li><p><code>theta</code>: A numeric vector of degree-heterogeneity parameters.</p></li>
-<li><p><code>pi</code>: Sampling probabilities for each block.</p></li>
+fields:</p><ul><li><p><code>pi</code>: Sampling probabilities for each block.</p></li>
 <li><p><code>sorted</code>: Logical indicating where nodes are arranged by
 block (and additionally by degree heterogeneity parameter)
 within each block.</p></li>
@@ -241,7 +236,7 @@ ArXiv:1412.3432, December 10, 2014. http://arxiv.org/abs/1412.3432.</p>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">27</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">lazy_overlapping_sbm</span> <span class="op">&lt;-</span> <span class="fu">overlapping_sbm</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">1000</span>, k <span class="op">=</span> <span class="fl">5</span>, expected_density <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Setting `B` to a matrix with value 0.8 on the diagonal and0.1 / (k - 1) on the off-diagonal. This parameterization may change in the future. Explicitly set `B` for reproducible results.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Setting `B` to a matrix with value 0.8 on the diagonal and 0.1 / (k - 1) on the off-diagonal. This parameterization may change in the future. Explicitly set `B` for reproducible results.</span>
 <span class="r-in"><span><span class="va">lazy_overlapping_sbm</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Undirected Degree-Corrected Overlapping Blockmodel</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------</span>
@@ -253,6 +248,8 @@ ArXiv:1412.3432, December 10, 2014. http://arxiv.org/abs/1412.3432.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Block memberships (Z): 1000 x 5 [dgCMatrix] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Block probabilities (pi): 5 [numeric] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Block connection propensities (B): 5 x 5 [matrix] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Factor model parameterization:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -267,10 +264,29 @@ ArXiv:1412.3432, December 10, 2014. http://arxiv.org/abs/1412.3432.</p>
 <span class="r-in"><span><span class="co"># sample a wildly dense graph</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">dense_lazy_overlapping_sbm</span> <span class="op">&lt;-</span> <span class="fu">overlapping_sbm</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">500</span>, k <span class="op">=</span> <span class="fl">3</span>, expected_density <span class="op">=</span> <span class="fl">0.8</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Setting `B` to a matrix with value 0.8 on the diagonal and0.1 / (k - 1) on the off-diagonal. This parameterization may change in the future. Explicitly set `B` for reproducible results.</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> All elements of `B` must be contained in [0, 1].</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Setting `B` to a matrix with value 0.8 on the diagonal and 0.1 / (k - 1) on the off-diagonal. This parameterization may change in the future. Explicitly set `B` for reproducible results.</span>
 <span class="r-in"><span><span class="va">dense_lazy_overlapping_sbm</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'dense_lazy_overlapping_sbm' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Undirected Degree-Corrected Overlapping Blockmodel</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Nodes (n): 500 (sorted)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Blocks (k): 3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Traditional Overlapping SBM parameterization:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Block memberships (Z): 500 x 3 [dgCMatrix] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Block probabilities (pi): 3 [numeric] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Block connection propensities (B): 3 x 3 [matrix] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Factor model parameterization:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X: 500 x 3 [dgCMatrix] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> S: 3 x 3 [dsyMatrix] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 2e+05</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected degree: 400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected density: 0.8</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">k</span> <span class="op">&lt;-</span> <span class="fl">5</span></span></span>
 <span class="r-in"><span><span class="va">n</span> <span class="op">&lt;-</span> <span class="fl">1000</span></span></span>
@@ -279,19 +295,51 @@ ArXiv:1412.3432, December 10, 2014. http://arxiv.org/abs/1412.3432.</p>
 <span class="r-in"><span><span class="va">pi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">4</span>, <span class="fl">1</span>, <span class="fl">1</span><span class="op">)</span> <span class="op">/</span> <span class="fl">5</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">custom_overlapping_sbm</span> <span class="op">&lt;-</span> <span class="fu">overlapping_sbm</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  n <span class="op">=</span> <span class="fl">200</span>,</span></span>
 <span class="r-in"><span>  B <span class="op">=</span> <span class="va">B</span>,</span></span>
 <span class="r-in"><span>  pi <span class="op">=</span> <span class="va">pi</span>,</span></span>
-<span class="r-in"><span>  expected_degree <span class="op">=</span> <span class="fl">50</span></span></span>
+<span class="r-in"><span>  expected_degree <span class="op">=</span> <span class="fl">5</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in stats::rbinom(n, 1, pi[i]):</span> argument "n" is missing, with no default</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">custom_overlapping_sbm</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'custom_overlapping_sbm' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Undirected Degree-Corrected Overlapping Blockmodel</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -------------------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Nodes (n): 200 (sorted)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Blocks (k): 5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Traditional Overlapping SBM parameterization:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Block memberships (Z): 200 x 5 [dgCMatrix] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Block probabilities (pi): 5 [numeric] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Block connection propensities (B): 5 x 5 [matrix] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Factor model parameterization:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X: 200 x 5 [dgCMatrix] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> S: 5 x 5 [dgeMatrix] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 1000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected degree: 5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected density: 0.025</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">edgelist</span> <span class="op">&lt;-</span> <span class="fu"><a href="sample_edgelist.html">sample_edgelist</a></span><span class="op">(</span><span class="va">custom_overlapping_sbm</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in sample_edgelist(custom_overlapping_sbm):</span> object 'custom_overlapping_sbm' not found</span>
 <span class="r-in"><span><span class="va">edgelist</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'edgelist' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 518 × 2</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     from    to</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>    19    35</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>    38    40</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>    25    33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>    11    13</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>    20    23</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     3    34</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>    30    33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>    15    32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>    20    34</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>    19    37</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 508 more rows</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># efficient eigendecompostion that leverages low-rank structure in</span></span></span>
 <span class="r-in"><span><span class="co"># E(A) so that you don't have to form E(A) to find eigenvectors,</span></span></span>
@@ -299,7 +347,6 @@ ArXiv:1412.3432, December 10, 2014. http://arxiv.org/abs/1412.3432.</p>
 <span class="r-in"><span><span class="co"># handled via RSpectra</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">population_eigs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/RSpectra/man/eigs.html" class="external-link">eigs_sym</a></span><span class="op">(</span><span class="va">custom_overlapping_sbm</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eigs_sym(custom_overlapping_sbm):</span> object 'custom_overlapping_sbm' not found</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

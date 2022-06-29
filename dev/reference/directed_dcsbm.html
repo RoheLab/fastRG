@@ -94,7 +94,8 @@ sampling large, dense graphs.</p>
 <span>  <span class="va">...</span>,</span>
 <span>  pi_in <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">/</span><span class="va">k_in</span>, <span class="va">k_in</span><span class="op">)</span>,</span>
 <span>  pi_out <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">/</span><span class="va">k_out</span>, <span class="va">k_out</span><span class="op">)</span>,</span>
-<span>  sort_nodes <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  sort_nodes <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  force_identifiability <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -208,6 +209,13 @@ Must match the columns of <code>B</code>, or <code>k_out</code>. Defaults to
 <dd><p>Logical indicating whether or not to sort the nodes
 so that they are grouped by block. Useful for plotting.
 Defaults to <code>TRUE</code>.</p></dd>
+
+
+<dt>force_identifiability</dt>
+<dd><p>Logical indicating whether or not to
+normalize <code>theta_in</code> such that it sums to one within each incoming
+block and <code>theta_out</code> such that it sums to one within each outgoing
+block. Defaults to <code>TRUE</code>.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -323,13 +331,36 @@ $$</p>
 <span class="r-in"><span>  expected_density <span class="op">=</span> <span class="fl">0.01</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Generating random degree heterogeneity parameters `theta_in` from a LogNormal(2, 1) distribution. This distribution may change in the future. Explicitly set `theta_in` for reproducible results.</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in directed_dcsbm(n = 1000, B = B, k_in = 5, k_out = 8, expected_density = 0.01):</span> object 'k' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">ddcsbm</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'ddcsbm' not found</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Directed Degree-Corrected Stochastic Blockmodel</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -----------------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Nodes (n): 1000 (arranged by block)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Incoming Blocks (k_in): 5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Outgoing Blocks (k_out): 8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Traditional DCSBM parameterization:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Block memberships (z_in): 1000 [factor] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Block memberships (z_out): 1000 [factor] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Degree heterogeneity (theta_in): 1000 [numeric] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Degree heterogeneity (theta_out): 1000 [numeric] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Block probabilities (pi_in): 5 [numeric] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Block probabilities (pi_out): 8 [numeric] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Factor model parameterization:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X: 1000 x 5 [dgCMatrix] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> S: 5 x 8 [dgeMatrix] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y: 1000 x 8 [dgCMatrix] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 10000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected in degree: 10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected out degree: 10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected density: 0.01</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">population_svd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/RSpectra/man/svds.html" class="external-link">svds</a></span><span class="op">(</span><span class="va">ddcsbm</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in svds(ddcsbm):</span> object 'ddcsbm' not found</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
