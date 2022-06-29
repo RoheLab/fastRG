@@ -82,6 +82,49 @@ algorithm. See <strong>Details</strong> below.</p></dd>
 <dd><p>Unused, included only for consistency with generic signature.</p></dd>
 
 </dl></div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>The <code>which</code> argument is a character string
+that specifies the type of eigenvalues to be computed.
+Possible values are:</p>
+<table class="table table"><tr><td>"LM"</td><td>The \(k\) eigenvalues with largest magnitude. Here the
+              magnitude means the Euclidean norm of complex numbers.</td></tr><tr><td>"SM"</td><td>The \(k\) eigenvalues with smallest magnitude.</td></tr><tr><td>"LR"</td><td>The \(k\) eigenvalues with largest real part.</td></tr><tr><td>"SR"</td><td>The \(k\) eigenvalues with smallest real part.</td></tr><tr><td>"LI"</td><td>The \(k\) eigenvalues with largest imaginary part.</td></tr><tr><td>"SI"</td><td>The \(k\) eigenvalues with smallest imaginary part.</td></tr><tr><td>"LA"</td><td>The \(k\) largest (algebraic) eigenvalues, considering any
+              negative sign.</td></tr><tr><td>"SA"</td><td>The \(k\) smallest (algebraic) eigenvalues, considering any
+              negative sign.</td></tr><tr><td>"BE"</td><td>Compute \(k\) eigenvalues, half from each end of the
+              spectrum. When \(k\) is odd, compute more from the high
+              and then from the low end.</td></tr></table><p><code>eigs()</code> with matrix types "matrix", "dgeMatrix", "dgCMatrix"
+and "dgRMatrix" can use "LM", "SM", "LR", "SR", "LI" and "SI".</p>
+<p><code><a href="https://rdrr.io/pkg/RSpectra/man/eigs.html" class="external-link">eigs_sym()</a></code> with all supported matrix types,
+and <code>eigs()</code> with symmetric matrix types
+("dsyMatrix", "dsCMatrix", and "dsRMatrix") can use "LM", "SM", "LA", "SA" and "BE".</p>
+<p>The <code>opts</code> argument is a list that can supply any of the
+following parameters:</p>
+<dl><dt><code>ncv</code></dt>
+<dd><p>Number of Lanzcos basis vectors to use. More vectors
+                  will result in faster convergence, but with greater
+                  memory use. For general matrix, <code>ncv</code> must satisfy
+                  \(k+2\le ncv \le n\), and
+                  for symmetric matrix, the constraint is
+                  \(k &lt; ncv \le n\).
+                  Default is <code>min(n, max(2*k+1, 20))</code>.</p></dd>
+
+<dt><code>tol</code></dt>
+<dd><p>Precision parameter. Default is 1e-10.</p></dd>
+
+<dt><code>maxitr</code></dt>
+<dd><p>Maximum number of iterations. Default is 1000.</p></dd>
+
+<dt><code>retvec</code></dt>
+<dd><p>Whether to compute eigenvectors. If FALSE,
+                     only calculate and return eigenvalues.</p></dd>
+
+<dt><code>initvec</code></dt>
+<dd><p>Initial vector of length \(n\) supplied to the
+                      Arnoldi/Lanczos iteration. It may speed up the convergence
+                      if <code>initvec</code> is close to an eigenvector of \(A\).</p></dd>
+
+
+</dl></div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside></div>
