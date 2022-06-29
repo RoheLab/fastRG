@@ -18,8 +18,8 @@ reference:
       - starts_with("sample_")
   - title: Graph properties conditional on latent representations
     contents:
-      - eigs_sym
-      - svds
+      - contains("eigs_sym")
+      - contains("svds")
       - starts_with("expected_")
   - title: Undirected graphs
     contents:

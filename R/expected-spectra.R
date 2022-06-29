@@ -1,14 +1,18 @@
-
-
 #' @importFrom RSpectra svds
 #' @export
 RSpectra::svds
-
 
 #' @importFrom RSpectra eigs_sym
 #' @export
 RSpectra::eigs_sym
 
+#' Compute the eigendecomposition of the expected adjacency matrix of an undirected factor model
+#'
+#' @param A An [undirected_factor_model()].
+#' @param k Desired rank of decomposition.
+#' @inheritParams RSpectra::eigs_sym
+#' @param ... Unused, included only for consistency with generic signature.
+#'
 #' @method eigs_sym undirected_factor_model
 #' @export
 eigs_sym.undirected_factor_model <- function(
@@ -29,6 +33,13 @@ eigs_sym.undirected_factor_model <- function(
   eigs_sym(Ax, k, n = A$n, args = list(X = A$X, SXt = tcrossprod(A$S, A$X)))
 }
 
+#' Compute the singular value decomposition of the expected adjacency matrix of an undirected factor model
+#'
+#' @param A An [undirected_factor_model()].
+#' @param k Desired rank of decomposition.
+#' @inheritParams RSpectra::svds
+#' @param ... Unused, included only for consistency with generic signature.
+#'
 #' @method svds undirected_factor_model
 #' @export
 svds.undirected_factor_model <- function(
@@ -67,7 +78,13 @@ svds.undirected_factor_model <- function(
   )
 }
 
-
+#' Compute the singular value decomposition of the expected adjacency matrix of a directed factor model
+#'
+#' @param A An [undirected_factor_model()].
+#' @param k Desired rank of decomposition.
+#' @inheritParams RSpectra::svds
+#' @param ... Unused, included only for consistency with generic signature.
+#'
 #' @method svds directed_factor_model
 #' @export
 svds.directed_factor_model <- function(
