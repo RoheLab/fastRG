@@ -83,7 +83,7 @@
 <div class="page-header"><h1 id="fastrg">fastRG<a class="anchor" aria-label="anchor" href="#fastrg"></a>
 </h1></div>
 <!-- badges: start -->
-<p><code>fastRG</code> quickly samples a broad class of network models known as generalized random dot product graphs (GRDPGs). In particular, for matrices <em>X</em>, <em>S</em> and <em>Y</em>, <code>fastRG</code> samples a matrix <em>A</em> with expectation <em>X<strong>S</strong>Y</em><sup><em>T</em></sup> where the entries are independently Poisson distributed conditional on <em>X</em> and <em>Y</em>. This is primarily useful when <em>A</em> is the adjacency matrix of a graph. Crucially, the sampling is 𝒪(<em>m</em>), where <em>m</em> is the number of the edges in graph, as opposed to the naive sampling approach, which is 𝒪(<em>n</em><sup>2</sup>), where <em>n</em> is the number of nodes in the network. For additional details, see the <a href="https://arxiv.org/abs/1703.02998" class="external-link">paper</a> [1].</p>
+<p><code>fastRG</code> quickly samples a broad class of network models known as generalized random dot product graphs (GRDPGs). In particular, for matrices <span class="math inline"><em>X</em></span>, <span class="math inline"><em>S</em></span> and <span class="math inline"><em>Y</em></span>, <code>fastRG</code> samples a matrix <span class="math inline"><em>A</em></span> with expectation <span class="math inline"><em>X</em><em>S</em><em>Y</em><sup><em>T</em></sup></span> where the entries are independently Poisson distributed conditional on <span class="math inline"><em>X</em></span> and <span class="math inline"><em>Y</em></span>. This is primarily useful when <span class="math inline"><em>A</em></span> is the adjacency matrix of a graph. Crucially, the sampling is <span class="math inline">𝒪(<em>m</em>)</span>, where <span class="math inline"><em>m</em></span> is the number of the edges in graph, as opposed to the naive sampling approach, which is <span class="math inline">𝒪(<em>n</em><sup>2</sup>)</span>, where <span class="math inline"><em>n</em></span> is the number of nodes in the network. For additional details, see the <a href="https://arxiv.org/abs/1703.02998" class="external-link">paper</a> [1].</p>
 <p><code>fastRG</code> has two primary use cases:</p>
 <ol style="list-style-type: decimal">
 <li>Sampling enormous sparse graphs that cannot feasibly be sampled with existing samplers, and</li>
@@ -104,15 +104,16 @@
 <div class="section level2">
 <h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
 </h2>
-<p>There are two stages to sampling from generalized random dot product graphs. First, we sample the latent factors <em>X</em> and <em>Y</em>. Then we sample <em>A</em> conditional on those latent factors. <code>fastRG</code> mimics this two-stage sample structure. For example, to sample from a stochastic blockmodel, we first create the latent factors.</p>
+<p>There are two stages to sampling from generalized random dot product graphs. First, we sample the latent factors <span class="math inline"><em>X</em></span> and <span class="math inline"><em>Y</em></span>. Then we sample <span class="math inline"><em>A</em></span> conditional on those latent factors. <code>fastRG</code> mimics this two-stage sample structure. For example, to sample from a stochastic blockmodel, we first create the latent factors.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rohelab.github.io/fastRG">fastRG</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rohelab.github.io/fastRG/">fastRG</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; Loading required package: Matrix</span></span>
+<span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">27</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">sbm</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/sbm.html">sbm</a></span><span class="op">(</span>n <span class="op">=</span> <span class="fl">1000</span>, k <span class="op">=</span> <span class="fl">5</span>, expected_density <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Generating random mixing matrix `B` with independent Uniform(0, 1) entries. This distribution may change in the future. Explicitly set `B` for reproducible results.</span></span></code></pre></div>
-<p>You can specify the latent factors and the mixing matrix <em>B</em> yourself, but there are also defaults to enable fast prototyping. Here <em>B</em> was randomly generated with <code>Uniform[0, 1]</code> entries and nodes were assigned randomly to communities with equal probability of falling in all communities. Printing the result object gives us some additional information:</p>
+<p>You can specify the latent factors and the mixing matrix <span class="math inline"><em>B</em></span> yourself, but there are also defaults to enable fast prototyping. Here <span class="math inline"><em>B</em></span> was randomly generated with <code>Uniform[0, 1]</code> entries and nodes were assigned randomly to communities with equal probability of falling in all communities. Printing the result object gives us some additional information:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sbm</span></span>
 <span><span class="co">#&gt; Undirected Stochastic Blockmodel</span></span>
@@ -132,26 +133,26 @@
 <span><span class="co">#&gt; X: 1000 x 5 [dgCMatrix] </span></span>
 <span><span class="co">#&gt; S: 5 x 5 [dgeMatrix] </span></span>
 <span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Expected edges: 10000</span></span>
-<span><span class="co">#&gt; Expected degree: 10</span></span>
+<span><span class="co">#&gt; Expected edges: 4995</span></span>
+<span><span class="co">#&gt; Expected degree: 5</span></span>
 <span><span class="co">#&gt; Expected density: 0.01</span></span></code></pre></div>
 <p>Now, conditional on this latent representation, we can sample graphs. <code>fastRG</code> supports several different output types, each of which is specified by the suffix to <code>sample_*()</code> functions. For example, we can obtain an edgelist in a <code>tibble</code> with:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/sample_edgelist.html">sample_edgelist</a></span><span class="op">(</span><span class="va">sbm</span><span class="op">)</span></span>
-<span><span class="co">#&gt; # A tibble: 4,990 × 2</span></span>
+<span><span class="co">#&gt; # A tibble: 4,985 × 2</span></span>
 <span><span class="co">#&gt;     from    to</span></span>
 <span><span class="co">#&gt;    &lt;int&gt; &lt;int&gt;</span></span>
-<span><span class="co">#&gt;  1    94   111</span></span>
-<span><span class="co">#&gt;  2    86   143</span></span>
-<span><span class="co">#&gt;  3    43    89</span></span>
-<span><span class="co">#&gt;  4    61   159</span></span>
-<span><span class="co">#&gt;  5    22   210</span></span>
-<span><span class="co">#&gt;  6     4   197</span></span>
-<span><span class="co">#&gt;  7    30   145</span></span>
-<span><span class="co">#&gt;  8   119   136</span></span>
-<span><span class="co">#&gt;  9    41   142</span></span>
-<span><span class="co">#&gt; 10   175   182</span></span>
-<span><span class="co">#&gt; # … with 4,980 more rows</span></span></code></pre></div>
+<span><span class="co">#&gt;  1   111   127</span></span>
+<span><span class="co">#&gt;  2    86   109</span></span>
+<span><span class="co">#&gt;  3    43    97</span></span>
+<span><span class="co">#&gt;  4    61    94</span></span>
+<span><span class="co">#&gt;  5    22   143</span></span>
+<span><span class="co">#&gt;  6     4    89</span></span>
+<span><span class="co">#&gt;  7    30   159</span></span>
+<span><span class="co">#&gt;  8   119   210</span></span>
+<span><span class="co">#&gt;  9    41   197</span></span>
+<span><span class="co">#&gt; 10   145   175</span></span>
+<span><span class="co">#&gt; # … with 4,975 more rows</span></span></code></pre></div>
 <p>but we can just as easily obtain the graph as a sparse matrix</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">A</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/sample_sparse.html">sample_sparse</a></span><span class="op">(</span><span class="va">sbm</span><span class="op">)</span></span>
@@ -171,17 +172,17 @@
 <p>or an igraph object</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/sample_igraph.html">sample_igraph</a></span><span class="op">(</span><span class="va">sbm</span><span class="op">)</span></span>
-<span><span class="co">#&gt; IGRAPH 0799a36 UN-- 1000 5085 -- </span></span>
+<span><span class="co">#&gt; IGRAPH 60e2c2d UN-- 1000 5033 -- </span></span>
 <span><span class="co">#&gt; + attr: name (v/c)</span></span>
-<span><span class="co">#&gt; + edges from 0799a36 (vertex names):</span></span>
-<span><span class="co">#&gt;  [1] 142--155 115--118 9  --82  20 --39  80 --127 134--216 62 --196 77 --199</span></span>
-<span><span class="co">#&gt;  [9] 53 --209 1  --57  40 --98  1  --47  167--218 6  --188 172--179 88 --143</span></span>
-<span><span class="co">#&gt; [17] 88 --185 28 --30  98 --124 39 --116 92 --118 160--183 35 --41  156--161</span></span>
-<span><span class="co">#&gt; [25] 47 --104 92 --137 101--192 30 --125 45 --208 15 --109 135--203 86 --125</span></span>
-<span><span class="co">#&gt; [33] 63 --166 4  --212 148--151 115--102 9  --92  61 --112 134--152 17 --83 </span></span>
-<span><span class="co">#&gt; [41] 32 --146 41 --175 142--93  77 --208 8  --112 17 --171 83 --171 90 --204</span></span>
-<span><span class="co">#&gt; [49] 86 --84  49 --140 22 --79  3  --205 5  --103 75 --133 78 --152 23 --70 </span></span>
-<span><span class="co">#&gt; [57] 143--162 41 --12  49 --56  35 --99  78 --78  61 --170 9  --58  108--141</span></span>
+<span><span class="co">#&gt; + edges from 60e2c2d (vertex names):</span></span>
+<span><span class="co">#&gt;  [1] 63 --76  135--215 59 --182 21 --134 180--218 53 --189 138--139 21 --78 </span></span>
+<span><span class="co">#&gt;  [9] 49 --70  76 --127 6  --139 64 --214 31 --132 56 --93  75 --144 9  --185</span></span>
+<span><span class="co">#&gt; [17] 33 --150 115--165 163--213 53 --6   47 --179 25 --26  7  --51  10 --55 </span></span>
+<span><span class="co">#&gt; [25] 120--183 43 --152 25 --34  84 --216 114--191 34 --127 152--164 178--189</span></span>
+<span><span class="co">#&gt; [33] 106--181 28 --38  41 --89  34 --139 6  --213 24 --153 32 --173 47 --111</span></span>
+<span><span class="co">#&gt; [41] 157--205 108--133 98 --116 26 --117 18 --194 32 --18  74 --209 18 --128</span></span>
+<span><span class="co">#&gt; [49] 13 --127 26 --12  1  --133 52 --72  128--213 13 --173 61 --214 33 --142</span></span>
+<span><span class="co">#&gt; [57] 22 --111 163--191 191--205 108--5   9  --72  6  --217 113--122 90 --154</span></span>
 <span><span class="co">#&gt; + ... omitted several edges</span></span></code></pre></div>
 <p>Note that every time we call <code>sample_*()</code> we draw a new sample.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
@@ -198,7 +199,7 @@
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">s</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/RSpectra/man/eigs.html" class="external-link">eigs_sym</a></span><span class="op">(</span><span class="va">sbm</span><span class="op">)</span></span>
 <span><span class="va">s</span><span class="op">$</span><span class="va">values</span></span>
-<span><span class="co">#&gt; [1]  5.1050886  1.8383749  0.6686493 -0.5246550 -0.8117567</span></span></code></pre></div>
+<span><span class="co">#&gt; [1]  5.0999835  1.8365365  0.6679806 -0.5241303 -0.8109449</span></span></code></pre></div>
 <p>Note that eigendecompositions and SVDS (for directed graphs) use <code>RSpectra</code> and do not require explicitly forming large dense population adjacency matrices; the population decompositions should be efficient in both time and space for even large graphs.</p>
 </div>
 <div class="section level2">
@@ -223,7 +224,7 @@
 <div class="section level2">
 <h2 id="related-work">Related work<a class="anchor" aria-label="anchor" href="#related-work"></a>
 </h2>
-<p><a href="https://igraph.org/r/" class="external-link"><code>igraph</code></a> allows users to sample SBMs (in 𝒪(<em>m</em>+<em>n</em>+<em>k</em><sup>2</sup>) time) and random dot product graphs (in 𝒪(<em>n</em><sup>2</sup><em>k</em>) time).</p>
+<p><a href="https://igraph.org/r/" class="external-link"><code>igraph</code></a> allows users to sample SBMs (in <span class="math inline">𝒪(<em>m</em>+<em>n</em>+<em>k</em><sup>2</sup>)</span> time) and random dot product graphs (in <span class="math inline">𝒪(<em>n</em><sup>2</sup><em>k</em>)</span> time).</p>
 <p>You can find the original research code associated with <code>fastRG</code> <a href="https://github.com/raningtky/sampleRDPG" class="external-link">here</a>. There is also a Python translation of the original code in Python <a href="https://github.com/yunjhongwu/matrix-routines/blob/master/fastRG.py" class="external-link">here</a>. Both of these implementations are bare bones.</p>
 </div>
 <div class="section level2">
@@ -272,9 +273,9 @@
 <div class="dev-status">
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://github.com/RoheLab/fastRG/actions" class="external-link"><img src="https://github.com/RoheLab/fastRG/workflows/R-CMD-check/badge.svg" alt="R-CMD-check"></a></li>
-<li><a href="https://codecov.io/gh/RoheLab/fastRG?branch=main" class="external-link"><img src="https://codecov.io/gh/RoheLab/fastRG/branch/main/graph/badge.svg" alt="Codecov test coverage"></a></li>
+<li><a href="https://app.codecov.io/gh/RoheLab/fastRG?branch=main" class="external-link"><img src="https://codecov.io/gh/RoheLab/fastRG/branch/main/graph/badge.svg" alt="Codecov test coverage"></a></li>
 <li><a href="https://CRAN.R-project.org/package=fastRG" class="external-link"><img src="https://www.r-pkg.org/badges/version/fastRG" alt="CRAN status"></a></li>
+<li><a href="https://github.com/RoheLab/fastRG/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/RoheLab/fastRG/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
 </ul>
 </div>
 
