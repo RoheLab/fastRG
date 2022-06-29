@@ -201,6 +201,7 @@ population_eigs <- eigs_sym(custom_dcsbm)
 \seealso{
 Other stochastic block models: 
 \code{\link{directed_dcsbm}()},
+\code{\link{mmsbm}()},
 \code{\link{overlapping_sbm}()},
 \code{\link{planted_partition}()},
 \code{\link{sbm}()}
@@ -208,6 +209,7 @@ Other stochastic block models:
 Other undirected graphs: 
 \code{\link{chung_lu}()},
 \code{\link{erdos_renyi}()},
+\code{\link{mmsbm}()},
 \code{\link{overlapping_sbm}()},
 \code{\link{planted_partition}()},
 \code{\link{sbm}()}

@@ -228,6 +228,7 @@ population_svd <- svds(ddcsbm)
 \seealso{
 Other stochastic block models: 
 \code{\link{dcsbm}()},
+\code{\link{mmsbm}()},
 \code{\link{overlapping_sbm}()},
 \code{\link{planted_partition}()},
 \code{\link{sbm}()}
