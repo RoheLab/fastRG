@@ -56,6 +56,13 @@ validate_undirected_dcsbm <- function(x) {
     )
   }
 
+  if (min(values$S) < 0) {
+    stop(
+      "All elements of `B` must be non-negative.",
+      call. = FALSE
+    )
+  }
+
   x
 }
 
@@ -64,7 +71,7 @@ validate_undirected_dcsbm <- function(x) {
 #' To specify a degree-corrected stochastic blockmodel, you must specify
 #' the degree-heterogeneity parameters (via `n` or `theta`),
 #' the mixing matrix (via `k` or `B`), and the relative block
-#' probabilites (optional, via `pi`). We provide sane defaults for most of these
+#' probabilities (optional, via `pi`). We provide defaults for most of these
 #' options to enable rapid exploration, or you can invest the effort
 #' for more control over the model parameters. We **strongly recommend**
 #' setting the `expected_degree` or `expected_density` argument
@@ -275,7 +282,7 @@ dcsbm <- function(
       "in the future. Explicitly set `B` for reproducible results."
     )
 
-    B <- Matrix(data = stats::runif(k * k), nrow = k, ncol = k)
+    B <- matrix(data = stats::runif(k * k), nrow = k, ncol = k)
 
   } else if (is.null(k)) {
 
@@ -320,19 +327,14 @@ dcsbm <- function(
     X <- Matrix(1, nrow = n, ncol = 1)
   }
 
-
+  X@x <- theta
 
   if (sort_nodes) {
-
-    # sort by degree within each block
-    ct <- c(0, cumsum(table(z)))
-
-    for (i in 1:k) {
-      theta[(ct[i] + 1):ct[i + 1]] <- -sort(-theta[(ct[i] + 1):ct[i + 1]])
-    }
+    # note that X and z indexing must match
+    X <- sort_by_all_columns(X)
   }
 
-  X@x <- theta
+  theta <- X@x
 
   dcsbm <- new_undirected_dcsbm(
     X = X,

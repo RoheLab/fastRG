@@ -462,6 +462,9 @@ directed_dcsbm <- function(
     Y <- sort_by_all_columns(Y)
   }
 
+  theta_in <- X@x
+  theta_out <- Y@x
+
   dcsbm <- new_directed_dcsbm(
     X = X,
     S = B,
