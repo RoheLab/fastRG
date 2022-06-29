@@ -138,7 +138,7 @@ the degree-heterogeneity parameters (via \code{n_in} or \code{theta_in}, and
 \code{n_out} or \code{theta_out}), the mixing matrix
 (via \code{k_in} and \code{k_out}, or \code{B}), and the relative block
 probabilities (optional, via \code{p_in} and \code{pi_out}).
-We provide sane defaults for most of these
+We provide defaults for most of these
 options to enable rapid exploration, or you can invest the effort
 for more control over the model parameters. We \strong{strongly recommend}
 setting the \code{expected_in_degree}, \code{expected_out_degree},

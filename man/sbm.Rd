@@ -75,7 +75,7 @@ An \code{undirected_sbm} S3 object, which is a subclass of the
 To specify a stochastic blockmodel, you must specify
 the number of nodes (via \code{n}), the mixing matrix (via \code{k} or \code{B}),
 and the relative block probabilites (optional, via \code{pi}).
-We provide sane defaults for most of these options to enable
+We provide defaults for most of these options to enable
 rapid exploration, or you can invest the effort
 for more control over the model parameters. We \strong{strongly recommend}
 setting the \code{expected_degree} or \code{expected_density} argument

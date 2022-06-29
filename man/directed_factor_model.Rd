@@ -87,7 +87,7 @@ Y <- matrix(rexp(n = k2 * d, 1), nrow = d)
 fm <- directed_factor_model(X, S, Y)
 fm
 
-sane_fm <- directed_factor_model(X, S, Y, expected_in_degree = 50)
-sane_fm
+fm2 <- directed_factor_model(X, S, Y, expected_in_degree = 50)
+fm2
 
 }

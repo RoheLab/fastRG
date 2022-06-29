@@ -15,7 +15,7 @@ overlapping_sbm(
 )
 }
 \arguments{
-\item{n}{The number of nodes in the overlapping SBM.#'}
+\item{n}{The number of nodes in the overlapping SBM.}
 
 \item{k}{(mixing matrix) The number of blocks in the blockmodel.
 Use when you don't want to specify the mixing-matrix by hand.
@@ -77,10 +77,10 @@ within each block.
 }
 }
 \description{
-To specify a degree-corrected stochastic blockmodel, you must specify
-the degree-heterogeneity parameters (via \code{n} or \code{theta}),
-the mixing matrix (via \code{k} or \code{B}), and the relative block
-probabilites (optional, via \code{pi}). We provide sane defaults for most of these
+To specify a overlapping stochastic blockmodel, you must specify
+the number of nodes (via \code{n}),
+the mixing matrix (via \code{k} or \code{B}), and the  block
+probabilities (optional, via \code{pi}). We provide defaults for most of these
 options to enable rapid exploration, or you can invest the effort
 for more control over the model parameters. We \strong{strongly recommend}
 setting the \code{expected_degree} or \code{expected_density} argument
