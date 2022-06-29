@@ -180,6 +180,7 @@ ArXiv:1412.3432, December 10, 2014. http://arxiv.org/abs/1412.3432.
 Other stochastic block models: 
 \code{\link{dcsbm}()},
 \code{\link{directed_dcsbm}()},
+\code{\link{mmsbm}()},
 \code{\link{planted_partition}()},
 \code{\link{sbm}()}
 
@@ -187,6 +188,7 @@ Other undirected graphs:
 \code{\link{chung_lu}()},
 \code{\link{dcsbm}()},
 \code{\link{erdos_renyi}()},
+\code{\link{mmsbm}()},
 \code{\link{planted_partition}()},
 \code{\link{sbm}()}
 }

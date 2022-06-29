@@ -122,6 +122,7 @@ lazy_pp
 Other stochastic block models: 
 \code{\link{dcsbm}()},
 \code{\link{directed_dcsbm}()},
+\code{\link{mmsbm}()},
 \code{\link{overlapping_sbm}()},
 \code{\link{sbm}()}
 
@@ -129,6 +130,7 @@ Other undirected graphs:
 \code{\link{chung_lu}()},
 \code{\link{dcsbm}()},
 \code{\link{erdos_renyi}()},
+\code{\link{mmsbm}()},
 \code{\link{overlapping_sbm}()},
 \code{\link{sbm}()}
 }

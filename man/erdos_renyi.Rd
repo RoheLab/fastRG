@@ -55,6 +55,7 @@ Other erdos renyi:
 Other undirected graphs: 
 \code{\link{chung_lu}()},
 \code{\link{dcsbm}()},
+\code{\link{mmsbm}()},
 \code{\link{overlapping_sbm}()},
 \code{\link{planted_partition}()},
 \code{\link{sbm}()}
