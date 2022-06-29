@@ -352,9 +352,9 @@ directed_dcsbm <- function(
     }
 
     message(
-      "Generating random degree heterogeneity parameters `theta_in` from a ",
-      "LogNormal(2, 1) distribution. This distribution may change ",
-      "in the future. Explicitly set `theta_in` for reproducible results.\n"
+      "Generating random degree heterogeneity parameters `theta_in` and `theta_out` from ",
+      "LogNormal(2, 1) distributions. This distribution may change ",
+      "in the future. Explicitly set `theta_in` and `theta_out` for reproducible results.\n"
     )
 
     theta_in <- stats::rlnorm(n, meanlog = 2, sdlog = 1)
