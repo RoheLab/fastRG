@@ -1,8 +1,9 @@
 # fastRG (development version)
 
-* Add degree-corrected overlapping stochastic blockmodel (#7)
+* Add overlapping stochastic blockmodel (#7, #25)
 * Add directed degree-corrected stochastic blockmodels (#18)
-* Minor bug fixes for SBM-related functions
+* Allow rank 1 undirected stochastic block models
+* Fix bug where isolated nodes where dropped from sampled tidygraphs (#23)
 
 # fastRG 0.3.0
 

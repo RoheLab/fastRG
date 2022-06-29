@@ -9,7 +9,6 @@ new_undirected_overlapping_sbm <- function(
   subclass <- c(subclass, "undirected_overlapping_sbm")
   overlapping_sbm <- undirected_factor_model(X, S, ..., subclass = subclass)
   overlapping_sbm$Z <- Z
-  overlapping_sbm$theta <- theta
   overlapping_sbm$pi <- pi
   overlapping_sbm$sorted <- sorted
   overlapping_sbm
@@ -26,21 +25,18 @@ validate_undirected_overlapping_sbm <- function(x) {
     )
   }
 
-  # TODO: check Z
-
-  if (!is.numeric(values$theta)) {
-    stop("`theta` must be a numeric.", call. = FALSE)
-  }
-
-  if (length(values$theta) != nrow(values$X)) {
+  if (!is_invertible(values$S)) {
     stop(
-      "There must be one element of `theta` for each row of `X`.",
+      "`B` must be an invertible matrix.",
       call. = FALSE
     )
   }
 
-  if (any(values$theta < 0)) {
-    stop("Elements of `theta` must be strictly positive.", call. = FALSE)
+  if (max(values$S) > 1 || min(values$S) < 0) {
+    stop(
+      "All elements of `B` must be contained in [0, 1].",
+      call. = FALSE
+    )
   }
 
   x
@@ -48,58 +44,47 @@ validate_undirected_overlapping_sbm <- function(x) {
 
 #' Create an undirected overlapping degree corrected stochastic blockmodel object
 #'
-#' To specify a degree-corrected stochastic blockmodel, you must specify
-#' the degree-heterogeneity parameters (via `n` or `theta`),
-#' the mixing matrix (via `k` or `B`), and the relative block
-#' probabilites (optional, via `pi`). We provide sane defaults for most of these
+#' To specify a overlapping stochastic blockmodel, you must specify
+#' the number of nodes (via `n`),
+#' the mixing matrix (via `k` or `B`), and the  block
+#' probabilities (optional, via `pi`). We provide defaults for most of these
 #' options to enable rapid exploration, or you can invest the effort
 #' for more control over the model parameters. We **strongly recommend**
 #' setting the `expected_degree` or `expected_density` argument
 #' to avoid large memory allocations associated with
 #' sampling large, dense graphs.
 #'
-#' @param n (degree heterogeneity) The number of nodes in the blockmodel.
-#'   Use when you don't want to specify the degree-heterogeneity
-#'   parameters `theta` by hand. When `n` is specified, `theta`
-#'   is randomly generated from a `LogNormal(2, 1)` distribution.
-#'   This is subject to change, and may not be reproducible.
-#'   `n` defaults to `NULL`. You must specify either `n`
-#'   or `theta`, but not both.
-#'
-#' @param theta (degree heterogeneity) A numeric vector
-#'   explicitly specifying the degree heterogeneity
-#'   parameters. This implicitly determines the number of nodes
-#'   in the resulting graph, i.e. it will have `length(theta)` nodes.
-#'   Must be positive. Setting to a vector of ones recovers
-#'   a stochastic blockmodel without degree correction.
-#'   Defaults to `NULL`. You must specify either `n` or `theta`,
-#'   but not both.
+#' @param n The number of nodes in the overlapping SBM.
 #'
 #' @param k (mixing matrix) The number of blocks in the blockmodel.
 #'   Use when you don't want to specify the mixing-matrix by hand.
-#'   When `k` is specified, the elements of `B` are drawn
-#'   randomly from a `Uniform(0, 1)` distribution.
-#'   This is subject to change, and may not be reproducible.
-#'   `k` defaults to `NULL`. You must specify either `k`
+#'   When `k` is specified, `B` is set to a diagonal dominant matrix with
+#'   value `0.8` along the diagonal and `0.1 / (k - 1)` on the
+#'   off-diagonal. `k` defaults to `NULL`. You must specify either `k`
 #'   or `B`, but not both.
 #'
 #' @param B (mixing matrix) A `k` by `k` matrix of block connection
 #'   probabilities. The probability that a node in block `i` connects
 #'   to a node in community `j` is `Poisson(B[i, j])`. Must be
-#'   a square matrix. `matrix` and `Matrix` objects are both
+#'   an *invertible*, symmetric square matrix.
+#'   `matrix` and `Matrix` objects are both
 #'   acceptable. If `B` is not symmetric, it will be
 #'   symmetrized via the update `B := B + t(B)`. Defaults to `NULL`.
 #'   You must specify either `k` or `B`, but not both.
 #'
-#' @param pi (relative block probabilities) Relative block
-#'   probabilities. Must be positive, but do not need to sum
-#'   to one, as they will be normalized internally.
-#'   Must match the dimensions of `B` or `k`. Defaults to
-#'   `rep(1 / k, k)`, or a balanced blocks.
+#' @param pi (block probabilities) Probability of membership in each
+#'   block. Membership in each block is independent under the
+#'   overlapping SBM. Defaults to `rep(1 / k, k)`.
 #'
 #' @param sort_nodes Logical indicating whether or not to sort the nodes
-#'   so that they are grouped by block and by `theta`. Useful for plotting.
+#'   so that they are grouped by block. Useful for plotting.
 #'   Defaults to `TRUE`.
+#'
+#' @param force_pure Logical indicating whether or not to force presence of
+#'   "pure nodes" (nodes that belong only to a single community) for the sake
+#'   of identifiability. To include pure nodes, block membership sampling
+#'   first proceeds as per usual. Then, after it is complete, `k` nodes
+#'   are chosen randomly as pure nodes, one for each block. Defaults to `TRUE`.
 #'
 #' @inheritDotParams undirected_factor_model expected_degree expected_density
 #'
@@ -108,7 +93,9 @@ validate_undirected_overlapping_sbm <- function(x) {
 #'   fields:
 #'
 #'   - `Z`: The community memberships of each node, as an `n` by `k`
-#'     binary indicator matrix.
+#'     binary indicator matrix. Node that some nodes may not belong
+#'     to any community. The probability of any given node not
+#'     belonging any community is given by `prod(1 - pi)`.
 #'
 #'   - `theta`: A numeric vector of degree-heterogeneity parameters.
 #'
@@ -144,10 +131,6 @@ validate_undirected_overlapping_sbm <- function(x) {
 #'
 #' # Generative Model
 #'
-#' Note: we implement a slight generalization of the original overlapping
-#' stochastic blockmodel introduce in Zhang et al. (2014) called the
-#' Overlapping Continuous Community Assignment Model (OCCAM).
-#'
 #' There are two levels of randomness in a degree-corrected
 #' overlapping stochastic blockmodel. First, for each node, we
 #' independently determine if that node is a member of each block. This is
@@ -158,25 +141,23 @@ validate_undirected_overlapping_sbm <- function(x) {
 #' [sample_tidygraph()], depending depending on your desired
 #' graph representation.
 #'
+#' ## Identifiability
+#'
+#' In order to be identifiable, an overlapping SBM must satisfy two conditions:
+#'
+#' 1. `B` must be invertible, and
+#' 2. the must be at least one "pure node" in each block that belongs to no
+#'   other blocks.
+#'
 #' ## Block memberships
 #'
 #' Note that some nodes may not belong to any blocks.
 #'
 #' **TODO**
 #'
-#' ## Degree heterogeneity
-#'
-#' In addition to block membership, the overlapping SBM also allows
-#' nodes to have different propensities for edge formation.
-#' We represent this propensity for node \eqn{i} by a positive
-#' number \eqn{\theta_i}.
-#'
-#' **TODO** identifiability constraint?
-#'
 #' ## Edge formulation
 #'
-#' Once we know the block memberships and the degree
-#' heterogeneity parameters \eqn{theta}, we need one more
+#' Once we know the block memberships, we need one more
 #' ingredient, which is the baseline intensity of connections
 #' between nodes in block `i` and block `j`. Then each edge
 #' \eqn{A_{i,j}} is Poisson distributed with parameter
@@ -196,20 +177,13 @@ validate_undirected_overlapping_sbm <- function(x) {
 #' dense_lazy_overlapping_sbm <- overlapping_sbm(n = 500, k = 3, expected_density = 0.8)
 #' dense_lazy_overlapping_sbm
 #'
-#' # explicitly setting the degree heterogeneity parameter,
-#' # mixing matrix, and relative community sizes rather
-#' # than using randomly generated defaults
-#'
 #' k <- 5
 #' n <- 1000
 #' B <- matrix(stats::runif(k * k), nrow = k, ncol = k)
 #'
-#' theta <- round(stats::rlnorm(n, 2))
-#'
 #' pi <- c(1, 2, 4, 1, 1) / 5
 #'
 #' custom_overlapping_sbm <- overlapping_sbm(
-#'   theta = theta,
 #'   B = B,
 #'   pi = pi,
 #'   expected_degree = 50
@@ -228,32 +202,11 @@ validate_undirected_overlapping_sbm <- function(x) {
 #' population_eigs <- eigs_sym(custom_overlapping_sbm)
 #'
 overlapping_sbm <- function(
-    n = NULL, theta = NULL,
-    k = NULL, B = NULL,
+    n, k = NULL, B = NULL,
     ...,
     pi = rep(1 / k, k),
-    sort_nodes = TRUE) {
-
-  ### degree heterogeneity parameters
-
-  if (is.null(n) && is.null(theta)) {
-    stop("Must specify either `n` or `theta`.", call. = FALSE)
-  } else if (is.null(theta)) {
-
-    if (n < 1) {
-      stop("`n` must be a positive integer.", call. = FALSE)
-    }
-
-    message(
-      "Generating random degree heterogeneity parameters `theta` from a ",
-      "LogNormal(2, 1) distribution. This distribution may change ",
-      "in the future. Explicitly set `theta` for reproducible results.\n"
-    )
-
-    theta <- stats::rlnorm(n, meanlog = 2, sdlog = 1)
-  } else if (is.null(n)) {
-    n <- length(theta)
-  }
+    sort_nodes = TRUE,
+    force_pure = TRUE) {
 
   ### mixing matrix
 
@@ -266,12 +219,13 @@ overlapping_sbm <- function(
     }
 
     message(
-      "Generating random mixing matrix `B` with independent ",
-      "Uniform(0, 1) entries. This distribution may change ",
+      "Setting `B` to a matrix with value 0.8 on the diagonal and",
+      "0.1 / (k - 1) on the off-diagonal. This parameterization may change ",
       "in the future. Explicitly set `B` for reproducible results."
     )
 
-    B <- Matrix(data = stats::runif(k * k), nrow = k, ncol = k)
+    B <- matrix(0.1 / (k - 1), nrow = k, ncol = k)
+    diag(B) <- 0.8
 
   } else if (is.null(k)) {
 
@@ -299,34 +253,35 @@ overlapping_sbm <- function(
     B <- B[, order(pi)]
   }
 
-  pi <- sort(pi)        # do not normalize pi!
+  pi <- sort(pi) # do not normalize pi!
 
   # sample block memberships
 
   X <- Matrix(0, nrow = n, ncol = k)
-  Z <- Matrix(0, nrow = n, ncol = k)
   colnames(X) <- paste0("block", 1:k)
-  colnames(Z) <- paste0("block", 1:k)
 
   for (i in 1:k) {
     ind <- stats::rbinom(n, 1, pi[i])
-    Z[, i] <- ind
-    X[, i] <- ind * theta
+    X[, i] <- ind
+  }
+
+  if (force_pure) {
+    pure_indices <- sample(n, k)
+
+    for (i in 1:k) {
+      X[pure_indices[i], ] <- 0
+      X[pure_indices[i], i] <- 1
+    }
   }
 
   if (sort_nodes) {
-
-    args <- as.list(as.data.frame(as.matrix(X)))
-    args$decreasing <- TRUE
-
-    X <- X[do.call(order, args),]
+    X <- sort_by_all_columns(X)
   }
 
   overlapping_sbm <- new_undirected_overlapping_sbm(
     X = X,
     S = B,
-    Z = Z,
-    theta = theta,
+    Z = X,
     pi = pi,
     sorted = sort_nodes,
     ...
@@ -349,7 +304,6 @@ print.undirected_overlapping_sbm <- function(x, ...) {
 
   cat("Traditional Overlapping SBM parameterization:\n\n")
   cat("Block memberships (Z):", dim_and_class(x$Z), "\n")
-  cat("Degree heterogeneity (theta):", dim_and_class(x$theta), "\n")
   cat("Block probabilities (pi):", dim_and_class(x$pi), "\n\n")
 
   cat("Factor model parameterization:\n\n")
