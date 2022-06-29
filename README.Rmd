@@ -16,8 +16,7 @@ knitr::opts_chunk$set(
 # fastRG
 
 <!-- badges: start -->
-[![R-CMD-check](https://github.com/RoheLab/fastRG/workflows/R-CMD-check/badge.svg)](https://github.com/RoheLab/fastRG/actions)
-[![Codecov test coverage](https://codecov.io/gh/RoheLab/fastRG/branch/main/graph/badge.svg)](https://codecov.io/gh/RoheLab/fastRG?branch=main)
+[![Codecov test coverage](https://codecov.io/gh/RoheLab/fastRG/branch/main/graph/badge.svg)](https://app.codecov.io/gh/RoheLab/fastRG?branch=main)
 [![CRAN status](https://www.r-pkg.org/badges/version/fastRG)](https://CRAN.R-project.org/package=fastRG)
 [![R-CMD-check](https://github.com/RoheLab/fastRG/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/RoheLab/fastRG/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->

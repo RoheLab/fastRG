@@ -5,23 +5,23 @@
 
 <!-- badges: start -->
 
-[![R-CMD-check](https://github.com/RoheLab/fastRG/workflows/R-CMD-check/badge.svg)](https://github.com/RoheLab/fastRG/actions)
 [![Codecov test
-coverage](https://codecov.io/gh/RoheLab/fastRG/branch/main/graph/badge.svg)](https://codecov.io/gh/RoheLab/fastRG?branch=main)
+coverage](https://codecov.io/gh/RoheLab/fastRG/branch/main/graph/badge.svg)](https://app.codecov.io/gh/RoheLab/fastRG?branch=main)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/fastRG)](https://CRAN.R-project.org/package=fastRG)
+[![R-CMD-check](https://github.com/RoheLab/fastRG/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/RoheLab/fastRG/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 `fastRG` quickly samples a broad class of network models known as
 generalized random dot product graphs (GRDPGs). In particular, for
-matrices *X*, *S* and *Y*, `fastRG` samples a matrix *A* with
-expectation *X**S**Y*<sup>*T*</sup> where the entries are independently
-Poisson distributed conditional on *X* and *Y*. This is primarily useful
-when *A* is the adjacency matrix of a graph. Crucially, the sampling is
-𝒪(*m*), where *m* is the number of the edges in graph, as opposed to the
-naive sampling approach, which is 𝒪(*n*<sup>2</sup>), where *n* is the
-number of nodes in the network. For additional details, see the
-[paper](https://arxiv.org/abs/1703.02998) \[1\].
+matrices $X$, $S$ and $Y$, `fastRG` samples a matrix $A$ with
+expectation $X S Y^T$ where the entries are independently Poisson
+distributed conditional on $X$ and $Y$. This is primarily useful when
+$A$ is the adjacency matrix of a graph. Crucially, the sampling is
+$\mathcal O(m)$, where $m$ is the number of the edges in graph, as
+opposed to the naive sampling approach, which is $\mathcal O(n^2)$,
+where $n$ is the number of nodes in the network. For additional details,
+see the [paper](https://arxiv.org/abs/1703.02998) \[1\].
 
 `fastRG` has two primary use cases:
 
@@ -52,22 +52,23 @@ devtools::install_github("RoheLab/fastRG")
 ## Usage
 
 There are two stages to sampling from generalized random dot product
-graphs. First, we sample the latent factors *X* and *Y*. Then we sample
-*A* conditional on those latent factors. `fastRG` mimics this two-stage
+graphs. First, we sample the latent factors $X$ and $Y$. Then we sample
+$A$ conditional on those latent factors. `fastRG` mimics this two-stage
 sample structure. For example, to sample from a stochastic blockmodel,
 we first create the latent factors.
 
 ``` r
 library(fastRG)
 #> Loading required package: Matrix
+
 set.seed(27)
 
 sbm <- sbm(n = 1000, k = 5, expected_density = 0.01)
 #> Generating random mixing matrix `B` with independent Uniform(0, 1) entries. This distribution may change in the future. Explicitly set `B` for reproducible results.
 ```
 
-You can specify the latent factors and the mixing matrix *B* yourself,
-but there are also defaults to enable fast prototyping. Here *B* was
+You can specify the latent factors and the mixing matrix $B$ yourself,
+but there are also defaults to enable fast prototyping. Here $B$ was
 randomly generated with `Uniform[0, 1]` entries and nodes were assigned
 randomly to communities with equal probability of falling in all
 communities. Printing the result object gives us some additional
@@ -92,8 +93,8 @@ sbm
 #> X: 1000 x 5 [dgCMatrix] 
 #> S: 5 x 5 [dgeMatrix] 
 #> 
-#> Expected edges: 10000
-#> Expected degree: 10
+#> Expected edges: 4995
+#> Expected degree: 5
 #> Expected density: 0.01
 ```
 
@@ -104,20 +105,20 @@ obtain an edgelist in a `tibble` with:
 
 ``` r
 sample_edgelist(sbm)
-#> # A tibble: 4,990 × 2
+#> # A tibble: 4,985 × 2
 #>     from    to
 #>    <int> <int>
-#>  1    94   111
-#>  2    86   143
-#>  3    43    89
-#>  4    61   159
-#>  5    22   210
-#>  6     4   197
-#>  7    30   145
-#>  8   119   136
-#>  9    41   142
-#> 10   175   182
-#> # … with 4,980 more rows
+#>  1   111   127
+#>  2    86   109
+#>  3    43    97
+#>  4    61    94
+#>  5    22   143
+#>  6     4    89
+#>  7    30   159
+#>  8   119   210
+#>  9    41   197
+#> 10   145   175
+#> # … with 4,975 more rows
 ```
 
 but we can just as easily obtain the graph as a sparse matrix
@@ -143,17 +144,17 @@ or an igraph object
 
 ``` r
 sample_igraph(sbm)
-#> IGRAPH 0799a36 UN-- 1000 5085 -- 
+#> IGRAPH 60e2c2d UN-- 1000 5033 -- 
 #> + attr: name (v/c)
-#> + edges from 0799a36 (vertex names):
-#>  [1] 142--155 115--118 9  --82  20 --39  80 --127 134--216 62 --196 77 --199
-#>  [9] 53 --209 1  --57  40 --98  1  --47  167--218 6  --188 172--179 88 --143
-#> [17] 88 --185 28 --30  98 --124 39 --116 92 --118 160--183 35 --41  156--161
-#> [25] 47 --104 92 --137 101--192 30 --125 45 --208 15 --109 135--203 86 --125
-#> [33] 63 --166 4  --212 148--151 115--102 9  --92  61 --112 134--152 17 --83 
-#> [41] 32 --146 41 --175 142--93  77 --208 8  --112 17 --171 83 --171 90 --204
-#> [49] 86 --84  49 --140 22 --79  3  --205 5  --103 75 --133 78 --152 23 --70 
-#> [57] 143--162 41 --12  49 --56  35 --99  78 --78  61 --170 9  --58  108--141
+#> + edges from 60e2c2d (vertex names):
+#>  [1] 63 --76  135--215 59 --182 21 --134 180--218 53 --189 138--139 21 --78 
+#>  [9] 49 --70  76 --127 6  --139 64 --214 31 --132 56 --93  75 --144 9  --185
+#> [17] 33 --150 115--165 163--213 53 --6   47 --179 25 --26  7  --51  10 --55 
+#> [25] 120--183 43 --152 25 --34  84 --216 114--191 34 --127 152--164 178--189
+#> [33] 106--181 28 --38  41 --89  34 --139 6  --213 24 --153 32 --173 47 --111
+#> [41] 157--205 108--133 98 --116 26 --117 18 --194 32 --18  74 --209 18 --128
+#> [49] 13 --127 26 --12  1  --133 52 --72  128--213 13 --173 61 --214 33 --142
+#> [57] 22 --111 163--191 191--205 108--5   9  --72  6  --217 113--122 90 --154
 #> + ... omitted several edges
 ```
 
@@ -176,7 +177,7 @@ straightforward:
 ``` r
 s <- eigs_sym(sbm)
 s$values
-#> [1]  5.1050886  1.8383749  0.6686493 -0.5246550 -0.8117567
+#> [1]  5.0999835  1.8365365  0.6679806 -0.5241303 -0.8109449
 ```
 
 Note that eigendecompositions and SVDS (for directed graphs) use
@@ -218,8 +219,8 @@ degeneracy that can cause issues.
 ## Related work
 
 [`igraph`](https://igraph.org/r/) allows users to sample SBMs (in
-𝒪(*m*+*n*+*k*<sup>2</sup>) time) and random dot product graphs (in
-𝒪(*n*<sup>2</sup>*k*) time).
+$\mathcal O(m + n + k^2)$ time) and random dot product graphs (in
+$\mathcal O(n^2 k)$ time).
 
 You can find the original research code associated with `fastRG`
 [here](https://github.com/raningtky/sampleRDPG). There is also a Python
