@@ -119,7 +119,7 @@ expected_degrees.undirected_factor_model <- function(factor_model, ...) {
 
 #' @export
 expected_density.undirected_factor_model <- function(factor_model, ...) {
-  expected_edges(factor_model) / as.numeric(factor_model$n)^2
+  expected_edges(factor_model) / as.numeric(choose(factor_model$n, 2))
 }
 
 #' @importFrom RSpectra eigs_sym
