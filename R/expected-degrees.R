@@ -70,7 +70,7 @@ expected_edges.undirected_factor_model <- function(factor_model, ...) {
   S <- factor_model$S
 
   Cx <- Diagonal(n = ncol(X), x = colSums(X))
-  sum(Cx %*% S %*% Cx) * 2
+  sum(Cx %*% S %*% Cx)
 }
 
 #' @rdname expected_edges
