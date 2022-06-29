@@ -40,7 +40,7 @@ validate_undirected_sbm <- function(x) {
 #' To specify a stochastic blockmodel, you must specify
 #' the number of nodes (via `n`), the mixing matrix (via `k` or `B`),
 #' and the relative block probabilites (optional, via `pi`).
-#' We provide sane defaults for most of these options to enable
+#' We provide defaults for most of these options to enable
 #' rapid exploration, or you can invest the effort
 #' for more control over the model parameters. We **strongly recommend**
 #' setting the `expected_degree` or `expected_density` argument

@@ -125,8 +125,8 @@ validate_directed_factor_model <- function(x) {
 #' fm <- directed_factor_model(X, S, Y)
 #' fm
 #'
-#' sane_fm <- directed_factor_model(X, S, Y, expected_in_degree = 50)
-#' sane_fm
+#' fm2 <- directed_factor_model(X, S, Y, expected_in_degree = 50)
+#' fm2
 #'
 directed_factor_model <- function(
   X, S, Y,

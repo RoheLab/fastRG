@@ -5,45 +5,30 @@
 \title{Create an undirected overlapping degree corrected stochastic blockmodel object}
 \usage{
 overlapping_sbm(
-  n = NULL,
-  theta = NULL,
+  n,
   k = NULL,
   B = NULL,
   ...,
   pi = rep(1/k, k),
-  sort_nodes = TRUE
+  sort_nodes = TRUE,
+  force_pure = TRUE
 )
 }
 \arguments{
-\item{n}{(degree heterogeneity) The number of nodes in the blockmodel.
-Use when you don't want to specify the degree-heterogeneity
-parameters \code{theta} by hand. When \code{n} is specified, \code{theta}
-is randomly generated from a \code{LogNormal(2, 1)} distribution.
-This is subject to change, and may not be reproducible.
-\code{n} defaults to \code{NULL}. You must specify either \code{n}
-or \code{theta}, but not both.}
-
-\item{theta}{(degree heterogeneity) A numeric vector
-explicitly specifying the degree heterogeneity
-parameters. This implicitly determines the number of nodes
-in the resulting graph, i.e. it will have \code{length(theta)} nodes.
-Must be positive. Setting to a vector of ones recovers
-a stochastic blockmodel without degree correction.
-Defaults to \code{NULL}. You must specify either \code{n} or \code{theta},
-but not both.}
+\item{n}{The number of nodes in the overlapping SBM.#'}
 
 \item{k}{(mixing matrix) The number of blocks in the blockmodel.
 Use when you don't want to specify the mixing-matrix by hand.
-When \code{k} is specified, the elements of \code{B} are drawn
-randomly from a \code{Uniform(0, 1)} distribution.
-This is subject to change, and may not be reproducible.
-\code{k} defaults to \code{NULL}. You must specify either \code{k}
+When \code{k} is specified, \code{B} is set to a diagonal dominant matrix with
+value \code{0.8} along the diagonal and \code{0.1 / (k - 1)} on the
+off-diagonal. \code{k} defaults to \code{NULL}. You must specify either \code{k}
 or \code{B}, but not both.}
 
 \item{B}{(mixing matrix) A \code{k} by \code{k} matrix of block connection
 probabilities. The probability that a node in block \code{i} connects
 to a node in community \code{j} is \code{Poisson(B[i, j])}. Must be
-a square matrix. \code{matrix} and \code{Matrix} objects are both
+an \emph{invertible}, symmetric square matrix.
+\code{matrix} and \code{Matrix} objects are both
 acceptable. If \code{B} is not symmetric, it will be
 symmetrized via the update \code{B := B + t(B)}. Defaults to \code{NULL}.
 You must specify either \code{k} or \code{B}, but not both.}
@@ -61,15 +46,19 @@ to achieve this. Defaults to \code{NULL}. Do not specify both
 \code{expected_degree} and \code{expected_density} at the same time.}
   }}
 
-\item{pi}{(relative block probabilities) Relative block
-probabilities. Must be positive, but do not need to sum
-to one, as they will be normalized internally.
-Must match the dimensions of \code{B} or \code{k}. Defaults to
-\code{rep(1 / k, k)}, or a balanced blocks.}
+\item{pi}{(block probabilities) Probability of membership in each
+block. Membership in each block is independent under the
+overlapping SBM. Defaults to \code{rep(1 / k, k)}.}
 
 \item{sort_nodes}{Logical indicating whether or not to sort the nodes
-so that they are grouped by block and by \code{theta}. Useful for plotting.
+so that they are grouped by block. Useful for plotting.
 Defaults to \code{TRUE}.}
+
+\item{force_pure}{Logical indicating whether or not to force presence of
+"pure nodes" (nodes that belong only to a single community) for the sake
+of identifiability. To include pure nodes, block membership sampling
+first proceeds as per usual. Then, after it is complete, \code{k} nodes
+are chosen randomly as pure nodes, one for each block. Defaults to \code{TRUE}.}
 }
 \value{
 An \code{undirected_overlapping_sbm} S3 object, a subclass of the
@@ -77,7 +66,9 @@ An \code{undirected_overlapping_sbm} S3 object, a subclass of the
 fields:
 \itemize{
 \item \code{Z}: The community memberships of each node, as an \code{n} by \code{k}
-binary indicator matrix.
+binary indicator matrix. Node that some nodes may not belong
+to any community. The probability of any given node not
+belonging any community is given by \code{prod(1 - pi)}.
 \item \code{theta}: A numeric vector of degree-heterogeneity parameters.
 \item \code{pi}: Sampling probabilities for each block.
 \item \code{sorted}: Logical indicating where nodes are arranged by
@@ -97,10 +88,6 @@ to avoid large memory allocations associated with
 sampling large, dense graphs.
 }
 \section{Generative Model}{
-Note: we implement a slight generalization of the original overlapping
-stochastic blockmodel introduce in Zhang et al. (2014) called the
-Overlapping Continuous Community Assignment Model (OCCAM).
-
 There are two levels of randomness in a degree-corrected
 overlapping stochastic blockmodel. First, for each node, we
 independently determine if that node is a member of each block. This is
@@ -110,6 +97,16 @@ operation is handled by \code{\link[=sample_edgelist]{sample_edgelist()}},
 \code{\link[=sample_sparse]{sample_sparse()}}, \code{\link[=sample_igraph]{sample_igraph()}} and
 \code{\link[=sample_tidygraph]{sample_tidygraph()}}, depending depending on your desired
 graph representation.
+\subsection{Identifiability}{
+
+In order to be identifiable, an overlapping SBM must satisfy two conditions:
+\enumerate{
+\item \code{B} must be invertible, and
+\item the must be at least one "pure node" in each block that belongs to no
+other blocks.
+}
+}
+
 \subsection{Block memberships}{
 
 Note that some nodes may not belong to any blocks.
@@ -117,20 +114,9 @@ Note that some nodes may not belong to any blocks.
 \strong{TODO}
 }
 
-\subsection{Degree heterogeneity}{
-
-In addition to block membership, the overlapping SBM also allows
-nodes to have different propensities for edge formation.
-We represent this propensity for node \eqn{i} by a positive
-number \eqn{\theta_i}.
-
-\strong{TODO} identifiability constraint?
-}
-
 \subsection{Edge formulation}{
 
-Once we know the block memberships and the degree
-heterogeneity parameters \eqn{theta}, we need one more
+Once we know the block memberships, we need one more
 ingredient, which is the baseline intensity of connections
 between nodes in block \code{i} and block \code{j}. Then each edge
 \eqn{A_{i,j}} is Poisson distributed with parameter
@@ -152,20 +138,13 @@ lazy_overlapping_sbm
 dense_lazy_overlapping_sbm <- overlapping_sbm(n = 500, k = 3, expected_density = 0.8)
 dense_lazy_overlapping_sbm
 
-# explicitly setting the degree heterogeneity parameter,
-# mixing matrix, and relative community sizes rather
-# than using randomly generated defaults
-
 k <- 5
 n <- 1000
 B <- matrix(stats::runif(k * k), nrow = k, ncol = k)
 
-theta <- round(stats::rlnorm(n, 2))
-
 pi <- c(1, 2, 4, 1, 1) / 5
 
 custom_overlapping_sbm <- overlapping_sbm(
-  theta = theta,
   B = B,
   pi = pi,
   expected_degree = 50

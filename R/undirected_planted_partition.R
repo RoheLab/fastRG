@@ -51,7 +51,7 @@ validate_undirected_planted_partition <- function(x) {
 #' the number of nodes (via `n`), the mixing matrix (optional, either via
 #' `within_block/between_block` or `a/b`),
 #' and the relative block probabilites (optional, via `pi`).
-#' We provide sane defaults for most of these options to enable
+#' We provide defaults for most of these options to enable
 #' rapid exploration, or you can invest the effort
 #' for more control over the model parameters. We **strongly recommend**
 #' setting the `expected_degree` or `expected_density` argument
