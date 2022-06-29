@@ -29,13 +29,6 @@ validate_undirected_sbm <- function(x) {
     )
   }
 
-  if (values$edge_distribution == "bernoulli" && max(values$S) > 1) {
-    stop(
-      "Elements of `B` must be not exceed 1 for bernoulli SBMs.",
-      call. = FALSE
-    )
-  }
-
   x
 }
 
@@ -94,7 +87,7 @@ validate_undirected_sbm <- function(x) {
 #'   n = 5000,
 #'   k = 300,
 #'   edge_distribution = "bernoulli",
-#'   expected_degree = 80
+#'   expected_degree = 8
 #' )
 #'
 #' bernoulli_sbm
@@ -133,10 +126,18 @@ sbm <- function(
 
   if (edge_distribution == "bernoulli") {
 
-    # we're still sampling from a Poisson distribution, but S has been
-    # specified as Bernoulli edges probabilities. convert these edges
-    # probabilities such that we can feed them into a Poisson sampling
-    # procedure
+    # B (here S, which is B after symmetrizing and scaling to set expected
+    # degree), is the desired Bernoulli edge probability. we must
+    # back-transform it to a Poisson parameterization of S. see section 2.3
+    # of the paper and issue #20 for details.
+
+    if (max(sbm$S) > 1) {
+      stop(
+        "Elements of `B` (after symmetrizing and scaling to achieve expected ",
+        "degree) must not exceed 1 for bernoulli SBMs.",
+        call. = FALSE
+      )
+    }
 
     sbm$S <- -log(1 - sbm$S)
   }

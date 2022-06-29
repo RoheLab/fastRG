@@ -102,7 +102,7 @@ bernoulli_sbm <- sbm(
   n = 5000,
   k = 300,
   edge_distribution = "bernoulli",
-  expected_degree = 80
+  expected_degree = 8
 )
 
 bernoulli_sbm
