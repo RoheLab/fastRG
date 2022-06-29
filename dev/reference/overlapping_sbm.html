@@ -256,8 +256,8 @@ ArXiv:1412.3432, December 10, 2014. http://arxiv.org/abs/1412.3432.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> X: 1000 x 5 [dgCMatrix] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> S: 5 x 5 [dsyMatrix] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 10000</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Expected degree: 10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 4995</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected degree: 5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected density: 0.01</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># sometimes you gotta let the world burn and</span></span></span>
@@ -284,8 +284,8 @@ ArXiv:1412.3432, December 10, 2014. http://arxiv.org/abs/1412.3432.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> X: 500 x 3 [dgCMatrix] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> S: 3 x 3 [dsyMatrix] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 2e+05</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Expected degree: 400</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 99800</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected degree: 199.6</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected density: 0.8</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">k</span> <span class="op">&lt;-</span> <span class="fl">5</span></span></span>
@@ -322,24 +322,24 @@ ArXiv:1412.3432, December 10, 2014. http://arxiv.org/abs/1412.3432.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 1000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected degree: 5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Expected density: 0.025</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected density: 0.05025</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">edgelist</span> <span class="op">&lt;-</span> <span class="fu"><a href="sample_edgelist.html">sample_edgelist</a></span><span class="op">(</span><span class="va">custom_overlapping_sbm</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">edgelist</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 518 × 2</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 1,026 × 2</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     from    to</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>    19    35</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>    38    40</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>    25    33</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>    11    13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>    20    23</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     3    34</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>    30    33</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>    15    32</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>    20    34</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>    19    37</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 508 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     3    33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     2     8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     1     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>    28    39</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>    26    33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>    10    19</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>    19    32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>    21    24</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>    25    41</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>    23    33</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 1,016 more rows</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># efficient eigendecompostion that leverages low-rank structure in</span></span></span>
 <span class="r-in"><span><span class="co"># E(A) so that you don't have to form E(A) to find eigenvectors,</span></span></span>

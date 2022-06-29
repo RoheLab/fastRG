@@ -147,9 +147,9 @@ the dimension of the latent node position vectors.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> X: 10000 x 5 [dgeMatrix] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> S: 5 x 5 [dgeMatrix] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 226530209</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Expected degree: 22653</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Expected density: 2.2653</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 113265105</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected degree: 11326.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected density: 2.26553</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">ufm2</span> <span class="op">&lt;-</span> <span class="fu">undirected_factor_model</span><span class="op">(</span><span class="va">X</span>, <span class="va">S</span>, expected_degree <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ufm2</span></span></span>
@@ -164,11 +164,11 @@ the dimension of the latent node position vectors.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 5e+05</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected degree: 50</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Expected density: 0.005</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected density: 0.01</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/RSpectra/man/svds.html" class="external-link">svds</a></span><span class="op">(</span><span class="va">ufm2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $d</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 30.2397339  1.3353571  1.3193068  0.6539127  0.3567847</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 60.4794679  2.6707142  2.6386137  1.3078255  0.7135695</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $u</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                   [,1]          [,2]          [,3]          [,4]          [,5]</span>
