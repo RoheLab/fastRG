@@ -70,7 +70,7 @@ expected_edges.undirected_factor_model <- function(factor_model, ...) {
   S <- factor_model$S
 
   Cx <- Diagonal(n = ncol(X), x = colSums(X))
-  sum(Cx %*% S %*% Cx) * 2
+  sum(Cx %*% S %*% Cx)
 }
 
 #' @rdname expected_edges
@@ -119,7 +119,7 @@ expected_degrees.undirected_factor_model <- function(factor_model, ...) {
 
 #' @export
 expected_density.undirected_factor_model <- function(factor_model, ...) {
-  expected_edges(factor_model) / as.numeric(factor_model$n)^2
+  expected_edges(factor_model) / as.numeric(choose(factor_model$n, 2))
 }
 
 #' @importFrom RSpectra eigs_sym

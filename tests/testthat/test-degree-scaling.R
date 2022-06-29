@@ -1,10 +1,125 @@
 library(magrittr)
 
+test_that("undirected expected degree computed consistently", {
+
+  # see issue 19
+
+  set.seed(27)
+
+  n <- 1000
+  pop <- n / 2
+  a <- .1
+  b <- .05
+  B <- matrix(c(a, b, b, a), nrow = 2)
+
+  b_model <- sbm(
+    n = n, k = 2,
+    B = B, edge_distribution = "bernoulli"
+  )
+
+  expect_equal(
+    expected_degree(b_model), # computed
+    pop * a + pop * b,       # expected "undirected edge degree",
+    tolerance = 5
+  )
+
+  A <- sample_sparse(b_model)
+
+  ### degree computation gotchas
+
+  mean(rowSums(A))  # double counts undirected edges
+  #> [1] 156.711
+  mean(rowSums(triu(A)))  # right way to count undirected edges in A
+  #> [1] 78.413
+
+  expect_equal(
+    mean(rowSums(triu(A))), # computed
+    pop * a + pop * b,      # expected "undirected edge degree",
+    tolerance = 5
+  )
+
+  model2 <- sbm(n = n, k = 2, B = B, edge_distribution = "bernoulli", expected_degree = 75)
+
+  expect_equal(
+    expected_degree(model2), # computed
+    pop * a + pop * b,       # expected "undirected edge degree",
+    tolerance = 5
+  )
+
+  A2 <- sample_sparse(model2)
+
+  expect_equal(
+    mean(rowSums(triu(A2))), # computed
+    pop * a + pop * b,       # expected "undirected edge degree",
+    tolerance = 5
+  )
+
+})
+
+test_that("undirected density computed consistently", {
+
+  # see issue 19
+
+  set.seed(27)
+
+  n <- 1000
+  pop <- n / 2
+  a <- .1
+  b <- .05
+  B <- matrix(c(a, b, b, a), nrow = 2)
+
+  b_model <- sbm(
+    n = n, k = 2,
+    B = B, edge_distribution = "bernoulli"
+  )
+
+  expect_equal(
+    expected_density(b_model),              # computed
+    n * (pop * a + pop * b) / choose(n, 2), # expected undirected degree density, possibly being a little sloppy about the diagonal
+    tolerance = 0.05
+  )
+
+  A <- sample_sparse(b_model)
+
+  ### density computation gotchas
+
+  # almost correct because double counts UT and LT in num and denom,
+  # but diagonal gets too much weight. slight over-estimate of density
+  sum(A) / n^2
+
+  sum(triu(A)) / choose(n, 2)  # correct density estimate
+
+  expect_equal(
+    sum(triu(A)) / choose(n, 2),            # computed
+    n * (pop * a + pop * b) / choose(n, 2), # expected "undirected edge degree",
+    tolerance = 0.05
+  )
+
+  model2 <- sbm(n = n, k = 2, B = B, expected_density = 0.15)
+
+  expect_equal(
+    expected_density(model2),              # computed
+    n * (pop * a + pop * b) / choose(n, 2), # expected undirected degree density, possibly being a little sloppy about the diagonal
+    tolerance = 0.02
+  )
+
+  A2 <- sample_sparse(model2)
+
+  expect_equal(
+    sum(triu(A2)) / choose(n, 2),            # computed
+    0.15, # expected "undirected edge degree",
+    tolerance = 0.05
+  )
+
+})
+
 test_that("undirected factor model", {
+
+  library(tidygraph)
 
   set.seed(7)
 
-  n <- 10000
+  n <- 1000
   k <- 5
 
   # don't allow self edges at all in these calculations via
@@ -15,17 +130,24 @@ test_that("undirected factor model", {
 
   ufm <- sbm(n = n, k = k, B = B, expected_degree = 10)
   expect_equal(expected_degree(ufm), 10)
-  expect_equal(expected_density(ufm), 0.001)
+  expect_equal(expected_density(ufm), 0.02, tolerance = 0.05) # tolerance should be relative here
 
 
   el <- sample_edgelist(ufm)
-  el_mean_degree <- 2 * nrow(el) / n
+  el_mean_degree <- nrow(el) / n
   expect_lt(9, el_mean_degree)
   expect_lt(el_mean_degree, 11)
 
+  g2 <- igraph::graph_from_data_frame(el, directed = TRUE)
+  A <- igraph::as_adj(g2)
+
+  # NOTE: see issue #19 about the following
+  #
+  # mean(rowSums(A))        # double counts undirected edges
+  # mean(rowSums(triu(A)))  # right way to count undirected edges
 
   A <- sample_sparse(ufm)
-  matrix_mean_degree <- mean(rowSums(A))
+  matrix_mean_degree <- mean(rowSums(triu(A)))
 
   expect_equal(rowSums(A), colSums(A))
   expect_lt(9, matrix_mean_degree)
@@ -33,18 +155,23 @@ test_that("undirected factor model", {
 
 
   graph <- sample_igraph(ufm)
-  igraph_mean_degree <- mean(igraph::degree(graph))
+  # igraph doubles edge counts relative to the way we want to count
+  igraph_mean_degree <- mean(igraph::degree(graph)) / 2
 
   expect_lt(9, igraph_mean_degree)
   expect_lt(igraph_mean_degree, 11)
 
 
   tbl_graph <- sample_tidygraph(ufm)
-  tbl_graph_mean_degree <- mean(igraph::degree(tbl_graph))
+  tbl_graph_edges <- tbl_graph |>
+    activate(edges) |>
+    as_tibble() |>
+    nrow()
+
+  tbl_graph_mean_degree <- tbl_graph_edges / n
 
   expect_lt(9, tbl_graph_mean_degree)
   expect_lt(tbl_graph_mean_degree, 11)
-
 
   expect_silent(eigs_sym(ufm))
 })
