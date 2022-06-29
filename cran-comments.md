@@ -7,6 +7,11 @@
 
 ## R CMD check results
 
-0 errors | 0 warnings | 1 note
-
-* This is a new release.
+❯ checking CRAN incoming feasibility ... NOTE
+  Maintainer: ‘Alex Hayes <alexpghayes@gmail.com>’
+  
+  Possibly misspelled words in DESCRIPTION:
+    Rohe (16:5)
+    al (16:13)
+    et (16:10)
+    fastRG (15:56)
