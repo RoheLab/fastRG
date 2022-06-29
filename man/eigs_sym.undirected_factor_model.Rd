@@ -23,3 +23,52 @@ algorithm. See \strong{Details} below.}
 \description{
 Compute the eigendecomposition of the expected adjacency matrix of an undirected factor model
 }
+\details{
+The \code{which} argument is a character string
+that specifies the type of eigenvalues to be computed.
+Possible values are:
+
+\tabular{ll}{
+  "LM"  \tab  The \eqn{k} eigenvalues with largest magnitude. Here the
+              magnitude means the Euclidean norm of complex numbers.\cr
+  "SM"  \tab  The \eqn{k} eigenvalues with smallest magnitude.\cr
+  "LR"  \tab  The \eqn{k} eigenvalues with largest real part.\cr
+  "SR"  \tab  The \eqn{k} eigenvalues with smallest real part.\cr
+  "LI"  \tab  The \eqn{k} eigenvalues with largest imaginary part.\cr
+  "SI"  \tab  The \eqn{k} eigenvalues with smallest imaginary part.\cr
+  "LA"  \tab  The \eqn{k} largest (algebraic) eigenvalues, considering any
+              negative sign.\cr
+  "SA"  \tab  The \eqn{k} smallest (algebraic) eigenvalues, considering any
+              negative sign.\cr
+  "BE"  \tab  Compute \eqn{k} eigenvalues, half from each end of the
+              spectrum. When \eqn{k} is odd, compute more from the high
+              and then from the low end.
+}
+
+\code{eigs()} with matrix types "matrix", "dgeMatrix", "dgCMatrix"
+and "dgRMatrix" can use "LM", "SM", "LR", "SR", "LI" and "SI".
+
+\code{eigs_sym()} with all supported matrix types,
+and \code{eigs()} with symmetric matrix types
+("dsyMatrix", "dsCMatrix", and "dsRMatrix") can use "LM", "SM", "LA", "SA" and "BE".
+
+The \code{opts} argument is a list that can supply any of the
+following parameters:
+
+\describe{
+\item{\code{ncv}}{Number of Lanzcos basis vectors to use. More vectors
+                  will result in faster convergence, but with greater
+                  memory use. For general matrix, \code{ncv} must satisfy
+                  \eqn{k+2\le ncv \le n}{k+2 <= ncv <= n}, and
+                  for symmetric matrix, the constraint is
+                  \eqn{k < ncv \le n}{k < ncv <= n}.
+                  Default is \code{min(n, max(2*k+1, 20))}.}
+\item{\code{tol}}{Precision parameter. Default is 1e-10.}
+\item{\code{maxitr}}{Maximum number of iterations. Default is 1000.}
+\item{\code{retvec}}{Whether to compute eigenvectors. If FALSE,
+                     only calculate and return eigenvalues.}
+\item{\code{initvec}}{Initial vector of length \eqn{n} supplied to the
+                      Arnoldi/Lanczos iteration. It may speed up the convergence
+                      if \code{initvec} is close to an eigenvector of \eqn{A}.}
+}
+}

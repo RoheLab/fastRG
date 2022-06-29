@@ -10,7 +10,7 @@ RSpectra::eigs_sym
 #'
 #' @param A An [undirected_factor_model()].
 #' @param k Desired rank of decomposition.
-#' @inheritParams RSpectra::eigs_sym
+#' @inherit RSpectra::eigs_sym params details
 #' @param ... Unused, included only for consistency with generic signature.
 #'
 #' @method eigs_sym undirected_factor_model
@@ -37,7 +37,7 @@ eigs_sym.undirected_factor_model <- function(
 #'
 #' @param A An [undirected_factor_model()].
 #' @param k Desired rank of decomposition.
-#' @inheritParams RSpectra::svds
+#' @inherit RSpectra::svds params details
 #' @param ... Unused, included only for consistency with generic signature.
 #'
 #' @method svds undirected_factor_model
@@ -82,7 +82,7 @@ svds.undirected_factor_model <- function(
 #'
 #' @param A An [undirected_factor_model()].
 #' @param k Desired rank of decomposition.
-#' @inheritParams RSpectra::svds
+#' @inherit RSpectra::svds params details
 #' @param ... Unused, included only for consistency with generic signature.
 #'
 #' @method svds directed_factor_model
