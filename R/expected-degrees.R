@@ -29,6 +29,8 @@
 #'
 #' b_model
 #'
+#' A <- sample_sparse(b_model)
+#'
 #' # compare
 #' mean(rowSums(triu(A)))
 #'

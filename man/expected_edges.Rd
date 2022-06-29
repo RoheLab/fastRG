@@ -55,6 +55,8 @@ b_model <- fastRG::sbm(n = n, k = 2, B = B,  edge_distribution = "bernoulli")
 
 b_model
 
+A <- sample_sparse(b_model)
+
 # compare
 mean(rowSums(triu(A)))
 

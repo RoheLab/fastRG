@@ -69,14 +69,20 @@ A \code{\link[tidygraph:tbl_graph]{tidygraph::tbl_graph()}} object that is possi
 multigraph (that is, we take there to be multiple edges
 rather than weighted edges).
 
-When \code{factor_model} is \strong{undirected}:\preformatted{- the graph is undirected and one-mode.
-}
+When \code{factor_model} is \strong{undirected}:
 
-When \code{factor_model} is \strong{directed} and \strong{square}:\preformatted{- the graph is directed and one-mode.
-}
+\if{html}{\out{<div class="sourceCode">}}\preformatted{- the graph is undirected and one-mode.
+}\if{html}{\out{</div>}}
 
-When \code{factor_model} is \strong{directed} and \strong{rectangular}:\preformatted{- the graph is undirected and bipartite.
-}
+When \code{factor_model} is \strong{directed} and \strong{square}:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{- the graph is directed and one-mode.
+}\if{html}{\out{</div>}}
+
+When \code{factor_model} is \strong{directed} and \strong{rectangular}:
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{- the graph is undirected and bipartite.
+}\if{html}{\out{</div>}}
 
 Note that working with bipartite graphs in \code{tidygraph} is more
 complex than working with one-mode graphs.
