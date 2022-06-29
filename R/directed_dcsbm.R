@@ -113,6 +113,13 @@ validate_directed_dcsbm <- function(x) {
     )
   }
 
+  if (min(values$S) < 0) {
+    stop(
+      "All elements of `B` must be non-negative.",
+      call. = FALSE
+    )
+  }
+
   x
 }
 
@@ -123,7 +130,7 @@ validate_directed_dcsbm <- function(x) {
 #' `n_out` or `theta_out`), the mixing matrix
 #' (via `k_in` and `k_out`, or `B`), and the relative block
 #' probabilities (optional, via `p_in` and `pi_out`).
-#' We provide sane defaults for most of these
+#' We provide defaults for most of these
 #' options to enable rapid exploration, or you can invest the effort
 #' for more control over the model parameters. We **strongly recommend**
 #' setting the `expected_in_degree`, `expected_out_degree`,
@@ -413,8 +420,11 @@ directed_dcsbm <- function(
 
   # order mixing matrix by expected group size
 
-  B <- B[order(pi_in), ]
-  B <- B[, order(pi_out)]
+  if (k > 1) {
+    B <- B[order(pi_in), ]
+    B <- B[, order(pi_out)]
+  }
+
   pi_in <- sort(pi_in / sum(pi_in))
   pi_out <- sort(pi_out / sum(pi_out))
 
@@ -431,27 +441,26 @@ directed_dcsbm <- function(
     z_out <- sort(z_out)
   }
 
-  X <- sparse.model.matrix(~z_in + 0)
-  Y <- sparse.model.matrix(~z_out + 0)
+  if (k_in > 1) {
+    X <- sparse.model.matrix(~z_in + 0)
+  } else {
+    X <- Matrix(1, nrow = n, ncol = 1)
+  }
 
-  if (sort_nodes) {
-
-    # sort by degree within each block
-    ct_in <- c(0, cumsum(table(z_in)))
-
-    for (i in 1:k_in) {
-      theta_in[(ct_in[i] + 1):ct_in[i + 1]] <- -sort(-theta_in[(ct_in[i] + 1):ct_in[i + 1]])
-    }
-
-    ct_out <- c(0, cumsum(table(z_out)))
-
-    for (i in 1:k_out) {
-      theta_out[(ct_out[i] + 1):ct_out[i + 1]] <- -sort(-theta_out[(ct_out[i] + 1):ct_out[i + 1]])
-    }
+  if (k_out > 1) {
+    Y <- sparse.model.matrix(~z_out + 0)
+  } else {
+    Y <- Matrix(1, nrow = n, ncol = 1)
   }
 
   X@x <- theta_in
   Y@x <- theta_out
+
+  if (sort_nodes) {
+    # X, Y indexing must match z indexing, be careful about this
+    X <- sort_by_all_columns(X)
+    Y <- sort_by_all_columns(Y)
+  }
 
   dcsbm <- new_directed_dcsbm(
     X = X,
