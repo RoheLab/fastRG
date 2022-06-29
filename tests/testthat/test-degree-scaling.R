@@ -163,9 +163,9 @@ test_that("undirected factor model", {
 
 
   tbl_graph <- sample_tidygraph(ufm)
-  tbl_graph_edges <- tbl_graph |>
-    activate(edges) |>
-    as_tibble() |>
+  tbl_graph_edges <- tbl_graph %>%
+    activate(edges) %>%
+    as_tibble() %>%
     nrow()
 
   tbl_graph_mean_degree <- tbl_graph_edges / n
