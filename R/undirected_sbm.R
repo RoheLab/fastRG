@@ -10,10 +10,14 @@ validate_undirected_sbm <- function(x) {
     )
   }
 
-  if (!all(values$theta == 1)) {
+  distinct_theta_by_block <- sapply(
+    split(values$theta, values$z),
+    function(x) length(unique(x))
+  )
+
+  if (any(distinct_theta_by_block) > 1) {
     stop(
-      "`theta` must equal one for all nodes in SBMs without degree ",
-      "correction.",
+      "`theta` must be equal for all nodes in a given block.",
       call. = FALSE
     )
   }
@@ -121,6 +125,7 @@ sbm <- function(
     ...,
     pi = pi,
     sort_nodes = sort_nodes,
+    force_identifiability = TRUE,
     subclass = "undirected_sbm"
   )
 

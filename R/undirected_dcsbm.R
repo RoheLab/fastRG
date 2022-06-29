@@ -121,6 +121,10 @@ validate_undirected_dcsbm <- function(x) {
 #'   so that they are grouped by block and by `theta`. Useful for plotting.
 #'   Defaults to `TRUE`.
 #'
+#' @param force_identifiability Logical indicating whether or not to
+#'   normalize `theta` such that it sums to one within each block. Defaults
+#'   to `TRUE`.
+#'
 #' @inheritDotParams undirected_factor_model expected_degree expected_density
 #'
 #' @return An `undirected_dcsbm` S3 object, a subclass of the
@@ -243,7 +247,8 @@ dcsbm <- function(
   k = NULL, B = NULL,
   ...,
   pi = rep(1 / k, k),
-  sort_nodes = TRUE) {
+  sort_nodes = TRUE,
+  force_identifiability = TRUE) {
 
   ### degree heterogeneity parameters
 
@@ -327,6 +332,10 @@ dcsbm <- function(
     X <- Matrix(1, nrow = n, ncol = 1)
   }
 
+  if (force_identifiability) {
+    theta <- l1_normalize_within(theta, z)
+  }
+
   X@x <- theta
 
   if (sort_nodes) {
@@ -334,7 +343,11 @@ dcsbm <- function(
     X <- sort_by_all_columns(X)
   }
 
-  theta <- X@x
+  if (k > 1) {
+    theta <- X@x
+  } else {
+    theta <- sort(theta, decreasing = TRUE)
+  }
 
   dcsbm <- new_undirected_dcsbm(
     X = X,

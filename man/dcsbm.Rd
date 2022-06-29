@@ -11,7 +11,8 @@ dcsbm(
   B = NULL,
   ...,
   pi = rep(1/k, k),
-  sort_nodes = TRUE
+  sort_nodes = TRUE,
+  force_identifiability = TRUE
 )
 }
 \arguments{
@@ -70,6 +71,10 @@ Must match the dimensions of \code{B} or \code{k}. Defaults to
 \item{sort_nodes}{Logical indicating whether or not to sort the nodes
 so that they are grouped by block and by \code{theta}. Useful for plotting.
 Defaults to \code{TRUE}.}
+
+\item{force_identifiability}{Logical indicating whether or not to
+normalize \code{theta} such that it sums to one within each block. Defaults
+to \code{TRUE}.}
 }
 \value{
 An \code{undirected_dcsbm} S3 object, a subclass of the

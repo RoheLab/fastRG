@@ -14,7 +14,8 @@ directed_dcsbm(
   ...,
   pi_in = rep(1/k_in, k_in),
   pi_out = rep(1/k_out, k_out),
-  sort_nodes = TRUE
+  sort_nodes = TRUE,
+  force_identifiability = TRUE
 )
 }
 \arguments{
@@ -103,6 +104,11 @@ Must match the columns of \code{B}, or \code{k_out}. Defaults to
 \item{sort_nodes}{Logical indicating whether or not to sort the nodes
 so that they are grouped by block. Useful for plotting.
 Defaults to \code{TRUE}.}
+
+\item{force_identifiability}{Logical indicating whether or not to
+normalize \code{theta_in} such that it sums to one within each incoming
+block and \code{theta_out} such that it sums to one within each outgoing
+block. Defaults to \code{TRUE}.}
 }
 \value{
 A \code{directed_dcsbm} S3 object, a subclass of the

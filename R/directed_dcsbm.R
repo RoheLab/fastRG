@@ -207,6 +207,11 @@ validate_directed_dcsbm <- function(x) {
 #'   so that they are grouped by block. Useful for plotting.
 #'   Defaults to `TRUE`.
 #'
+#' @param force_identifiability Logical indicating whether or not to
+#'   normalize `theta_in` such that it sums to one within each incoming
+#'   block and `theta_out` such that it sums to one within each outgoing
+#'   block. Defaults to `TRUE`.
+#'
 #' @inheritDotParams directed_factor_model expected_in_degree expected_density expected_out_degree
 #'
 #' @return A `directed_dcsbm` S3 object, a subclass of the
@@ -324,7 +329,8 @@ directed_dcsbm <- function(
   ...,
   pi_in = rep(1 / k_in, k_in),
   pi_out = rep(1 / k_out, k_out),
-  sort_nodes = TRUE) {
+  sort_nodes = TRUE,
+  force_identifiability = TRUE) {
 
   ### heterogeneity parameters
 
@@ -420,8 +426,11 @@ directed_dcsbm <- function(
 
   # order mixing matrix by expected group size
 
-  if (k > 1) {
+  if (k_in > 1) {
     B <- B[order(pi_in), ]
+  }
+
+  if (k_out > 1) {
     B <- B[, order(pi_out)]
   }
 
@@ -453,6 +462,12 @@ directed_dcsbm <- function(
     Y <- Matrix(1, nrow = n, ncol = 1)
   }
 
+  if (force_identifiability) {
+    theta_in <- l1_normalize_within(theta_in, z_in)
+    theta_out <- l1_normalize_within(theta_out, z_out)
+  }
+
+
   X@x <- theta_in
   Y@x <- theta_out
 
@@ -462,8 +477,17 @@ directed_dcsbm <- function(
     Y <- sort_by_all_columns(Y)
   }
 
-  theta_in <- X@x
-  theta_out <- Y@x
+  if (k_in > 1) {
+    theta_in <- X@x
+  } else {
+    theta_in <- sort(theta_in, decreasing = TRUE)
+  }
+
+  if (k_out > 1) {
+    theta_out <- Y@x
+  } else {
+    theta_out <- sort(theta_out, decreasing = TRUE)
+  }
 
   dcsbm <- new_directed_dcsbm(
     X = X,

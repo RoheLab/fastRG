@@ -4,6 +4,7 @@
 * Add directed degree-corrected stochastic blockmodels (#18)
 * Allow rank 1 undirected stochastic block models
 * Fix bug where isolated nodes where dropped from sampled tidygraphs (#23)
+* Allow users to force model identification in DC-SBMs with `force_identifiability = TRUE`, and in overlapping SBMs with `force_pure = TRUE`, which are now the default.
 
 # fastRG 0.3.0
 

@@ -65,11 +65,6 @@ An \code{undirected_overlapping_sbm} S3 object, a subclass of the
 \code{\link[=undirected_factor_model]{undirected_factor_model()}} with the following additional
 fields:
 \itemize{
-\item \code{Z}: The community memberships of each node, as an \code{n} by \code{k}
-binary indicator matrix. Node that some nodes may not belong
-to any community. The probability of any given node not
-belonging any community is given by \code{prod(1 - pi)}.
-\item \code{theta}: A numeric vector of degree-heterogeneity parameters.
 \item \code{pi}: Sampling probabilities for each block.
 \item \code{sorted}: Logical indicating where nodes are arranged by
 block (and additionally by degree heterogeneity parameter)
@@ -145,9 +140,10 @@ B <- matrix(stats::runif(k * k), nrow = k, ncol = k)
 pi <- c(1, 2, 4, 1, 1) / 5
 
 custom_overlapping_sbm <- overlapping_sbm(
+  n = 200,
   B = B,
   pi = pi,
-  expected_degree = 50
+  expected_degree = 5
 )
 
 custom_overlapping_sbm

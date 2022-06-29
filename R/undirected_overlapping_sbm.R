@@ -1,8 +1,8 @@
 new_undirected_overlapping_sbm <- function(
     X, S,
     Z,
-    theta,
     pi,
+    B,
     sorted,
     ...,
     subclass = character()) {
@@ -10,6 +10,7 @@ new_undirected_overlapping_sbm <- function(
   overlapping_sbm <- undirected_factor_model(X, S, ..., subclass = subclass)
   overlapping_sbm$Z <- Z
   overlapping_sbm$pi <- pi
+  overlapping_sbm$B <- B
   overlapping_sbm$sorted <- sorted
   overlapping_sbm
 }
@@ -32,7 +33,7 @@ validate_undirected_overlapping_sbm <- function(x) {
     )
   }
 
-  if (max(values$S) > 1 || min(values$S) < 0) {
+  if (max(values$B) > 1 || min(values$B) < 0) {
     stop(
       "All elements of `B` must be contained in [0, 1].",
       call. = FALSE
@@ -91,13 +92,6 @@ validate_undirected_overlapping_sbm <- function(x) {
 #' @return An `undirected_overlapping_sbm` S3 object, a subclass of the
 #'   [undirected_factor_model()] with the following additional
 #'   fields:
-#'
-#'   - `Z`: The community memberships of each node, as an `n` by `k`
-#'     binary indicator matrix. Node that some nodes may not belong
-#'     to any community. The probability of any given node not
-#'     belonging any community is given by `prod(1 - pi)`.
-#'
-#'   - `theta`: A numeric vector of degree-heterogeneity parameters.
 #'
 #'   - `pi`: Sampling probabilities for each block.
 #'
@@ -184,9 +178,10 @@ validate_undirected_overlapping_sbm <- function(x) {
 #' pi <- c(1, 2, 4, 1, 1) / 5
 #'
 #' custom_overlapping_sbm <- overlapping_sbm(
+#'   n = 200,
 #'   B = B,
 #'   pi = pi,
-#'   expected_degree = 50
+#'   expected_degree = 5
 #' )
 #'
 #' custom_overlapping_sbm
@@ -219,7 +214,7 @@ overlapping_sbm <- function(
     }
 
     message(
-      "Setting `B` to a matrix with value 0.8 on the diagonal and",
+      "Setting `B` to a matrix with value 0.8 on the diagonal and ",
       "0.1 / (k - 1) on the off-diagonal. This parameterization may change ",
       "in the future. Explicitly set `B` for reproducible results."
     )
@@ -280,7 +275,8 @@ overlapping_sbm <- function(
 
   overlapping_sbm <- new_undirected_overlapping_sbm(
     X = X,
-    S = B,
+    S = B,  # accepts B but transforms by symmetrizing and scaling internally
+    B = B,
     Z = X,
     pi = pi,
     sorted = sort_nodes,
@@ -305,6 +301,7 @@ print.undirected_overlapping_sbm <- function(x, ...) {
   cat("Traditional Overlapping SBM parameterization:\n\n")
   cat("Block memberships (Z):", dim_and_class(x$Z), "\n")
   cat("Block probabilities (pi):", dim_and_class(x$pi), "\n\n")
+  cat("Block connection propensities (B):", dim_and_class(x$B), "\n\n")
 
   cat("Factor model parameterization:\n\n")
   cat("X:", dim_and_class(x$X), "\n")
