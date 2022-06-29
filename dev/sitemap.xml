@@ -31,6 +31,9 @@
     <loc>https://rohelab.github.io/fastRG/dev/reference/directed_factor_model.html</loc>
   </url>
   <url>
+    <loc>https://rohelab.github.io/fastRG/dev/reference/eigs_sym.undirected_factor_model.html</loc>
+  </url>
+  <url>
     <loc>https://rohelab.github.io/fastRG/dev/reference/erdos_renyi.html</loc>
   </url>
   <url>
@@ -65,6 +68,12 @@
   </url>
   <url>
     <loc>https://rohelab.github.io/fastRG/dev/reference/sbm.html</loc>
+  </url>
+  <url>
+    <loc>https://rohelab.github.io/fastRG/dev/reference/svds.directed_factor_model.html</loc>
+  </url>
+  <url>
+    <loc>https://rohelab.github.io/fastRG/dev/reference/svds.undirected_factor_model.html</loc>
   </url>
   <url>
     <loc>https://rohelab.github.io/fastRG/dev/reference/undirected_factor_model.html</loc>
