@@ -118,7 +118,7 @@ sbm <- function(
     ...,
     pi = pi,
     sort_nodes = sort_nodes,
-    force_identifiability = TRUE,
+    force_identifiability = FALSE,
     subclass = "undirected_sbm"
   )
 
