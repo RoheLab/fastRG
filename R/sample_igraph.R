@@ -26,9 +26,7 @@
 #'
 sample_igraph <- function(
   factor_model,
-  ...,
-  poisson_edges = TRUE,
-  allow_self_loops = TRUE) {
+  ...) {
 
   ellipsis::check_dots_unnamed()
 
@@ -47,15 +45,9 @@ sample_igraph <- function(
 #' @export
 sample_igraph.undirected_factor_model <- function(
   factor_model,
-  ...,
-  poisson_edges = TRUE,
-  allow_self_loops = TRUE) {
+  ...) {
 
-  edgelist <- sample_edgelist(
-    factor_model,
-    poisson_edges = poisson_edges,
-    allow_self_loops = allow_self_loops
-  )
+  edgelist <- sample_edgelist(factor_model, ...)
 
   igraph::graph_from_data_frame(edgelist, directed = FALSE)
 }
@@ -64,18 +56,10 @@ sample_igraph.undirected_factor_model <- function(
 #' @export
 sample_igraph.directed_factor_model <- function(
   factor_model,
-  ...,
-  poisson_edges = TRUE,
-  allow_self_loops = TRUE) {
+  ...) {
 
   if (factor_model$n == factor_model$d) {
-
-    edgelist <- sample_edgelist(
-      factor_model,
-      poisson_edges = poisson_edges,
-      allow_self_loops = allow_self_loops
-    )
-
+    edgelist <- sample_edgelist(factor_model, ...)
     one_mode <- igraph::graph_from_data_frame(edgelist, directed = TRUE)
     return(one_mode)
   }
@@ -83,13 +67,6 @@ sample_igraph.directed_factor_model <- function(
   # to represent a rectangular adjacency matrix igraph we have to make
   # a bipartite graph rather than using the usual one-mode tools
 
-  A <- sample_sparse(
-    factor_model,
-    poisson_edges = poisson_edges,
-    allow_self_loops = allow_self_loops
-  )
-
-  # TODO: consistency about multiple versus weighted igraphs throughout
-
+  A <- sample_sparse(factor_model, ...)
   igraph::graph_from_incidence_matrix(A, directed = FALSE, multiple = TRUE)
 }

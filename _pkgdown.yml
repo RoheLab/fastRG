@@ -30,6 +30,7 @@ reference:
       - dcsbm
       - overlapping_sbm
       - undirected_factor_model
+      - mmsbm
   - title: Directed graphs
     contents:
       - directed_erdos_renyi

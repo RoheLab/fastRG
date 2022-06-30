@@ -4,7 +4,13 @@
 \alias{directed_erdos_renyi}
 \title{Create an directed erdos renyi object}
 \usage{
-directed_erdos_renyi(n, ..., p = NULL)
+directed_erdos_renyi(
+  n,
+  ...,
+  p = NULL,
+  poisson_edges = TRUE,
+  allow_self_loops = TRUE
+)
 }
 \arguments{
 \item{n}{Number of nodes in graph.}
@@ -24,9 +30,42 @@ to achieve this. Defaults to \code{NULL}. Specify only one of
 
 \item{p}{Probability of an edge between any two nodes. You must specify
 either \code{p}, \code{expected_in_degree}, or \code{expected_out_degree}.}
+
+\item{poisson_edges}{Logical indicating whether or not
+multiple edges are allowed to form between a pair of
+nodes. Defaults to \code{TRUE}. When \code{FALSE}, sampling proceeds
+as usual, and duplicate edges are removed afterwards. Further,
+when \code{FALSE}, we assume that \code{S} specifies a desired between-factor
+connection probability, and back-transform this \code{S} to the
+appropriate Poisson intensity parameter to approximate Bernoulli
+factor connection probabilities. See Section 2.3 of Rohe et al. (2017)
+for some additional details.}
+
+\item{allow_self_loops}{Logical indicating whether or not
+nodes should be allowed to form edges with themselves.
+Defaults to \code{TRUE}. When \code{FALSE}, sampling proceeds allowing
+self-loops, and these are then removed after the fact.}
 }
 \value{
-Never returns Poisson edges.
+A \code{directed_factor_model} S3 class based on a list
+with the following elements:
+\itemize{
+\item \code{X}: The incoming latent positions as a \code{\link[=Matrix]{Matrix()}} object.
+\item \code{S}: The mixing matrix as a \code{\link[=Matrix]{Matrix()}} object.
+\item \code{Y}: The outgoing latent positions as a \code{\link[=Matrix]{Matrix()}} object.
+\item \code{n}: The number of nodes with incoming edges in the network.
+\item \code{k1}: The dimension of the latent node position vectors
+encoding incoming latent communities (i.e. in \code{X}).
+\item \code{d}: The number of nodes with outgoing edges in the network.
+Does not need to match \code{n} -- rectangular adjacency matrices
+are supported.
+\item \code{k2}: The dimension of the latent node position vectors
+encoding outgoing latent communities (i.e. in \code{Y}).
+\item \code{poisson_edges}: Whether or not the graph is taken to be have
+Poisson or Bernoulli edges, as indicated by a logical vector
+of length 1.
+\item \code{allow_self_loops}: Whether or not self loops are allowed.
+}
 }
 \description{
 Create an directed erdos renyi object
@@ -46,15 +85,11 @@ A
 
 }
 \seealso{
-Other bernoulli graphs: 
-\code{\link{erdos_renyi}()}
-
 Other erdos renyi: 
 \code{\link{erdos_renyi}()}
 
 Other directed graphs: 
 \code{\link{directed_dcsbm}()}
 }
-\concept{bernoulli graphs}
 \concept{directed graphs}
 \concept{erdos renyi}

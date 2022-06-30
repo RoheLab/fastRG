@@ -10,9 +10,9 @@
   S,
   Y,
   directed,
-  ...,
-  poisson_edges = TRUE,
-  allow_self_loops = TRUE
+  poisson_edges,
+  allow_self_loops,
+  ...
 )
 
 \method{sample_edgelist}{Matrix}(
@@ -20,9 +20,9 @@
   S,
   Y,
   directed,
-  ...,
-  poisson_edges = TRUE,
-  allow_self_loops = TRUE
+  poisson_edges,
+  allow_self_loops,
+  ...
 )
 }
 \arguments{
@@ -46,19 +46,16 @@ When \code{directed = FALSE}, samples a directed graph with
 symmetric expectation, and then adds edges until symmetry
 is achieved.}
 
-\item{...}{Ignored. Do not use.}
-
-\item{poisson_edges}{Logical indicating whether or not
-multiple edges are allowed to form between a pair of
-nodes. Defaults to \code{TRUE}. When \code{FALSE}, sampling proceeds
-as usual, and duplicate edges are removed afterwards.
-See Section 2.3 of Rohe et al (2017) for additional
-details.}
+\item{poisson_edges}{Whether or not to remove duplicate edges
+after sampling. See Section 2.3 of Rohe et al. (2017)
+for some additional details. Defaults to \code{TRUE}.}
 
 \item{allow_self_loops}{Logical indicating whether or not
 nodes should be allowed to form edges with themselves.
 Defaults to \code{TRUE}. When \code{FALSE}, sampling proceeds allowing
 self-loops, and these are then removed after the fact.}
+
+\item{...}{Ignored, for generic consistency only.}
 }
 \value{
 A single realization of a random Poisson (or Bernoulli)
@@ -101,7 +98,7 @@ X <- matrix(rpois(n = n * k1, 1), nrow = n)
 S <- matrix(runif(n = k1 * k2, 0, .1), nrow = k1)
 Y <- matrix(rpois(n = d * k2, 1), nrow = d)
 
-sample_edgelist(X, S, Y, TRUE)
+sample_edgelist(X, S, Y, TRUE, TRUE, TRUE)
 
 }
 \references{
@@ -112,9 +109,9 @@ Journal of Machine Learning Research; 19(77):1-13, 2018.
 }
 \seealso{
 Other samplers: 
-\code{\link{sample_edgelist.directed_erdos_renyi}()},
-\code{\link{sample_igraph.directed_erdos_renyi}()},
-\code{\link{sample_sparse.directed_erdos_renyi}()},
-\code{\link{sample_tidygraph.directed_erdos_renyi}()}
+\code{\link{sample_edgelist}()},
+\code{\link{sample_igraph}()},
+\code{\link{sample_sparse}()},
+\code{\link{sample_tidygraph}()}
 }
 \concept{samplers}
