@@ -440,10 +440,10 @@ directed_dcsbm <- function(
   # sample block memberships
 
   z_in <- sample(k_in, n, replace = TRUE, prob = pi_in)
-  z_in <- factor(z_in, levels = 1:k_in, labels = paste0("incoming_block", 1:k_in))
+  z_in <- factor(z_in, levels = 1:k_in, labels = paste0(1:k_in))
 
   z_out <- sample(k_out, n, replace = TRUE, prob = pi_out)
-  z_out <- factor(z_out, levels = 1:k_out, labels = paste0("outgoing_block", 1:k_out))
+  z_out <- factor(z_out, levels = 1:k_out, labels = paste0(1:k_out))
 
   if (sort_nodes) {
     z_in <- sort(z_in)
