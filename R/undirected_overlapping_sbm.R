@@ -314,6 +314,9 @@ print.undirected_overlapping_sbm <- function(x, ...) {
   cat("X:", dim_and_class(x$X), "\n")
   cat("S:", dim_and_class(x$S), "\n\n")
 
+  cat("Poisson edges:", as.character(x$poisson_edges), "\n")
+  cat("Allow self loops:", as.character(x$allow_self_loops), "\n\n")
+
   cat(glue("Expected edges: {round(expected_edges(x))}\n", .trim = FALSE))
   cat(glue("Expected degree: {round(expected_degree(x), 1)}\n", .trim = FALSE))
   cat(glue("Expected density: {round(expected_density(x), 5)}", .trim = FALSE))
