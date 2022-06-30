@@ -287,7 +287,8 @@ sample_edgelist.matrix <- function(
     return(edge_list)
   }
 
-  # varpi in section 2.4 of Rohe et al (2017)
+  # varpi in section 2.4 of Rohe et al (2017), the number of
+  # edges between all pairs of blocks
   block_sizes <- matrix(
     rmultinom(n = 1, size = m, prob = S_tilde),
     nrow = k1,
@@ -348,16 +349,27 @@ sample_edgelist.matrix <- function(
     }
   }
 
+  # if the model is undirected, i think to and to_tmp are sufficient since
+  # the U and V blocks should line up since block memberships match?
+
   # put to_tmp in the correct order, to match up with from
 
   u_block_start <- 1
-  v_block_start <- c(1, cumsum(v_block_sizes))
+
+  # i believe the move from the commented out line of code to the new
+  # version should fix #13, but if something goes horribly wrong, revert this,
+  # it's fine if #13 remains buggy
+  # v_block_start <- c(1, cumsum(v_block_sizes))
+  v_block_start <- cumsum(c(1, v_block_sizes))
 
   for (u in 1:k1) {
     for (v in 1:k2) {
+
       if (block_sizes[u, v] > 0) {
+
         to_index <- u_block_start:(u_block_start + block_sizes[u, v] - 1)
         tmp_index <- v_block_start[v]:(v_block_start[v] + block_sizes[u, v] - 1)
+
         to[to_index] <- to_tmp[tmp_index]
 
         v_block_start[v] <- v_block_start[v] + block_sizes[u, v]
