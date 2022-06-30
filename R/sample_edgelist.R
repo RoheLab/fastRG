@@ -12,18 +12,6 @@
 #'
 #' @param ... Ignored. Do not use.
 #'
-#' @param poisson_edges Logical indicating whether or not
-#'   multiple edges are allowed to form between a pair of
-#'   nodes. Defaults to `TRUE`. When `FALSE`, sampling proceeds
-#'   as usual, and duplicate edges are removed afterwards.
-#'   See Section 2.3 of Rohe et al (2017) for additional
-#'   details.
-#'
-#' @param allow_self_loops Logical indicating whether or not
-#'   nodes should be allowed to form edges with themselves.
-#'   Defaults to `TRUE`. When `FALSE`, sampling proceeds allowing
-#'   self-loops, and these are then removed after the fact.
-#'
 #' @return A single realization of a random Poisson (or Bernoulli)
 #'   Dot Product Graph, represented as a [tibble::tibble()] with two
 #'   integer columns, `from` and `to`.
@@ -85,7 +73,7 @@
 #' isSymmetric(A)
 #' dim(A)
 #'
-#' B <- sample_sparse(ufm, poisson_edges = FALSE)
+#' B <- sample_sparse(ufm)
 #'
 #' inherits(B, "dsCMatrix")
 #' isSymmetric(B)
@@ -98,8 +86,6 @@
 #' ### sampling graphs as tidygraph graphs ---------------
 #'
 #' sample_tidygraph(ufm)
-#'
-#' sample_tidygraph(ufm, poisson_edges = FALSE)
 #'
 #' ##### directed examples ----------------------------
 #'
@@ -130,7 +116,7 @@
 #' isSymmetric(A2)
 #' dim(A2)
 #'
-#' B2 <- sample_sparse(fm, poisson_edges = FALSE)
+#' B2 <- sample_sparse(fm)
 #'
 #' inherits(B2, "dgCMatrix")
 #' isSymmetric(B2)
@@ -150,13 +136,11 @@
 #'
 #' ### sampling graphs as tidygraph graphs ---------------
 #'
-#' sample_tidygraph(fm, poisson_edges = FALSE)
+#' sample_tidygraph(fm)
 #'
 sample_edgelist <- function(
   factor_model,
-  ...,
-  poisson_edges = TRUE,
-  allow_self_loops = TRUE) {
+  ...) {
   ellipsis::check_dots_unnamed()
   UseMethod("sample_edgelist")
 }
@@ -165,9 +149,7 @@ sample_edgelist <- function(
 #' @export
 sample_edgelist.undirected_factor_model <- function(
   factor_model,
-  ...,
-  poisson_edges = TRUE,
-  allow_self_loops = TRUE) {
+  ...) {
 
   X <- factor_model$X
   S <- factor_model$S
@@ -175,8 +157,8 @@ sample_edgelist.undirected_factor_model <- function(
   sample_edgelist(
     X, S, X,
     FALSE,
-    poisson_edges = poisson_edges,
-    allow_self_loops = allow_self_loops
+    factor_model$poisson_edges,
+    factor_model$allow_self_loops
   )
 }
 
@@ -184,9 +166,7 @@ sample_edgelist.undirected_factor_model <- function(
 #' @export
 sample_edgelist.directed_factor_model <- function(
   factor_model,
-  ...,
-  poisson_edges = TRUE,
-  allow_self_loops = TRUE) {
+  ...) {
 
   X <- factor_model$X
   S <- factor_model$S
@@ -195,8 +175,8 @@ sample_edgelist.directed_factor_model <- function(
   sample_edgelist(
     X, S, Y,
     TRUE,
-    poisson_edges = poisson_edges,
-    allow_self_loops = allow_self_loops
+    factor_model$poisson_edges,
+    factor_model$allow_self_loops
   )
 }
 
@@ -231,7 +211,18 @@ sample_edgelist.directed_factor_model <- function(
 #'   symmetric expectation, and then adds edges until symmetry
 #'   is achieved.
 #'
-#' @inherit sample_edgelist params return details references
+#' @param poisson_edges Whether or not to remove duplicate edges
+#'   after sampling. See Section 2.3 of Rohe et al. (2017)
+#'   for some additional details. Defaults to `TRUE`.
+#'
+#' @param allow_self_loops Logical indicating whether or not
+#'   nodes should be allowed to form edges with themselves.
+#'   Defaults to `TRUE`. When `FALSE`, sampling proceeds allowing
+#'   self-loops, and these are then removed after the fact.
+#'
+#' @param ... Ignored, for generic consistency only.
+#'
+#' @inherit sample_edgelist return details references
 #'
 #' @export
 #' @importFrom stats rpois rmultinom
@@ -251,14 +242,14 @@ sample_edgelist.directed_factor_model <- function(
 #' S <- matrix(runif(n = k1 * k2, 0, .1), nrow = k1)
 #' Y <- matrix(rpois(n = d * k2, 1), nrow = d)
 #'
-#' sample_edgelist(X, S, Y, TRUE)
+#' sample_edgelist(X, S, Y, TRUE, TRUE, TRUE)
 #'
 sample_edgelist.matrix <- function(
   factor_model, S, Y,
   directed,
-  ...,
-  poisson_edges = TRUE,
-  allow_self_loops = TRUE) {
+  poisson_edges,
+  allow_self_loops,
+  ...) {
 
   X <- factor_model
 

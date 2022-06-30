@@ -11,7 +11,9 @@ overlapping_sbm(
   ...,
   pi = rep(1/k, k),
   sort_nodes = TRUE,
-  force_pure = TRUE
+  force_pure = TRUE,
+  poisson_edges = TRUE,
+  allow_self_loops = TRUE
 )
 }
 \arguments{
@@ -59,6 +61,21 @@ Defaults to \code{TRUE}.}
 of identifiability. To include pure nodes, block membership sampling
 first proceeds as per usual. Then, after it is complete, \code{k} nodes
 are chosen randomly as pure nodes, one for each block. Defaults to \code{TRUE}.}
+
+\item{poisson_edges}{Logical indicating whether or not
+multiple edges are allowed to form between a pair of
+nodes. Defaults to \code{TRUE}. When \code{FALSE}, sampling proceeds
+as usual, and duplicate edges are removed afterwards. Further,
+when \code{FALSE}, we assume that \code{S} specifies a desired between-factor
+connection probability, and back-transform this \code{S} to the
+appropriate Poisson intensity parameter to approximate Bernoulli
+factor connection probabilities. See Section 2.3 of Rohe et al. (2017)
+for some additional details.}
+
+\item{allow_self_loops}{Logical indicating whether or not
+nodes should be allowed to form edges with themselves.
+Defaults to \code{TRUE}. When \code{FALSE}, sampling proceeds allowing
+self-loops, and these are then removed after the fact.}
 }
 \value{
 An \code{undirected_overlapping_sbm} S3 object, a subclass of the

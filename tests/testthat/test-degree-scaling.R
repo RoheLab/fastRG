@@ -14,7 +14,8 @@ test_that("undirected expected degree computed consistently", {
 
   b_model <- sbm(
     n = n, k = 2,
-    B = B, edge_distribution = "bernoulli"
+    B = B,
+    poisson_edges = FALSE
   )
 
   expect_equal(
@@ -34,11 +35,11 @@ test_that("undirected expected degree computed consistently", {
 
   expect_equal(
     mean(rowSums(triu(A))), # computed
-    pop * a + pop * b,      # expected "undirected edge degree",
+    pop * a + pop * b,      # expected "undirected edge degree"
     tolerance = 5
   )
 
-  model2 <- sbm(n = n, k = 2, B = B, edge_distribution = "bernoulli", expected_degree = 75)
+  model2 <- sbm(n = n, k = 2, B = B, poisson_edges = FALSE, expected_degree = 75)
 
   expect_equal(
     expected_degree(model2), # computed
@@ -70,7 +71,8 @@ test_that("undirected density computed consistently", {
 
   b_model <- sbm(
     n = n, k = 2,
-    B = B, edge_distribution = "bernoulli"
+    B = B,
+    poisson_edges = FALSE
   )
 
   expect_equal(

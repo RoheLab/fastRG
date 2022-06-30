@@ -22,13 +22,6 @@ validate_undirected_sbm <- function(x) {
     )
   }
 
-  if (!(values$edge_distribution %in% c("poisson", "bernoulli"))) {
-    stop(
-      "`edge_distribution` must be either \"poisson\" or \"bernoulli\".",
-      call. = FALSE
-    )
-  }
-
   x
 }
 
@@ -47,20 +40,11 @@ validate_undirected_sbm <- function(x) {
 #' @param n The number of nodes in the network. Must be
 #'   a positive integer. This argument is required.
 #'
-#' @param edge_distribution Either `"poisson"` or `"bernoulli"`. The
-#'   default is `"poisson"`, in which case the SBM can be a
-#'   multigraph, i.e. multiple edges between the same two nodes
-#'   are allowed. If `edge_distribution == "bernoulli"` only a
-#'   single edge is allowed between any pair of nodes. See Section 2.3
-#'   of Rohe et al (2017) for details.
-#'
 #' @inherit dcsbm params details
 #' @inheritDotParams undirected_factor_model expected_degree expected_density
 #'
 #' @return An `undirected_sbm` S3 object, which is a subclass of the
-#'   [dcsbm()] object, with one additional field.
-#'
-#'   - `edge_distribution`: Either "poisson" or "bernoulli".
+#'   [dcsbm()] object.
 #'
 #' @export
 #' @family stochastic block models
@@ -86,7 +70,7 @@ validate_undirected_sbm <- function(x) {
 #' bernoulli_sbm <- sbm(
 #'   n = 5000,
 #'   k = 300,
-#'   edge_distribution = "bernoulli",
+#'   poisson_edges = FALSE,
 #'   expected_degree = 8
 #' )
 #'
@@ -105,10 +89,9 @@ sbm <- function(
   k = NULL, B = NULL,
   ...,
   pi = rep(1 / k, k),
-  edge_distribution = c("poisson", "bernoulli"),
-  sort_nodes = TRUE) {
-
-  edge_distribution <- match.arg(edge_distribution)
+  sort_nodes = TRUE,
+  poisson_edges = TRUE,
+  allow_self_loops = TRUE) {
 
   sbm <- dcsbm(
     n = n,
@@ -119,28 +102,10 @@ sbm <- function(
     pi = pi,
     sort_nodes = sort_nodes,
     force_identifiability = FALSE,
+    poisson_edges = TRUE,
+    allow_self_loops = TRUE,
     subclass = "undirected_sbm"
   )
-
-  sbm$edge_distribution <- edge_distribution
-
-  if (edge_distribution == "bernoulli") {
-
-    # B (here S, which is B after symmetrizing and scaling to set expected
-    # degree), is the desired Bernoulli edge probability. we must
-    # back-transform it to a Poisson parameterization of S. see section 2.3
-    # of the paper and issue #20 for details.
-
-    if (max(sbm$S) > 1) {
-      stop(
-        "Elements of `B` (after symmetrizing and scaling to achieve expected ",
-        "degree) must not exceed 1 for bernoulli SBMs.",
-        call. = FALSE
-      )
-    }
-
-    sbm$S <- -log(1 - sbm$S)
-  }
 
   validate_undirected_sbm(sbm)
 }
@@ -169,68 +134,4 @@ print.undirected_sbm <- function(x, ...) {
   cat(glue("Expected edges: {round(expected_edges(x))}\n", .trim = FALSE))
   cat(glue("Expected degree: {round(expected_degree(x), 1)}\n", .trim = FALSE))
   cat(glue("Expected density: {round(expected_density(x), 5)}", .trim = FALSE))
-}
-
-
-# dispatch hacks to respect type of edges---------------------------------------
-
-#' @rdname sample_edgelist
-#' @export
-sample_edgelist.undirected_sbm <- function(
-  factor_model,
-  ...,
-  poisson_edges = TRUE,
-  allow_self_loops = TRUE) {
-
-  poisson_edges <- factor_model$edge_distribution == "poisson"
-
-  NextMethod()
-
-  NextMethod("sample_edgelist", factor_model, ..., poisson_edges = FALSE)
-}
-
-#' @rdname sample_sparse
-#' @export
-sample_sparse.undirected_erdos_renyi <- function(
-  factor_model,
-  ...,
-  poisson_edges = FALSE,
-  allow_self_loops = TRUE) {
-
-  NextMethod("sample_sparse", factor_model, ..., poisson_edges = FALSE)
-}
-
-#' @rdname sample_igraph
-#' @export
-sample_igraph.undirected_erdos_renyi <- function(
-  factor_model,
-  ...,
-  poisson_edges = FALSE,
-  allow_self_loops = TRUE) {
-
-  NextMethod("sample_igraph", factor_model, ..., poisson_edges = FALSE)
-}
-
-#' @rdname sample_tidygraph
-#' @export
-sample_tidygraph.undirected_erdos_renyi <- function(
-  factor_model,
-  ...,
-  poisson_edges = FALSE,
-  allow_self_loops = TRUE) {
-
-  NextMethod("sample_tidygraph", factor_model, ..., poisson_edges = FALSE)
-}
-
-
-#' @rdname sample_edgelist
-#' @export
-sample_edgelist.undirected_sbm <- function(
-  factor_model,
-  ...,
-  allow_self_loops = TRUE) {
-
-  poisson_edges <- factor_model$edge_distribution == "poisson"
-
-  NextMethod()
 }

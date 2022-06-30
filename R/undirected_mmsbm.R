@@ -73,6 +73,7 @@ new_undirected_mmsbm <- function(
 #' @inheritDotParams undirected_factor_model expected_degree expected_density
 #' @inheritParams dcsbm
 #' @inheritParams overlapping_sbm
+#' @inheritParams undirected_factor_model
 #'
 #' @return An `undirected_mmsbm` S3 object, a subclass of the
 #'   [undirected_factor_model()] with the following additional
@@ -187,7 +188,9 @@ mmsbm <- function(
     ...,
     alpha = rep(1, k),
     sort_nodes = TRUE,
-    force_pure = TRUE) {
+    force_pure = TRUE,
+    poisson_edges = TRUE,
+    allow_self_loops = TRUE) {
 
   ### degree heterogeneity parameters
 
@@ -279,6 +282,8 @@ mmsbm <- function(
     Z = Z,
     alpha = alpha,
     sorted = sort_nodes,
+    poisson_edges = poisson_edges,
+    allow_self_loops = allow_self_loops,
     ...
   )
 

@@ -12,7 +12,9 @@ dcsbm(
   ...,
   pi = rep(1/k, k),
   sort_nodes = TRUE,
-  force_identifiability = TRUE
+  force_identifiability = FALSE,
+  poisson_edges = TRUE,
+  allow_self_loops = TRUE
 )
 }
 \arguments{
@@ -74,7 +76,23 @@ Defaults to \code{TRUE}.}
 
 \item{force_identifiability}{Logical indicating whether or not to
 normalize \code{theta} such that it sums to one within each block. Defaults
-to \code{TRUE}.}
+to \code{FALSE}, since this behavior can be surprise when \code{theta} is set
+to a vector of all ones to recover the DC-SBM case.}
+
+\item{poisson_edges}{Logical indicating whether or not
+multiple edges are allowed to form between a pair of
+nodes. Defaults to \code{TRUE}. When \code{FALSE}, sampling proceeds
+as usual, and duplicate edges are removed afterwards. Further,
+when \code{FALSE}, we assume that \code{S} specifies a desired between-factor
+connection probability, and back-transform this \code{S} to the
+appropriate Poisson intensity parameter to approximate Bernoulli
+factor connection probabilities. See Section 2.3 of Rohe et al. (2017)
+for some additional details.}
+
+\item{allow_self_loops}{Logical indicating whether or not
+nodes should be allowed to form edges with themselves.
+Defaults to \code{TRUE}. When \code{FALSE}, sampling proceeds allowing
+self-loops, and these are then removed after the fact.}
 }
 \value{
 An \code{undirected_dcsbm} S3 object, a subclass of the

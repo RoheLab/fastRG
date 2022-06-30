@@ -1,6 +1,8 @@
 new_undirected_overlapping_sbm <- function(
     X, S,
     Z,
+    poisson_edges = TRUE,
+    allow_self_loops = TRUE,
     pi,
     B,
     sorted,
@@ -88,6 +90,7 @@ validate_undirected_overlapping_sbm <- function(x) {
 #'   are chosen randomly as pure nodes, one for each block. Defaults to `TRUE`.
 #'
 #' @inheritDotParams undirected_factor_model expected_degree expected_density
+#' @inheritParams undirected_factor_model
 #'
 #' @return An `undirected_overlapping_sbm` S3 object, a subclass of the
 #'   [undirected_factor_model()] with the following additional
@@ -201,7 +204,9 @@ overlapping_sbm <- function(
     ...,
     pi = rep(1 / k, k),
     sort_nodes = TRUE,
-    force_pure = TRUE) {
+    force_pure = TRUE,
+    poisson_edges = TRUE,
+    allow_self_loops = TRUE) {
 
   ### mixing matrix
 
@@ -280,6 +285,8 @@ overlapping_sbm <- function(
     Z = X,
     pi = pi,
     sorted = sort_nodes,
+    poisson_edges = poisson_edges,
+    allow_self_loops = allow_self_loops,
     ...
   )
 

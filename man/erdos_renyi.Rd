@@ -4,7 +4,7 @@
 \alias{erdos_renyi}
 \title{Create an undirected erdos renyi object}
 \usage{
-erdos_renyi(n, ..., p = NULL)
+erdos_renyi(n, ..., p = NULL, poisson_edges = TRUE, allow_self_loops = TRUE)
 }
 \arguments{
 \item{n}{Number of nodes in graph.}
@@ -20,9 +20,32 @@ to achieve this. Defaults to \code{NULL}. Do not specify both
 
 \item{p}{Probability of an edge between any two nodes. You must specify
 either \code{p} or \code{expected_degree}.}
+
+\item{poisson_edges}{Logical indicating whether or not
+multiple edges are allowed to form between a pair of
+nodes. Defaults to \code{TRUE}. When \code{FALSE}, sampling proceeds
+as usual, and duplicate edges are removed afterwards. Further,
+when \code{FALSE}, we assume that \code{S} specifies a desired between-factor
+connection probability, and back-transform this \code{S} to the
+appropriate Poisson intensity parameter to approximate Bernoulli
+factor connection probabilities. See Section 2.3 of Rohe et al. (2017)
+for some additional details.}
+
+\item{allow_self_loops}{Logical indicating whether or not
+nodes should be allowed to form edges with themselves.
+Defaults to \code{TRUE}. When \code{FALSE}, sampling proceeds allowing
+self-loops, and these are then removed after the fact.}
 }
 \value{
-Never returns Poisson edges.
+An \code{undirected_factor_model} S3 class based on a list
+with the following elements:
+\itemize{
+\item \code{X}: The latent positions as a \code{\link[=Matrix]{Matrix()}} object.
+\item \code{S}: The mixing matrix as a \code{\link[=Matrix]{Matrix()}} object.
+\item \code{n}: The number of nodes in the network.
+\item \code{k}: The rank of expectation matrix. Equivalently,
+the dimension of the latent node position vectors.
+}
 }
 \description{
 Create an undirected erdos renyi object
@@ -46,9 +69,6 @@ A
 
 }
 \seealso{
-Other bernoulli graphs: 
-\code{\link{directed_erdos_renyi}()}
-
 Other erdos renyi: 
 \code{\link{directed_erdos_renyi}()}
 
@@ -60,6 +80,5 @@ Other undirected graphs:
 \code{\link{planted_partition}()},
 \code{\link{sbm}()}
 }
-\concept{bernoulli graphs}
 \concept{erdos renyi}
 \concept{undirected graphs}

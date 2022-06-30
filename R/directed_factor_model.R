@@ -1,5 +1,7 @@
 new_directed_factor_model <- function(
   X, S, Y,
+  poisson_edges,
+  allow_self_loops,
   ...,
   subclass = character()) {
 
@@ -17,7 +19,9 @@ new_directed_factor_model <- function(
     n = n,
     k1 = k1,
     d = d,
-    k2 = k2
+    k2 = k2,
+    poisson_edges = poisson_edges,
+    allow_self_loops = allow_self_loops
   )
 
   class(model) <- c(subclass, "directed_factor_model")
@@ -41,6 +45,14 @@ validate_directed_factor_model <- function(x) {
 
   if (values$k2 != ncol(values$S)) {
     stop("`k2` must equal the number of columns in `S`", call. = FALSE)
+  }
+
+  if (!is.logical(values$poisson_edges)) {
+    stop("`poisson_edges` must be a logical(1) vector.", call. = FALSE)
+  }
+
+  if (!is.logical(values$allow_self_loops)) {
+    stop("`allow_self_loops` must be a logical(1) vector.", call. = FALSE)
   }
 
   x
@@ -86,6 +98,21 @@ validate_directed_factor_model <- function(x) {
 #'   to achieve this. Defaults to `NULL`. Specify only one of
 #'   `expected_in_degree`, `expected_out_degree`, and `expected_density`.
 #'
+#' @param poisson_edges Logical indicating whether or not
+#'   multiple edges are allowed to form between a pair of
+#'   nodes. Defaults to `TRUE`. When `FALSE`, sampling proceeds
+#'   as usual, and duplicate edges are removed afterwards. Further,
+#'   when `FALSE`, we assume that `S` specifies a desired between-factor
+#'   connection probability, and back-transform this `S` to the
+#'   appropriate Poisson intensity parameter to approximate Bernoulli
+#'   factor connection probabilities. See Section 2.3 of Rohe et al. (2017)
+#'   for some additional details.
+#'
+#' @param allow_self_loops Logical indicating whether or not
+#'   nodes should be allowed to form edges with themselves.
+#'   Defaults to `TRUE`. When `FALSE`, sampling proceeds allowing
+#'   self-loops, and these are then removed after the fact.
+#'
 #' @return A `directed_factor_model` S3 class based on a list
 #'   with the following elements:
 #'
@@ -106,6 +133,12 @@ validate_directed_factor_model <- function(x) {
 #'
 #'   - `k2`: The dimension of the latent node position vectors
 #'     encoding outgoing latent communities (i.e. in `Y`).
+#'
+#'   - `poisson_edges`: Whether or not the graph is taken to be have
+#'     Poisson or Bernoulli edges, as indicated by a logical vector
+#'     of length 1.
+#'
+#'   - `allow_self_loops`: Whether or not self loops are allowed.
 #'
 #' @export
 #'
@@ -133,7 +166,9 @@ directed_factor_model <- function(
   ...,
   expected_in_degree = NULL,
   expected_out_degree = NULL,
-  expected_density = NULL) {
+  expected_density = NULL,
+  poisson_edges = TRUE,
+  allow_self_loops = TRUE) {
 
   X <- Matrix(X)
   S <- Matrix(S)
@@ -153,7 +188,12 @@ directed_factor_model <- function(
     )
   }
 
-  fm <- new_directed_factor_model(X, S, Y, ...)
+  fm <- new_directed_factor_model(
+    X, S, Y,
+    poisson_edges = poisson_edges,
+    allow_self_loops = allow_self_loops,
+    ...
+  )
 
   if (!is.null(expected_in_degree)) {
 
@@ -193,6 +233,24 @@ directed_factor_model <- function(
 
   fm$S <- S
 
+  if (!poisson_edges) {
+
+    # when poisson_edges = FALSE, S is the desired Bernoulli edge probability.
+    # we must
+    # back-transform it to a Poisson parameterization of S. see section 2.3
+    # of the paper and issue #20 for details.
+
+    if (max(fm$S) > 1) {
+      stop(
+        "Elements of `S` (after symmetrizing and scaling to achieve expected ",
+        "degree) must not exceed 1 for Bernoulli graphs.",
+        call. = FALSE
+      )
+    }
+
+    fm$S <- -log(1 - fm$S)
+  }
+
   validate_directed_factor_model(fm)
 }
 
@@ -219,6 +277,9 @@ print.directed_factor_model <- function(x, ...) {
   cat("X:", dim_and_class(x$X), "\n")
   cat("S:", dim_and_class(x$S), "\n")
   cat("Y:", dim_and_class(x$Y), "\n\n")
+
+  cat("Poisson edges:", as.character(x$poisson_edges), "\n")
+  cat("Allow self loops:", as.character(x$allow_self_loops), "\n\n")
 
   cat(
     glue("Expected edges: {round(expected_edges(x))}"),

@@ -11,7 +11,9 @@ directed_factor_model(
   ...,
   expected_in_degree = NULL,
   expected_out_degree = NULL,
-  expected_density = NULL
+  expected_density = NULL,
+  poisson_edges = TRUE,
+  allow_self_loops = TRUE
 )
 }
 \arguments{
@@ -42,6 +44,21 @@ to achieve this. Defaults to \code{NULL}. Specify only one of
 of the graph. Specifying \code{expected_density} simply rescales \code{S}
 to achieve this. Defaults to \code{NULL}. Specify only one of
 \code{expected_in_degree}, \code{expected_out_degree}, and \code{expected_density}.}
+
+\item{poisson_edges}{Logical indicating whether or not
+multiple edges are allowed to form between a pair of
+nodes. Defaults to \code{TRUE}. When \code{FALSE}, sampling proceeds
+as usual, and duplicate edges are removed afterwards. Further,
+when \code{FALSE}, we assume that \code{S} specifies a desired between-factor
+connection probability, and back-transform this \code{S} to the
+appropriate Poisson intensity parameter to approximate Bernoulli
+factor connection probabilities. See Section 2.3 of Rohe et al. (2017)
+for some additional details.}
+
+\item{allow_self_loops}{Logical indicating whether or not
+nodes should be allowed to form edges with themselves.
+Defaults to \code{TRUE}. When \code{FALSE}, sampling proceeds allowing
+self-loops, and these are then removed after the fact.}
 }
 \value{
 A \code{directed_factor_model} S3 class based on a list
@@ -58,6 +75,10 @@ Does not need to match \code{n} -- rectangular adjacency matrices
 are supported.
 \item \code{k2}: The dimension of the latent node position vectors
 encoding outgoing latent communities (i.e. in \code{Y}).
+\item \code{poisson_edges}: Whether or not the graph is taken to be have
+Poisson or Bernoulli edges, as indicated by a logical vector
+of length 1.
+\item \code{allow_self_loops}: Whether or not self loops are allowed.
 }
 }
 \description{
