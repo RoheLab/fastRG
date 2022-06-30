@@ -81,8 +81,9 @@ sampling large, dense graphs.</p>
 <span>  B <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span>,</span>
 <span>  pi <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">/</span><span class="va">k</span>, <span class="va">k</span><span class="op">)</span>,</span>
-<span>  edge_distribution <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"poisson"</span>, <span class="st">"bernoulli"</span><span class="op">)</span>,</span>
-<span>  sort_nodes <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  sort_nodes <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  poisson_edges <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  allow_self_loops <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -138,19 +139,29 @@ Must match the dimensions of <code>B</code> or <code>k</code>. Defaults to
 <code>rep(1 / k, k)</code>, or a balanced blocks.</p></dd>
 
 
-<dt>edge_distribution</dt>
-<dd><p>Either <code>"poisson"</code> or <code>"bernoulli"</code>. The
-default is <code>"poisson"</code>, in which case the SBM can be a
-multigraph, i.e. multiple edges between the same two nodes
-are allowed. If <code>edge_distribution == "bernoulli"</code> only a
-single edge is allowed between any pair of nodes. See Section 2.3
-of Rohe et al (2017) for details.</p></dd>
-
-
 <dt>sort_nodes</dt>
 <dd><p>Logical indicating whether or not to sort the nodes
 so that they are grouped by block and by <code>theta</code>. Useful for plotting.
 Defaults to <code>TRUE</code>.</p></dd>
+
+
+<dt>poisson_edges</dt>
+<dd><p>Logical indicating whether or not
+multiple edges are allowed to form between a pair of
+nodes. Defaults to <code>TRUE</code>. When <code>FALSE</code>, sampling proceeds
+as usual, and duplicate edges are removed afterwards. Further,
+when <code>FALSE</code>, we assume that <code>S</code> specifies a desired between-factor
+connection probability, and back-transform this <code>S</code> to the
+appropriate Poisson intensity parameter to approximate Bernoulli
+factor connection probabilities. See Section 2.3 of Rohe et al. (2017)
+for some additional details.</p></dd>
+
+
+<dt>allow_self_loops</dt>
+<dd><p>Logical indicating whether or not
+nodes should be allowed to form edges with themselves.
+Defaults to <code>TRUE</code>. When <code>FALSE</code>, sampling proceeds allowing
+self-loops, and these are then removed after the fact.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -158,8 +169,8 @@ Defaults to <code>TRUE</code>.</p></dd>
     
 
 <p>An <code>undirected_sbm</code> S3 object, which is a subclass of the
-<code><a href="dcsbm.html">dcsbm()</a></code> object, with one additional field.</p><ul><li><p><code>edge_distribution</code>: Either "poisson" or "bernoulli".</p></li>
-</ul></div>
+<code><a href="dcsbm.html">dcsbm()</a></code> object.</p>
+    </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>A stochastic block is equivalent to a degree-corrected
@@ -171,12 +182,14 @@ have all been set equal to 1.</p>
     <div class="dont-index"><p>Other stochastic block models: 
 <code><a href="dcsbm.html">dcsbm</a>()</code>,
 <code><a href="directed_dcsbm.html">directed_dcsbm</a>()</code>,
+<code><a href="mmsbm.html">mmsbm</a>()</code>,
 <code><a href="overlapping_sbm.html">overlapping_sbm</a>()</code>,
 <code><a href="planted_partition.html">planted_partition</a>()</code></p>
 <p>Other undirected graphs: 
 <code><a href="chung_lu.html">chung_lu</a>()</code>,
 <code><a href="dcsbm.html">dcsbm</a>()</code>,
 <code><a href="erdos_renyi.html">erdos_renyi</a>()</code>,
+<code><a href="mmsbm.html">mmsbm</a>()</code>,
 <code><a href="overlapping_sbm.html">overlapping_sbm</a>()</code>,
 <code><a href="planted_partition.html">planted_partition</a>()</code></p></div>
     </div>
@@ -206,7 +219,7 @@ have all been set equal to 1.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     res</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x5589f35bfd40&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x5583e1cbd6c0&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: namespace:igraph&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $args</span>
@@ -215,7 +228,7 @@ have all been set equal to 1.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 1000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $env</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x5589fbc8a1c0&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x5583e077d820&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "lazy"</span>
@@ -225,7 +238,7 @@ have all been set equal to 1.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $env</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x5589fbc8a1c0&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x5583e077d820&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "lazy"</span>
@@ -235,7 +248,7 @@ have all been set equal to 1.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 0.01</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $env</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x5589fbc8a1c0&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x5583e077d820&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "lazy"</span>
@@ -256,7 +269,7 @@ have all been set equal to 1.</p>
 <span class="r-in"><span><span class="va">bernoulli_sbm</span> <span class="op">&lt;-</span> <span class="fu">sbm</span><span class="op">(</span></span></span>
 <span class="r-in"><span>  n <span class="op">=</span> <span class="fl">5000</span>,</span></span>
 <span class="r-in"><span>  k <span class="op">=</span> <span class="fl">300</span>,</span></span>
-<span class="r-in"><span>  edge_distribution <span class="op">=</span> <span class="st">"bernoulli"</span>,</span></span>
+<span class="r-in"><span>  poisson_edges <span class="op">=</span> <span class="cn">FALSE</span>,</span></span>
 <span class="r-in"><span>  expected_degree <span class="op">=</span> <span class="fl">8</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
@@ -279,7 +292,7 @@ have all been set equal to 1.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     res</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x5589f35bfd40&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x5583e1cbd6c0&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: namespace:igraph&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $args</span>
@@ -288,7 +301,7 @@ have all been set equal to 1.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 5000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $env</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x5589fbc8a1c0&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x5583e077d820&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "lazy"</span>
@@ -298,17 +311,17 @@ have all been set equal to 1.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 300</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $env</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x5589fbc8a1c0&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x5583e077d820&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "lazy"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> $edge_distribution</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> $poisson_edges</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $expr</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] "bernoulli"</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $env</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x5589fbc8a1c0&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x5583e077d820&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "lazy"</span>
@@ -318,7 +331,7 @@ have all been set equal to 1.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 8</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $env</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x5589fbc8a1c0&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: 0x5583e077d820&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> attr(,"class")</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "lazy"</span>

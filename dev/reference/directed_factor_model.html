@@ -82,7 +82,9 @@ of the stochastic blockmodels as undirected factor models
 <span>  <span class="va">...</span>,</span>
 <span>  expected_in_degree <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  expected_out_degree <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  expected_density <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  expected_density <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  poisson_edges <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  allow_self_loops <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -129,6 +131,25 @@ of the graph. Specifying <code>expected_density</code> simply rescales <code>S</
 to achieve this. Defaults to <code>NULL</code>. Specify only one of
 <code>expected_in_degree</code>, <code>expected_out_degree</code>, and <code>expected_density</code>.</p></dd>
 
+
+<dt>poisson_edges</dt>
+<dd><p>Logical indicating whether or not
+multiple edges are allowed to form between a pair of
+nodes. Defaults to <code>TRUE</code>. When <code>FALSE</code>, sampling proceeds
+as usual, and duplicate edges are removed afterwards. Further,
+when <code>FALSE</code>, we assume that <code>S</code> specifies a desired between-factor
+connection probability, and back-transform this <code>S</code> to the
+appropriate Poisson intensity parameter to approximate Bernoulli
+factor connection probabilities. See Section 2.3 of Rohe et al. (2017)
+for some additional details.</p></dd>
+
+
+<dt>allow_self_loops</dt>
+<dd><p>Logical indicating whether or not
+nodes should be allowed to form edges with themselves.
+Defaults to <code>TRUE</code>. When <code>FALSE</code>, sampling proceeds allowing
+self-loops, and these are then removed after the fact.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -146,6 +167,10 @@ Does not need to match <code>n</code> -- rectangular adjacency matrices
 are supported.</p></li>
 <li><p><code>k2</code>: The dimension of the latent node position vectors
 encoding outgoing latent communities (i.e. in <code>Y</code>).</p></li>
+<li><p><code>poisson_edges</code>: Whether or not the graph is taken to be have
+Poisson or Bernoulli edges, as indicated by a logical vector
+of length 1.</p></li>
+<li><p><code>allow_self_loops</code>: Whether or not self loops are allowed.</p></li>
 </ul></div>
 
     <div class="section level2">
@@ -176,10 +201,13 @@ encoding outgoing latent communities (i.e. in <code>Y</code>).</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> S: 5 x 3 [dgeMatrix] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Y: 5000 x 3 [dgeMatrix] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 41302320</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Expected density: 0.82605</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Expected in degree: 8260.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Expected out degree: 4130.2</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Poisson edges: TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Allow self loops: TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 34836784</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected density: 0.69674</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected in degree: 6967.4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected out degree: 3483.7</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">fm2</span> <span class="op">&lt;-</span> <span class="fu">directed_factor_model</span><span class="op">(</span><span class="va">X</span>, <span class="va">S</span>, <span class="va">Y</span>, expected_in_degree <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">fm2</span></span></span>
@@ -194,6 +222,9 @@ encoding outgoing latent communities (i.e. in <code>Y</code>).</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> X: 10000 x 5 [dgeMatrix] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> S: 5 x 3 [dgeMatrix] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Y: 5000 x 3 [dgeMatrix] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Poisson edges: TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Allow self loops: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 250000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected density: 0.005</span>

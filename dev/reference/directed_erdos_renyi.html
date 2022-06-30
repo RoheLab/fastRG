@@ -51,7 +51,13 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">directed_erdos_renyi</span><span class="op">(</span><span class="va">n</span>, <span class="va">...</span>, p <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">directed_erdos_renyi</span><span class="op">(</span></span>
+<span>  <span class="va">n</span>,</span>
+<span>  <span class="va">...</span>,</span>
+<span>  p <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  poisson_edges <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  allow_self_loops <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -81,18 +87,50 @@ to achieve this. Defaults to <code>NULL</code>. Specify only one of
 <dd><p>Probability of an edge between any two nodes. You must specify
 either <code>p</code>, <code>expected_in_degree</code>, or <code>expected_out_degree</code>.</p></dd>
 
+
+<dt>poisson_edges</dt>
+<dd><p>Logical indicating whether or not
+multiple edges are allowed to form between a pair of
+nodes. Defaults to <code>TRUE</code>. When <code>FALSE</code>, sampling proceeds
+as usual, and duplicate edges are removed afterwards. Further,
+when <code>FALSE</code>, we assume that <code>S</code> specifies a desired between-factor
+connection probability, and back-transform this <code>S</code> to the
+appropriate Poisson intensity parameter to approximate Bernoulli
+factor connection probabilities. See Section 2.3 of Rohe et al. (2017)
+for some additional details.</p></dd>
+
+
+<dt>allow_self_loops</dt>
+<dd><p>Logical indicating whether or not
+nodes should be allowed to form edges with themselves.
+Defaults to <code>TRUE</code>. When <code>FALSE</code>, sampling proceeds allowing
+self-loops, and these are then removed after the fact.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>Never returns Poisson edges.</p>
-    </div>
+<p>A <code>directed_factor_model</code> S3 class based on a list
+with the following elements:</p><ul><li><p><code>X</code>: The incoming latent positions as a <code><a href="https://rdrr.io/pkg/Matrix/man/Matrix.html" class="external-link">Matrix()</a></code> object.</p></li>
+<li><p><code>S</code>: The mixing matrix as a <code><a href="https://rdrr.io/pkg/Matrix/man/Matrix.html" class="external-link">Matrix()</a></code> object.</p></li>
+<li><p><code>Y</code>: The outgoing latent positions as a <code><a href="https://rdrr.io/pkg/Matrix/man/Matrix.html" class="external-link">Matrix()</a></code> object.</p></li>
+<li><p><code>n</code>: The number of nodes with incoming edges in the network.</p></li>
+<li><p><code>k1</code>: The dimension of the latent node position vectors
+encoding incoming latent communities (i.e. in <code>X</code>).</p></li>
+<li><p><code>d</code>: The number of nodes with outgoing edges in the network.
+Does not need to match <code>n</code> -- rectangular adjacency matrices
+are supported.</p></li>
+<li><p><code>k2</code>: The dimension of the latent node position vectors
+encoding outgoing latent communities (i.e. in <code>Y</code>).</p></li>
+<li><p><code>poisson_edges</code>: Whether or not the graph is taken to be have
+Poisson or Bernoulli edges, as indicated by a logical vector
+of length 1.</p></li>
+<li><p><code>allow_self_loops</code>: Whether or not self loops are allowed.</p></li>
+</ul></div>
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
-    <div class="dont-index"><p>Other bernoulli graphs: 
-<code><a href="erdos_renyi.html">erdos_renyi</a>()</code></p>
-<p>Other erdos renyi: 
+    <div class="dont-index"><p>Other erdos renyi: 
 <code><a href="erdos_renyi.html">erdos_renyi</a>()</code></p>
 <p>Other directed graphs: 
 <code><a href="directed_dcsbm.html">directed_dcsbm</a>()</code></p></div>
@@ -117,10 +155,13 @@ either <code>p</code>, <code>expected_in_degree</code>, or <code>expected_out_de
 <span class="r-out co"><span class="r-pr">#&gt;</span> S: 1 x 1 [ddiMatrix] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Y: 10 x 1 [dgeMatrix] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Expected density: 0.10536</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Expected in degree: 1.1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Expected out degree: 1.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Poisson edges: TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Allow self loops: TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected density: 0.1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected in degree: 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected out degree: 1</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">big_er</span> <span class="op">&lt;-</span> <span class="fu">directed_erdos_renyi</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">10</span><span class="op">^</span><span class="fl">6</span>, expected_in_degree <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">big_er</span></span></span>
@@ -136,6 +177,9 @@ either <code>p</code>, <code>expected_in_degree</code>, or <code>expected_out_de
 <span class="r-out co"><span class="r-pr">#&gt;</span> S: 1 x 1 [ddiMatrix] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Y: 1000000 x 1 [dgeMatrix] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Poisson edges: TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Allow self loops: TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 5e+06</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected density: 0</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected in degree: 5</span>
@@ -146,15 +190,15 @@ either <code>p</code>, <code>expected_in_degree</code>, or <code>expected_out_de
 <span class="r-out co"><span class="r-pr">#&gt;</span> 10 x 10 sparse Matrix of class "dgCMatrix"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                          </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1,] . . . . . . . . . .</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [2,] . . . . . . . 1 . .</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [3,] . . . . . 1 . . . .</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [4,] . . . . 1 . 1 . 1 .</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [2,] . . . . . . 1 . . .</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [3,] . . . 1 . . . . . .</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [4,] . . . . 1 . 1 . 1 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [5,] . . . . . . . . . .</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [6,] . . . . . . 1 . . .</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [7,] . . . 1 . . . . . .</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [8,] . . . . . . . . . 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [9,] . . . . . . 1 . . .</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [10,] 1 . . 1 . . . . . .</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [7,] . . . . . . . . . .</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [8,] 1 . . . . . . . . .</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [9,] . . . . . 1 . . . .</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10,] . . . . . . 2 . . .</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

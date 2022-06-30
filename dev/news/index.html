@@ -46,6 +46,11 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="fastrg-development-version">fastRG (development version)<a class="anchor" aria-label="anchor" href="#fastrg-development-version"></a></h2>
+<div class="section level3">
+<h3 id="breaking-changes-development-version">Breaking changes<a class="anchor" aria-label="anchor" href="#breaking-changes-development-version"></a></h3>
+<ul><li>Users must now pass <code>poisson_edges</code> and <code>allow_self_loops</code> arguments to model object constructors (i.e. <code><a href="../reference/sbm.html">sbm()</a></code>) rather than <code>sample_*()</code> methods. Additionally, when <code>poisson_edges = FALSE</code>, the mixing matrix <code>S</code> is taken (after degree-scaling and possible symmetrization for undirected models) to represent desired inter-factor connection probabilities, and thus should be between zero and one. This Bernoulli-parameterized <code>S</code> is then transformed into the equivalent (or approximately equivalent) Poisson <code>S</code>. See Section 2.3 of Rohe et al. (2017) for additional details about this conversion and approximation of Bernoulli graphs by Poisson graphs (<a href="https://github.com/RoheLab/fastRG/issues/29" class="external-link">#29</a>).</li></ul></div>
+<div class="section level3">
+<h3 id="other-news-development-version">Other news<a class="anchor" aria-label="anchor" href="#other-news-development-version"></a></h3>
 <ul><li>Add overlapping stochastic blockmodel (<a href="https://github.com/RoheLab/fastRG/issues/7" class="external-link">#7</a>, <a href="https://github.com/RoheLab/fastRG/issues/25" class="external-link">#25</a>)</li>
 <li>Add directed degree-corrected stochastic blockmodels (<a href="https://github.com/RoheLab/fastRG/issues/18" class="external-link">#18</a>)</li>
 <li>Allow rank 1 undirected stochastic block models</li>
@@ -55,6 +60,7 @@
 <li>Let user know when <code>theta_out</code> is automatically generated for directed DC-SBMs (<a href="https://github.com/RoheLab/fastRG/issues/22" class="external-link">#22</a>)</li>
 <li>Document <code><a href="https://rdrr.io/pkg/RSpectra/man/svds.html" class="external-link">svds()</a></code> and <code><a href="https://rdrr.io/pkg/RSpectra/man/eigs.html" class="external-link">eigs_sym()</a></code> methods, which allow users to take spectral decompositions of expected adjacency matrices conditional <code>X</code>, <code>S</code> and <code>Y</code>.</li>
 </ul></div>
+</div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.3.0" id="fastrg-030">fastRG 0.3.0<a class="anchor" aria-label="anchor" href="#fastrg-030"></a></h2><p class="text-muted">CRAN release: 2021-02-26</p>
 <ul><li>Released to CRAN</li></ul></div>

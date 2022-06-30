@@ -4,7 +4,7 @@ you must parameterize a random dot product graph by
 sampling the latent factors. Use functions such as
 dcsbm(), sbm(), etc, to perform this specification.
 Then, use sample_*() functions to generate a random graph
-in your preferred format."><title>Sample a random dot product graph as an igraph graph — sample_igraph.directed_erdos_renyi • fastRG</title><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.1.0/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.1.0/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous"><!-- bootstrap-toc --><script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Sample a random dot product graph as an igraph graph — sample_igraph.directed_erdos_renyi"><meta property="og:description" content="There are two steps to using the fastRG package. First,
+in your preferred format."><title>Sample a random dot product graph as an igraph graph — sample_igraph • fastRG</title><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.1.0/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.1.0/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous"><!-- bootstrap-toc --><script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v1.0.1/dist/bootstrap-toc.min.js"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- search --><script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/6.4.6/fuse.js" integrity="sha512-zv6Ywkjyktsohkbp9bb45V6tEMoWhzFzXis+LrMehmJZZSys19Yxf1dopHx7WzIKxr5tK2dVcYmaCk2uqdjF4A==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/autocomplete.js/0.38.0/autocomplete.jquery.min.js" integrity="sha512-GU9ayf+66Xx2TmpxqJpliWbT5PiGYxpaG8rfnBEk1LL8l1KGkRShhngwdXK1UgqhAzWpZHSiYPc09/NwDQIGyg==" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/mark.min.js" integrity="sha512-5CYOlHXGh6QpOFA/TeTylKLWfB3ftPsde7AnmhuitiTX4K5SqCLBeKro6sPS8ilsz1Q4NRx3v8Ko2IBiszzdww==" crossorigin="anonymous"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Sample a random dot product graph as an igraph graph — sample_igraph"><meta property="og:description" content="There are two steps to using the fastRG package. First,
 you must parameterize a random dot product graph by
 sampling the latent factors. Use functions such as
 dcsbm(), sbm(), etc, to perform this specification.
@@ -51,7 +51,7 @@ in your preferred format."><meta name="robots" content="noindex"><!-- mathjax --
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
       <img src="" class="logo" alt=""><h1>Sample a random dot product graph as an igraph graph</h1>
-      <small class="dont-index">Source: <a href="https://github.com/RoheLab/fastRG/blob/HEAD/R/directed_erdos_renyi.R" class="external-link"><code>R/directed_erdos_renyi.R</code></a>, <a href="https://github.com/RoheLab/fastRG/blob/HEAD/R/sample_igraph.R" class="external-link"><code>R/sample_igraph.R</code></a>, <a href="https://github.com/RoheLab/fastRG/blob/HEAD/R/undirected_erdos_renyi.R" class="external-link"><code>R/undirected_erdos_renyi.R</code></a>, and 1 more</small>
+      <small class="dont-index">Source: <a href="https://github.com/RoheLab/fastRG/blob/HEAD/R/sample_igraph.R" class="external-link"><code>R/sample_igraph.R</code></a></small>
       <div class="d-none name"><code>sample_igraph.Rd</code></div>
     </div>
 
@@ -66,32 +66,13 @@ in your preferred format.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="co"># S3 method for directed_erdos_renyi</span></span>
-<span><span class="fu">sample_igraph</span><span class="op">(</span><span class="va">factor_model</span>, <span class="va">...</span>, allow_self_loops <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">sample_igraph</span><span class="op">(</span><span class="va">factor_model</span>, <span class="va">...</span>, poisson_edges <span class="op">=</span> <span class="cn">TRUE</span>, allow_self_loops <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">sample_igraph</span><span class="op">(</span><span class="va">factor_model</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for undirected_factor_model</span></span>
-<span><span class="fu">sample_igraph</span><span class="op">(</span><span class="va">factor_model</span>, <span class="va">...</span>, poisson_edges <span class="op">=</span> <span class="cn">TRUE</span>, allow_self_loops <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="fu">sample_igraph</span><span class="op">(</span><span class="va">factor_model</span>, <span class="va">...</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for directed_factor_model</span></span>
-<span><span class="fu">sample_igraph</span><span class="op">(</span><span class="va">factor_model</span>, <span class="va">...</span>, poisson_edges <span class="op">=</span> <span class="cn">TRUE</span>, allow_self_loops <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S3 method for undirected_erdos_renyi</span></span>
-<span><span class="fu">sample_igraph</span><span class="op">(</span></span>
-<span>  <span class="va">factor_model</span>,</span>
-<span>  <span class="va">...</span>,</span>
-<span>  poisson_edges <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  allow_self_loops <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># S3 method for undirected_erdos_renyi</span></span>
-<span><span class="fu">sample_igraph</span><span class="op">(</span></span>
-<span>  <span class="va">factor_model</span>,</span>
-<span>  <span class="va">...</span>,</span>
-<span>  poisson_edges <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  allow_self_loops <span class="op">=</span> <span class="cn">TRUE</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">sample_igraph</span><span class="op">(</span><span class="va">factor_model</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -103,22 +84,6 @@ in your preferred format.</p>
 
 <dt>...</dt>
 <dd><p>Ignored. Do not use.</p></dd>
-
-
-<dt>allow_self_loops</dt>
-<dd><p>Logical indicating whether or not
-nodes should be allowed to form edges with themselves.
-Defaults to <code>TRUE</code>. When <code>FALSE</code>, sampling proceeds allowing
-self-loops, and these are then removed after the fact.</p></dd>
-
-
-<dt>poisson_edges</dt>
-<dd><p>Logical indicating whether or not
-multiple edges are allowed to form between a pair of
-nodes. Defaults to <code>TRUE</code>. When <code>FALSE</code>, sampling proceeds
-as usual, and duplicate edges are removed afterwards.
-See Section 2.3 of Rohe et al (2017) for additional
-details.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -170,10 +135,10 @@ Journal of Machine Learning Research; 19(77):1-13, 2018.
     <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>Other samplers: 
-<code><a href="sample_edgelist.html">sample_edgelist.directed_erdos_renyi</a>()</code>,
 <code><a href="sample_edgelist.matrix.html">sample_edgelist.matrix</a>()</code>,
-<code><a href="sample_sparse.html">sample_sparse.directed_erdos_renyi</a>()</code>,
-<code><a href="sample_tidygraph.html">sample_tidygraph.directed_erdos_renyi</a>()</code></p></div>
+<code><a href="sample_edgelist.html">sample_edgelist</a>()</code>,
+<code><a href="sample_sparse.html">sample_sparse</a>()</code>,
+<code><a href="sample_tidygraph.html">sample_tidygraph</a>()</code></p></div>
     </div>
 
     <div class="section level2">
@@ -210,6 +175,9 @@ Journal of Machine Learning Research; 19(77):1-13, 2018.
 <span class="r-out co"><span class="r-pr">#&gt;</span> X: 100 x 5 [dgeMatrix] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> S: 5 x 5 [dgeMatrix] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Poisson edges: TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Allow self loops: TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 495</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected degree: 5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected density: 0.1</span>
@@ -244,7 +212,7 @@ Journal of Machine Learning Research; 19(77):1-13, 2018.
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">A</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 100 100</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">B</span> <span class="op">&lt;-</span> <span class="fu"><a href="sample_sparse.html">sample_sparse</a></span><span class="op">(</span><span class="va">ufm</span>, poisson_edges <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">B</span> <span class="op">&lt;-</span> <span class="fu"><a href="sample_sparse.html">sample_sparse</a></span><span class="op">(</span><span class="va">ufm</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">inherits</a></span><span class="op">(</span><span class="va">B</span>, <span class="st">"dsCMatrix"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
@@ -256,9 +224,9 @@ Journal of Machine Learning Research; 19(77):1-13, 2018.
 <span class="r-in"><span><span class="co">### sampling graphs as igraph graphs ------------------</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">sample_igraph</span><span class="op">(</span><span class="va">ufm</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> IGRAPH 71dae81 UN-- 100 486 -- </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> IGRAPH 2589ea6 UN-- 100 486 -- </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> + attr: name (v/c)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> + edges from 71dae81 (vertex names):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> + edges from 2589ea6 (vertex names):</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 65--87  84--100 12--87  13--95  3 --92  25--94  54--98  16--22  1 --66 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [10] 13--94  65--79  12--66  79--94  55--56  30--64  13--22  22--40  37--80 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [19] 88--95  22--11  85--94  52--94  37--11  12--16  19--75  15--47  74--97 </span>
@@ -295,30 +263,6 @@ Journal of Machine Learning Research; 19(77):1-13, 2018.
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>    16    22</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 498 more rows</span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="sample_tidygraph.html">sample_tidygraph</a></span><span class="op">(</span><span class="va">ufm</span>, poisson_edges <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tbl_graph: 100 nodes and 457 edges</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># An undirected multigraph with 2 components</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Node Data: 100 × 1 (active)</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    name</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>     2</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>     3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">4</span>     4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">5</span>     5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span>     6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 94 more rows</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Edge Data: 457 × 2</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>    from    to</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     3    77</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>    57    76</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>    61    64</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 454 more rows</span></span>
-<span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">##### directed examples ----------------------------</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">n2</span> <span class="op">&lt;-</span> <span class="fl">100</span></span></span>
@@ -346,6 +290,9 @@ Journal of Machine Learning Research; 19(77):1-13, 2018.
 <span class="r-out co"><span class="r-pr">#&gt;</span> S: 5 x 3 [dgeMatrix] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Y: 50 x 3 [dgeMatrix] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Poisson edges: TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Allow self loops: TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 100</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected density: 0.02</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected in degree: 2</span>
@@ -355,20 +302,20 @@ Journal of Machine Learning Research; 19(77):1-13, 2018.
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">edgelist2</span> <span class="op">&lt;-</span> <span class="fu"><a href="sample_edgelist.html">sample_edgelist</a></span><span class="op">(</span><span class="va">fm</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">edgelist2</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 111 × 2</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 105 × 2</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     from    to</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>    65    42</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     9    30</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>    55    21</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>    10    49</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>    78    49</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>    52    36</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>    12    13</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     1    40</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>    21    37</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>    22    12</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 101 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>    84    34</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>    80    16</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>    42    30</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>    42    31</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>    47    26</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     7    31</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>    39    14</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>    14    11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>    49    47</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>    54     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 95 more rows</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">### sampling graphs as sparse matrices ----------------</span></span></span>
 <span class="r-in"><span></span></span>
@@ -381,7 +328,7 @@ Journal of Machine Learning Research; 19(77):1-13, 2018.
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">A2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] 100  50</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="va">B2</span> <span class="op">&lt;-</span> <span class="fu"><a href="sample_sparse.html">sample_sparse</a></span><span class="op">(</span><span class="va">fm</span>, poisson_edges <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">B2</span> <span class="op">&lt;-</span> <span class="fu"><a href="sample_sparse.html">sample_sparse</a></span><span class="op">(</span><span class="va">fm</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">inherits</a></span><span class="op">(</span><span class="va">B2</span>, <span class="st">"dgCMatrix"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
@@ -405,10 +352,10 @@ Journal of Machine Learning Research; 19(77):1-13, 2018.
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">### sampling graphs as tidygraph graphs ---------------</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu"><a href="sample_tidygraph.html">sample_tidygraph</a></span><span class="op">(</span><span class="va">fm</span>, poisson_edges <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tbl_graph: 150 nodes and 106 edges</span></span>
+<span class="r-in"><span><span class="fu"><a href="sample_tidygraph.html">sample_tidygraph</a></span><span class="op">(</span><span class="va">fm</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tbl_graph: 150 nodes and 105 edges</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A bipartite simple graph with 50 components</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A bipartite multigraph with 56 components</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Node Data: 150 × 1 (active)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   type </span>
@@ -421,13 +368,13 @@ Journal of Machine Learning Research; 19(77):1-13, 2018.
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">6</span> FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 144 more rows</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Edge Data: 106 × 2</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Edge Data: 105 × 2</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    from    to</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>    64   101</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>    10   102</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>    55   102</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 103 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     4   101</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>    31   101</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>    82   101</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># … with 102 more rows</span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

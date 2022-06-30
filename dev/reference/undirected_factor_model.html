@@ -80,7 +80,9 @@ of the stochastic blockmodels as undirected factor models
 <span>  <span class="va">S</span>,</span>
 <span>  <span class="va">...</span>,</span>
 <span>  expected_degree <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  expected_density <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  expected_density <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  poisson_edges <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  allow_self_loops <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -113,6 +115,25 @@ to achieve this. Defaults to <code>NULL</code>. Do not specify both
 of the graph. Specifying <code>expected_density</code> simply rescales <code>S</code>
 to achieve this. Defaults to <code>NULL</code>. Do not specify both
 <code>expected_degree</code> and <code>expected_density</code> at the same time.</p></dd>
+
+
+<dt>poisson_edges</dt>
+<dd><p>Logical indicating whether or not
+multiple edges are allowed to form between a pair of
+nodes. Defaults to <code>TRUE</code>. When <code>FALSE</code>, sampling proceeds
+as usual, and duplicate edges are removed afterwards. Further,
+when <code>FALSE</code>, we assume that <code>S</code> specifies a desired between-factor
+connection probability, and back-transform this <code>S</code> to the
+appropriate Poisson intensity parameter to approximate Bernoulli
+factor connection probabilities. See Section 2.3 of Rohe et al. (2017)
+for some additional details.</p></dd>
+
+
+<dt>allow_self_loops</dt>
+<dd><p>Logical indicating whether or not
+nodes should be allowed to form edges with themselves.
+Defaults to <code>TRUE</code>. When <code>FALSE</code>, sampling proceeds allowing
+self-loops, and these are then removed after the fact.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -147,6 +168,9 @@ the dimension of the latent node position vectors.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> X: 10000 x 5 [dgeMatrix] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> S: 5 x 5 [dgeMatrix] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Poisson edges: TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Allow self loops: TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 113265105</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected degree: 11326.5</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected density: 2.26553</span>
@@ -161,6 +185,9 @@ the dimension of the latent node position vectors.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> X: 10000 x 5 [dgeMatrix] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> S: 5 x 5 [dgeMatrix] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Poisson edges: TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Allow self loops: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 5e+05</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected degree: 50</span>

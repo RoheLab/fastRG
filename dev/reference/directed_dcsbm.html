@@ -95,7 +95,9 @@ sampling large, dense graphs.</p>
 <span>  pi_in <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">/</span><span class="va">k_in</span>, <span class="va">k_in</span><span class="op">)</span>,</span>
 <span>  pi_out <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">/</span><span class="va">k_out</span>, <span class="va">k_out</span><span class="op">)</span>,</span>
 <span>  sort_nodes <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  force_identifiability <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span>  force_identifiability <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  poisson_edges <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  allow_self_loops <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -217,6 +219,25 @@ normalize <code>theta_in</code> such that it sums to one within each incoming
 block and <code>theta_out</code> such that it sums to one within each outgoing
 block. Defaults to <code>TRUE</code>.</p></dd>
 
+
+<dt>poisson_edges</dt>
+<dd><p>Logical indicating whether or not
+multiple edges are allowed to form between a pair of
+nodes. Defaults to <code>TRUE</code>. When <code>FALSE</code>, sampling proceeds
+as usual, and duplicate edges are removed afterwards. Further,
+when <code>FALSE</code>, we assume that <code>S</code> specifies a desired between-factor
+connection probability, and back-transform this <code>S</code> to the
+appropriate Poisson intensity parameter to approximate Bernoulli
+factor connection probabilities. See Section 2.3 of Rohe et al. (2017)
+for some additional details.</p></dd>
+
+
+<dt>allow_self_loops</dt>
+<dd><p>Logical indicating whether or not
+nodes should be allowed to form edges with themselves.
+Defaults to <code>TRUE</code>. When <code>FALSE</code>, sampling proceeds allowing
+self-loops, and these are then removed after the fact.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -292,14 +313,14 @@ but this doesn't really matter during sampling.</p>
 
 
 <p>Once we know the block memberships \(x\) and \(y\)
-and the degree  heterogeneity parameters \(\theta_in\) and
-\(\theta_out\), we need one more
+and the degree  heterogeneity parameters \(\theta_{in}\) and
+\(\theta_{out}\), we need one more
 ingredient, which is the baseline intensity of connections
 between nodes in block <code>i</code> and block <code>j</code>. Then each edge forms
 independently according to a Poisson distribution with
 parameters</p>
 <p>$$
-  \lambda = \theta_in * B[x, y] * \theta_out.
+  \lambda = \theta_{in} * B_{x, y} * \theta_{out}.
 $$</p>
 </div>
 
@@ -308,6 +329,7 @@ $$</p>
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>Other stochastic block models: 
 <code><a href="dcsbm.html">dcsbm</a>()</code>,
+<code><a href="mmsbm.html">mmsbm</a>()</code>,
 <code><a href="overlapping_sbm.html">overlapping_sbm</a>()</code>,
 <code><a href="planted_partition.html">planted_partition</a>()</code>,
 <code><a href="sbm.html">sbm</a>()</code></p>
@@ -354,6 +376,9 @@ $$</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> X: 1000 x 5 [dgCMatrix] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> S: 5 x 8 [dgeMatrix] </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Y: 1000 x 8 [dgCMatrix] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Poisson edges: TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Allow self loops: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 10000</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected in degree: 10</span>
