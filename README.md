@@ -86,12 +86,13 @@ sbm
 #> 
 #> Block memberships (z): 1000 [factor] 
 #> Block probabilities (pi): 5 [numeric] 
-#> Edge distribution: poisson
-#> 
 #> Factor model parameterization:
 #> 
 #> X: 1000 x 5 [dgCMatrix] 
 #> S: 5 x 5 [dgeMatrix] 
+#> 
+#> Poisson edges: TRUE 
+#> Allow self loops: TRUE 
 #> 
 #> Expected edges: 4995
 #> Expected degree: 5
@@ -144,9 +145,9 @@ or an igraph object
 
 ``` r
 sample_igraph(sbm)
-#> IGRAPH 60e2c2d UN-- 1000 5033 -- 
+#> IGRAPH a506dc4 UN-- 1000 5033 -- 
 #> + attr: name (v/c)
-#> + edges from 60e2c2d (vertex names):
+#> + edges from a506dc4 (vertex names):
 #>  [1] 63 --76  135--215 59 --182 21 --134 180--218 53 --189 138--139 21 --78 
 #>  [9] 49 --70  76 --127 6  --139 64 --214 31 --132 56 --93  75 --144 9  --185
 #> [17] 33 --150 115--165 163--213 53 --6   47 --179 25 --26  7  --51  10 --55 
