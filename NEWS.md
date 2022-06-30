@@ -13,7 +13,8 @@
 * Allow users to force model identification in DC-SBMs with `force_identifiability = TRUE`, and in overlapping SBMs with `force_pure = TRUE`, which are now the default.
 * Improve population expected degree/density computations (#19)
 * Let user know when `theta_out` is automatically generated for directed DC-SBMs (#22)
-* Document `svds()` and `eigs_sym()` methods, which allow users to take spectral decompositions of expected adjacency matrices conditional `X`, `S` and `Y`.
+* Fixed an obscure but pesky issue sampling from models with empty blocks (#13)
+* Documented `svds()` and `eigs_sym()` methods, which allow users to take spectral decompositions of expected adjacency matrices conditional `X`, `S` and `Y`.
 
 # fastRG 0.3.0
 
