@@ -45,7 +45,7 @@
     
     <a class="navbar-brand me-2" href="index.html">fastRG</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.3.0.9005</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.3.0.9006</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -126,12 +126,13 @@
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Block memberships (z): 1000 [factor] </span></span>
 <span><span class="co">#&gt; Block probabilities (pi): 5 [numeric] </span></span>
-<span><span class="co">#&gt; Edge distribution: poisson</span></span>
-<span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Factor model parameterization:</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; X: 1000 x 5 [dgCMatrix] </span></span>
 <span><span class="co">#&gt; S: 5 x 5 [dgeMatrix] </span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; Poisson edges: TRUE </span></span>
+<span><span class="co">#&gt; Allow self loops: TRUE </span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Expected edges: 4995</span></span>
 <span><span class="co">#&gt; Expected degree: 5</span></span>
@@ -172,9 +173,9 @@
 <p>or an igraph object</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/sample_igraph.html">sample_igraph</a></span><span class="op">(</span><span class="va">sbm</span><span class="op">)</span></span>
-<span><span class="co">#&gt; IGRAPH 60e2c2d UN-- 1000 5033 -- </span></span>
+<span><span class="co">#&gt; IGRAPH a506dc4 UN-- 1000 5033 -- </span></span>
 <span><span class="co">#&gt; + attr: name (v/c)</span></span>
-<span><span class="co">#&gt; + edges from 60e2c2d (vertex names):</span></span>
+<span><span class="co">#&gt; + edges from a506dc4 (vertex names):</span></span>
 <span><span class="co">#&gt;  [1] 63 --76  135--215 59 --182 21 --134 180--218 53 --189 138--139 21 --78 </span></span>
 <span><span class="co">#&gt;  [9] 49 --70  76 --127 6  --139 64 --214 31 --132 56 --93  75 --144 9  --185</span></span>
 <span><span class="co">#&gt; [17] 33 --150 115--165 163--213 53 --6   47 --179 25 --26  7  --51  10 --55 </span></span>
