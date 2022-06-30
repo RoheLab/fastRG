@@ -213,6 +213,7 @@ validate_directed_dcsbm <- function(x) {
 #'   block. Defaults to `TRUE`.
 #'
 #' @inheritDotParams directed_factor_model expected_in_degree expected_density expected_out_degree
+#' @inheritParams directed_factor_model
 #'
 #' @return A `directed_dcsbm` S3 object, a subclass of the
 #'   [directed_factor_model()] with the following additional
@@ -292,15 +293,15 @@ validate_directed_dcsbm <- function(x) {
 #' ## Edge formulation
 #'
 #' Once we know the block memberships \eqn{x} and \eqn{y}
-#' and the degree  heterogeneity parameters \eqn{\theta_in} and
-#' \eqn{\theta_out}, we need one more
+#' and the degree  heterogeneity parameters \eqn{\theta_{in}} and
+#' \eqn{\theta_{out}}, we need one more
 #' ingredient, which is the baseline intensity of connections
 #' between nodes in block `i` and block `j`. Then each edge forms
 #' independently according to a Poisson distribution with
 #' parameters
 #'
 #' \deqn{
-#'   \lambda = \theta_in * B[x, y] * \theta_out.
+#'   \lambda = \theta_{in} * B_{x, y} * \theta_{out}.
 #' }
 #'
 #' @examples
@@ -330,7 +331,9 @@ directed_dcsbm <- function(
   pi_in = rep(1 / k_in, k_in),
   pi_out = rep(1 / k_out, k_out),
   sort_nodes = TRUE,
-  force_identifiability = TRUE) {
+  force_identifiability = TRUE,
+  poisson_edges = TRUE,
+  allow_self_loops = TRUE) {
 
   ### heterogeneity parameters
 
@@ -500,6 +503,8 @@ directed_dcsbm <- function(
     pi_in = pi_in,
     pi_out = pi_out,
     sorted = sort_nodes,
+    poisson_edges = poisson_edges,
+    allow_self_loops = allow_self_loops,
     ...
   )
 
@@ -531,6 +536,9 @@ print.directed_dcsbm <- function(x, ...) {
   cat("X:", dim_and_class(x$X), "\n")
   cat("S:", dim_and_class(x$S), "\n")
   cat("Y:", dim_and_class(x$Y), "\n\n")
+
+  cat("Poisson edges:", as.character(x$poisson_edges), "\n")
+  cat("Allow self loops:", as.character(x$allow_self_loops), "\n\n")
 
   cat(glue("Expected edges: {round(expected_edges(x))}\n", .trim = FALSE))
   cat(glue("Expected in degree: {round(expected_in_degree(x), 1)}\n", .trim = FALSE))

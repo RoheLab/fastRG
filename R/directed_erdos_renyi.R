@@ -1,8 +1,10 @@
-new_directed_erdos_renyi <- function(X, S, Y, p, ...) {
+new_directed_erdos_renyi <- function(X, S, Y, p, poisson_edges, allow_self_loops,...) {
 
   er <- directed_factor_model(
     X, S, Y, ...,
-    subclass = "directed_erdos_renyi"
+    subclass = "directed_erdos_renyi",
+    poisson_edges = poisson_edges,
+    allow_self_loops = allow_self_loops
   )
 
   er$p <- p
@@ -21,8 +23,8 @@ validate_directed_erdos_renyi <- function(x) {
     stop("`Y` must have a single column.", call. = FALSE)
   }
 
-  if (values$p <= 0 || 1 <= values$p) {
-    stop("`p` must be strictly between zero and one.", call. = FALSE)
+  if (values$p < 0) {
+    stop("`p` must be strictly non-negative.", call. = FALSE)
   }
 
   x
@@ -36,12 +38,10 @@ validate_directed_erdos_renyi <- function(x) {
 #'   either `p`, `expected_in_degree`, or `expected_out_degree`.
 #'
 #' @inheritDotParams directed_factor_model expected_in_degree expected_out_degree
-#'
-#' @return Never returns Poisson edges.
+#' @inherit directed_factor_model params return
 #'
 #' @export
 #'
-#' @family bernoulli graphs
 #' @family erdos renyi
 #' @family directed graphs
 #'
@@ -59,7 +59,9 @@ validate_directed_erdos_renyi <- function(x) {
 #' A
 #'
 directed_erdos_renyi <- function(
-  n, ..., p = NULL) {
+  n, ..., p = NULL,
+  poisson_edges = TRUE,
+  allow_self_loops = TRUE) {
 
   X <- Matrix(1, nrow = n, ncol = 1)
   Y <- Matrix(1, nrow = n, ncol = 1)
@@ -77,51 +79,14 @@ directed_erdos_renyi <- function(
     p <- 0.5  # doesn't matter, will get rescaled anyway
   }
 
-  poisson_p <- -log(1 - p)
-  S <- matrix(poisson_p, nrow = 1, ncol = 1)
+  S <- matrix(p, nrow = 1, ncol = 1)
 
-  er <- new_directed_erdos_renyi(X, S, Y, p = p, ...)
+  er <- new_directed_erdos_renyi(
+    X, S, Y, p = p,
+    poisson_edges = poisson_edges,
+    allow_self_loops = allow_self_loops,
+    ...
+  )
+
   validate_directed_erdos_renyi(er)
-}
-
-# dispatch hacks to always avoid Poisson edges ---------------------------------
-
-#' @rdname sample_edgelist
-#' @export
-sample_edgelist.directed_erdos_renyi <- function(
-  factor_model,
-  ...,
-  allow_self_loops = TRUE) {
-
-  NextMethod("sample_edgelist", factor_model, ..., poisson_edges = FALSE)
-}
-
-#' @rdname sample_sparse
-#' @export
-sample_sparse.directed_erdos_renyi <- function(
-  factor_model,
-  ...,
-  allow_self_loops = TRUE) {
-
-  NextMethod("sample_sparse", factor_model, ..., poisson_edges = FALSE)
-}
-
-#' @rdname sample_igraph
-#' @export
-sample_igraph.directed_erdos_renyi <- function(
-  factor_model,
-  ...,
-  allow_self_loops = TRUE) {
-
-  NextMethod("sample_igraph", factor_model, ..., poisson_edges = FALSE)
-}
-
-#' @rdname sample_tidygraph
-#' @export
-sample_tidygraph.directed_erdos_renyi <- function(
-  factor_model,
-  ...,
-  allow_self_loops = TRUE) {
-
-  NextMethod("sample_tidygraph", factor_model, ..., poisson_edges = FALSE)
 }

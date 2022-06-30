@@ -25,7 +25,7 @@
 #'
 #' B <- matrix(c(a,b,b,a), nrow = 2)
 #'
-#' b_model <- fastRG::sbm(n = n, k = 2, B = B,  edge_distribution = "bernoulli")
+#' b_model <- fastRG::sbm(n = n, k = 2, B = B, poisson_edges = FALSE)
 #'
 #' b_model
 #'

@@ -1,6 +1,8 @@
 new_undirected_factor_model <- function(
   X, S,
   ...,
+  poisson_edges = TRUE,
+  allow_self_loops = TRUE,
   subclass = character()) {
 
   ellipsis::check_dots_unnamed()
@@ -12,7 +14,9 @@ new_undirected_factor_model <- function(
     X = X,
     S = S,
     n = n,
-    k = k
+    k = k,
+    poisson_edges = poisson_edges,
+    allow_self_loops = allow_self_loops
   )
 
   class(model) <- c(subclass, "undirected_factor_model")
@@ -66,6 +70,14 @@ validate_undirected_factor_model <- function(x) {
     )
   }
 
+  if (!is.logical(values$poisson_edges)) {
+    stop("`poisson_edges` must be a logical(1) vector.", call. = FALSE)
+  }
+
+  if (!is.logical(values$allow_self_loops)) {
+    stop("`allow_self_loops` must be a logical(1) vector.", call. = FALSE)
+  }
+
   x
 }
 
@@ -99,6 +111,8 @@ validate_undirected_factor_model <- function(x) {
 #'   of the graph. Specifying `expected_density` simply rescales `S`
 #'   to achieve this. Defaults to `NULL`. Do not specify both
 #'   `expected_degree` and `expected_density` at the same time.
+#'
+#' @inheritParams directed_factor_model
 #'
 #' @return An `undirected_factor_model` S3 class based on a list
 #'   with the following elements:
@@ -134,7 +148,9 @@ undirected_factor_model <- function(
   X, S,
   ...,
   expected_degree = NULL,
-  expected_density = NULL) {
+  expected_density = NULL,
+  poisson_edges = TRUE,
+  allow_self_loops = TRUE) {
 
   X <- Matrix(X)
   S <- Matrix(S)
@@ -146,9 +162,11 @@ undirected_factor_model <- function(
     )
   }
 
-  ufm <- new_undirected_factor_model(X, S, ...)
+  ufm <- new_undirected_factor_model(X, S, ...,
+                                     poisson_edges = poisson_edges,
+                                     allow_self_loops = allow_self_loops)
 
-  ufm$S <- (S + t(S)) / 2  # symmetrize S
+  ufm$S <- (S + t(S)) / 2  # symmetrize S. idempotent if S already symmetric
 
   if (!is.null(expected_degree)) {
 
@@ -174,6 +192,24 @@ undirected_factor_model <- function(
     ufm$S <- ufm$S * expected_density / expected_density(ufm)
   }
 
+  if (!poisson_edges) {
+
+    # when poisson_edges = FALSE, S is the desired Bernoulli edge probability.
+    # we must
+    # back-transform it to a Poisson parameterization of S. see section 2.3
+    # of the paper and issue #20 for details.
+
+    if (max(ufm$S) > 1) {
+      stop(
+        "Elements of `S` (after symmetrizing and scaling to achieve expected ",
+        "degree) must not exceed 1 for Bernoulli graphs.",
+        call. = FALSE
+      )
+    }
+
+    ufm$S <- -log(1 - ufm$S)
+  }
+
   validate_undirected_factor_model(ufm)
 }
 
@@ -197,6 +233,9 @@ print.undirected_factor_model <- function(x, ...) {
 
   cat("X:", dim_and_class(x$X), "\n")
   cat("S:", dim_and_class(x$S), "\n\n")
+
+  cat("Poisson edges:", as.character(x$poisson_edges), "\n")
+  cat("Allow self loops:", as.character(x$allow_self_loops), "\n\n")
 
   cat(glue("Expected edges: {round(expected_edges(x))}\n", .trim = FALSE))
   cat(glue("Expected degree: {round(expected_degree(x), 1)}\n", .trim = FALSE))

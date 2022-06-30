@@ -31,6 +31,8 @@
 #'   Defaults to `TRUE`.
 #'
 #' @inheritDotParams undirected_factor_model expected_degree expected_density
+#' @inheritParams undirected_factor_model
+#' @inheritParams dcsbm
 #'
 #' @return An `undirected_chung_lu` S3 object, a subclass of [dcsbm()].
 #'
@@ -59,7 +61,10 @@
 chung_lu <- function(
   n = NULL, theta = NULL,
   ...,
-  sort_nodes = TRUE) {
+  sort_nodes = TRUE,
+  poisson_edges = TRUE,
+  allow_self_loops = TRUE,
+  force_identifiability = FALSE) {
 
   ### degree heterogeneity parameters
 
@@ -82,29 +87,18 @@ chung_lu <- function(
     n <- length(theta)
   }
 
-  # sample block memberships
-
-  z <- rep(1, n)
-  z <- factor(z, levels = 1, labels = "block1")
-
-  if (sort_nodes) {
-    theta <- sort(theta, decreasing = TRUE)
-  }
-
-  X <- Matrix(data = theta, nrow = n, ncol = 1)
-
-  chung_lu <- new_undirected_dcsbm(
-    X = X,
-    S = matrix(1),
+  chung_lu <- dcsbm(
+    B = matrix(1),
     theta = theta,
-    z = z,
     pi = 1,
-    sorted = sort_nodes,
-    ...,
-    subclass = "chung_lu"
+    sort_nodes = sort_nodes,
+    poisson_edges = poisson_edges,
+    force_identifiability = force_identifiability,
+    allow_self_loops = allow_self_loops,
+    ...
   )
 
-  # don't valid the chung-ln-ness because there is no low level
+  # don't validate the chung-ln-ness because there is no low level
   # chung-lu constructor
   validate_undirected_dcsbm(chung_lu)
 }
@@ -126,6 +120,9 @@ print.undirected_chung_lu <- function(x, ...) {
   cat("Factor model parameterization:\n\n")
   cat("X:", dim_and_class(x$X), "\n")
   cat("S:", dim_and_class(x$S), "\n\n")
+
+  cat("Poisson edges:", as.character(x$poisson_edges), "\n")
+  cat("Allow self loops:", as.character(x$allow_self_loops), "\n\n")
 
   cat(glue("Expected edges: {round(expected_edges(x))}\n", .trim = FALSE))
   cat(glue("Expected degree: {round(expected_degree(x), 1)}\n", .trim = FALSE))

@@ -23,9 +23,7 @@
 #'
 sample_sparse <- function(
   factor_model,
-  ...,
-  poisson_edges = TRUE,
-  allow_self_loops = TRUE) {
+  ...) {
   ellipsis::check_dots_unnamed()
   UseMethod("sample_sparse")
 }
@@ -34,9 +32,7 @@ sample_sparse <- function(
 #' @export
 sample_sparse.undirected_factor_model <- function(
   factor_model,
-  ...,
-  poisson_edges = TRUE,
-  allow_self_loops = TRUE) {
+  ...) {
 
   # to construct a symmetric sparseMatrix, we only pass in elements
   # of either the upper or lower diagonal (otherwise we'll get an error)
@@ -46,19 +42,13 @@ sample_sparse.undirected_factor_model <- function(
   X <- factor_model$X
   S <- factor_model$S
 
-  el <- sample_edgelist(
-    factor_model,
-    poisson_edges = poisson_edges,
-    allow_self_loops = allow_self_loops,
-    ...
-  )
-
+  el <- sample_edgelist(factor_model, ...)
   n <- factor_model$n
 
   if (nrow(el) == 0)
     return(sparseMatrix(1:n, 1:n, x = 0, dims = c(n, n)))
 
-  if (poisson_edges) {
+  if (factor_model$poisson_edges) {
 
     # NOTE: x = 1 is correct to create a multigraph adjacency matrix
     # here. see ?Matrix::sparseMatrix for details, in particular the
@@ -71,16 +61,6 @@ sample_sparse.undirected_factor_model <- function(
   } else {
     A <- sparseMatrix(el$from, el$to, dims = c(n, n), symmetric = TRUE)
   }
-#
-#   A <- sparseMatrix(el$from, el$to, x = 1, dims = c(n, n), symmetric = TRUE)
-#   mean(rowSums(A))
-#
-#   2 * nrow(el) / n
-#
-#   all(el$from <= el$to)
-#
-#   B <- sparseMatrix(el$from, el$to, dims = c(n, n), symmetric = TRUE)
-#   mean(rowSums(B))
 
   ### some comments on type-stability
 
@@ -112,16 +92,9 @@ sample_sparse.undirected_factor_model <- function(
 #' @export
 sample_sparse.directed_factor_model <- function(
   factor_model,
-  ...,
-  poisson_edges = TRUE,
-  allow_self_loops = TRUE) {
+  ...) {
 
-  edgelist <- sample_edgelist(
-    factor_model,
-    poisson_edges = poisson_edges,
-    allow_self_loops = allow_self_loops,
-    ...
-  )
+  edgelist <- sample_edgelist(factor_model, ...)
 
   n <- factor_model$n
   d <- factor_model$d
@@ -129,7 +102,7 @@ sample_sparse.directed_factor_model <- function(
   if (nrow(edgelist) == 0)
     return(sparseMatrix(1:n, 1:d, x = 0, dims = c(n, d)))
 
-  if (poisson_edges) {
+  if (factor_model$poisson_edges) {
 
     # NOTE: x = 1 is correct to create a multigraph adjacency matrix
     # here. see ?Matrix::sparseMatrix for details, in particular the

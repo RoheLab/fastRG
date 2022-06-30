@@ -73,6 +73,7 @@ new_undirected_mmsbm <- function(
 #' @inheritDotParams undirected_factor_model expected_degree expected_density
 #' @inheritParams dcsbm
 #' @inheritParams overlapping_sbm
+#' @inheritParams undirected_factor_model
 #'
 #' @return An `undirected_mmsbm` S3 object, a subclass of the
 #'   [undirected_factor_model()] with the following additional
@@ -187,7 +188,9 @@ mmsbm <- function(
     ...,
     alpha = rep(1, k),
     sort_nodes = TRUE,
-    force_pure = TRUE) {
+    force_pure = TRUE,
+    poisson_edges = TRUE,
+    allow_self_loops = TRUE) {
 
   ### degree heterogeneity parameters
 
@@ -279,6 +282,8 @@ mmsbm <- function(
     Z = Z,
     alpha = alpha,
     sorted = sort_nodes,
+    poisson_edges = poisson_edges,
+    allow_self_loops = allow_self_loops,
     ...
   )
 
@@ -305,6 +310,9 @@ print.undirected_mmsbm <- function(x, ...) {
   cat("Factor model parameterization:\n\n")
   cat("X:", dim_and_class(x$X), "\n")
   cat("S:", dim_and_class(x$S), "\n\n")
+
+  cat("Poisson edges:", as.character(x$poisson_edges), "\n")
+  cat("Allow self loops:", as.character(x$allow_self_loops), "\n\n")
 
   cat(glue("Expected edges: {round(expected_edges(x))}\n", .trim = FALSE))
   cat(glue("Expected degree: {round(expected_degree(x), 1)}\n", .trim = FALSE))

@@ -15,7 +15,9 @@ directed_dcsbm(
   pi_in = rep(1/k_in, k_in),
   pi_out = rep(1/k_out, k_out),
   sort_nodes = TRUE,
-  force_identifiability = TRUE
+  force_identifiability = TRUE,
+  poisson_edges = TRUE,
+  allow_self_loops = TRUE
 )
 }
 \arguments{
@@ -109,6 +111,21 @@ Defaults to \code{TRUE}.}
 normalize \code{theta_in} such that it sums to one within each incoming
 block and \code{theta_out} such that it sums to one within each outgoing
 block. Defaults to \code{TRUE}.}
+
+\item{poisson_edges}{Logical indicating whether or not
+multiple edges are allowed to form between a pair of
+nodes. Defaults to \code{TRUE}. When \code{FALSE}, sampling proceeds
+as usual, and duplicate edges are removed afterwards. Further,
+when \code{FALSE}, we assume that \code{S} specifies a desired between-factor
+connection probability, and back-transform this \code{S} to the
+appropriate Poisson intensity parameter to approximate Bernoulli
+factor connection probabilities. See Section 2.3 of Rohe et al. (2017)
+for some additional details.}
+
+\item{allow_self_loops}{Logical indicating whether or not
+nodes should be allowed to form edges with themselves.
+Defaults to \code{TRUE}. When \code{FALSE}, sampling proceeds allowing
+self-loops, and these are then removed after the fact.}
 }
 \value{
 A \code{directed_dcsbm} S3 object, a subclass of the
@@ -192,15 +209,15 @@ but this doesn't really matter during sampling.
 \subsection{Edge formulation}{
 
 Once we know the block memberships \eqn{x} and \eqn{y}
-and the degree  heterogeneity parameters \eqn{\theta_in} and
-\eqn{\theta_out}, we need one more
+and the degree  heterogeneity parameters \eqn{\theta_{in}} and
+\eqn{\theta_{out}}, we need one more
 ingredient, which is the baseline intensity of connections
 between nodes in block \code{i} and block \code{j}. Then each edge forms
 independently according to a Poisson distribution with
 parameters
 
 \deqn{
-  \lambda = \theta_in * B[x, y] * \theta_out.
+  \lambda = \theta_{in} * B_{x, y} * \theta_{out}.
 }
 }
 }

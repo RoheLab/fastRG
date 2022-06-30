@@ -26,9 +26,7 @@
 #'
 sample_tidygraph <- function(
   factor_model,
-  ...,
-  poisson_edges = TRUE,
-  allow_self_loops = TRUE) {
+  ...) {
 
   ellipsis::check_dots_unnamed()
 
@@ -47,20 +45,13 @@ sample_tidygraph <- function(
 #' @export
 sample_tidygraph.undirected_factor_model <- function(
   factor_model,
-  ...,
-  poisson_edges = TRUE,
-  allow_self_loops = TRUE) {
+  ...) {
 
   nodes <- tibble(
     name = 1:nrow(factor_model$X)
   )
 
-  edges <- sample_edgelist(
-    factor_model,
-    poisson_edges = poisson_edges,
-    allow_self_loops = allow_self_loops
-  )
-
+  edges <- sample_edgelist(factor_model, ...)
   tidygraph::tbl_graph(nodes = nodes, edges = edges, directed = FALSE)
 }
 
@@ -68,15 +59,8 @@ sample_tidygraph.undirected_factor_model <- function(
 #' @export
 sample_tidygraph.directed_factor_model <- function(
   factor_model,
-  ...,
-  poisson_edges = TRUE,
-  allow_self_loops = TRUE) {
+  ...) {
 
-  ig <- sample_igraph(
-    factor_model,
-    poisson_edges = poisson_edges,
-    allow_self_loops = allow_self_loops
-  )
-
+  ig <- sample_igraph(factor_model, ...)
   tidygraph::as_tbl_graph(ig, directed = TRUE)
 }

@@ -123,9 +123,11 @@ validate_undirected_dcsbm <- function(x) {
 #'
 #' @param force_identifiability Logical indicating whether or not to
 #'   normalize `theta` such that it sums to one within each block. Defaults
-#'   to `TRUE`.
+#'   to `FALSE`, since this behavior can be surprise when `theta` is set
+#'   to a vector of all ones to recover the DC-SBM case.
 #'
 #' @inheritDotParams undirected_factor_model expected_degree expected_density
+#' @inheritParams undirected_factor_model
 #'
 #' @return An `undirected_dcsbm` S3 object, a subclass of the
 #'   [undirected_factor_model()] with the following additional
@@ -248,7 +250,9 @@ dcsbm <- function(
   ...,
   pi = rep(1 / k, k),
   sort_nodes = TRUE,
-  force_identifiability = TRUE) {
+  force_identifiability = FALSE,
+  poisson_edges = TRUE,
+  allow_self_loops = TRUE) {
 
   ### degree heterogeneity parameters
 
@@ -356,6 +360,8 @@ dcsbm <- function(
     z = z,
     pi = pi,
     sorted = sort_nodes,
+    poisson_edges = poisson_edges,
+    allow_self_loops = allow_self_loops,
     ...
   )
 
@@ -382,6 +388,9 @@ print.undirected_dcsbm <- function(x, ...) {
   cat("Factor model parameterization:\n\n")
   cat("X:", dim_and_class(x$X), "\n")
   cat("S:", dim_and_class(x$S), "\n\n")
+
+  cat("Poisson edges:", as.character(x$poisson_edges), "\n")
+  cat("Allow self loops:", as.character(x$allow_self_loops), "\n\n")
 
   cat(glue("Expected edges: {round(expected_edges(x))}\n", .trim = FALSE))
   cat(glue("Expected degree: {round(expected_degree(x), 1)}\n", .trim = FALSE))
