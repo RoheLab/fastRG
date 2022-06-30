@@ -1,4 +1,4 @@
-# fastRG (development version)
+# fastRG 0.3.1
 
 ## Breaking changes
 
