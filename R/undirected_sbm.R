@@ -102,8 +102,8 @@ sbm <- function(
     pi = pi,
     sort_nodes = sort_nodes,
     force_identifiability = FALSE,
-    poisson_edges = TRUE,
-    allow_self_loops = TRUE,
+    poisson_edges = poisson_edges,
+    allow_self_loops = allow_self_loops,
     subclass = "undirected_sbm"
   )
 
