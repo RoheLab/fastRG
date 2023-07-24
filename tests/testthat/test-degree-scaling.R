@@ -1,5 +1,30 @@
 library(magrittr)
 
+test_that("expected_degrees() has dimension and correctness", {
+  n <- 100
+  k <- 5
+
+  set.seed(143)
+
+  X <- matrix(rpois(n = n * k, 1), nrow = n)
+  S <- matrix(runif(n = k * k, 0, .1), nrow = k)
+
+  ufm <- undirected_factor_model(X, S)
+
+  # dimensional correctness
+  expect_equal(
+    length(expected_degrees(ufm)),
+    n
+  )
+
+  # numerical correctness
+  expect_equal(
+    expected_degrees(ufm),
+    rowSums(ufm$X %*% tcrossprod(ufm$S, ufm$X))
+  )
+})
+
+
 test_that("undirected expected degree computed consistently", {
 
   # see issue 19
