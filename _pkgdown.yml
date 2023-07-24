@@ -21,6 +21,7 @@ reference:
       - contains("eigs_sym")
       - contains("svds")
       - starts_with("expected_")
+      - contains("expectation")
   - title: Undirected graphs
     contents:
       - erdos_renyi

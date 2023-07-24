@@ -26,3 +26,7 @@ l1_normalize <- function(x) x / sum(x)
 l1_normalize_within <- function(x, block) {
   do.call(c, lapply(split(x, block), l1_normalize))
 }
+
+utils::globalVariables(
+  c("i", "j", "value", "x")
+)

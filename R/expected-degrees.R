@@ -134,9 +134,14 @@ expected_degrees <- function(factor_model, ...) {
 
 #' @export
 expected_degrees.undirected_factor_model <- function(factor_model, ...) {
+
+  # rowSums of E[A|X, S] = XSX' are XSX'1 for 1 a column vector of ones
+  # want to avoid memory cost of instantiating all of E[A|X, S], which is
+  # typically large and dense
   X <- factor_model$X
   S <- factor_model$S
-  as.numeric(X %*% tcrossprod(S, X))
+  ones <- matrix(1, nrow = nrow(X))
+  as.numeric(X %*% (tcrossprod(S, X) %*% ones))
 }
 
 #' @export
