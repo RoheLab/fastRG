@@ -26,3 +26,16 @@ A \code{\link[ggplot2:ggplot2-package]{ggplot2::ggplot2()}} plot.
 \description{
 Plot (expected) adjacency matrices
 }
+\examples{
+
+set.seed(27)
+
+model <- dcsbm(n = 10, k = 2, expected_density = 0.2)
+
+plot_expectation(model)
+
+A <- sample_sparse(model)
+
+plot_sparse_matrix(A)
+
+}

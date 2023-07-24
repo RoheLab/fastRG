@@ -1,5 +1,8 @@
 # fastRG (development version)
 
+- Add `plot_expectation()`, `plot_sparse_matrix()` and `expectation()` utilities (#34)
+- Fix incorrect computation in `expected_degrees()` (#34)
+
 # fastRG 0.3.1
 
 ## Breaking changes

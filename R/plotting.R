@@ -32,6 +32,18 @@ expectation.directed_factor_model <- function(model, ...) {
 #' @return A [ggplot2::ggplot2()] plot.
 #' @export
 #'
+#' @examples
+#'
+#' set.seed(27)
+#'
+#' model <- dcsbm(n = 10, k = 2, expected_density = 0.2)
+#'
+#' plot_expectation(model)
+#'
+#' A <- sample_sparse(model)
+#'
+#' plot_sparse_matrix(A)
+#'
 plot_expectation <- function(model) {
   EA <- as.matrix(expectation(model))
   plot_dense_matrix(EA)
@@ -52,9 +64,7 @@ plot_dense_matrix <- function(A, ...) {
     labs(
       fill = "Expected edges"
     ) +
-    theme(
-      axis.title = element_blank()
-    )
+    theme_void()
 }
 
 #' @rdname plot_expectation
@@ -63,18 +73,16 @@ plot_sparse_matrix <- function(A) {
 
   stopifnot(inherits(A, "sparseMatrix"))
 
-  A <- methods::as(A, "dgCMatrix")
+  A <- methods::as(A, "CsparseMatrix")
+  A <- methods::as(A, "generalMatrix")
 
   ggplot(summary(A), aes(x = i, y = j, fill = as.factor(x))) +
-    geom_raster() +
+    geom_tile() +
     scale_fill_grey() +
     scale_y_reverse() +
-    theme_void(16) +
+    expand_limits(x = nrow(A), y = ncol(A)) +
+    theme_void() +
     labs(
       fill = "Edges"
-    ) +
-    theme(
-      axis.title = element_blank(),
-      axis.text = element_blank()
     )
 }
