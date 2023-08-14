@@ -46,13 +46,8 @@ sample_tidygraph <- function(
 sample_tidygraph.undirected_factor_model <- function(
   factor_model,
   ...) {
-
-  nodes <- tibble(
-    name = 1:nrow(factor_model$X)
-  )
-
-  edges <- sample_edgelist(factor_model, ...)
-  tidygraph::tbl_graph(nodes = nodes, edges = edges, directed = FALSE)
+  ig <- sample_igraph(factor_model, ...)
+  tidygraph::as_tbl_graph(ig, directed = FALSE)
 }
 
 #' @rdname sample_tidygraph
@@ -60,7 +55,6 @@ sample_tidygraph.undirected_factor_model <- function(
 sample_tidygraph.directed_factor_model <- function(
   factor_model,
   ...) {
-
   ig <- sample_igraph(factor_model, ...)
   tidygraph::as_tbl_graph(ig, directed = TRUE)
 }
