@@ -16,9 +16,14 @@
 #'   Dot Product Graph, represented as a [tibble::tibble()] with two
 #'   integer columns, `from` and `to`.
 #'
+#'   **NOTE**: Indices for isolated nodes will not appear in the edgelist!
+#'   This can lead to issues if you construct network objects from the
+#'   edgelist directly.
+#'
 #'   In the undirected case, `from` and `to` do not encode
 #'   information about edge direction, but we will always have
 #'   `from <= to` for convenience of edge identification.
+#'
 #'   To avoid handling such considerations yourself, we recommend using
 #'   [sample_sparse()], [sample_igraph()], and [sample_tidygraph()]
 #'   over [sample_edgelist()].

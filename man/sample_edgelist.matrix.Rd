@@ -62,9 +62,14 @@ A single realization of a random Poisson (or Bernoulli)
 Dot Product Graph, represented as a \code{\link[tibble:tibble]{tibble::tibble()}} with two
 integer columns, \code{from} and \code{to}.
 
+\strong{NOTE}: Indices for isolated nodes will not appear in the edgelist!
+This can lead to issues if you construct network objects from the
+edgelist directly.
+
 In the undirected case, \code{from} and \code{to} do not encode
 information about edge direction, but we will always have
 \code{from <= to} for convenience of edge identification.
+
 To avoid handling such considerations yourself, we recommend using
 \code{\link[=sample_sparse]{sample_sparse()}}, \code{\link[=sample_igraph]{sample_igraph()}}, and \code{\link[=sample_tidygraph]{sample_tidygraph()}}
 over \code{\link[=sample_edgelist]{sample_edgelist()}}.

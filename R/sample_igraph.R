@@ -48,8 +48,8 @@ sample_igraph.undirected_factor_model <- function(
   ...) {
 
   edgelist <- sample_edgelist(factor_model, ...)
-
-  igraph::graph_from_data_frame(edgelist, directed = FALSE)
+  nodes <- tibble(name = 1:nrow(factor_model$X))
+  igraph::graph_from_data_frame(edgelist, directed = FALSE, vertices = nodes)
 }
 
 #' @rdname sample_igraph
@@ -60,7 +60,8 @@ sample_igraph.directed_factor_model <- function(
 
   if (factor_model$n == factor_model$d) {
     edgelist <- sample_edgelist(factor_model, ...)
-    one_mode <- igraph::graph_from_data_frame(edgelist, directed = TRUE)
+    nodes <- tibble(name = 1:nrow(factor_model$X))
+    one_mode <- igraph::graph_from_data_frame(edgelist, directed = TRUE, vertices = nodes)
     return(one_mode)
   }
 

@@ -1,7 +1,8 @@
 # fastRG (development version)
 
-- Add `plot_expectation()`, `plot_sparse_matrix()` and `expectation()` utilities (#34)
-- Fix incorrect computation in `expected_degrees()` (#34)
+- Fixed bug where isolated nodes were sometimes dropped from igraph and tidygraph objects (#35)
+- Added `plot_expectation()`, `plot_sparse_matrix()` and `expectation()` utilities (#34)
+- Fixed incorrect computation in `expected_degrees()` (#34)
 
 # fastRG 0.3.1
 
