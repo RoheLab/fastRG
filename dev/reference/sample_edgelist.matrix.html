@@ -151,10 +151,17 @@ Dot Product Graph, represented as a <code><a href="https://tibble.tidyverse.org/
 integer columns, <code>from</code> and <code>to</code>.</p>
 
 
+<p><strong>NOTE</strong>: Indices for isolated nodes will not appear in the edgelist!
+This can lead to issues if you construct network objects from the
+edgelist directly.</p>
+
+
 <p>In the undirected case, <code>from</code> and <code>to</code> do not encode
 information about edge direction, but we will always have
-<code>from &lt;= to</code> for convenience of edge identification.
-To avoid handling such considerations yourself, we recommend using
+<code>from &lt;= to</code> for convenience of edge identification.</p>
+
+
+<p>To avoid handling such considerations yourself, we recommend using
 <code><a href="sample_sparse.html">sample_sparse()</a></code>, <code><a href="sample_igraph.html">sample_igraph()</a></code>, and <code><a href="sample_tidygraph.html">sample_tidygraph()</a></code></p>
 
 
