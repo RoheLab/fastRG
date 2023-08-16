@@ -6,14 +6,14 @@
 \usage{
 directed_dcsbm(
   n = NULL,
-  theta_in = NULL,
   theta_out = NULL,
-  k_in = NULL,
+  theta_in = NULL,
   k_out = NULL,
+  k_in = NULL,
   B = NULL,
   ...,
-  pi_in = rep(1/k_in, k_in),
   pi_out = rep(1/k_out, k_out),
+  pi_in = rep(1/k_in, k_in),
   sort_nodes = TRUE,
   force_identifiability = TRUE,
   poisson_edges = TRUE,
@@ -23,56 +23,60 @@ directed_dcsbm(
 \arguments{
 \item{n}{(degree heterogeneity) The number of nodes in the blockmodel.
 Use when you don't want to specify the degree-heterogeneity
-parameters \code{theta_in} and \code{theta_out} by hand. When \code{n} is specified,
-\code{theta_in} and \code{theta_out} are randomly generated from
+parameters \code{theta_out} and \code{theta_in} by hand. When \code{n} is specified,
+\code{theta_out} and \code{theta_in} are randomly generated from
 a \code{LogNormal(2, 1)} distribution.
 This is subject to change, and may not be reproducible.
 \code{n} defaults to \code{NULL}. You must specify either \code{n}
-or \code{theta_in} and \code{theta_out} together, but not both.}
+or \code{theta_out} and \code{theta_in} together, but not both.}
 
-\item{theta_in}{(degree heterogeneity) A numeric vector
+\item{theta_out}{(degree heterogeneity) A numeric vector
 explicitly specifying the degree heterogeneity
 parameters. This implicitly determines the number of nodes
-in the resulting graph, i.e. it will have \code{length(theta_in)} nodes.
+in the resulting graph, i.e. it will have \code{length(theta_out)} nodes.
 Must be positive. Setting to a vector of ones recovers
 a stochastic blockmodel without degree correction.
 Defaults to \code{NULL}. You must specify either \code{n}
-or \code{theta_in} and \code{theta_out} together, but not both.}
+or \code{theta_out} and \code{theta_in} together, but not both. \code{theta_out}
+controls outgoing degree propensity, or, equivalently,
+row sums of the adjacency matrix.}
 
-\item{theta_out}{(degree heterogeneity) A numeric vector
+\item{theta_in}{(degree heterogeneity) A numeric vector
 explicitly specifying the degree heterogeneity
 parameters. This implicitly determines the number of nodes
 in the resulting graph, i.e. it will have \code{length(theta)} nodes.
 Must be positive. Setting to a vector of ones recovers
 a stochastic blockmodel without degree correction.
 Defaults to \code{NULL}. You must specify either \code{n}
-or \code{theta_in} and \code{theta_out} together, but not both.}
+or \code{theta_out} and \code{theta_in} together, but not both. \code{theta_in}
+controls incoming degree propensity, or, equivalently, column
+sums of the adjacency matrix.}
 
-\item{k_in}{(mixing matrix) The number of blocks in the blockmodel.
-Use when you don't want to specify the mixing-matrix by hand.
-When \code{k_in} is specified, the elements of \code{B} are drawn
-randomly from a \code{Uniform(0, 1)} distribution.
-This is subject to change, and may not be reproducible.
-\code{k_in} defaults to \code{NULL}. You must specify either \code{k_in} and
-\code{k_out} together, or \code{B}. You may specify all three at once, in which
-case \code{k_in} is only used to set \code{pi_in} (when \code{pi_in} is
-left at its default argument value).}
-
-\item{k_out}{(mixing matrix) The number of blocks in the blockmodel.
+\item{k_out}{(mixing matrix) The number of outgoing blocks in the blockmodel.
 Use when you don't want to specify the mixing-matrix by hand.
 When \code{k_out} is specified, the elements of \code{B} are drawn
 randomly from a \code{Uniform(0, 1)} distribution.
 This is subject to change, and may not be reproducible.
-\code{k_out} defaults to \code{NULL}. You may specify all three at once, in which
+\code{k_out} defaults to \code{NULL}. You must specify either \code{k_out} and
+\code{k_in} together, or \code{B}. You may specify all three at once, in which
 case \code{k_out} is only used to set \code{pi_out} (when \code{pi_out} is
 left at its default argument value).}
 
-\item{B}{(mixing matrix) A \code{k_in} by \code{k_out} matrix of block connection
+\item{k_in}{(mixing matrix) The number of incoming blocks in the blockmodel.
+Use when you don't want to specify the mixing-matrix by hand.
+When \code{k_in} is specified, the elements of \code{B} are drawn
+randomly from a \code{Uniform(0, 1)} distribution.
+This is subject to change, and may not be reproducible.
+\code{k_in} defaults to \code{NULL}. You may specify all three at once, in which
+case \code{k_in} is only used to set \code{pi_in} (when \code{pi_in} is
+left at its default argument value).}
+
+\item{B}{(mixing matrix) A \code{k_out} by \code{k_in} matrix of block connection
 probabilities. The probability that a node in block \code{i} connects
 to a node in community \code{j} is \code{Poisson(B[i, j])}.
 \code{matrix} and \code{Matrix} objects are both acceptable.
-Defaults to \code{NULL}. You must specify either \code{k_in} and
-\code{k_out} together, or \code{B}, but not both.}
+Defaults to \code{NULL}. You must specify either \code{k_out} and
+\code{k_in} together, or \code{B}, but not both.}
 
 \item{...}{
   Arguments passed on to \code{\link[=directed_factor_model]{directed_factor_model}}
@@ -91,25 +95,32 @@ to achieve this. Defaults to \code{NULL}. Specify only one of
 \code{expected_in_degree}, \code{expected_out_degree}, and \code{expected_density}.}
   }}
 
-\item{pi_in}{(relative block probabilities) Relative block
-probabilities. Must be positive, but do not need to sum
-to one, as they will be normalized internally.
-Must match the rows of \code{B}, or \code{k_in}. Defaults to
-\code{rep(1 / k_in, k_in)}, or a balanced incoming blocks.}
-
 \item{pi_out}{(relative block probabilities) Relative block
 probabilities. Must be positive, but do not need to sum
 to one, as they will be normalized internally.
-Must match the columns of \code{B}, or \code{k_out}. Defaults to
+Must match the rows of \code{B}, or \code{k_out}. Defaults to
 \code{rep(1 / k_out, k_out)}, or a balanced outgoing blocks.}
+
+\item{pi_in}{(relative block probabilities) Relative block
+probabilities. Must be positive, but do not need to sum
+to one, as they will be normalized internally.
+Must match the columns of \code{B}, or \code{k_in}. Defaults to
+\code{rep(1 / k_in, k_in)}, or a balanced incoming blocks.}
 
 \item{sort_nodes}{Logical indicating whether or not to sort the nodes
 so that they are grouped by block. Useful for plotting.
-Defaults to \code{TRUE}.}
+Defaults to \code{TRUE}. When \code{TRUE}, rows of the expected adjacency matrix
+are first sorted by outgoing block membership, and then by
+incoming degree-correction parameters within each incoming block.
+A similar sorting procedure occurs independently from the columns,
+according to the incoming blocks.
+Additionally, \code{pi_out} and \code{pi_in} are sorted in increasing order,
+and the columns of the \code{B} matrix are permuted to match the
+new orderings.}
 
 \item{force_identifiability}{Logical indicating whether or not to
-normalize \code{theta_in} such that it sums to one within each incoming
-block and \code{theta_out} such that it sums to one within each outgoing
+normalize \code{theta_out} such that it sums to one within each incoming
+block and \code{theta_in} such that it sums to one within each outgoing
 block. Defaults to \code{TRUE}.}
 
 \item{poisson_edges}{Logical indicating whether or not
@@ -132,23 +143,23 @@ A \code{directed_dcsbm} S3 object, a subclass of the
 \code{\link[=directed_factor_model]{directed_factor_model()}} with the following additional
 fields:
 \itemize{
-\item \code{theta_in}: A numeric vector of incoming community
+\item \code{theta_out}: A numeric vector of incoming community
 degree-heterogeneity parameters.
-\item \code{theta_out}: A numeric vector of outgoing community
+\item \code{theta_in}: A numeric vector of outgoing community
 degree-heterogeneity parameters.
-\item \code{z_in}: The incoming community memberships of each node,
-as a \code{\link[=factor]{factor()}}. The factor will have \code{k_in} levels,
-where \code{k_in} is the number of incoming
-communities in the stochastic blockmodel. There will not
-always necessarily be observed nodes in each community.
-\item \code{z_out}: The outgoing community memberships of each node,
+\item \code{z_out}: The incoming community memberships of each node,
 as a \code{\link[=factor]{factor()}}. The factor will have \code{k_out} levels,
-where \code{k_out} is the number of outgoing
+where \code{k_out} is the number of incoming
 communities in the stochastic blockmodel. There will not
 always necessarily be observed nodes in each community.
-\item \code{pi_in}: Sampling probabilities for each incoming
+\item \code{z_in}: The outgoing community memberships of each node,
+as a \code{\link[=factor]{factor()}}. The factor will have \code{k_in} levels,
+where \code{k_in} is the number of outgoing
+communities in the stochastic blockmodel. There will not
+always necessarily be observed nodes in each community.
+\item \code{pi_out}: Sampling probabilities for each incoming
 community.
-\item \code{pi_out}: Sampling probabilities for each outgoing
+\item \code{pi_in}: Sampling probabilities for each outgoing
 community.
 \item \code{sorted}: Logical indicating where nodes are arranged by
 block (and additionally by degree heterogeneity parameter)
@@ -157,14 +168,14 @@ within each block.
 }
 \description{
 To specify a degree-corrected stochastic blockmodel, you must specify
-the degree-heterogeneity parameters (via \code{n_in} or \code{theta_in}, and
-\code{n_out} or \code{theta_out}), the mixing matrix
-(via \code{k_in} and \code{k_out}, or \code{B}), and the relative block
-probabilities (optional, via \code{p_in} and \code{pi_out}).
+the degree-heterogeneity parameters (via \code{n} or \code{theta_out} and
+\code{theta_in}), the mixing matrix
+(via \code{k_out} and \code{k_in}, or \code{B}), and the relative block
+probabilities (optional, via \code{p_out} and \code{pi_in}).
 We provide defaults for most of these
 options to enable rapid exploration, or you can invest the effort
 for more control over the model parameters. We \strong{strongly recommend}
-setting the \code{expected_in_degree}, \code{expected_out_degree},
+setting the \code{expected_out_degree}, \code{expected_in_degree},
 or \code{expected_density} argument
 to avoid large memory allocations associated with
 sampling large, dense graphs.
@@ -185,9 +196,9 @@ graph representation.
 Let \eqn{x} represent the incoming block membership of a node
 and \eqn{y} represent the outgoing block membership of a node.
 To generate \eqn{x} we sample from a categorical
-distribution with parameter \eqn{\pi_in}.
-To generate \eqn{y} we sample from a categorical
 distribution with parameter \eqn{\pi_out}.
+To generate \eqn{y} we sample from a categorical
+distribution with parameter \eqn{\pi_in}.
 Block memberships are independent across nodes. Incoming and outgoing
 block memberships of the same node are also independent.
 }
@@ -198,10 +209,10 @@ In addition to block membership, the DCSBM also
 nodes to have different propensities for incoming and
 outgoing edge formation.
 We represent the propensity to form incoming edges for a
-given node by a positive number \eqn{\theta_in}.
-We represent the propensity to form outgoing edges for a
 given node by a positive number \eqn{\theta_out}.
-Typically the \eqn{\theta_in} (and \eqn{theta_out}) across all nodes are
+We represent the propensity to form outgoing edges for a
+given node by a positive number \eqn{\theta_in}.
+Typically the \eqn{\theta_out} (and \eqn{theta_in}) across all nodes are
 constrained to sum to one for identifiability purposes,
 but this doesn't really matter during sampling.
 }
@@ -232,8 +243,8 @@ diag(B) <- 0.9
 ddcsbm <- directed_dcsbm(
   n = 1000,
   B = B,
-  k_in = 5,
-  k_out = 8,
+  k_out = 5,
+  k_in = 8,
   expected_density = 0.01
 )
 

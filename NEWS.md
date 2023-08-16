@@ -1,5 +1,6 @@
 # fastRG (development version)
 
+- Added documentation about block sorting in blockmodels when `sort_nodes = TRUE` (#35). Blocks are now only sorted when `sort_nodes = TRUE`, although they were previously always sorted. In directed stochastic blocks, flipped incoming and outgoing blocks, such that `X` now contains info about outgoing blocks and `Y` now contains info about incoming blocks, as you would expected if `A[i, j]` encodes an edge from node `i` to node `j`
 - Fixed bug where isolated nodes were sometimes dropped from igraph and tidygraph objects (#35)
 - Added `plot_expectation()`, `plot_sparse_matrix()` and `expectation()` utilities (#34)
 - Fixed incorrect computation in `expected_degrees()` (#34)

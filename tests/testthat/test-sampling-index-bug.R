@@ -37,7 +37,7 @@ test_that("degenerate test case 3 succeeds", {
   pi_in <- rep(1, k_in)
   pi_out <- rep(1, k_out)
 
-  B <- matrix(0, nrow = k_in, ncol = k_out)
+  B <- matrix(0, nrow = k_out, ncol = k_in)
   diag(B) <- 0.5
 
   dsbm <- directed_dcsbm(pi_in = pi_in, pi_out = pi_out, B = B, theta_in = rep(1, n), theta_out = rep(1, n), sort_nodes = TRUE)
