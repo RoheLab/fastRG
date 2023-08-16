@@ -160,7 +160,10 @@ Must match the dimensions of <code>B</code> or <code>k</code>. Defaults to
 <dt>sort_nodes</dt>
 <dd><p>Logical indicating whether or not to sort the nodes
 so that they are grouped by block and by <code>theta</code>. Useful for plotting.
-Defaults to <code>TRUE</code>.</p></dd>
+Defaults to <code>TRUE</code>. When <code>TRUE</code>, nodes are first sorted by block
+membership, and then by degree-correction parameters within each block.
+Additionally, <code>pi</code> is sorted in increasing order, and the columns
+of the <code>B</code> matrix are permuted to match the new order of <code>pi</code>.</p></dd>
 
 
 <dt>force_pure</dt>
