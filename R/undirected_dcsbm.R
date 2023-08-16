@@ -119,7 +119,10 @@ validate_undirected_dcsbm <- function(x) {
 #'
 #' @param sort_nodes Logical indicating whether or not to sort the nodes
 #'   so that they are grouped by block and by `theta`. Useful for plotting.
-#'   Defaults to `TRUE`.
+#'   Defaults to `TRUE`. When `TRUE`, nodes are first sorted by block
+#'   membership, and then by degree-correction parameters within each block.
+#'   Additionally, `pi` is sorted in increasing order, and the columns
+#'   of the `B` matrix are permuted to match the new order of `pi`.
 #'
 #' @param force_identifiability Logical indicating whether or not to
 #'   normalize `theta` such that it sums to one within each block. Defaults
@@ -314,12 +317,13 @@ dcsbm <- function(
 
   # order mixing matrix by expected group size
 
-  if (k > 1) {
+  if (k > 1 && sort_nodes) {
     B <- B[order(pi), ]
     B <- B[, order(pi)]
+    pi <- sort(pi)
   }
 
-  pi <- sort(pi / sum(pi))
+  pi <- pi / sum(pi)
 
   # sample block memberships
 
@@ -345,12 +349,12 @@ dcsbm <- function(
   if (sort_nodes) {
     # note that X and z indexing must match
     X <- sort_by_all_columns(X)
-  }
 
-  if (k > 1) {
-    theta <- X@x
-  } else {
-    theta <- sort(theta, decreasing = TRUE)
+    if (k > 1) {
+      theta <- X@x
+    } else {
+      theta <- sort(theta, decreasing = TRUE)
+    }
   }
 
   dcsbm <- new_undirected_dcsbm(

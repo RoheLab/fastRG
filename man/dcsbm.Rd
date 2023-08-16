@@ -72,7 +72,10 @@ Must match the dimensions of \code{B} or \code{k}. Defaults to
 
 \item{sort_nodes}{Logical indicating whether or not to sort the nodes
 so that they are grouped by block and by \code{theta}. Useful for plotting.
-Defaults to \code{TRUE}.}
+Defaults to \code{TRUE}. When \code{TRUE}, nodes are first sorted by block
+membership, and then by degree-correction parameters within each block.
+Additionally, \code{pi} is sorted in increasing order, and the columns
+of the \code{B} matrix are permuted to match the new order of \code{pi}.}
 
 \item{force_identifiability}{Logical indicating whether or not to
 normalize \code{theta} such that it sums to one within each block. Defaults
