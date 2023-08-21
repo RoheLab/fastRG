@@ -9,13 +9,4 @@ This is a minor maintenance release.
 
 ## R CMD check results
 
-❯ checking CRAN incoming feasibility ... NOTE
-  Maintainer: ‘Alex Hayes <alexpghayes@gmail.com>’
-  
-  Possibly misspelled words in DESCRIPTION:
-    Rohe (16:5)
-    al (16:13)
-    et (16:10)
-    fastRG (15:56)
-    
-The spelling here looks fine to me.
+0 errors | 0 warnings | 0 notes
