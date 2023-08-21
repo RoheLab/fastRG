@@ -119,7 +119,7 @@ sample_edgelist(sbm)
 #>  8   119   210
 #>  9    41   197
 #> 10   145   175
-#> # … with 4,975 more rows
+#> # ℹ 4,975 more rows
 ```
 
 but we can just as easily obtain the graph as a sparse matrix
@@ -145,17 +145,17 @@ or an igraph object
 
 ``` r
 sample_igraph(sbm)
-#> IGRAPH a506dc4 UN-- 1000 5033 -- 
+#> IGRAPH 3386a61 UN-- 1000 5033 -- 
 #> + attr: name (v/c)
-#> + edges from a506dc4 (vertex names):
+#> + edges from 3386a61 (vertex names):
 #>  [1] 63 --76  135--215 59 --182 21 --134 180--218 53 --189 138--139 21 --78 
 #>  [9] 49 --70  76 --127 6  --139 64 --214 31 --132 56 --93  75 --144 9  --185
-#> [17] 33 --150 115--165 163--213 53 --6   47 --179 25 --26  7  --51  10 --55 
+#> [17] 33 --150 115--165 163--213 6  --53  47 --179 25 --26  7  --51  10 --55 
 #> [25] 120--183 43 --152 25 --34  84 --216 114--191 34 --127 152--164 178--189
 #> [33] 106--181 28 --38  41 --89  34 --139 6  --213 24 --153 32 --173 47 --111
-#> [41] 157--205 108--133 98 --116 26 --117 18 --194 32 --18  74 --209 18 --128
-#> [49] 13 --127 26 --12  1  --133 52 --72  128--213 13 --173 61 --214 33 --142
-#> [57] 22 --111 163--191 191--205 108--5   9  --72  6  --217 113--122 90 --154
+#> [41] 157--205 108--133 98 --116 26 --117 18 --194 18 --32  74 --209 18 --128
+#> [49] 13 --127 12 --26  1  --133 52 --72  128--213 13 --173 61 --214 33 --142
+#> [57] 22 --111 163--191 191--205 5  --108 9  --72  6  --217 113--122 90 --154
 #> + ... omitted several edges
 ```
 
@@ -192,30 +192,24 @@ There are several essential tools to modify graph sampling that you
 should know about. First there are options that affect the latent factor
 sampling:
 
--   `expected_degree`: Set the expected average degree of the graph by
-    scaling sampling probabilities. We *strongly, strongly* recommend
-    that you always set this option. If you do not, it is easy
-    accidentally sample from large and dense graphs.
+- `expected_degree`: Set the expected average degree of the graph by
+  scaling sampling probabilities. We *strongly, strongly* recommend that
+  you always set this option. If you do not, it is easy accidentally
+  sample from large and dense graphs.
 
--   `expected_density`: Set the expected density of the graph by scaling
-    sampling probabilities. You cannot specify both `expected_degree`
-    and `expected_density` at the same time.
+- `expected_density`: Set the expected density of the graph by scaling
+  sampling probabilities. You cannot specify both `expected_degree` and
+  `expected_density` at the same time.
 
 In the second stage of graph sampling, the options are:
 
--   `poisson_edges`: Either `TRUE` or `FALSE` depending on whether you
-    would like a Bernoulli graph or a Poisson multi-graph. Scaling via
-    `expected_degree` assumes a Poisson multi-graph, with some limited
-    exceptions.
+- `poisson_edges`: Either `TRUE` or `FALSE` depending on whether you
+  would like a Bernoulli graph or a Poisson multi-graph. Scaling via
+  `expected_degree` assumes a Poisson multi-graph, with some limited
+  exceptions.
 
--   `allow_self_edges`: Whether nodes should be allowed to connect to
-    themselves. Either `TRUE` or `FALSE`.
-
-## Known issues
-
-Sampling blockmodels with very small numbers of nodes (or blockmodels
-with the number of blocks `k` on the same order as `n`) results in a
-degeneracy that can cause issues.
+- `allow_self_edges`: Whether nodes should be allowed to connect to
+  themselves. Either `TRUE` or `FALSE`.
 
 ## Related work
 
