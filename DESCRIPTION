@@ -1,6 +1,6 @@
 Package: fastRG
 Title: Sample Generalized Random Dot Product Graphs in Linear Time
-Version: 0.3.2
+Version: 0.3.2.9000
 Authors@R: c(
     person("Alex", "Hayes", , "alexpghayes@gmail.com", role = c("aut", "cre", "cph"),
            comment = c(ORCID = "0000-0002-4985-5160")),
