@@ -154,7 +154,7 @@
 <span><span class="co">#&gt;  8   119   210</span></span>
 <span><span class="co">#&gt;  9    41   197</span></span>
 <span><span class="co">#&gt; 10   145   175</span></span>
-<span><span class="co">#&gt; # … with 4,975 more rows</span></span></code></pre></div>
+<span><span class="co">#&gt; # ℹ 4,975 more rows</span></span></code></pre></div>
 <p>but we can just as easily obtain the graph as a sparse matrix</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">A</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/sample_sparse.html">sample_sparse</a></span><span class="op">(</span><span class="va">sbm</span><span class="op">)</span></span>
@@ -174,17 +174,17 @@
 <p>or an igraph object</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/sample_igraph.html">sample_igraph</a></span><span class="op">(</span><span class="va">sbm</span><span class="op">)</span></span>
-<span><span class="co">#&gt; IGRAPH a506dc4 UN-- 1000 5033 -- </span></span>
+<span><span class="co">#&gt; IGRAPH 3386a61 UN-- 1000 5033 -- </span></span>
 <span><span class="co">#&gt; + attr: name (v/c)</span></span>
-<span><span class="co">#&gt; + edges from a506dc4 (vertex names):</span></span>
+<span><span class="co">#&gt; + edges from 3386a61 (vertex names):</span></span>
 <span><span class="co">#&gt;  [1] 63 --76  135--215 59 --182 21 --134 180--218 53 --189 138--139 21 --78 </span></span>
 <span><span class="co">#&gt;  [9] 49 --70  76 --127 6  --139 64 --214 31 --132 56 --93  75 --144 9  --185</span></span>
-<span><span class="co">#&gt; [17] 33 --150 115--165 163--213 53 --6   47 --179 25 --26  7  --51  10 --55 </span></span>
+<span><span class="co">#&gt; [17] 33 --150 115--165 163--213 6  --53  47 --179 25 --26  7  --51  10 --55 </span></span>
 <span><span class="co">#&gt; [25] 120--183 43 --152 25 --34  84 --216 114--191 34 --127 152--164 178--189</span></span>
 <span><span class="co">#&gt; [33] 106--181 28 --38  41 --89  34 --139 6  --213 24 --153 32 --173 47 --111</span></span>
-<span><span class="co">#&gt; [41] 157--205 108--133 98 --116 26 --117 18 --194 32 --18  74 --209 18 --128</span></span>
-<span><span class="co">#&gt; [49] 13 --127 26 --12  1  --133 52 --72  128--213 13 --173 61 --214 33 --142</span></span>
-<span><span class="co">#&gt; [57] 22 --111 163--191 191--205 108--5   9  --72  6  --217 113--122 90 --154</span></span>
+<span><span class="co">#&gt; [41] 157--205 108--133 98 --116 26 --117 18 --194 18 --32  74 --209 18 --128</span></span>
+<span><span class="co">#&gt; [49] 13 --127 12 --26  1  --133 52 --72  128--213 13 --173 61 --214 33 --142</span></span>
+<span><span class="co">#&gt; [57] 22 --111 163--191 191--205 5  --108 9  --72  6  --217 113--122 90 --154</span></span>
 <span><span class="co">#&gt; + ... omitted several edges</span></span></code></pre></div>
 <p>Note that every time we call <code>sample_*()</code> we draw a new sample.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
@@ -217,11 +217,6 @@
 <li><p><code>poisson_edges</code>: Either <code>TRUE</code> or <code>FALSE</code> depending on whether you would like a Bernoulli graph or a Poisson multi-graph. Scaling via <code>expected_degree</code> assumes a Poisson multi-graph, with some limited exceptions.</p></li>
 <li><p><code>allow_self_edges</code>: Whether nodes should be allowed to connect to themselves. Either <code>TRUE</code> or <code>FALSE</code>.</p></li>
 </ul>
-</div>
-<div class="section level2">
-<h2 id="known-issues">Known issues<a class="anchor" aria-label="anchor" href="#known-issues"></a>
-</h2>
-<p>Sampling blockmodels with very small numbers of nodes (or blockmodels with the number of blocks <code>k</code> on the same order as <code>n</code>) results in a degeneracy that can cause issues.</p>
 </div>
 <div class="section level2">
 <h2 id="related-work">Related work<a class="anchor" aria-label="anchor" href="#related-work"></a>
