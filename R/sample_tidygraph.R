@@ -28,7 +28,7 @@ sample_tidygraph <- function(
   factor_model,
   ...) {
 
-  ellipsis::check_dots_unnamed()
+  rlang::check_dots_unnamed()
 
   if (!(requireNamespace("tidygraph", quietly = TRUE))) {
     stop(
