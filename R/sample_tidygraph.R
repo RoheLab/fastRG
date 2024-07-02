@@ -30,13 +30,7 @@ sample_tidygraph <- function(
 
   rlang::check_dots_unnamed()
 
-  if (!(requireNamespace("tidygraph", quietly = TRUE))) {
-    stop(
-      "Must install `tidygraph` package to return graphs as `tidygraph` ",
-      "objects",
-      call. = FALSE
-    )
-  }
+  rlang::check_installed("igraph", "to return graphs as `tidygraph` objects.")
 
   UseMethod("sample_tidygraph")
 }
