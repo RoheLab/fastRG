@@ -26,11 +26,11 @@ Depends:
     Matrix
 Imports: 
     dplyr,
-    ellipsis,
     ggplot2,
     glue,
     igraph,
     methods,
+    rlang (>= 1.0.0),
     RSpectra,
     stats,
     tibble,

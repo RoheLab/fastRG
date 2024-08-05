@@ -5,7 +5,7 @@ new_directed_factor_model <- function(
   ...,
   subclass = character()) {
 
-  ellipsis::check_dots_unnamed()
+  rlang::check_dots_unnamed()
 
   n <- nrow(X)
   k1 <- ncol(X)
