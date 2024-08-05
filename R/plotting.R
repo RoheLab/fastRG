@@ -46,6 +46,12 @@ expectation.directed_factor_model <- function(model, ...) {
 #'
 plot_expectation <- function(model) {
   EA <- as.matrix(expectation(model))
+  if (is.null(rownames(EA))) {
+    rownames(EA) <- 1:nrow(EA)
+  }
+  if (is.null(colnames(EA))) {
+    colnames(EA) <- 1:ncol(EA)
+  }
   plot_dense_matrix(EA)
 }
 
