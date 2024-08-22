@@ -27,15 +27,9 @@
 sample_igraph <- function(
     factor_model,
     ...) {
-  ellipsis::check_dots_unnamed()
+  rlang::check_dots_unnamed()
 
-  if (!(requireNamespace("igraph", quietly = TRUE))) {
-    stop(
-      "Must install `igraph` package to return graphs as `igraph` ",
-      "objects",
-      call. = FALSE
-    )
-  }
+  rlang::check_installed("igraph", "to return graphs as `igraph` objects.")
 
   UseMethod("sample_igraph")
 }

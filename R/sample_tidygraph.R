@@ -27,15 +27,8 @@
 sample_tidygraph <- function(
     factor_model,
     ...) {
-  ellipsis::check_dots_unnamed()
-
-  if (!(requireNamespace("tidygraph", quietly = TRUE))) {
-    stop(
-      "Must install `tidygraph` package to return graphs as `tidygraph` ",
-      "objects",
-      call. = FALSE
-    )
-  }
+  rlang::check_dots_unnamed()
+  rlang::check_installed("igraph", "to return graphs as `tidygraph` objects.")
 
   UseMethod("sample_tidygraph")
 }

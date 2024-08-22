@@ -146,7 +146,7 @@
 sample_edgelist <- function(
     factor_model,
     ...) {
-  ellipsis::check_dots_unnamed()
+  rlang::check_dots_unnamed()
   UseMethod("sample_edgelist")
 }
 
