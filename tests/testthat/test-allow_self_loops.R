@@ -1,7 +1,6 @@
 library(igraph)
 
 test_that("undirected graphs allow_self_loops = FALSE", {
-
   set.seed(1)
 
   n <- 1000
@@ -16,7 +15,7 @@ test_that("undirected graphs allow_self_loops = FALSE", {
     allow_self_loops = FALSE
   )
 
-  edgelist <- sample_edgelist(ufm,)
+  edgelist <- sample_edgelist(ufm, )
   expect_false(any(edgelist$from == edgelist$to))
 
   A <- sample_sparse(ufm)
@@ -32,7 +31,6 @@ test_that("undirected graphs allow_self_loops = FALSE", {
 })
 
 test_that("directed graphs allow_self_loops = FALSE", {
-
   set.seed(2)
 
   n2 <- 1000

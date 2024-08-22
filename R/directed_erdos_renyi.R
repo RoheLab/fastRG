@@ -1,5 +1,4 @@
-new_directed_erdos_renyi <- function(X, S, Y, p, poisson_edges, allow_self_loops,...) {
-
+new_directed_erdos_renyi <- function(X, S, Y, p, poisson_edges, allow_self_loops, ...) {
   er <- directed_factor_model(
     X, S, Y, ...,
     subclass = "directed_erdos_renyi",
@@ -12,7 +11,6 @@ new_directed_erdos_renyi <- function(X, S, Y, p, poisson_edges, allow_self_loops
 }
 
 validate_directed_erdos_renyi <- function(x) {
-
   values <- unclass(x)
 
   if (ncol(values$X) != 1) {
@@ -59,15 +57,14 @@ validate_directed_erdos_renyi <- function(x) {
 #' A
 #'
 directed_erdos_renyi <- function(
-  n, ..., p = NULL,
-  poisson_edges = TRUE,
-  allow_self_loops = TRUE) {
-
+    n, ..., p = NULL,
+    poisson_edges = TRUE,
+    allow_self_loops = TRUE) {
   X <- Matrix(1, nrow = n, ncol = 1)
   Y <- Matrix(1, nrow = n, ncol = 1)
 
-  if (is.null(p) && is.null(expected_in_degree)
-      && is.null(expected_out_degree)) {
+  if (is.null(p) && is.null(expected_in_degree) &&
+    is.null(expected_out_degree)) {
     stop(
       "Must specify either `p`, `expected_in_degree` or ",
       " `expected_out_degree`.",
@@ -76,13 +73,14 @@ directed_erdos_renyi <- function(
   }
 
   if (is.null(p)) {
-    p <- 0.5  # doesn't matter, will get rescaled anyway
+    p <- 0.5 # doesn't matter, will get rescaled anyway
   }
 
   S <- matrix(p, nrow = 1, ncol = 1)
 
   er <- new_directed_erdos_renyi(
-    X, S, Y, p = p,
+    X, S, Y,
+    p = p,
     poisson_edges = poisson_edges,
     allow_self_loops = allow_self_loops,
     ...

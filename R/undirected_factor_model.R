@@ -1,10 +1,9 @@
 new_undirected_factor_model <- function(
-  X, S,
-  ...,
-  poisson_edges = TRUE,
-  allow_self_loops = TRUE,
-  subclass = character()) {
-
+    X, S,
+    ...,
+    poisson_edges = TRUE,
+    allow_self_loops = TRUE,
+    subclass = character()) {
   rlang::check_dots_unnamed()
 
   n <- nrow(X)
@@ -24,7 +23,6 @@ new_undirected_factor_model <- function(
 }
 
 validate_undirected_factor_model <- function(x) {
-
   values <- unclass(x)
 
   if (any(values$X < 0) || any(values$S < 0)) {
@@ -145,13 +143,12 @@ validate_undirected_factor_model <- function(x) {
 #' svds(ufm2)
 #'
 undirected_factor_model <- function(
-  X, S,
-  ...,
-  expected_degree = NULL,
-  expected_density = NULL,
-  poisson_edges = TRUE,
-  allow_self_loops = TRUE) {
-
+    X, S,
+    ...,
+    expected_degree = NULL,
+    expected_density = NULL,
+    poisson_edges = TRUE,
+    allow_self_loops = TRUE) {
   X <- Matrix(X)
   S <- Matrix(S)
 
@@ -163,13 +160,13 @@ undirected_factor_model <- function(
   }
 
   ufm <- new_undirected_factor_model(X, S, ...,
-                                     poisson_edges = poisson_edges,
-                                     allow_self_loops = allow_self_loops)
+    poisson_edges = poisson_edges,
+    allow_self_loops = allow_self_loops
+  )
 
-  ufm$S <- (S + t(S)) / 2  # symmetrize S. idempotent if S already symmetric
+  ufm$S <- (S + t(S)) / 2 # symmetrize S. idempotent if S already symmetric
 
   if (!is.null(expected_degree)) {
-
     if (expected_degree <= 0) {
       stop(
         "`expected_degree` must be strictly greater than zero.",
@@ -181,7 +178,6 @@ undirected_factor_model <- function(
   }
 
   if (!is.null(expected_density)) {
-
     if (expected_density <= 0 || 1 <= expected_density) {
       stop(
         "`expected_density` must be strictly between zero and one.",
@@ -193,7 +189,6 @@ undirected_factor_model <- function(
   }
 
   if (!poisson_edges) {
-
     # when poisson_edges = FALSE, S is the desired Bernoulli edge probability.
     # we must
     # back-transform it to a Poisson parameterization of S. see section 2.3
@@ -214,17 +209,16 @@ undirected_factor_model <- function(
 }
 
 dim_and_class <- function(x, ...) {
-
-  if (is.matrix(x) || inherits(x, "Matrix"))
+  if (is.matrix(x) || inherits(x, "Matrix")) {
     paste0(nrow(x), " x ", ncol(x), " [", class(x)[1], "]")
-  else
+  } else {
     paste0(length(x), " [", class(x)[1], "]")
+  }
 }
 
 #' @method print undirected_factor_model
 #' @export
 print.undirected_factor_model <- function(x, ...) {
-
   cat(glue("Undirected Factor Model\n", .trim = FALSE))
   cat(glue("-----------------------\n\n", .trim = FALSE))
 
@@ -241,4 +235,3 @@ print.undirected_factor_model <- function(x, ...) {
   cat(glue("Expected degree: {round(expected_degree(x), 1)}\n", .trim = FALSE))
   cat(glue("Expected density: {round(expected_density(x), 5)}", .trim = FALSE))
 }
-

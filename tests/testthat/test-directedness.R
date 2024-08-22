@@ -1,7 +1,6 @@
 library(igraph)
 
 test_that("undirected graphs are undirected", {
-
   set.seed(3)
 
   n <- 1000
@@ -31,7 +30,6 @@ test_that("undirected graphs are undirected", {
 })
 
 test_that("directed graphs are directed", {
-
   set.seed(4)
 
   n2 <- 1000

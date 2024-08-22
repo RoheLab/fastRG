@@ -1,6 +1,4 @@
-
 validate_undirected_sbm <- function(x) {
-
   values <- unclass(x)
 
   if (!inherits(x, "undirected_sbm")) {
@@ -85,14 +83,13 @@ validate_undirected_sbm <- function(x) {
 #' sign(A)
 #'
 sbm <- function(
-  n,
-  k = NULL, B = NULL,
-  ...,
-  pi = rep(1 / k, k),
-  sort_nodes = TRUE,
-  poisson_edges = TRUE,
-  allow_self_loops = TRUE) {
-
+    n,
+    k = NULL, B = NULL,
+    ...,
+    pi = rep(1 / k, k),
+    sort_nodes = TRUE,
+    poisson_edges = TRUE,
+    allow_self_loops = TRUE) {
   sbm <- dcsbm(
     n = n,
     theta = rep(1, n),
@@ -113,7 +110,6 @@ sbm <- function(
 #' @method print undirected_sbm
 #' @export
 print.undirected_sbm <- function(x, ...) {
-
   cat(glue("Undirected Stochastic Blockmodel\n", .trim = FALSE))
   cat(glue("--------------------------------\n\n", .trim = FALSE))
 

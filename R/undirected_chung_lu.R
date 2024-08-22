@@ -59,19 +59,17 @@
 #' edgelist
 #'
 chung_lu <- function(
-  n = NULL, theta = NULL,
-  ...,
-  sort_nodes = TRUE,
-  poisson_edges = TRUE,
-  allow_self_loops = TRUE,
-  force_identifiability = FALSE) {
-
+    n = NULL, theta = NULL,
+    ...,
+    sort_nodes = TRUE,
+    poisson_edges = TRUE,
+    allow_self_loops = TRUE,
+    force_identifiability = FALSE) {
   ### degree heterogeneity parameters
 
   if (is.null(n) && is.null(theta)) {
     stop("Must specify either `n` or `theta`.", call. = FALSE)
   } else if (is.null(theta)) {
-
     if (n < 1) {
       stop("`n` must be a positive integer.", call. = FALSE)
     }
@@ -106,7 +104,6 @@ chung_lu <- function(
 #' @method print undirected_chung_lu
 #' @export
 print.undirected_chung_lu <- function(x, ...) {
-
   cat(glue("Undirected Chung-Lu Graph\n", .trim = FALSE))
   cat(glue("-------------------------------------------------\n\n", .trim = FALSE))
 

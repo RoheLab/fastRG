@@ -23,7 +23,7 @@
 #' a <- .1
 #' b <- .05
 #'
-#' B <- matrix(c(a,b,b,a), nrow = 2)
+#' B <- matrix(c(a, b, b, a), nrow = 2)
 #'
 #' b_model <- fastRG::sbm(n = n, k = 2, B = B, poisson_edges = FALSE)
 #'
@@ -34,7 +34,7 @@
 #' # compare
 #' mean(rowSums(triu(A)))
 #'
-#' pop * a + pop * b  # analytical average degree
+#' pop * a + pop * b # analytical average degree
 #'
 #' ##### more generic examples
 #'
@@ -75,7 +75,6 @@ expected_edges <- function(factor_model, ...) {
 
 #' @export
 expected_edges.directed_factor_model <- function(factor_model, ...) {
-
   X <- factor_model$X
   S <- factor_model$S
   Y <- factor_model$Y
@@ -87,7 +86,6 @@ expected_edges.directed_factor_model <- function(factor_model, ...) {
 
 #' @export
 expected_edges.undirected_factor_model <- function(factor_model, ...) {
-
   X <- factor_model$X
   S <- factor_model$S
 
@@ -134,7 +132,6 @@ expected_degrees <- function(factor_model, ...) {
 
 #' @export
 expected_degrees.undirected_factor_model <- function(factor_model, ...) {
-
   # rowSums of E[A|X, S] = XSX' are XSX'1 for 1 a column vector of ones
   # want to avoid memory cost of instantiating all of E[A|X, S], which is
   # typically large and dense
@@ -161,7 +158,6 @@ expected_out_degree.directed_factor_model <- function(factor_model, ...) {
 
 #' @export
 expected_density.directed_factor_model <- function(factor_model, ...) {
-
   n <- factor_model$n
   d <- factor_model$d
 

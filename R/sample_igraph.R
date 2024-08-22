@@ -25,9 +25,8 @@
 #' @family samplers
 #'
 sample_igraph <- function(
-  factor_model,
-  ...) {
-
+    factor_model,
+    ...) {
   rlang::check_dots_unnamed()
 
   rlang::check_installed("igraph", "to return graphs as `igraph` objects.")
@@ -38,9 +37,8 @@ sample_igraph <- function(
 #' @rdname sample_igraph
 #' @export
 sample_igraph.undirected_factor_model <- function(
-  factor_model,
-  ...) {
-
+    factor_model,
+    ...) {
   edgelist <- sample_edgelist(factor_model, ...)
   nodes <- tibble(name = 1:nrow(factor_model$X))
   igraph::graph_from_data_frame(edgelist, directed = FALSE, vertices = nodes)
@@ -49,9 +47,8 @@ sample_igraph.undirected_factor_model <- function(
 #' @rdname sample_igraph
 #' @export
 sample_igraph.directed_factor_model <- function(
-  factor_model,
-  ...) {
-
+    factor_model,
+    ...) {
   if (factor_model$n == factor_model$d) {
     edgelist <- sample_edgelist(factor_model, ...)
     nodes <- tibble(name = 1:nrow(factor_model$X))

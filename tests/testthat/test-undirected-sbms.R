@@ -1,5 +1,4 @@
 test_that("SBMs don't drop isolated nodes", {
-
   set.seed(27)
 
   n <- 10
@@ -17,7 +16,6 @@ test_that("SBMs don't drop isolated nodes", {
 })
 
 test_that("rank 1 sbms sample", {
-
   set.seed(27)
 
   n <- 10
@@ -30,5 +28,3 @@ test_that("rank 1 sbms sample", {
 
   expect_silent(A <- sample_sparse(sbm))
 })
-
-

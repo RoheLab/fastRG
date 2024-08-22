@@ -1,5 +1,4 @@
 test_that("rank 1 overlapping sbms sample", {
-
   set.seed(27)
 
   n <- 10
@@ -12,5 +11,3 @@ test_that("rank 1 overlapping sbms sample", {
 
   expect_silent(A <- sample_sparse(sbm))
 })
-
-

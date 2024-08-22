@@ -7,7 +7,7 @@ sort_by_all_columns <- function(X) {
   args <- as.list(as.data.frame(as.matrix(X)))
   args$decreasing <- TRUE
 
-  X <- X[do.call(order, args),]
+  X <- X[do.call(order, args), ]
   X
 }
 

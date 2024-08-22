@@ -22,8 +22,8 @@
 #' @family samplers
 #'
 sample_sparse <- function(
-  factor_model,
-  ...) {
+    factor_model,
+    ...) {
   rlang::check_dots_unnamed()
   UseMethod("sample_sparse")
 }
@@ -31,9 +31,8 @@ sample_sparse <- function(
 #' @rdname sample_sparse
 #' @export
 sample_sparse.undirected_factor_model <- function(
-  factor_model,
-  ...) {
-
+    factor_model,
+    ...) {
   # to construct a symmetric sparseMatrix, we only pass in elements
   # of either the upper or lower diagonal (otherwise we'll get an error)
   # so we're going to sample as we want a directed graph, and then
@@ -45,11 +44,11 @@ sample_sparse.undirected_factor_model <- function(
   el <- sample_edgelist(factor_model, ...)
   n <- factor_model$n
 
-  if (nrow(el) == 0)
+  if (nrow(el) == 0) {
     return(sparseMatrix(1:n, 1:n, x = 0, dims = c(n, n)))
+  }
 
   if (factor_model$poisson_edges) {
-
     # NOTE: x = 1 is correct to create a multigraph adjacency matrix
     # here. see ?Matrix::sparseMatrix for details, in particular the
     # documentation for arguments `i, j` and `x`
@@ -91,19 +90,18 @@ sample_sparse.undirected_factor_model <- function(
 #' @rdname sample_sparse
 #' @export
 sample_sparse.directed_factor_model <- function(
-  factor_model,
-  ...) {
-
+    factor_model,
+    ...) {
   edgelist <- sample_edgelist(factor_model, ...)
 
   n <- factor_model$n
   d <- factor_model$d
 
-  if (nrow(edgelist) == 0)
+  if (nrow(edgelist) == 0) {
     return(sparseMatrix(1:n, 1:d, x = 0, dims = c(n, d)))
+  }
 
   if (factor_model$poisson_edges) {
-
     # NOTE: x = 1 is correct to create a multigraph adjacency matrix
     # here. see ?Matrix::sparseMatrix for details, in particular the
     # documentation for arguments `i, j` and `x`
@@ -115,7 +113,6 @@ sample_sparse.directed_factor_model <- function(
       dims = c(n, d),
       symmetric = FALSE
     )
-
   } else {
     A <- sparseMatrix(
       edgelist$from,

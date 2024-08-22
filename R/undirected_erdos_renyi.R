@@ -8,7 +8,6 @@ new_undirected_erdos_renyi <- function(X, S, p, ...) {
 }
 
 validate_undirected_erdos_renyi <- function(x) {
-
   values <- unclass(x)
 
   if (ncol(values$X) != 1) {
@@ -55,10 +54,9 @@ validate_undirected_erdos_renyi <- function(x) {
 #' A
 #'
 erdos_renyi <- function(
-  n, ..., p = NULL,
-  poisson_edges = TRUE,
-  allow_self_loops = TRUE) {
-
+    n, ..., p = NULL,
+    poisson_edges = TRUE,
+    allow_self_loops = TRUE) {
   X <- Matrix(1, nrow = n, ncol = 1)
 
   if (is.null(p) && is.null(expected_degree)) {
@@ -66,13 +64,15 @@ erdos_renyi <- function(
   }
 
   if (is.null(p)) {
-    p <- 0.5  # doesn't matter, will get rescaled anyway
+    p <- 0.5 # doesn't matter, will get rescaled anyway
   }
 
   B <- matrix(p)
 
-  er <- new_undirected_erdos_renyi(X, B, p = p, ...,
-                                   poisson_edges = poisson_edges,
-                                   allow_self_loops = allow_self_loops)
+  er <- new_undirected_erdos_renyi(X, B,
+    p = p, ...,
+    poisson_edges = poisson_edges,
+    allow_self_loops = allow_self_loops
+  )
   validate_undirected_erdos_renyi(er)
 }

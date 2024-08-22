@@ -20,7 +20,6 @@ eigs_sym.undirected_factor_model <- function(
     which = "LM", sigma = NULL,
     opts = list(),
     ...) {
-
   rlang::check_installed("RSpectra")
 
   Ax <- function(x, args) as.numeric(args$X %*% (args$SXt %*% x))
@@ -44,7 +43,6 @@ svds.undirected_factor_model <- function(
     nv = k,
     opts = list(),
     ...) {
-
   rlang::check_installed("RSpectra")
 
   Ax <- function(x, args) {
@@ -84,7 +82,6 @@ svds.directed_factor_model <- function(
     nv = k,
     opts = list(),
     ...) {
-
   rlang::check_installed("RSpectra")
 
   Ax <- function(x, args) {

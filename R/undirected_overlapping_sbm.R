@@ -18,7 +18,6 @@ new_undirected_overlapping_sbm <- function(
 }
 
 validate_undirected_overlapping_sbm <- function(x) {
-
   values <- unclass(x)
 
   if (any(values$pi < 0) || any(values$pi > 1)) {
@@ -207,13 +206,11 @@ overlapping_sbm <- function(
     force_pure = TRUE,
     poisson_edges = TRUE,
     allow_self_loops = TRUE) {
-
   ### mixing matrix
 
   if (is.null(k) && is.null(B)) {
     stop("Must specify either `k` or `B`.", call. = FALSE)
   } else if (is.null(B)) {
-
     if (k < 1) {
       stop("`k` must be a positive integer.", call. = FALSE)
     }
@@ -226,9 +223,7 @@ overlapping_sbm <- function(
 
     B <- matrix(0.1 / (k - 1), nrow = k, ncol = k)
     diag(B) <- 0.8
-
   } else if (is.null(k)) {
-
     if (nrow(B) != ncol(B)) {
       stop("`B` must be a square matrix.", call. = FALSE)
     }
@@ -280,7 +275,7 @@ overlapping_sbm <- function(
 
   overlapping_sbm <- new_undirected_overlapping_sbm(
     X = X,
-    S = B,  # accepts B but transforms by symmetrizing and scaling internally
+    S = B, # accepts B but transforms by symmetrizing and scaling internally
     B = B,
     Z = X,
     pi = pi,
@@ -296,7 +291,6 @@ overlapping_sbm <- function(
 #' @method print undirected_overlapping_sbm
 #' @export
 print.undirected_overlapping_sbm <- function(x, ...) {
-
   cat(glue("Undirected Degree-Corrected Overlapping Blockmodel\n", .trim = FALSE))
   cat(glue("-------------------------------------------------\n\n", .trim = FALSE))
 

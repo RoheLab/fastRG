@@ -1,5 +1,4 @@
 validate_undirected_planted_partition <- function(x) {
-
   values <- unclass(x)
 
   if (!inherits(x, "undirected_planted_partition")) {
@@ -121,18 +120,17 @@ validate_undirected_planted_partition <- function(x) {
 #' lazy_pp
 #'
 planted_partition <- function(
-  n,
-  k,
-  ...,
-  within_block = NULL,
-  between_block = NULL,
-  a = NULL,
-  b = NULL,
-  pi = rep(1 / k, k),
-  sort_nodes = TRUE,
-  poisson_edges = TRUE,
-  allow_self_loops = TRUE) {
-
+    n,
+    k,
+    ...,
+    within_block = NULL,
+    between_block = NULL,
+    a = NULL,
+    b = NULL,
+    pi = rep(1 / k, k),
+    sort_nodes = TRUE,
+    poisson_edges = TRUE,
+    allow_self_loops = TRUE) {
   if (is.null(within_block)) {
     within_block <- a / n
   }
@@ -165,7 +163,6 @@ planted_partition <- function(
 #' @method print undirected_planted_partition
 #' @export
 print.undirected_planted_partition <- function(x, ...) {
-
   cat(glue("Undirected Planted Partition Model\n", .trim = FALSE))
   cat(glue("----------------------------------\n\n", .trim = FALSE))
 
