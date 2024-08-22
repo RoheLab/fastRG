@@ -49,7 +49,7 @@ pop <- n / 2
 a <- .1
 b <- .05
 
-B <- matrix(c(a,b,b,a), nrow = 2)
+B <- matrix(c(a, b, b, a), nrow = 2)
 
 b_model <- fastRG::sbm(n = n, k = 2, B = B, poisson_edges = FALSE)
 
@@ -60,7 +60,7 @@ A <- sample_sparse(b_model)
 # compare
 mean(rowSums(triu(A)))
 
-pop * a + pop * b  # analytical average degree
+pop * a + pop * b # analytical average degree
 
 ##### more generic examples
 

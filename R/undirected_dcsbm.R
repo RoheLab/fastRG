@@ -126,7 +126,7 @@ validate_undirected_dcsbm <- function(x) {
 #' @param force_identifiability Logical indicating whether or not to
 #'   normalize `theta` such that it sums to one within each block. Defaults
 #'   to `FALSE`, since this behavior can be surprise when `theta` is set
-#'   to a vector of all ones to recover the DC-SBM case.
+#'   to a vector of all ones to recover the SBM case.
 #'
 #' @inheritDotParams undirected_factor_model expected_degree expected_density
 #' @inheritParams undirected_factor_model

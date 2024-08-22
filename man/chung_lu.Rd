@@ -67,7 +67,7 @@ self-loops, and these are then removed after the fact.}
 \item{force_identifiability}{Logical indicating whether or not to
 normalize \code{theta} such that it sums to one within each block. Defaults
 to \code{FALSE}, since this behavior can be surprise when \code{theta} is set
-to a vector of all ones to recover the DC-SBM case.}
+to a vector of all ones to recover the SBM case.}
 }
 \value{
 An \code{undirected_chung_lu} S3 object, a subclass of \code{\link[=dcsbm]{dcsbm()}}.

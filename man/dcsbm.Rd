@@ -80,7 +80,7 @@ of the \code{B} matrix are permuted to match the new order of \code{pi}.}
 \item{force_identifiability}{Logical indicating whether or not to
 normalize \code{theta} such that it sums to one within each block. Defaults
 to \code{FALSE}, since this behavior can be surprise when \code{theta} is set
-to a vector of all ones to recover the DC-SBM case.}
+to a vector of all ones to recover the SBM case.}
 
 \item{poisson_edges}{Logical indicating whether or not
 multiple edges are allowed to form between a pair of
