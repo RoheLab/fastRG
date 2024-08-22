@@ -69,7 +69,7 @@
 #' svds(dfm)
 #'
 expected_edges <- function(factor_model, ...) {
-  ellipsis::check_dots_empty()
+  rlang::check_dots_empty()
   UseMethod("expected_edges")
 }
 

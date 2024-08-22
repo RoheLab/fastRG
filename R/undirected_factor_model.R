@@ -4,7 +4,7 @@ new_undirected_factor_model <- function(
     poisson_edges = TRUE,
     allow_self_loops = TRUE,
     subclass = character()) {
-  ellipsis::check_dots_unnamed()
+  rlang::check_dots_unnamed()
 
   n <- nrow(X)
   k <- ncol(S)

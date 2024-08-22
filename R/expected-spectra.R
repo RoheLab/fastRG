@@ -20,12 +20,7 @@ eigs_sym.undirected_factor_model <- function(
     which = "LM", sigma = NULL,
     opts = list(),
     ...) {
-  if (!requireNamespace("RSpectra", quietly = TRUE)) {
-    stop(
-      "Must install `RSpectra` for this functionality.",
-      call. = FALSE
-    )
-  }
+  rlang::check_installed("RSpectra")
 
   Ax <- function(x, args) as.numeric(args$X %*% (args$SXt %*% x))
 
@@ -48,12 +43,7 @@ svds.undirected_factor_model <- function(
     nv = k,
     opts = list(),
     ...) {
-  if (!requireNamespace("RSpectra", quietly = TRUE)) {
-    stop(
-      "Must install `RSpectra` for this functionality.",
-      call. = FALSE
-    )
-  }
+  rlang::check_installed("RSpectra")
 
   Ax <- function(x, args) {
     as.numeric(args$X %*% (tcrossprod(args$S, args$X) %*% x))
@@ -92,12 +82,7 @@ svds.directed_factor_model <- function(
     nv = k,
     opts = list(),
     ...) {
-  if (!requireNamespace("RSpectra", quietly = TRUE)) {
-    stop(
-      "Must install `RSpectra` for this functionality.",
-      call. = FALSE
-    )
-  }
+  rlang::check_installed("RSpectra")
 
   Ax <- function(x, args) {
     as.numeric(args$X %*% (tcrossprod(args$S, args$Y) %*% x))
