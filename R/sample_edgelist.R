@@ -383,8 +383,7 @@ sample_edgelist.matrix <- function(
     # didn't work it out)
 
     # *do not* move these into the tibble call otherwise you'll run
-    # into a nasty NSE scoping issue is that is super hard to detect
-
+    # into a nasty NSE scoping issue that is super hard to detect
     tibble_from <- pmin(from, to)
     tibble_to <- pmax(from, to)
 
