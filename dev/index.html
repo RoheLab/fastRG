@@ -142,9 +142,9 @@
 <p>or an igraph object</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/sample_igraph.html">sample_igraph</a></span><span class="op">(</span><span class="va">sbm</span><span class="op">)</span></span>
-<span><span class="co">#&gt; IGRAPH 49b52e2 UN-- 1000 5033 -- </span></span>
+<span><span class="co">#&gt; IGRAPH be5b840 UN-- 1000 5033 -- </span></span>
 <span><span class="co">#&gt; + attr: name (v/c)</span></span>
-<span><span class="co">#&gt; + edges from 49b52e2 (vertex names):</span></span>
+<span><span class="co">#&gt; + edges from be5b840 (vertex names):</span></span>
 <span><span class="co">#&gt;  [1] 63 --76  135--215 59 --182 21 --134 180--218 53 --189 138--139 21 --78 </span></span>
 <span><span class="co">#&gt;  [9] 49 --70  76 --127 6  --139 64 --214 31 --132 56 --93  75 --144 9  --185</span></span>
 <span><span class="co">#&gt; [17] 33 --150 115--165 163--213 6  --53  47 --179 25 --26  7  --51  10 --55 </span></span>
@@ -159,7 +159,7 @@
 <code class="sourceCode R"><span><span class="va">A</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/sample_sparse.html">sample_sparse</a></span><span class="op">(</span><span class="va">sbm</span><span class="op">)</span></span>
 <span><span class="va">B</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/sample_sparse.html">sample_sparse</a></span><span class="op">(</span><span class="va">sbm</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="va">A</span> <span class="op">==</span> <span class="va">B</span><span class="op">)</span>  <span class="co"># random realizations from the SBM don't match!</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/all.html" class="external-link">all</a></span><span class="op">(</span><span class="va">A</span> <span class="op">==</span> <span class="va">B</span><span class="op">)</span> <span class="co"># random realizations from the SBM don't match!</span></span>
 <span><span class="co">#&gt; [1] FALSE</span></span></code></pre></div>
 </div>
 <div class="section level2">
