@@ -166,8 +166,8 @@ Journal of Machine Learning Research; 19(77):1-13, 2018.
 }
 \seealso{
 Other samplers: 
-\code{\link{sample_edgelist.matrix}()},
 \code{\link{sample_edgelist}()},
+\code{\link{sample_edgelist.matrix}()},
 \code{\link{sample_sparse}()},
 \code{\link{sample_tidygraph}()}
 }

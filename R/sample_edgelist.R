@@ -144,8 +144,8 @@
 #' sample_tidygraph(fm)
 #'
 sample_edgelist <- function(
-  factor_model,
-  ...) {
+    factor_model,
+    ...) {
   ellipsis::check_dots_unnamed()
   UseMethod("sample_edgelist")
 }
@@ -153,9 +153,8 @@ sample_edgelist <- function(
 #' @rdname sample_edgelist
 #' @export
 sample_edgelist.undirected_factor_model <- function(
-  factor_model,
-  ...) {
-
+    factor_model,
+    ...) {
   X <- factor_model$X
   S <- factor_model$S
 
@@ -170,9 +169,8 @@ sample_edgelist.undirected_factor_model <- function(
 #' @rdname sample_edgelist
 #' @export
 sample_edgelist.directed_factor_model <- function(
-  factor_model,
-  ...) {
-
+    factor_model,
+    ...) {
   X <- factor_model$X
   S <- factor_model$S
   Y <- factor_model$Y
@@ -250,12 +248,11 @@ sample_edgelist.directed_factor_model <- function(
 #' sample_edgelist(X, S, Y, TRUE, TRUE, TRUE)
 #'
 sample_edgelist.matrix <- function(
-  factor_model, S, Y,
-  directed,
-  poisson_edges,
-  allow_self_loops,
-  ...) {
-
+    factor_model, S, Y,
+    directed,
+    poisson_edges,
+    allow_self_loops,
+    ...) {
   X <- factor_model
 
   stopifnot(is.logical(directed))
@@ -306,7 +303,6 @@ sample_edgelist.matrix <- function(
 
   for (u in 1:k1) {
     if (u_block_sizes[u] > 0) {
-
       indices <- u_block_start:(u_block_start + u_block_sizes[u] - 1)
 
       # the prob argument should be \tilde X from the paper, but \tilde X
@@ -329,7 +325,6 @@ sample_edgelist.matrix <- function(
 
   for (v in 1:k2) {
     if (v_block_sizes[v] > 0) {
-
       indices <- v_block_start:(v_block_start + v_block_sizes[v] - 1)
 
       # note same lack of \tilde Y as in the X/U case
@@ -360,9 +355,7 @@ sample_edgelist.matrix <- function(
 
   for (u in 1:k1) {
     for (v in 1:k2) {
-
       if (block_sizes[u, v] > 0) {
-
         to_index <- u_block_start:(u_block_start + block_sizes[u, v] - 1)
         tmp_index <- v_block_start[v]:(v_block_start[v] + block_sizes[u, v] - 1)
 
@@ -377,7 +370,6 @@ sample_edgelist.matrix <- function(
   if (directed) {
     edgelist <- tibble(from = from, to = to)
   } else {
-
     # in the undirected case, sort the indices so that the *directed*
     # representations lives all in the same triangle (upper or lower i
     # didn't work it out)
@@ -394,7 +386,6 @@ sample_edgelist.matrix <- function(
   }
 
   if (!poisson_edges) {
-
     # need to deduplicate edgelist. the number of times a given
     # (to, from) pair appears in the edgelist is the weight of
     # that edge (i.e. we're really working with a multigraph)
@@ -412,5 +403,3 @@ sample_edgelist.matrix <- function(
 #' @rdname sample_edgelist.matrix
 #' @export
 sample_edgelist.Matrix <- sample_edgelist.matrix
-
-

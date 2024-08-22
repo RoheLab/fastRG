@@ -26,7 +26,6 @@ test_that("expected_degrees() has dimension and correctness", {
 
 
 test_that("undirected expected degree computed consistently", {
-
   # see issue 19
 
   set.seed(27)
@@ -45,7 +44,7 @@ test_that("undirected expected degree computed consistently", {
 
   expect_equal(
     expected_degree(b_model), # computed
-    pop * a + pop * b,       # expected "undirected edge degree",
+    pop * a + pop * b, # expected "undirected edge degree",
     tolerance = 5
   )
 
@@ -53,14 +52,14 @@ test_that("undirected expected degree computed consistently", {
 
   ### degree computation gotchas
 
-  mean(rowSums(A))  # double counts undirected edges
+  mean(rowSums(A)) # double counts undirected edges
   #> [1] 156.711
-  mean(rowSums(triu(A)))  # right way to count undirected edges in A
+  mean(rowSums(triu(A))) # right way to count undirected edges in A
   #> [1] 78.413
 
   expect_equal(
     mean(rowSums(triu(A))), # computed
-    pop * a + pop * b,      # expected "undirected edge degree"
+    pop * a + pop * b, # expected "undirected edge degree"
     tolerance = 5
   )
 
@@ -68,7 +67,7 @@ test_that("undirected expected degree computed consistently", {
 
   expect_equal(
     expected_degree(model2), # computed
-    pop * a + pop * b,       # expected "undirected edge degree",
+    pop * a + pop * b, # expected "undirected edge degree",
     tolerance = 5
   )
 
@@ -76,14 +75,12 @@ test_that("undirected expected degree computed consistently", {
 
   expect_equal(
     mean(rowSums(triu(A2))), # computed
-    pop * a + pop * b,       # expected "undirected edge degree",
+    pop * a + pop * b, # expected "undirected edge degree",
     tolerance = 5
   )
-
 })
 
 test_that("undirected density computed consistently", {
-
   # see issue 19
 
   set.seed(27)
@@ -101,7 +98,7 @@ test_that("undirected density computed consistently", {
   )
 
   expect_equal(
-    expected_density(b_model),              # computed
+    expected_density(b_model), # computed
     n * (pop * a + pop * b) / choose(n, 2), # expected undirected degree density, possibly being a little sloppy about the diagonal
     tolerance = 0.05
   )
@@ -114,10 +111,10 @@ test_that("undirected density computed consistently", {
   # but diagonal gets too much weight. slight over-estimate of density
   sum(A) / n^2
 
-  sum(triu(A)) / choose(n, 2)  # correct density estimate
+  sum(triu(A)) / choose(n, 2) # correct density estimate
 
   expect_equal(
-    sum(triu(A)) / choose(n, 2),            # computed
+    sum(triu(A)) / choose(n, 2), # computed
     n * (pop * a + pop * b) / choose(n, 2), # expected "undirected edge degree",
     tolerance = 0.05
   )
@@ -125,7 +122,7 @@ test_that("undirected density computed consistently", {
   model2 <- sbm(n = n, k = 2, B = B, expected_density = 0.15)
 
   expect_equal(
-    expected_density(model2),              # computed
+    expected_density(model2), # computed
     n * (pop * a + pop * b) / choose(n, 2), # expected undirected degree density, possibly being a little sloppy about the diagonal
     tolerance = 0.02
   )
@@ -133,15 +130,13 @@ test_that("undirected density computed consistently", {
   A2 <- sample_sparse(model2)
 
   expect_equal(
-    sum(triu(A2)) / choose(n, 2),            # computed
+    sum(triu(A2)) / choose(n, 2), # computed
     0.15, # expected "undirected edge degree",
     tolerance = 0.05
   )
-
 })
 
 test_that("undirected factor model", {
-
   library(tidygraph)
 
   set.seed(7)
@@ -204,7 +199,6 @@ test_that("undirected factor model", {
 })
 
 test_that("directed factor model", {
-
   set.seed(8)
 
   library(dplyr)

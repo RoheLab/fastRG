@@ -145,9 +145,9 @@ or an igraph object
 
 ``` r
 sample_igraph(sbm)
-#> IGRAPH 49b52e2 UN-- 1000 5033 -- 
+#> IGRAPH be5b840 UN-- 1000 5033 -- 
 #> + attr: name (v/c)
-#> + edges from 49b52e2 (vertex names):
+#> + edges from be5b840 (vertex names):
 #>  [1] 63 --76  135--215 59 --182 21 --134 180--218 53 --189 138--139 21 --78 
 #>  [9] 49 --70  76 --127 6  --139 64 --214 31 --132 56 --93  75 --144 9  --185
 #> [17] 33 --150 115--165 163--213 6  --53  47 --179 25 --26  7  --51  10 --55 
@@ -165,7 +165,7 @@ Note that every time we call `sample_*()` we draw a new sample.
 A <- sample_sparse(sbm)
 B <- sample_sparse(sbm)
 
-all(A == B)  # random realizations from the SBM don't match!
+all(A == B) # random realizations from the SBM don't match!
 #> [1] FALSE
 ```
 

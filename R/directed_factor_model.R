@@ -1,10 +1,9 @@
 new_directed_factor_model <- function(
-  X, S, Y,
-  poisson_edges,
-  allow_self_loops,
-  ...,
-  subclass = character()) {
-
+    X, S, Y,
+    poisson_edges,
+    allow_self_loops,
+    ...,
+    subclass = character()) {
   ellipsis::check_dots_unnamed()
 
   n <- nrow(X)
@@ -29,7 +28,6 @@ new_directed_factor_model <- function(
 }
 
 validate_directed_factor_model <- function(x) {
-
   values <- unclass(x)
 
   if (any(values$X < 0) || any(values$S < 0) || any(values$Y < 0)) {
@@ -162,14 +160,13 @@ validate_directed_factor_model <- function(x) {
 #' fm2
 #'
 directed_factor_model <- function(
-  X, S, Y,
-  ...,
-  expected_in_degree = NULL,
-  expected_out_degree = NULL,
-  expected_density = NULL,
-  poisson_edges = TRUE,
-  allow_self_loops = TRUE) {
-
+    X, S, Y,
+    ...,
+    expected_in_degree = NULL,
+    expected_out_degree = NULL,
+    expected_density = NULL,
+    poisson_edges = TRUE,
+    allow_self_loops = TRUE) {
   X <- Matrix(X)
   S <- Matrix(S)
   Y <- Matrix(Y)
@@ -196,7 +193,6 @@ directed_factor_model <- function(
   )
 
   if (!is.null(expected_in_degree)) {
-
     if (expected_in_degree <= 0) {
       stop(
         "`expected_in_degree` must be strictly greater than zero.",
@@ -208,7 +204,6 @@ directed_factor_model <- function(
   }
 
   if (!is.null(expected_out_degree)) {
-
     if (expected_out_degree <= 0) {
       stop(
         "`expected_out_degree` must be strictly greater than zero.",
@@ -220,7 +215,6 @@ directed_factor_model <- function(
   }
 
   if (!is.null(expected_density)) {
-
     if (expected_density <= 0 || 1 <= expected_density) {
       stop(
         "`expected_density` must be strictly between zero and one.",
@@ -234,7 +228,6 @@ directed_factor_model <- function(
   fm$S <- S
 
   if (!poisson_edges) {
-
     # when poisson_edges = FALSE, S is the desired Bernoulli edge probability.
     # we must
     # back-transform it to a Poisson parameterization of S. see section 2.3
@@ -255,17 +248,16 @@ directed_factor_model <- function(
 }
 
 dim_and_class <- function(x, ...) {
-
-  if (is.matrix(x) || inherits(x, "Matrix"))
+  if (is.matrix(x) || inherits(x, "Matrix")) {
     paste0(nrow(x), " x ", ncol(x), " [", class(x)[1], "]")
-  else
+  } else {
     paste0(length(x), " [", class(x)[1], "]")
+  }
 }
 
 #' @method print directed_factor_model
 #' @export
 print.directed_factor_model <- function(x, ...) {
-
   cat(glue("Directed Factor Model\n", .trim = FALSE))
   cat(glue("---------------------\n\n", .trim = FALSE))
 
@@ -289,4 +281,3 @@ print.directed_factor_model <- function(x, ...) {
     sep = "\n"
   )
 }
-

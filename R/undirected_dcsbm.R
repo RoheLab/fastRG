@@ -1,11 +1,11 @@
 new_undirected_dcsbm <- function(
-  X, S,
-  theta,
-  z,
-  pi,
-  sorted,
-  ...,
-  subclass = character()) {
+    X, S,
+    theta,
+    z,
+    pi,
+    sorted,
+    ...,
+    subclass = character()) {
   subclass <- c(subclass, "undirected_dcsbm")
   dcsbm <- undirected_factor_model(X, S, ..., subclass = subclass)
   dcsbm$theta <- theta
@@ -16,7 +16,6 @@ new_undirected_dcsbm <- function(
 }
 
 validate_undirected_dcsbm <- function(x) {
-
   values <- unclass(x)
 
   if (!is.factor(values$z)) {
@@ -51,8 +50,8 @@ validate_undirected_dcsbm <- function(x) {
 
   if (length(levels(values$z)) != values$k) {
     stop(
-    "The number of levels of `z` must match the rank of the model.",
-    call. = FALSE
+      "The number of levels of `z` must match the rank of the model.",
+      call. = FALSE
     )
   }
 
@@ -248,21 +247,19 @@ validate_undirected_dcsbm <- function(x) {
 #' population_eigs <- eigs_sym(custom_dcsbm)
 #'
 dcsbm <- function(
-  n = NULL, theta = NULL,
-  k = NULL, B = NULL,
-  ...,
-  pi = rep(1 / k, k),
-  sort_nodes = TRUE,
-  force_identifiability = FALSE,
-  poisson_edges = TRUE,
-  allow_self_loops = TRUE) {
-
+    n = NULL, theta = NULL,
+    k = NULL, B = NULL,
+    ...,
+    pi = rep(1 / k, k),
+    sort_nodes = TRUE,
+    force_identifiability = FALSE,
+    poisson_edges = TRUE,
+    allow_self_loops = TRUE) {
   ### degree heterogeneity parameters
 
   if (is.null(n) && is.null(theta)) {
     stop("Must specify either `n` or `theta`.", call. = FALSE)
   } else if (is.null(theta)) {
-
     if (n < 1) {
       stop("`n` must be a positive integer.", call. = FALSE)
     }
@@ -283,7 +280,6 @@ dcsbm <- function(
   if (is.null(k) && is.null(B)) {
     stop("Must specify either `k` or `B`.", call. = FALSE)
   } else if (is.null(B)) {
-
     if (k < 1) {
       stop("`k` must be a positive integer.", call. = FALSE)
     }
@@ -295,9 +291,7 @@ dcsbm <- function(
     )
 
     B <- matrix(data = stats::runif(k * k), nrow = k, ncol = k)
-
   } else if (is.null(k)) {
-
     if (nrow(B) != ncol(B)) {
       stop("`B` must be a square matrix.", call. = FALSE)
     }
@@ -335,7 +329,7 @@ dcsbm <- function(
   }
 
   if (k > 1) {
-    X <- sparse.model.matrix(~z + 0)
+    X <- sparse.model.matrix(~ z + 0)
   } else {
     X <- Matrix(1, nrow = n, ncol = 1)
   }
@@ -375,7 +369,6 @@ dcsbm <- function(
 #' @method print undirected_dcsbm
 #' @export
 print.undirected_dcsbm <- function(x, ...) {
-
   cat(glue("Undirected Degree-Corrected Stochastic Blockmodel\n", .trim = FALSE))
   cat(glue("-------------------------------------------------\n\n", .trim = FALSE))
 

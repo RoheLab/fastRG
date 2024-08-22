@@ -1,5 +1,4 @@
 test_that("sampling from undirected factor models doesn't drop isolated nodes", {
-
   set.seed(27)
 
   latent <- sbm(
@@ -18,7 +17,7 @@ test_that("sampling from undirected factor models doesn't drop isolated nodes", 
   el <- sample_edgelist(latent)
 
   expect_lte(
-    length(unique(el$from)),  # not n! and that's okay!,
+    length(unique(el$from)), # not n! and that's okay!,
     10000
   )
 
@@ -48,11 +47,9 @@ test_that("sampling from undirected factor models doesn't drop isolated nodes", 
     igraph::vcount(tbl_graph),
     10000
   )
-
 })
 
 test_that("sampling from square directed factor models doesn't drop isolated nodes", {
-
   set.seed(32)
 
   bm <- as.matrix(cbind(
@@ -79,7 +76,7 @@ test_that("sampling from square directed factor models doesn't drop isolated nod
   el <- sample_edgelist(latent)
 
   expect_lte(
-    length(unique(c(el$from, el$to))),  # not n! and that's okay!,
+    length(unique(c(el$from, el$to))), # not n! and that's okay!,
     200
   )
 
@@ -113,7 +110,6 @@ test_that("sampling from square directed factor models doesn't drop isolated nod
 
 
 test_that("sampling from rectangular directed factor models doesn't drop isolated nodes", {
-
   n <- 10000
 
   k1 <- 5
@@ -134,13 +130,13 @@ test_that("sampling from rectangular directed factor models doesn't drop isolate
 
   # nodes with out-degree > 0
   expect_lte(
-    length(unique(el$from)),  # not n! and that's okay!,
+    length(unique(el$from)), # not n! and that's okay!,
     n
   )
 
   # nodes with in-degree > 0
   expect_lte(
-    length(unique(el$to)),  # not d! and that's okay!,
+    length(unique(el$to)), # not d! and that's okay!,
     d
   )
 
@@ -196,5 +192,4 @@ test_that("sampling from rectangular directed factor models doesn't drop isolate
     sum(igraph::V(tbl_graph)$type),
     d
   )
-
 })

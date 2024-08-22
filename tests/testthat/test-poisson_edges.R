@@ -2,7 +2,6 @@ library(igraph)
 library(magrittr)
 
 test_that("undirected graphs poisson_edges = FALSE", {
-
   set.seed(6)
 
   library(dplyr)
@@ -40,7 +39,6 @@ test_that("undirected graphs poisson_edges = FALSE", {
 })
 
 test_that("directed graphs poisson_edges = FALSE", {
-
   set.seed(7)
 
   library(dplyr)

@@ -20,7 +20,6 @@ eigs_sym.undirected_factor_model <- function(
     which = "LM", sigma = NULL,
     opts = list(),
     ...) {
-
   if (!requireNamespace("RSpectra", quietly = TRUE)) {
     stop(
       "Must install `RSpectra` for this functionality.",
@@ -49,7 +48,6 @@ svds.undirected_factor_model <- function(
     nv = k,
     opts = list(),
     ...) {
-
   if (!requireNamespace("RSpectra", quietly = TRUE)) {
     stop(
       "Must install `RSpectra` for this functionality.",
@@ -94,7 +92,6 @@ svds.directed_factor_model <- function(
     nv = k,
     opts = list(),
     ...) {
-
   if (!requireNamespace("RSpectra", quietly = TRUE)) {
     stop(
       "Must install `RSpectra` for this functionality.",

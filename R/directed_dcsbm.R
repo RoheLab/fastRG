@@ -1,14 +1,14 @@
 new_directed_dcsbm <- function(
-  X, S, Y,
-  theta_out,
-  theta_in,
-  z_out,
-  z_in,
-  pi_out,
-  pi_in,
-  sorted,
-  ...,
-  subclass = character()) {
+    X, S, Y,
+    theta_out,
+    theta_in,
+    z_out,
+    z_in,
+    pi_out,
+    pi_in,
+    sorted,
+    ...,
+    subclass = character()) {
   subclass <- c(subclass, "directed_dcsbm")
   dcsbm <- directed_factor_model(X, S, Y, ..., subclass = subclass)
   dcsbm$theta_out <- theta_out
@@ -22,7 +22,6 @@ new_directed_dcsbm <- function(
 }
 
 validate_directed_dcsbm <- function(x) {
-
   values <- unclass(x)
 
   if (!is.factor(values$z_out)) {
@@ -335,17 +334,16 @@ validate_directed_dcsbm <- function(x) {
 #' population_svd <- svds(ddcsbm)
 #'
 directed_dcsbm <- function(
-  n = NULL,
-  theta_out = NULL, theta_in = NULL,
-  k_out = NULL, k_in = NULL, B = NULL,
-  ...,
-  pi_out = rep(1 / k_out, k_out),
-  pi_in = rep(1 / k_in, k_in),
-  sort_nodes = TRUE,
-  force_identifiability = TRUE,
-  poisson_edges = TRUE,
-  allow_self_loops = TRUE) {
-
+    n = NULL,
+    theta_out = NULL, theta_in = NULL,
+    k_out = NULL, k_in = NULL, B = NULL,
+    ...,
+    pi_out = rep(1 / k_out, k_out),
+    pi_in = rep(1 / k_in, k_in),
+    sort_nodes = TRUE,
+    force_identifiability = TRUE,
+    poisson_edges = TRUE,
+    allow_self_loops = TRUE) {
   # NOTE:
   #   - X corresponds to outgoing communities, outgoing edges and rows of A
   #   - Y corresponds to incoming communities, incoming edges and columns of A
@@ -364,7 +362,6 @@ directed_dcsbm <- function(
       call. = FALSE
     )
   } else if (is.null(theta_out) && is.null(theta_in)) {
-
     if (n < 1) {
       stop("`n` must be a positive integer.", call. = FALSE)
     }
@@ -377,9 +374,7 @@ directed_dcsbm <- function(
 
     theta_out <- stats::rlnorm(n, meanlog = 2, sdlog = 1)
     theta_in <- stats::rlnorm(n, meanlog = 2, sdlog = 1)
-
   } else if (is.null(n)) {
-
     if (length(theta_out) != length(theta_in)) {
       stop(
         "Length of `theta_out` must match length of `theta_in`.",
@@ -398,7 +393,6 @@ directed_dcsbm <- function(
       call. = FALSE
     )
   } else if (is.null(B)) {
-
     if (k_out < 1) {
       stop("`k_out` must be a positive integer.", call. = FALSE)
     }
@@ -414,9 +408,7 @@ directed_dcsbm <- function(
     )
 
     B <- Matrix(data = stats::runif(k_out * k_in), nrow = k_out, ncol = k_in)
-
   } else if (!is.null(B)) {
-
     k_out <- nrow(B)
     k_in <- ncol(B)
   }
@@ -473,13 +465,13 @@ directed_dcsbm <- function(
 
 
   if (k_out > 1) {
-    X <- sparse.model.matrix(~z_out + 0)
+    X <- sparse.model.matrix(~ z_out + 0)
   } else {
     X <- Matrix(1, nrow = n, ncol = 1)
   }
 
   if (k_in > 1) {
-    Y <- sparse.model.matrix(~z_in + 0)
+    Y <- sparse.model.matrix(~ z_in + 0)
   } else {
     Y <- Matrix(1, nrow = n, ncol = 1)
   }
@@ -532,7 +524,6 @@ directed_dcsbm <- function(
 #' @method print directed_dcsbm
 #' @export
 print.directed_dcsbm <- function(x, ...) {
-
   cat(glue("Directed Degree-Corrected Stochastic Blockmodel\n", .trim = FALSE))
   cat(glue("-----------------------------------------------\n\n", .trim = FALSE))
 

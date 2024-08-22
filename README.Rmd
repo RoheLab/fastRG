@@ -87,7 +87,7 @@ Note that every time we call `sample_*()` we draw a new sample.
 A <- sample_sparse(sbm)
 B <- sample_sparse(sbm)
 
-all(A == B)  # random realizations from the SBM don't match!
+all(A == B) # random realizations from the SBM don't match!
 ```
 
 ## Efficient spectral decompositions

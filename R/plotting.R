@@ -53,7 +53,6 @@ plot_expectation <- function(model) {
 #' @import ggplot2
 #' @export
 plot_dense_matrix <- function(A, ...) {
-
   # don't preserve rownames because rownames and colnames get coerced to
   # indices and this can lead to type errors
   rownames(A) <- 1:nrow(A)
@@ -76,7 +75,6 @@ plot_dense_matrix <- function(A, ...) {
 #' @rdname plot_expectation
 #' @export
 plot_sparse_matrix <- function(A) {
-
   stopifnot(inherits(A, "sparseMatrix"))
 
   A <- methods::as(A, "CsparseMatrix")
