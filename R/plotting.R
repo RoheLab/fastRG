@@ -63,7 +63,7 @@ plot_dense_matrix <- function(A, ...) {
   long <- dplyr::mutate_all(long, as.numeric)
 
   ggplot(long, aes(x = col, y = row, fill = value)) +
-    geom_raster() +
+    geom_tile() +
     scale_y_reverse() +
     theme_minimal() +
     labs(
