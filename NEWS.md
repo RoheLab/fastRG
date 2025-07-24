@@ -1,3 +1,5 @@
+# fastRG (development version)
+
 # fastRG 0.3.3
 
 - Improve cross-linking to documentation of other packages for CRAN
