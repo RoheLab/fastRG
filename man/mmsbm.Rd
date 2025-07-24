@@ -170,7 +170,7 @@ between nodes in block \code{i} and block \code{j}. This is given by a
 
 set.seed(27)
 
-lazy_mmsbm <- mmsbm(n = 1000, k = 5, expected_density = 0.01)
+lazy_mmsbm <- mmsbm(n = 100, k = 5, expected_density = 0.01)
 lazy_mmsbm
 
 # sometimes you gotta let the world burn and
@@ -184,7 +184,7 @@ dense_lazy_mmsbm
 # than using randomly generated defaults
 
 k <- 5
-n <- 1000
+n <- 100
 B <- matrix(stats::runif(k * k), nrow = k, ncol = k)
 
 theta <- round(stats::rlnorm(n, 2))

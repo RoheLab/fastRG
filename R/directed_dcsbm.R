@@ -322,7 +322,7 @@ validate_directed_dcsbm <- function(x) {
 #' diag(B) <- 0.9
 #'
 #' ddcsbm <- directed_dcsbm(
-#'   n = 1000,
+#'   n = 100,
 #'   B = B,
 #'   k_out = 5,
 #'   k_in = 8,

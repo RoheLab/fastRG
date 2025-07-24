@@ -15,10 +15,10 @@ undirected_factor_model(
 )
 }
 \arguments{
-\item{X}{A \code{\link[=matrix]{matrix()}} or \link[=matrix]{Matrix()} representing real-valued
+\item{X}{A \code{\link[=matrix]{matrix()}} or \code{\link[Matrix:Matrix]{Matrix::Matrix()}} representing real-valued
 latent node positions. Entries must be positive.}
 
-\item{S}{A \code{\link[=matrix]{matrix()}} or \link[=matrix]{Matrix()} mixing matrix. \code{S} is
+\item{S}{A \code{\link[=matrix]{matrix()}} or \code{\link[Matrix:Matrix]{Matrix::Matrix()}} mixing matrix. \code{S} is
 symmetrized if it is not already, as this is the undirected
 case. Entries must be positive.}
 
@@ -53,8 +53,8 @@ self-loops, and these are then removed after the fact.}
 An \code{undirected_factor_model} S3 class based on a list
 with the following elements:
 \itemize{
-\item \code{X}: The latent positions as a \code{\link[=Matrix]{Matrix()}} object.
-\item \code{S}: The mixing matrix as a \code{\link[=Matrix]{Matrix()}} object.
+\item \code{X}: The latent positions as a \code{\link[Matrix:Matrix]{Matrix::Matrix()}} object.
+\item \code{S}: The mixing matrix as a \code{\link[Matrix:Matrix]{Matrix::Matrix()}} object.
 \item \code{n}: The number of nodes in the network.
 \item \code{k}: The rank of expectation matrix. Equivalently,
 the dimension of the latent node position vectors.
@@ -73,7 +73,7 @@ of the stochastic blockmodels as undirected factor models
 }
 \examples{
 
-n <- 10000
+n <- 100
 k <- 5
 
 X <- matrix(rpois(n = n * k, 1), nrow = n)

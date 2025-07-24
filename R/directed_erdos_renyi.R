@@ -50,7 +50,7 @@ validate_directed_erdos_renyi <- function(x) {
 #' er <- directed_erdos_renyi(n = 10, p = 0.1)
 #' er
 #'
-#' big_er <- directed_erdos_renyi(n = 10^6, expected_in_degree = 5)
+#' big_er <- directed_erdos_renyi(n = 1000, expected_in_degree = 5)
 #' big_er
 #'
 #' A <- sample_sparse(er)

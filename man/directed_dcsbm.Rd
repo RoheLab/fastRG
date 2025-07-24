@@ -241,7 +241,7 @@ B <- matrix(0.2, nrow = 5, ncol = 8)
 diag(B) <- 0.9
 
 ddcsbm <- directed_dcsbm(
-  n = 1000,
+  n = 100,
   B = B,
   k_out = 5,
   k_in = 8,

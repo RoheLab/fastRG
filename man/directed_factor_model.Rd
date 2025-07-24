@@ -17,14 +17,14 @@ directed_factor_model(
 )
 }
 \arguments{
-\item{X}{A \code{\link[=matrix]{matrix()}} or \link[=matrix]{Matrix()} representing real-valued
+\item{X}{A \code{\link[=matrix]{matrix()}} or \code{\link[Matrix:Matrix]{Matrix::Matrix()}} representing real-valued
 latent node positions encoding community structure of
 incoming edges. Entries must be positive.}
 
-\item{S}{A \code{\link[=matrix]{matrix()}} or \link[=matrix]{Matrix()} mixing matrix. Entries
+\item{S}{A \code{\link[=matrix]{matrix()}} or \code{\link[Matrix:Matrix]{Matrix::Matrix()}} mixing matrix. Entries
 must be positive.}
 
-\item{Y}{A \code{\link[=matrix]{matrix()}} or \link[=matrix]{Matrix()} representing real-valued
+\item{Y}{A \code{\link[=matrix]{matrix()}} or \code{\link[Matrix:Matrix]{Matrix::Matrix()}} representing real-valued
 latent node positions encoding community structure of
 outgoing edges. Entries must be positive.}
 
@@ -64,9 +64,9 @@ self-loops, and these are then removed after the fact.}
 A \code{directed_factor_model} S3 class based on a list
 with the following elements:
 \itemize{
-\item \code{X}: The incoming latent positions as a \code{\link[=Matrix]{Matrix()}} object.
-\item \code{S}: The mixing matrix as a \code{\link[=Matrix]{Matrix()}} object.
-\item \code{Y}: The outgoing latent positions as a \code{\link[=Matrix]{Matrix()}} object.
+\item \code{X}: The incoming latent positions as a \code{\link[Matrix:Matrix]{Matrix::Matrix()}} object.
+\item \code{S}: The mixing matrix as a \code{\link[Matrix:Matrix]{Matrix::Matrix()}} object.
+\item \code{Y}: The outgoing latent positions as a \code{\link[Matrix:Matrix]{Matrix::Matrix()}} object.
 \item \code{n}: The number of nodes with incoming edges in the network.
 \item \code{k1}: The dimension of the latent node position vectors
 encoding incoming latent communities (i.e. in \code{X}).
@@ -94,12 +94,12 @@ of the stochastic blockmodels as undirected factor models
 }
 \examples{
 
-n <- 10000
+n <- 1000
 
 k1 <- 5
 k2 <- 3
 
-d <- 5000
+d <- 500
 
 X <- matrix(rpois(n = n * k1, 1), nrow = n)
 S <- matrix(runif(n = k1 * k2, 0, .1), nrow = k1, ncol = k2)

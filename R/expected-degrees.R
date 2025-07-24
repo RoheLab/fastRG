@@ -18,14 +18,14 @@
 #'
 #' ##### an undirected blockmodel example
 #'
-#' n <- 1000
+#' n <- 100
 #' pop <- n / 2
 #' a <- .1
 #' b <- .05
 #'
 #' B <- matrix(c(a, b, b, a), nrow = 2)
 #'
-#' b_model <- fastRG::sbm(n = n, k = 2, B = B, poisson_edges = FALSE)
+#' b_model <- sbm(n = n, k = 2, B = B, poisson_edges = FALSE)
 #'
 #' b_model
 #'
@@ -38,7 +38,7 @@
 #'
 #' ##### more generic examples
 #'
-#' n <- 10000
+#' n <- 1000
 #' k <- 5
 #'
 #' X <- matrix(rpois(n = n * k, 1), nrow = n)
@@ -50,8 +50,8 @@
 #' expected_degree(ufm)
 #' eigs_sym(ufm)
 #'
-#' n <- 10000
-#' d <- 1000
+#' n <- 1000
+#' d <- 100
 #'
 #' k1 <- 5
 #' k2 <- 3

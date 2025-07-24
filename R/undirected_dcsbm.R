@@ -206,13 +206,13 @@ validate_undirected_dcsbm <- function(x) {
 #'
 #' set.seed(27)
 #'
-#' lazy_dcsbm <- dcsbm(n = 1000, k = 5, expected_density = 0.01)
+#' lazy_dcsbm <- dcsbm(n = 100, k = 5, expected_density = 0.01)
 #' lazy_dcsbm
 #'
 #' # sometimes you gotta let the world burn and
 #' # sample a wildly dense graph
 #'
-#' dense_lazy_dcsbm <- dcsbm(n = 500, k = 3, expected_density = 0.8)
+#' dense_lazy_dcsbm <- dcsbm(n = 50, k = 3, expected_density = 0.8)
 #' dense_lazy_dcsbm
 #'
 #' # explicitly setting the degree heterogeneity parameter,
@@ -220,7 +220,7 @@ validate_undirected_dcsbm <- function(x) {
 #' # than using randomly generated defaults
 #'
 #' k <- 5
-#' n <- 1000
+#' n <- 100
 #' B <- matrix(stats::runif(k * k), nrow = k, ncol = k)
 #'
 #' theta <- round(stats::rlnorm(n, 2))

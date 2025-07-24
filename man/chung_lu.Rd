@@ -86,7 +86,7 @@ sampling large, dense graphs.
 
 set.seed(27)
 
-cl <- chung_lu(n = 1000, expected_density = 0.01)
+cl <- chung_lu(n = 100, expected_density = 0.01)
 cl
 
 theta <- round(stats::rlnorm(100, 2))

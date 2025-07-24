@@ -110,7 +110,7 @@ validate_undirected_planted_partition <- function(x) {
 #' set.seed(27)
 #'
 #' lazy_pp <- planted_partition(
-#'   n = 1000,
+#'   n = 100,
 #'   k = 5,
 #'   expected_density = 0.01,
 #'   within_block = 0.1,

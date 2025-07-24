@@ -91,10 +91,10 @@ validate_undirected_factor_model <- function(x) {
 #' of the stochastic blockmodels as undirected factor models
 #' *with lots of helpful input validation*.
 #'
-#' @param X A [matrix()] or [Matrix()] representing real-valued
+#' @param X A [matrix()] or [Matrix::Matrix()] representing real-valued
 #'   latent node positions. Entries must be positive.
 #'
-#' @param S A [matrix()] or [Matrix()] mixing matrix. `S` is
+#' @param S A [matrix()] or [Matrix::Matrix()] mixing matrix. `S` is
 #'   symmetrized if it is not already, as this is the undirected
 #'   case. Entries must be positive.
 #'
@@ -115,9 +115,9 @@ validate_undirected_factor_model <- function(x) {
 #' @return An `undirected_factor_model` S3 class based on a list
 #'   with the following elements:
 #'
-#'   - `X`: The latent positions as a [Matrix()] object.
+#'   - `X`: The latent positions as a [Matrix::Matrix()] object.
 #'
-#'   - `S`: The mixing matrix as a [Matrix()] object.
+#'   - `S`: The mixing matrix as a [Matrix::Matrix()] object.
 #'
 #'   - `n`: The number of nodes in the network.
 #'
@@ -128,7 +128,7 @@ validate_undirected_factor_model <- function(x) {
 #'
 #' @examples
 #'
-#' n <- 10000
+#' n <- 100
 #' k <- 5
 #'
 #' X <- matrix(rpois(n = n * k, 1), nrow = n)

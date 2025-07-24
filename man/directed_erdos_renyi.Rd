@@ -50,9 +50,9 @@ self-loops, and these are then removed after the fact.}
 A \code{directed_factor_model} S3 class based on a list
 with the following elements:
 \itemize{
-\item \code{X}: The incoming latent positions as a \code{\link[=Matrix]{Matrix()}} object.
-\item \code{S}: The mixing matrix as a \code{\link[=Matrix]{Matrix()}} object.
-\item \code{Y}: The outgoing latent positions as a \code{\link[=Matrix]{Matrix()}} object.
+\item \code{X}: The incoming latent positions as a \code{\link[Matrix:Matrix]{Matrix::Matrix()}} object.
+\item \code{S}: The mixing matrix as a \code{\link[Matrix:Matrix]{Matrix::Matrix()}} object.
+\item \code{Y}: The outgoing latent positions as a \code{\link[Matrix:Matrix]{Matrix::Matrix()}} object.
 \item \code{n}: The number of nodes with incoming edges in the network.
 \item \code{k1}: The dimension of the latent node position vectors
 encoding incoming latent communities (i.e. in \code{X}).
@@ -77,7 +77,7 @@ set.seed(87)
 er <- directed_erdos_renyi(n = 10, p = 0.1)
 er
 
-big_er <- directed_erdos_renyi(n = 10^6, expected_in_degree = 5)
+big_er <- directed_erdos_renyi(n = 1000, expected_in_degree = 5)
 big_er
 
 A <- sample_sparse(er)

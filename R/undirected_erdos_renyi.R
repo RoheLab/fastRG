@@ -47,7 +47,7 @@ validate_undirected_erdos_renyi <- function(x) {
 #' er <- erdos_renyi(n = 10, expected_density = 0.1)
 #' er
 #'
-#' big_er <- erdos_renyi(n = 10^6, expected_degree = 5)
+#' big_er <- erdos_renyi(n = 1000, expected_degree = 5)
 #' big_er
 #'
 #' A <- sample_sparse(er)

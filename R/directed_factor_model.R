@@ -68,14 +68,14 @@ validate_directed_factor_model <- function(x) {
 #' of the stochastic blockmodels as undirected factor models
 #' *with lots of helpful input validation*.
 #'
-#' @param X A [matrix()] or [Matrix()] representing real-valued
+#' @param X A [matrix()] or [Matrix::Matrix()] representing real-valued
 #'   latent node positions encoding community structure of
 #'   incoming edges. Entries must be positive.
 #'
-#' @param S A [matrix()] or [Matrix()] mixing matrix. Entries
+#' @param S A [matrix()] or [Matrix::Matrix()] mixing matrix. Entries
 #'   must be positive.
 #'
-#' @param Y A [matrix()] or [Matrix()] representing real-valued
+#' @param Y A [matrix()] or [Matrix::Matrix()] representing real-valued
 #'   latent node positions encoding community structure of
 #'   outgoing edges. Entries must be positive.
 #'
@@ -114,11 +114,11 @@ validate_directed_factor_model <- function(x) {
 #' @return A `directed_factor_model` S3 class based on a list
 #'   with the following elements:
 #'
-#'   - `X`: The incoming latent positions as a [Matrix()] object.
+#'   - `X`: The incoming latent positions as a [Matrix::Matrix()] object.
 #'
-#'   - `S`: The mixing matrix as a [Matrix()] object.
+#'   - `S`: The mixing matrix as a [Matrix::Matrix()] object.
 #'
-#'   - `Y`: The outgoing latent positions as a [Matrix()] object.
+#'   - `Y`: The outgoing latent positions as a [Matrix::Matrix()] object.
 #'
 #'   - `n`: The number of nodes with incoming edges in the network.
 #'
@@ -142,12 +142,12 @@ validate_directed_factor_model <- function(x) {
 #'
 #' @examples
 #'
-#' n <- 10000
+#' n <- 1000
 #'
 #' k1 <- 5
 #' k2 <- 3
 #'
-#' d <- 5000
+#' d <- 500
 #'
 #' X <- matrix(rpois(n = n * k1, 1), nrow = n)
 #' S <- matrix(runif(n = k1 * k2, 0, .1), nrow = k1, ncol = k2)
