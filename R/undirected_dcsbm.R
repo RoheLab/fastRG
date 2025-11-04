@@ -110,11 +110,19 @@ validate_undirected_dcsbm <- function(x) {
 #'   symmetrized via the update `B := B + t(B)`. Defaults to `NULL`.
 #'   You must specify either `k` or `B`, but not both.
 #'
-#' @param pi (relative block probabilities) Relative block
+#' @param block_sizes (block sizes) Number of nodes in each block,
+#'   as a vector of integers. Must match the dimensions of `B`, or `k` and
+#'   must sum to `n`. Defaults to `NULL`, in which case blocks are made
+#'   to be as balanced as possible. You can specify either `pi` or
+#'   `block_sizes`, but not both.
+#'
+#' @param pi (block sizes) Relative block
 #'   probabilities. Must be positive, but do not need to sum
 #'   to one, as they will be normalized internally.
-#'   Must match the dimensions of `B` or `k`. Defaults to
-#'   `rep(1 / k, k)`, or a balanced blocks.
+#'   Must match the dimensions of `B` or `k`. Defaults to `NULL`, in which
+#'   case the `block_sizes` argument will take precedence. Note that
+#'   you can specify either `pi` or `block_sizes`, but should not
+#'   specify both.
 #'
 #' @param sort_nodes Logical indicating whether or not to sort the nodes
 #'   so that they are grouped by block and by `theta`. Useful for plotting.
@@ -250,7 +258,8 @@ dcsbm <- function(
     n = NULL, theta = NULL,
     k = NULL, B = NULL,
     ...,
-    pi = rep(1 / k, k),
+    block_sizes = NULL,
+    pi = NULL,
     sort_nodes = TRUE,
     force_identifiability = FALSE,
     poisson_edges = TRUE,
@@ -273,6 +282,8 @@ dcsbm <- function(
     theta <- stats::rlnorm(n, meanlog = 2, sdlog = 1)
   } else if (is.null(n)) {
     n <- length(theta)
+  } else {
+    stop("Must specify only one of `n` and `theta`, not both.", call. = FALSE)
   }
 
   ### mixing matrix
@@ -297,17 +308,47 @@ dcsbm <- function(
     }
 
     k <- nrow(B)
+  } else {
+    stop("Must specify only one of `B` and `k`, not both.", call. = FALSE)
   }
 
   ### block membership
 
-  if (length(pi) != nrow(B) || length(pi) != ncol(B)) {
-    stop("Length of `pi` must match dimensions of `B`.", call. = FALSE)
+  if (is.null(block_sizes) && is.null(pi)) {
+
+    TODO BALANCED BLOCKS
+
+  } else if (!is.null(block_sizes)) {
+
+    TODO BLOCK SIZES PER ARGUMENT
+
+    sum(block_sizes) == n
+
+    rep(1:k, each = block_sizes)
+
+    # for sorting by block size later
+    pi <- block_sizes / n
+
+  } else if (!is.null(pi)) {
+    if (!is.null(pi) && !is.null(block_sizes)) {
+      stop("Length of `pi` must match dimensions of `B`.", call. = FALSE)
+    }
+
+    if (length(pi) != nrow(B) || length(pi) != ncol(B)) {
+      stop("Length of `pi` must match dimensions of `B`.", call. = FALSE)
+    }
+
+    if (any(pi < 0)) {
+      stop("All elements of `pi` must be >= 0.", call. = FALSE)
+    }
+
+
+    z <- sample(k, n, replace = TRUE, prob = pi)
+  } else {
+    stop("Must at most one of `block_sizes` and `pi`.", call. = FALSE)
   }
 
-  if (any(pi < 0)) {
-    stop("All elements of `pi` must be >= 0.", call. = FALSE)
-  }
+  z <- factor(z, levels = 1:k, labels = paste0("block", 1:k))
 
   # order mixing matrix by expected group size
 
@@ -318,11 +359,6 @@ dcsbm <- function(
   }
 
   pi <- pi / sum(pi)
-
-  # sample block memberships
-
-  z <- sample(k, n, replace = TRUE, prob = pi)
-  z <- factor(z, levels = 1:k, labels = paste0("block", 1:k))
 
   if (sort_nodes) {
     z <- sort(z)
