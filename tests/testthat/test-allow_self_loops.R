@@ -22,12 +22,12 @@ test_that("undirected graphs allow_self_loops = FALSE", {
   expect_false(any(diag(A) > 0))
 
   igraph <- sample_igraph(ufm)
-  expect_false(any(diag(get.adjacency(igraph)) > 0))
+  expect_false(any(diag(as_adjacency_matrix(igraph)) > 0))
 
   ### sampling graphs as tidygraph graphs ---------------
 
   tbl_graph <- sample_tidygraph(ufm)
-  expect_false(any(diag(get.adjacency(tbl_graph)) > 0))
+  expect_false(any(diag(as_adjacency_matrix(tbl_graph)) > 0))
 })
 
 test_that("directed graphs allow_self_loops = FALSE", {
@@ -53,10 +53,10 @@ test_that("directed graphs allow_self_loops = FALSE", {
   expect_false(any(diag(A) > 0))
 
   igraph <- sample_igraph(fm)
-  expect_false(any(diag(get.adjacency(igraph)) > 0))
+  expect_false(any(diag(as_adjacency_matrix(igraph)) > 0))
 
   ### sampling graphs as tidygraph graphs ---------------
 
   tbl_graph <- sample_tidygraph(fm)
-  expect_false(any(diag(get.adjacency(tbl_graph)) > 0))
+  expect_false(any(diag(as_adjacency_matrix(tbl_graph)) > 0))
 })

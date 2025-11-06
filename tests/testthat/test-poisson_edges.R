@@ -30,12 +30,12 @@ test_that("undirected graphs poisson_edges = FALSE", {
   expect_equal(max(A), 1)
 
   igraph <- sample_igraph(ufm)
-  expect_equal(max(get.adjacency(igraph)), 1)
+  expect_equal(max(as_adjacency_matrix(igraph)), 1)
 
   ### sampling graphs as tidygraph graphs ---------------
 
   tbl_graph <- sample_tidygraph(ufm)
-  expect_equal(max(get.adjacency(tbl_graph)), 1)
+  expect_equal(max(as_adjacency_matrix(tbl_graph)), 1)
 })
 
 test_that("directed graphs poisson_edges = FALSE", {
@@ -69,10 +69,10 @@ test_that("directed graphs poisson_edges = FALSE", {
   expect_equal(max(A), 1)
 
   igraph <- sample_igraph(fm)
-  expect_equal(max(get.adjacency(igraph)), 1)
+  expect_equal(max(as_adjacency_matrix(igraph)), 1)
 
   ### sampling graphs as tidygraph graphs ---------------
 
   tbl_graph <- sample_tidygraph(fm)
-  expect_equal(max(get.adjacency(tbl_graph)), 1)
+  expect_equal(max(as_adjacency_matrix(tbl_graph)), 1)
 })
