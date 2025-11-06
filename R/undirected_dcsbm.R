@@ -247,12 +247,24 @@ validate_undirected_dcsbm <- function(x) {
 #' edgelist <- sample_edgelist(custom_dcsbm)
 #' edgelist
 #'
+#'
+#' dcsbm_explicit_block_sizes <- dcsbm(
+#'   theta = rexp(100, 1 / 3) + 1,
+#'   B = B,
+#'   block_sizes = c(13, 17, 40, 14, 16),
+#'   expected_degree = 5
+#' )
+#'
+#' # respects block sizes
+#' summary(dcsbm_explicit_block_sizes$z)
+#'
 #' # efficient eigendecompostion that leverages low-rank structure in
 #' # E(A) so that you don't have to form E(A) to find eigenvectors,
 #' # as E(A) is typically dense. computation is
 #' # handled via RSpectra
 #'
 #' population_eigs <- eigs_sym(custom_dcsbm)
+#'
 #'
 dcsbm <- function(
     n = NULL, theta = NULL,
@@ -316,15 +328,26 @@ dcsbm <- function(
 
   if (is.null(block_sizes) && is.null(pi)) {
 
-    TODO BALANCED BLOCKS
+    base_value <- floor(n / k)
+    remainder <- n %% k
+    num_base_values <- k - remainder
 
+    upper_values <- rep(base_value + 1, remainder)
+    base_values <- rep(base_value, num_base_values)
+
+    block_sizes <- c(upper_values, base_values)
+
+    z <- sample(rep(1:k, times = block_sizes))
+
+    # for sorting by block size later
+    pi <- block_sizes / n
   } else if (!is.null(block_sizes)) {
 
-    TODO BLOCK SIZES PER ARGUMENT
+    if(sum(block_sizes) != n) {
+      stop("Sum of `block_sizes` must equal `n` or `length(theta)`.", call. = FALSE)
+    }
 
-    sum(block_sizes) == n
-
-    rep(1:k, each = block_sizes)
+    z <- sample(rep(1:k, times = block_sizes))
 
     # for sorting by block size later
     pi <- block_sizes / n

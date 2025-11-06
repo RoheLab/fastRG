@@ -1,5 +1,8 @@
 # fastRG (development version)
 
+- Added option to specify precise number of nodes in each block of a `dcsbm()` or `sbm()` via the `block_sizes` argument. This makes it easier to construct blockmodels with exactly repeated eigenvalues.
+- Specifying both `k` and `B` in `dcsbm()` and `sbm()` now results in an error; only specify one of these arguments.
+
 # fastRG 0.3.3
 
 - Improve cross-linking to documentation of other packages for CRAN

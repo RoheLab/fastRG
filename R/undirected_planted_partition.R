@@ -127,7 +127,8 @@ planted_partition <- function(
     between_block = NULL,
     a = NULL,
     b = NULL,
-    pi = rep(1 / k, k),
+    block_sizes = NULL,
+    pi = NULL,
     sort_nodes = TRUE,
     poisson_edges = TRUE,
     allow_self_loops = TRUE) {
@@ -144,9 +145,10 @@ planted_partition <- function(
 
   pp <- sbm(
     n = n,
-    k = k,
+    k = NULL, # implicit in dimensions of B
     B = B,
     ...,
+    block_sizes = block_sizes,
     pi = pi,
     sort_nodes = sort_nodes,
     poisson_edges = poisson_edges,

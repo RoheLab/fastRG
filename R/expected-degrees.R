@@ -25,7 +25,7 @@
 #'
 #' B <- matrix(c(a, b, b, a), nrow = 2)
 #'
-#' b_model <- sbm(n = n, k = 2, B = B, poisson_edges = FALSE)
+#' b_model <- sbm(n = n, B = B, poisson_edges = FALSE)
 #'
 #' b_model
 #'

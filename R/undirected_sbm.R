@@ -82,20 +82,38 @@ validate_undirected_sbm <- function(x) {
 #' # only zeroes and ones!
 #' sign(A)
 #'
+#'
+#' # sbm with repeated eigenvalues
+#'
+#' # block sizes equal by default, needed to prevent variation in spectrum
+#' # from variation in block sizes. also need B to have a single repeated
+#' # eigenvalue
+#'
+#' repeated_eigen <- sbm(
+#'   n = 100,
+#'   B = diag(rep(0.8, 5)),
+#'   expected_degree = 10
+#' )
+#'
+#' # exactly repeated eigenvalues in the population
+#' e <- eigs_sym(repeated_eigen)
+#' e$values
+#'
 sbm <- function(
     n,
     k = NULL, B = NULL,
     ...,
-    pi = rep(1 / k, k),
+    block_sizes = NULL,
+    pi = NULL,
     sort_nodes = TRUE,
     poisson_edges = TRUE,
     allow_self_loops = TRUE) {
   sbm <- dcsbm(
-    n = n,
     theta = rep(1, n),
     k = k,
     B = B,
     ...,
+    block_sizes = block_sizes,
     pi = pi,
     sort_nodes = sort_nodes,
     force_identifiability = FALSE,

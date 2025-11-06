@@ -37,7 +37,7 @@ test_that("undirected expected degree computed consistently", {
   B <- matrix(c(a, b, b, a), nrow = 2)
 
   b_model <- sbm(
-    n = n, k = 2,
+    n = n,
     B = B,
     poisson_edges = FALSE
   )
@@ -63,7 +63,7 @@ test_that("undirected expected degree computed consistently", {
     tolerance = 5
   )
 
-  model2 <- sbm(n = n, k = 2, B = B, poisson_edges = FALSE, expected_degree = 75)
+  model2 <- sbm(n = n, B = B, poisson_edges = FALSE, expected_degree = 75)
 
   expect_equal(
     expected_degree(model2), # computed
@@ -92,7 +92,7 @@ test_that("undirected density computed consistently", {
   B <- matrix(c(a, b, b, a), nrow = 2)
 
   b_model <- sbm(
-    n = n, k = 2,
+    n = n,
     B = B,
     poisson_edges = FALSE
   )
@@ -119,7 +119,7 @@ test_that("undirected density computed consistently", {
     tolerance = 0.05
   )
 
-  model2 <- sbm(n = n, k = 2, B = B, expected_density = 0.15)
+  model2 <- sbm(n = n, B = B, expected_density = 0.15)
 
   expect_equal(
     expected_density(model2), # computed
@@ -150,7 +150,7 @@ test_that("undirected factor model", {
   B <- matrix(data = 0.5, nrow = k, ncol = k)
   diag(B) <- 0
 
-  ufm <- sbm(n = n, k = k, B = B, expected_degree = 10)
+  ufm <- sbm(n = n, B = B, expected_degree = 10)
   expect_equal(expected_degree(ufm), 10)
   expect_equal(expected_density(ufm), 0.02, tolerance = 0.05) # tolerance should be relative here
 
