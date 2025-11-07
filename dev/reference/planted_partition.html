@@ -74,7 +74,8 @@ sampling large, dense graphs.</p>
 <span>  between_block <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  a <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  b <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  pi <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">/</span><span class="va">k</span>, <span class="va">k</span><span class="op">)</span>,</span>
+<span>  block_sizes <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  pi <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  sort_nodes <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  poisson_edges <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  allow_self_loops <span class="op">=</span> <span class="cn">TRUE</span></span>
@@ -140,12 +141,22 @@ between blocks. Useful for sparse graphs. Must specify either
 edge probabilities.</p></dd>
 
 
+<dt id="arg-block-sizes">block_sizes<a class="anchor" aria-label="anchor" href="#arg-block-sizes"></a></dt>
+<dd><p>(block sizes) Number of nodes in each block,
+as a vector of integers. Must match the dimensions of <code>B</code>, or <code>k</code> and
+must sum to <code>n</code>. Defaults to <code>NULL</code>, in which case blocks are made
+to be as balanced as possible. You can specify either <code>pi</code> or
+<code>block_sizes</code>, but not both.</p></dd>
+
+
 <dt id="arg-pi">pi<a class="anchor" aria-label="anchor" href="#arg-pi"></a></dt>
-<dd><p>(relative block probabilities) Relative block
+<dd><p>(block sizes) Relative block
 probabilities. Must be positive, but do not need to sum
 to one, as they will be normalized internally.
-Must match the dimensions of <code>B</code> or <code>k</code>. Defaults to
-<code>rep(1 / k, k)</code>, or a balanced blocks.</p></dd>
+Must match the dimensions of <code>B</code> or <code>k</code>. Defaults to <code>NULL</code>, in which
+case the <code>block_sizes</code> argument will take precedence. Note that
+you can specify either <code>pi</code> or <code>block_sizes</code>, but should not
+specify both.</p></dd>
 
 
 <dt id="arg-sort-nodes">sort_nodes<a class="anchor" aria-label="anchor" href="#arg-sort-nodes"></a></dt>

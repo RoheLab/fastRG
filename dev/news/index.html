@@ -34,9 +34,12 @@
 
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="development version" id="fastrg-development-version">fastRG (development version)<a class="anchor" aria-label="anchor" href="#fastrg-development-version"></a></h2>
-</div>
+<ul><li>Added option to specify precise number of nodes in each block of a <code><a href="../reference/dcsbm.html">dcsbm()</a></code> or <code><a href="../reference/sbm.html">sbm()</a></code> via the <code>block_sizes</code> argument. This makes it easier to construct blockmodels with exactly repeated eigenvalues.</li>
+<li>The default behavior of <code><a href="../reference/dcsbm.html">dcsbm()</a></code>, <code><a href="../reference/sbm.html">sbm()</a></code> and <code><a href="../reference/planted_partition.html">planted_partition()</a></code> has changed: when <code>block_sizes</code> or <code>pi</code> is unspecified, the new default is to balance block sizes as evenly as possible. Previously, <code>pi</code> was set to a constant vector, balancing block sizes in expectation only.</li>
+<li>Specifying both <code>k</code> and <code>B</code> in <code><a href="../reference/dcsbm.html">dcsbm()</a></code> and <code><a href="../reference/sbm.html">sbm()</a></code> now results in an error; only specify one of these arguments.</li>
+</ul></div>
     <div class="section level2">
-<h2 class="pkg-version" data-toc-text="0.3.3" id="fastrg-033">fastRG 0.3.3<a class="anchor" aria-label="anchor" href="#fastrg-033"></a></h2>
+<h2 class="pkg-version" data-toc-text="0.3.3" id="fastrg-033">fastRG 0.3.3<a class="anchor" aria-label="anchor" href="#fastrg-033"></a></h2><p class="text-muted">CRAN release: 2025-07-24</p>
 <ul><li>Improve cross-linking to documentation of other packages for CRAN</li>
 </ul></div>
     <div class="section level2">

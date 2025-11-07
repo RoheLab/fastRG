@@ -69,7 +69,8 @@ sampling large, dense graphs.</p>
 <span>  k <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  B <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span>,</span>
-<span>  pi <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">/</span><span class="va">k</span>, <span class="va">k</span><span class="op">)</span>,</span>
+<span>  block_sizes <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  pi <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  sort_nodes <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  force_identifiability <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  poisson_edges <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -139,12 +140,22 @@ to achieve this. Defaults to <code>NULL</code>. Do not specify both
 </dl></dd>
 
 
+<dt id="arg-block-sizes">block_sizes<a class="anchor" aria-label="anchor" href="#arg-block-sizes"></a></dt>
+<dd><p>(block sizes) Number of nodes in each block,
+as a vector of integers. Must match the dimensions of <code>B</code>, or <code>k</code> and
+must sum to <code>n</code>. Defaults to <code>NULL</code>, in which case blocks are made
+to be as balanced as possible. You can specify either <code>pi</code> or
+<code>block_sizes</code>, but not both.</p></dd>
+
+
 <dt id="arg-pi">pi<a class="anchor" aria-label="anchor" href="#arg-pi"></a></dt>
-<dd><p>(relative block probabilities) Relative block
+<dd><p>(block sizes) Relative block
 probabilities. Must be positive, but do not need to sum
 to one, as they will be normalized internally.
-Must match the dimensions of <code>B</code> or <code>k</code>. Defaults to
-<code>rep(1 / k, k)</code>, or a balanced blocks.</p></dd>
+Must match the dimensions of <code>B</code> or <code>k</code>. Defaults to <code>NULL</code>, in which
+case the <code>block_sizes</code> argument will take precedence. Note that
+you can specify either <code>pi</code> or <code>block_sizes</code>, but should not
+specify both.</p></dd>
 
 
 <dt id="arg-sort-nodes">sort_nodes<a class="anchor" aria-label="anchor" href="#arg-sort-nodes"></a></dt>
@@ -376,20 +387,33 @@ $$</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">edgelist</span> <span class="op">&lt;-</span> <span class="fu"><a href="sample_edgelist.html">sample_edgelist</a></span><span class="op">(</span><span class="va">custom_dcsbm</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">edgelist</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 4,951 × 2</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 4,925 × 2</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     from    to</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     1     6</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     1     1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     2     3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     2     3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     2     9</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     1     1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>     8    12</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>     3     7</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>     3     6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     3     6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>     1    10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     2     9</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>     2     7</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     3     3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     6     8</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>     1     3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 4,941 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>     1     4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>     2     3</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>     1     5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 4,915 more rows</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">dcsbm_explicit_block_sizes</span> <span class="op">&lt;-</span> <span class="fu">dcsbm</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  theta <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html" class="external-link">rexp</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">1</span> <span class="op">/</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1</span>,</span></span>
+<span class="r-in"><span>  B <span class="op">=</span> <span class="va">B</span>,</span></span>
+<span class="r-in"><span>  block_sizes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">13</span>, <span class="fl">17</span>, <span class="fl">40</span>, <span class="fl">14</span>, <span class="fl">16</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  expected_degree <span class="op">=</span> <span class="fl">5</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># respects block sizes</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">dcsbm_explicit_block_sizes</span><span class="op">$</span><span class="va">z</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> block1 block2 block3 block4 block5 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>     13     17     40     14     16 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># efficient eigendecompostion that leverages low-rank structure in</span></span></span>
 <span class="r-in"><span><span class="co"># E(A) so that you don't have to form E(A) to find eigenvectors,</span></span></span>
@@ -397,6 +421,7 @@ $$</p>
 <span class="r-in"><span><span class="co"># handled via RSpectra</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">population_eigs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/RSpectra/man/eigs.html" class="external-link">eigs_sym</a></span><span class="op">(</span><span class="va">custom_dcsbm</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

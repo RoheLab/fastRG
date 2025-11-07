@@ -68,7 +68,8 @@ sampling large, dense graphs.</p>
 <span>  k <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  B <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span>,</span>
-<span>  pi <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">/</span><span class="va">k</span>, <span class="va">k</span><span class="op">)</span>,</span>
+<span>  block_sizes <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  pi <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  sort_nodes <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  poisson_edges <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  allow_self_loops <span class="op">=</span> <span class="cn">TRUE</span></span>
@@ -121,12 +122,22 @@ to achieve this. Defaults to <code>NULL</code>. Do not specify both
 </dl></dd>
 
 
+<dt id="arg-block-sizes">block_sizes<a class="anchor" aria-label="anchor" href="#arg-block-sizes"></a></dt>
+<dd><p>(block sizes) Number of nodes in each block,
+as a vector of integers. Must match the dimensions of <code>B</code>, or <code>k</code> and
+must sum to <code>n</code>. Defaults to <code>NULL</code>, in which case blocks are made
+to be as balanced as possible. You can specify either <code>pi</code> or
+<code>block_sizes</code>, but not both.</p></dd>
+
+
 <dt id="arg-pi">pi<a class="anchor" aria-label="anchor" href="#arg-pi"></a></dt>
-<dd><p>(relative block probabilities) Relative block
+<dd><p>(block sizes) Relative block
 probabilities. Must be positive, but do not need to sum
 to one, as they will be normalized internally.
-Must match the dimensions of <code>B</code> or <code>k</code>. Defaults to
-<code>rep(1 / k, k)</code>, or a balanced blocks.</p></dd>
+Must match the dimensions of <code>B</code> or <code>k</code>. Defaults to <code>NULL</code>, in which
+case the <code>block_sizes</code> argument will take precedence. Note that
+you can specify either <code>pi</code> or <code>block_sizes</code>, but should not
+specify both.</p></dd>
 
 
 <dt id="arg-sort-nodes">sort_nodes<a class="anchor" aria-label="anchor" href="#arg-sort-nodes"></a></dt>
@@ -209,7 +220,7 @@ have all been set equal to 1.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     res</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x55c52d0dee88&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x5600ca64e9a8&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: namespace:igraph&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $args</span>
@@ -266,7 +277,7 @@ have all been set equal to 1.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     }</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     res</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> }</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x55c52d0dee88&gt;</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> &lt;bytecode: 0x5600ca64e9a8&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> &lt;environment: namespace:igraph&gt;</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $args</span>
@@ -310,6 +321,25 @@ have all been set equal to 1.</p>
 <span class="r-in"><span><span class="co"># only zeroes and ones!</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/sign.html" class="external-link">sign</a></span><span class="op">(</span><span class="va">A</span><span class="op">)</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'A' not found</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># sbm with repeated eigenvalues</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># block sizes equal by default, needed to prevent variation in spectrum</span></span></span>
+<span class="r-in"><span><span class="co"># from variation in block sizes. also need B to have a single repeated</span></span></span>
+<span class="r-in"><span><span class="co"># eigenvalue</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">repeated_eigen</span> <span class="op">&lt;-</span> <span class="fu">sbm</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  n <span class="op">=</span> <span class="fl">100</span>,</span></span>
+<span class="r-in"><span>  B <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0.8</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  expected_degree <span class="op">=</span> <span class="fl">10</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># exactly repeated eigenvalues in the population</span></span></span>
+<span class="r-in"><span><span class="va">e</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/RSpectra/man/eigs.html" class="external-link">eigs_sym</a></span><span class="op">(</span><span class="va">repeated_eigen</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in UseMethod("eigs_sym"):</span> no applicable method for 'eigs_sym' applied to an object of class "igraph_constructor_spec"</span>
+<span class="r-in"><span><span class="va">e</span><span class="op">$</span><span class="va">values</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error:</span> object 'e' not found</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
