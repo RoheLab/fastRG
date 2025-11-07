@@ -9,7 +9,8 @@ sbm(
   k = NULL,
   B = NULL,
   ...,
-  pi = rep(1/k, k),
+  block_sizes = NULL,
+  pi = NULL,
   sort_nodes = TRUE,
   poisson_edges = TRUE,
   allow_self_loops = TRUE
@@ -48,11 +49,19 @@ to achieve this. Defaults to \code{NULL}. Do not specify both
 \code{expected_degree} and \code{expected_density} at the same time.}
   }}
 
-\item{pi}{(relative block probabilities) Relative block
+\item{block_sizes}{(block sizes) Number of nodes in each block,
+as a vector of integers. Must match the dimensions of \code{B}, or \code{k} and
+must sum to \code{n}. Defaults to \code{NULL}, in which case blocks are made
+to be as balanced as possible. You can specify either \code{pi} or
+\code{block_sizes}, but not both.}
+
+\item{pi}{(block sizes) Relative block
 probabilities. Must be positive, but do not need to sum
 to one, as they will be normalized internally.
-Must match the dimensions of \code{B} or \code{k}. Defaults to
-\code{rep(1 / k, k)}, or a balanced blocks.}
+Must match the dimensions of \code{B} or \code{k}. Defaults to \code{NULL}, in which
+case the \code{block_sizes} argument will take precedence. Note that
+you can specify either \code{pi} or \code{block_sizes}, but should not
+specify both.}
 
 \item{sort_nodes}{Logical indicating whether or not to sort the nodes
 so that they are grouped by block and by \code{theta}. Useful for plotting.
@@ -123,6 +132,23 @@ A <- sample_sparse(bernoulli_sbm)
 
 # only zeroes and ones!
 sign(A)
+
+
+# sbm with repeated eigenvalues
+
+# block sizes equal by default, needed to prevent variation in spectrum
+# from variation in block sizes. also need B to have a single repeated
+# eigenvalue
+
+repeated_eigen <- sbm(
+  n = 100,
+  B = diag(rep(0.8, 5)),
+  expected_degree = 10
+)
+
+# exactly repeated eigenvalues in the population
+e <- eigs_sym(repeated_eigen)
+e$values
 
 }
 \seealso{

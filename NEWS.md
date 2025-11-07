@@ -1,5 +1,9 @@
 # fastRG (development version)
 
+- Added option to specify precise number of nodes in each block of a `dcsbm()` or `sbm()` via the `block_sizes` argument. This makes it easier to construct blockmodels with exactly repeated eigenvalues.
+- The default behavior of `dcsbm()`, `sbm()` and `planted_partition()` has changed: when `block_sizes` or `pi` is unspecified, the new default is to balance block sizes as evenly as possible. Previously, `pi` was set to a constant vector, balancing block sizes in expectation only.
+- Specifying both `k` and `B` in `dcsbm()` and `sbm()` now results in an error; only specify one of these arguments.
+
 # fastRG 0.3.3
 
 - Improve cross-linking to documentation of other packages for CRAN
