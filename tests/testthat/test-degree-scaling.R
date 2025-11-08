@@ -1,30 +1,3 @@
-library(magrittr)
-
-test_that("expected_degrees() has dimension and correctness", {
-  n <- 100
-  k <- 5
-
-  set.seed(143)
-
-  X <- matrix(rpois(n = n * k, 1), nrow = n)
-  S <- matrix(runif(n = k * k, 0, .1), nrow = k)
-
-  ufm <- undirected_factor_model(X, S)
-
-  # dimensional correctness
-  expect_equal(
-    length(expected_degrees(ufm)),
-    n
-  )
-
-  # numerical correctness
-  expect_equal(
-    expected_degrees(ufm),
-    rowSums(ufm$X %*% tcrossprod(ufm$S, ufm$X))
-  )
-})
-
-
 test_that("undirected expected degree computed consistently", {
   # see issue 19
 
@@ -45,7 +18,7 @@ test_that("undirected expected degree computed consistently", {
   expect_equal(
     expected_degree(b_model), # computed
     pop * a + pop * b, # expected "undirected edge degree",
-    tolerance = 5
+    tolerance = 1.5
   )
 
   A <- sample_sparse(b_model)
@@ -60,7 +33,7 @@ test_that("undirected expected degree computed consistently", {
   expect_equal(
     mean(rowSums(triu(A))), # computed
     pop * a + pop * b, # expected "undirected edge degree"
-    tolerance = 5
+    tolerance = 0.5
   )
 
   model2 <- sbm(n = n, B = B, poisson_edges = FALSE, expected_degree = 75)
@@ -68,7 +41,7 @@ test_that("undirected expected degree computed consistently", {
   expect_equal(
     expected_degree(model2), # computed
     pop * a + pop * b, # expected "undirected edge degree",
-    tolerance = 5
+    tolerance = 0.5
   )
 
   A2 <- sample_sparse(model2)
@@ -76,7 +49,7 @@ test_that("undirected expected degree computed consistently", {
   expect_equal(
     mean(rowSums(triu(A2))), # computed
     pop * a + pop * b, # expected "undirected edge degree",
-    tolerance = 5
+    tolerance = 1.5
   )
 })
 
@@ -94,7 +67,7 @@ test_that("undirected density computed consistently", {
   b_model <- sbm(
     n = n,
     B = B,
-    poisson_edges = FALSE
+    poisson_edges = TRUE
   )
 
   expect_equal(
@@ -161,7 +134,7 @@ test_that("undirected factor model", {
   expect_lt(el_mean_degree, 11)
 
   g2 <- igraph::graph_from_data_frame(el, directed = TRUE)
-  A <- igraph::as_adj(g2)
+  A <- igraph::as_adjacency_matrix(g2)
 
   # NOTE: see issue #19 about the following
   #
@@ -185,9 +158,9 @@ test_that("undirected factor model", {
 
 
   tbl_graph <- sample_tidygraph(ufm)
-  tbl_graph_edges <- tbl_graph %>%
-    activate(edges) %>%
-    as_tibble() %>%
+  tbl_graph_edges <- tbl_graph |>
+    activate(edges) |>
+    as_tibble() |>
     nrow()
 
   tbl_graph_mean_degree <- tbl_graph_edges / n
@@ -227,9 +200,9 @@ test_that("directed factor model", {
 
   el <- sample_edgelist(dfm)
 
-  el_mean_in_degree <- el %>%
-    count(to) %>%
-    pull(n) %>%
+  el_mean_in_degree <- el |>
+    count(to) |>
+    pull(n) |>
     mean()
 
   expect_lt(9, el_mean_in_degree)
@@ -239,9 +212,9 @@ test_that("directed factor model", {
 
   el2 <- sample_edgelist(dfm2)
 
-  el2_mean_out_degree <- el2 %>%
-    count(from) %>%
-    pull(n) %>%
+  el2_mean_out_degree <- el2 |>
+    count(from) |>
+    pull(n) |>
     mean()
 
   expect_lt(95, el2_mean_out_degree)
@@ -282,7 +255,7 @@ test_that("directed factor model", {
   ### igraph tests --------------------------------------------------------------
 
   ig <- sample_igraph(dfm)
-  A_ig <- igraph::as_incidence_matrix(ig, sparse = TRUE, names = FALSE)
+  A_ig <- igraph::as_biadjacency_matrix(ig, sparse = TRUE, names = FALSE)
   ig_mean_in_degree <- mean(colSums(A_ig))
 
   expect_lt(9, ig_mean_in_degree)
@@ -290,7 +263,7 @@ test_that("directed factor model", {
 
 
   ig2 <- sample_igraph(dfm2)
-  A2_ig <- igraph::as_incidence_matrix(ig2, sparse = TRUE, names = FALSE)
+  A2_ig <- igraph::as_biadjacency_matrix(ig2, sparse = TRUE, names = FALSE)
   ig2_mean_out_degree <- mean(rowSums(A2_ig))
 
 
@@ -308,7 +281,7 @@ test_that("directed factor model", {
   ### tidygraph tests ----------------------------------------------------------
 
   tg <- sample_tidygraph(dfm)
-  A_tg <- igraph::as_incidence_matrix(tg, sparse = TRUE, names = FALSE)
+  A_tg <- igraph::as_biadjacency_matrix(tg, sparse = TRUE, names = FALSE)
   tg_mean_in_degree <- mean(colSums(A_tg))
 
   expect_lt(9, tg_mean_in_degree)
@@ -316,7 +289,7 @@ test_that("directed factor model", {
 
 
   tg2 <- sample_tidygraph(dfm2)
-  A2_tg <- igraph::as_incidence_matrix(tg2, sparse = TRUE, names = FALSE)
+  A2_tg <- igraph::as_biadjacency_matrix(tg2, sparse = TRUE, names = FALSE)
   tg2_mean_out_degree <- mean(rowSums(A2_tg))
 
 

@@ -6,7 +6,6 @@
 \alias{expected_in_degree}
 \alias{expected_out_degree}
 \alias{expected_density}
-\alias{expected_degrees}
 \title{Calculate the expected edges in Poisson RDPG graph}
 \usage{
 expected_edges(factor_model, ...)
@@ -18,8 +17,6 @@ expected_in_degree(factor_model, ...)
 expected_out_degree(factor_model, ...)
 
 expected_density(factor_model, ...)
-
-expected_degrees(factor_model, ...)
 }
 \arguments{
 \item{factor_model}{A \code{\link[=directed_factor_model]{directed_factor_model()}} or

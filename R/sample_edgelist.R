@@ -156,7 +156,10 @@ sample_edgelist.undirected_factor_model <- function(
     factor_model,
     ...) {
   X <- factor_model$X
-  S <- factor_model$S
+
+  # see #43, move the scaling factor here so it's temporary during sampling
+  # E(A) = U S U' holds for undirected factor models
+  S <- factor_model$S / 2
 
   sample_edgelist(
     X, S, X,
@@ -185,14 +188,14 @@ sample_edgelist.directed_factor_model <- function(
 
 #' Low level interface to sample RPDG edgelists
 #'
-#' **This is a breaks-off, no safety checks interface.**
+#' **This is a brakes-off, no safety checks interface.**
 #' We strongly recommend that you do not call
 #' `sample_edgelist.matrix()` unless you know what you are doing,
 #' and even then, we still do not recommend it, as you will
 #' bypass all typical input validation.
-#' ***extremely loud coughing*** All those who bypass input
+#' **extremely loud coughing** All those who bypass input
 #' validation suffer foolishly at their own hand.
-#' ***extremely loud coughing***
+#' **extremely loud coughing**
 #'
 #' @param factor_model An `n` by `k1` [matrix()] or [Matrix::Matrix()]
 #'   of latent node positions encoding incoming edge community membership.

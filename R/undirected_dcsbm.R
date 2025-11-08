@@ -107,7 +107,7 @@ validate_undirected_dcsbm <- function(x) {
 #'   to a node in community `j` is `Poisson(B[i, j])`. Must be
 #'   a square matrix. `matrix` and `Matrix` objects are both
 #'   acceptable. If `B` is not symmetric, it will be
-#'   symmetrized via the update `B := B + t(B)`. Defaults to `NULL`.
+#'   symmetrized via the update `B := B + t(B) / 2`. Defaults to `NULL`.
 #'   You must specify either `k` or `B`, but not both.
 #'
 #' @param block_sizes (block sizes) Number of nodes in each block,

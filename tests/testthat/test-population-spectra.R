@@ -8,14 +8,18 @@ test_that("tested eigs_sym and svds for population spectra on sbm with repeated 
   set.seed(27)
 
   n <- 100
-  k <- 10
+  k <- 5
   B <- diag(rep(0.5, k))
 
-  sbm <- sbm(n = n, B = B)
+  sbm <- sbm(n = n, B = B, allow_self_loops = FALSE)
 
   EA <- expectation(sbm)
   EA_manual <- sbm$X %*% tcrossprod(sbm$S, sbm$X)
 
+  expect_equal(
+    expected_degree(sbm),
+    10
+  )
 
   expect_equal(EA_manual, EA)
 
@@ -31,6 +35,19 @@ test_that("tested eigs_sym and svds for population spectra on sbm with repeated 
   expect_equal(0, sin_theta_distance(eig$vectors, eig_manual$vectors))
   expect_equal(0, sin_theta_distance(s$u, eig_manual$vectors))
   expect_equal(0, sin_theta_distance(s$v, eig_manual$vectors))
+
+  el <- sample_edgelist(sbm)
+  A <- sample_sparse(sbm)
+
+  nrow(el)  # edges as in the upper triangle only
+  sum(EA)
+  sum(A)
+
+  s_obs <- svds(A, k)
+
+  expect_true(
+    all(s_obs$d >= s$d - log(n) & s_obs$d <= s$d + log(n))
+  )
 })
 
 test_that("tested eigs_sym and svds for population spectra on sbm with distinct eigenvalues", {
@@ -60,4 +77,11 @@ test_that("tested eigs_sym and svds for population spectra on sbm with distinct 
   expect_equal(0, sin_theta_distance(eig$vectors, eig_manual$vectors))
   expect_equal(0, sin_theta_distance(s$u, eig_manual$vectors))
   expect_equal(0, sin_theta_distance(s$v, eig_manual$vectors))
+
+  A <- sample_sparse(sbm)
+  s_obs <- svds(A, k)
+
+  expect_true(
+    all(s_obs$d >= s$d - log(n) & s_obs$d <= s$d + log(n))
+  )
 })

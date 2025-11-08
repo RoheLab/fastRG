@@ -48,7 +48,7 @@ probabilities. The probability that a node in block \code{i} connects
 to a node in community \code{j} is \code{Poisson(B[i, j])}. Must be
 a square matrix. \code{matrix} and \code{Matrix} objects are both
 acceptable. If \code{B} is not symmetric, it will be
-symmetrized via the update \code{B := B + t(B)}. Defaults to \code{NULL}.
+symmetrized via the update \code{B := B + t(B) / 2}. Defaults to \code{NULL}.
 You must specify either \code{k} or \code{B}, but not both.}
 
 \item{...}{

@@ -60,5 +60,5 @@ sample_igraph.directed_factor_model <- function(
   # a bipartite graph rather than using the usual one-mode tools
 
   A <- sample_sparse(factor_model, ...)
-  igraph::graph_from_incidence_matrix(A, directed = FALSE, multiple = TRUE)
+  igraph::graph_from_biadjacency_matrix(A, directed = FALSE, multiple = TRUE)
 }

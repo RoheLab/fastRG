@@ -164,7 +164,10 @@ undirected_factor_model <- function(
     allow_self_loops = allow_self_loops
   )
 
-  ufm$S <- (S + t(S)) / 2 # symmetrize S. idempotent if S already symmetric
+  # make sure probabilities of A_ij and A_ji are equal by forcing S to be
+  # symmetric just in case it isn't. if S is already symmetric, this
+  # operation leaves S unchanged
+  ufm$S <- (S + t(S)) / 2
 
   if (!is.null(expected_degree)) {
     if (expected_degree <= 0) {
