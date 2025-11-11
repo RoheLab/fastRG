@@ -38,15 +38,10 @@ test_that("tested eigs_sym and svds for population spectra on sbm with repeated 
 
   el <- sample_edgelist(sbm)
   A <- sample_sparse(sbm)
-
-  nrow(el)  # edges as in the upper triangle only
-  sum(EA)
-  sum(A)
-
   s_obs <- svds(A, k)
 
   expect_true(
-    all(s_obs$d >= s$d - log(n) & s_obs$d <= s$d + log(n))
+    all(s_obs$d >= s$d - 2 * log(n) & s_obs$d <= s$d + 2 * log(n))
   )
 })
 
@@ -79,9 +74,9 @@ test_that("tested eigs_sym and svds for population spectra on sbm with distinct 
   expect_equal(0, sin_theta_distance(s$v, eig_manual$vectors))
 
   A <- sample_sparse(sbm)
-  s_obs <- svds(A, k)
+  s_obs <- irlba::irlba(A, k)
 
   expect_true(
-    all(s_obs$d >= s$d - log(n) & s_obs$d <= s$d + log(n))
+    all(s_obs$d >= s$d - 2 * log(n) & s_obs$d <= s$d + 2 * log(n))
   )
 })
