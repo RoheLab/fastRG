@@ -122,7 +122,9 @@ test_that("sampling from rectangular directed factor models doesn't drop isolate
   Y <- matrix(rexp(n = k2 * d, 1), nrow = d)
 
   latent <- directed_factor_model(
-    X, S, Y,
+    X,
+    S,
+    Y,
     expected_in_degree = 1
   )
 

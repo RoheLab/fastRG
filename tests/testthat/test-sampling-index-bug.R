@@ -21,7 +21,14 @@ test_that("degenerate test case 2 succeeds", {
 
   B <- diag(rep(0.5, k))
 
-  dsbm <- directed_dcsbm(pi_in = pi, pi_out = pi, B = B, theta_in = rep(1, n), theta_out = rep(1, n), sort_nodes = TRUE)
+  dsbm <- directed_dcsbm(
+    pi_in = pi,
+    pi_out = pi,
+    B = B,
+    theta_in = rep(1, n),
+    theta_out = rep(1, n),
+    sort_nodes = TRUE
+  )
 
   expect_silent(sample_sparse(dsbm))
 })
@@ -40,7 +47,14 @@ test_that("degenerate test case 3 succeeds", {
   B <- matrix(0, nrow = k_out, ncol = k_in)
   diag(B) <- 0.5
 
-  dsbm <- directed_dcsbm(pi_in = pi_in, pi_out = pi_out, B = B, theta_in = rep(1, n), theta_out = rep(1, n), sort_nodes = TRUE)
+  dsbm <- directed_dcsbm(
+    pi_in = pi_in,
+    pi_out = pi_out,
+    B = B,
+    theta_in = rep(1, n),
+    theta_out = rep(1, n),
+    sort_nodes = TRUE
+  )
 
   expect_silent(sample_sparse(dsbm))
 })

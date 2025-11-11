@@ -144,8 +144,9 @@
 #' sample_tidygraph(fm)
 #'
 sample_edgelist <- function(
-    factor_model,
-    ...) {
+  factor_model,
+  ...
+) {
   rlang::check_dots_unnamed()
   UseMethod("sample_edgelist")
 }
@@ -153,13 +154,19 @@ sample_edgelist <- function(
 #' @rdname sample_edgelist
 #' @export
 sample_edgelist.undirected_factor_model <- function(
-    factor_model,
-    ...) {
+  factor_model,
+  ...
+) {
   X <- factor_model$X
-  S <- factor_model$S
+
+  # see #43, move the scaling factor here so it's temporary during sampling
+  # E(A) = U S U' holds for undirected factor models
+  S <- factor_model$S / 2
 
   sample_edgelist(
-    X, S, X,
+    X,
+    S,
+    X,
     FALSE,
     factor_model$poisson_edges,
     factor_model$allow_self_loops
@@ -169,14 +176,17 @@ sample_edgelist.undirected_factor_model <- function(
 #' @rdname sample_edgelist
 #' @export
 sample_edgelist.directed_factor_model <- function(
-    factor_model,
-    ...) {
+  factor_model,
+  ...
+) {
   X <- factor_model$X
   S <- factor_model$S
   Y <- factor_model$Y
 
   sample_edgelist(
-    X, S, Y,
+    X,
+    S,
+    Y,
     TRUE,
     factor_model$poisson_edges,
     factor_model$allow_self_loops
@@ -185,14 +195,14 @@ sample_edgelist.directed_factor_model <- function(
 
 #' Low level interface to sample RPDG edgelists
 #'
-#' **This is a breaks-off, no safety checks interface.**
+#' **This is a brakes-off, no safety checks interface.**
 #' We strongly recommend that you do not call
 #' `sample_edgelist.matrix()` unless you know what you are doing,
 #' and even then, we still do not recommend it, as you will
 #' bypass all typical input validation.
-#' ***extremely loud coughing*** All those who bypass input
+#' **extremely loud coughing** All those who bypass input
 #' validation suffer foolishly at their own hand.
-#' ***extremely loud coughing***
+#' **extremely loud coughing**
 #'
 #' @param factor_model An `n` by `k1` [matrix()] or [Matrix::Matrix()]
 #'   of latent node positions encoding incoming edge community membership.
@@ -248,11 +258,14 @@ sample_edgelist.directed_factor_model <- function(
 #' sample_edgelist(X, S, Y, TRUE, TRUE, TRUE)
 #'
 sample_edgelist.matrix <- function(
-    factor_model, S, Y,
-    directed,
-    poisson_edges,
-    allow_self_loops,
-    ...) {
+  factor_model,
+  S,
+  Y,
+  directed,
+  poisson_edges,
+  allow_self_loops,
+  ...
+) {
   X <- factor_model
 
   stopifnot(is.logical(directed))

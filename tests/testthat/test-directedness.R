@@ -10,7 +10,8 @@ test_that("undirected graphs are undirected", {
   S <- matrix(runif(n = k * k, 0, .1), nrow = k)
 
   ufm <- undirected_factor_model(
-    X, S,
+    X,
+    S,
     expected_density = 0.1
   )
 

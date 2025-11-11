@@ -1,9 +1,12 @@
 new_directed_factor_model <- function(
-    X, S, Y,
-    poisson_edges,
-    allow_self_loops,
-    ...,
-    subclass = character()) {
+  X,
+  S,
+  Y,
+  poisson_edges,
+  allow_self_loops,
+  ...,
+  subclass = character()
+) {
   rlang::check_dots_unnamed()
 
   n <- nrow(X)
@@ -160,13 +163,16 @@ validate_directed_factor_model <- function(x) {
 #' fm2
 #'
 directed_factor_model <- function(
-    X, S, Y,
-    ...,
-    expected_in_degree = NULL,
-    expected_out_degree = NULL,
-    expected_density = NULL,
-    poisson_edges = TRUE,
-    allow_self_loops = TRUE) {
+  X,
+  S,
+  Y,
+  ...,
+  expected_in_degree = NULL,
+  expected_out_degree = NULL,
+  expected_density = NULL,
+  poisson_edges = TRUE,
+  allow_self_loops = TRUE
+) {
   X <- Matrix(X)
   S <- Matrix(S)
   Y <- Matrix(Y)
@@ -186,7 +192,9 @@ directed_factor_model <- function(
   }
 
   fm <- new_directed_factor_model(
-    X, S, Y,
+    X,
+    S,
+    Y,
     poisson_edges = poisson_edges,
     allow_self_loops = allow_self_loops,
     ...

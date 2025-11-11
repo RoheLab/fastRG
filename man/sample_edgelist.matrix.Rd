@@ -75,14 +75,14 @@ To avoid handling such considerations yourself, we recommend using
 over \code{\link[=sample_edgelist]{sample_edgelist()}}.
 }
 \description{
-\strong{This is a breaks-off, no safety checks interface.}
+\strong{This is a brakes-off, no safety checks interface.}
 We strongly recommend that you do not call
 \code{sample_edgelist.matrix()} unless you know what you are doing,
 and even then, we still do not recommend it, as you will
 bypass all typical input validation.
-\emph{\strong{extremely loud coughing}} All those who bypass input
+\strong{extremely loud coughing} All those who bypass input
 validation suffer foolishly at their own hand.
-\emph{\strong{extremely loud coughing}}
+\strong{extremely loud coughing}
 }
 \details{
 This function implements the \code{fastRG} algorithm as

@@ -1,6 +1,17 @@
-new_directed_erdos_renyi <- function(X, S, Y, p, poisson_edges, allow_self_loops, ...) {
+new_directed_erdos_renyi <- function(
+  X,
+  S,
+  Y,
+  p,
+  poisson_edges,
+  allow_self_loops,
+  ...
+) {
   er <- directed_factor_model(
-    X, S, Y, ...,
+    X,
+    S,
+    Y,
+    ...,
     subclass = "directed_erdos_renyi",
     poisson_edges = poisson_edges,
     allow_self_loops = allow_self_loops
@@ -57,14 +68,18 @@ validate_directed_erdos_renyi <- function(x) {
 #' A
 #'
 directed_erdos_renyi <- function(
-    n, ..., p = NULL,
-    poisson_edges = TRUE,
-    allow_self_loops = TRUE) {
+  n,
+  ...,
+  p = NULL,
+  poisson_edges = TRUE,
+  allow_self_loops = TRUE
+) {
   X <- Matrix(1, nrow = n, ncol = 1)
   Y <- Matrix(1, nrow = n, ncol = 1)
 
-  if (is.null(p) && is.null(expected_in_degree) &&
-    is.null(expected_out_degree)) {
+  if (
+    is.null(p) && is.null(expected_in_degree) && is.null(expected_out_degree)
+  ) {
     stop(
       "Must specify either `p`, `expected_in_degree` or ",
       " `expected_out_degree`.",
@@ -79,7 +94,9 @@ directed_erdos_renyi <- function(
   S <- matrix(p, nrow = 1, ncol = 1)
 
   er <- new_directed_erdos_renyi(
-    X, S, Y,
+    X,
+    S,
+    Y,
     p = p,
     poisson_edges = poisson_edges,
     allow_self_loops = allow_self_loops,

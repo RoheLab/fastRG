@@ -1,11 +1,13 @@
 new_undirected_dcsbm <- function(
-    X, S,
-    theta,
-    z,
-    pi,
-    sorted,
-    ...,
-    subclass = character()) {
+  X,
+  S,
+  theta,
+  z,
+  pi,
+  sorted,
+  ...,
+  subclass = character()
+) {
   subclass <- c(subclass, "undirected_dcsbm")
   dcsbm <- undirected_factor_model(X, S, ..., subclass = subclass)
   dcsbm$theta <- theta
@@ -107,7 +109,7 @@ validate_undirected_dcsbm <- function(x) {
 #'   to a node in community `j` is `Poisson(B[i, j])`. Must be
 #'   a square matrix. `matrix` and `Matrix` objects are both
 #'   acceptable. If `B` is not symmetric, it will be
-#'   symmetrized via the update `B := B + t(B)`. Defaults to `NULL`.
+#'   symmetrized via the update `B := B + t(B) / 2`. Defaults to `NULL`.
 #'   You must specify either `k` or `B`, but not both.
 #'
 #' @param block_sizes (block sizes) Number of nodes in each block,
@@ -267,15 +269,18 @@ validate_undirected_dcsbm <- function(x) {
 #'
 #'
 dcsbm <- function(
-    n = NULL, theta = NULL,
-    k = NULL, B = NULL,
-    ...,
-    block_sizes = NULL,
-    pi = NULL,
-    sort_nodes = TRUE,
-    force_identifiability = FALSE,
-    poisson_edges = TRUE,
-    allow_self_loops = TRUE) {
+  n = NULL,
+  theta = NULL,
+  k = NULL,
+  B = NULL,
+  ...,
+  block_sizes = NULL,
+  pi = NULL,
+  sort_nodes = TRUE,
+  force_identifiability = FALSE,
+  poisson_edges = TRUE,
+  allow_self_loops = TRUE
+) {
   ### degree heterogeneity parameters
 
   if (is.null(n) && is.null(theta)) {
@@ -327,7 +332,6 @@ dcsbm <- function(
   ### block membership
 
   if (is.null(block_sizes) && is.null(pi)) {
-
     base_value <- floor(n / k)
     remainder <- n %% k
     num_base_values <- k - remainder
@@ -342,16 +346,17 @@ dcsbm <- function(
     # for sorting by block size later
     pi <- block_sizes / n
   } else if (!is.null(block_sizes)) {
-
-    if(sum(block_sizes) != n) {
-      stop("Sum of `block_sizes` must equal `n` or `length(theta)`.", call. = FALSE)
+    if (sum(block_sizes) != n) {
+      stop(
+        "Sum of `block_sizes` must equal `n` or `length(theta)`.",
+        call. = FALSE
+      )
     }
 
     z <- sample(rep(1:k, times = block_sizes))
 
     # for sorting by block size later
     pi <- block_sizes / n
-
   } else if (!is.null(pi)) {
     if (!is.null(pi) && !is.null(block_sizes)) {
       stop("Length of `pi` must match dimensions of `B`.", call. = FALSE)
@@ -364,7 +369,6 @@ dcsbm <- function(
     if (any(pi < 0)) {
       stop("All elements of `pi` must be >= 0.", call. = FALSE)
     }
-
 
     z <- sample(k, n, replace = TRUE, prob = pi)
   } else {
@@ -428,8 +432,14 @@ dcsbm <- function(
 #' @method print undirected_dcsbm
 #' @export
 print.undirected_dcsbm <- function(x, ...) {
-  cat(glue("Undirected Degree-Corrected Stochastic Blockmodel\n", .trim = FALSE))
-  cat(glue("-------------------------------------------------\n\n", .trim = FALSE))
+  cat(glue(
+    "Undirected Degree-Corrected Stochastic Blockmodel\n",
+    .trim = FALSE
+  ))
+  cat(glue(
+    "-------------------------------------------------\n\n",
+    .trim = FALSE
+  ))
 
   sorted <- if (x$sorted) "arranged by block" else "not arranged by block"
 

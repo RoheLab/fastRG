@@ -1,14 +1,17 @@
 new_directed_dcsbm <- function(
-    X, S, Y,
-    theta_out,
-    theta_in,
-    z_out,
-    z_in,
-    pi_out,
-    pi_in,
-    sorted,
-    ...,
-    subclass = character()) {
+  X,
+  S,
+  Y,
+  theta_out,
+  theta_in,
+  z_out,
+  z_in,
+  pi_out,
+  pi_in,
+  sorted,
+  ...,
+  subclass = character()
+) {
   subclass <- c(subclass, "directed_dcsbm")
   dcsbm <- directed_factor_model(X, S, Y, ..., subclass = subclass)
   dcsbm$theta_out <- theta_out
@@ -334,16 +337,20 @@ validate_directed_dcsbm <- function(x) {
 #' population_svd <- svds(ddcsbm)
 #'
 directed_dcsbm <- function(
-    n = NULL,
-    theta_out = NULL, theta_in = NULL,
-    k_out = NULL, k_in = NULL, B = NULL,
-    ...,
-    pi_out = rep(1 / k_out, k_out),
-    pi_in = rep(1 / k_in, k_in),
-    sort_nodes = TRUE,
-    force_identifiability = TRUE,
-    poisson_edges = TRUE,
-    allow_self_loops = TRUE) {
+  n = NULL,
+  theta_out = NULL,
+  theta_in = NULL,
+  k_out = NULL,
+  k_in = NULL,
+  B = NULL,
+  ...,
+  pi_out = rep(1 / k_out, k_out),
+  pi_in = rep(1 / k_in, k_in),
+  sort_nodes = TRUE,
+  force_identifiability = TRUE,
+  poisson_edges = TRUE,
+  allow_self_loops = TRUE
+) {
   # NOTE:
   #   - X corresponds to outgoing communities, outgoing edges and rows of A
   #   - Y corresponds to incoming communities, incoming edges and columns of A
@@ -462,8 +469,6 @@ directed_dcsbm <- function(
     z_in <- sort(z_in)
   }
 
-
-
   if (k_out > 1) {
     X <- sparse.model.matrix(~ z_out + 0)
   } else {
@@ -525,7 +530,10 @@ directed_dcsbm <- function(
 #' @export
 print.directed_dcsbm <- function(x, ...) {
   cat(glue("Directed Degree-Corrected Stochastic Blockmodel\n", .trim = FALSE))
-  cat(glue("-----------------------------------------------\n\n", .trim = FALSE))
+  cat(glue(
+    "-----------------------------------------------\n\n",
+    .trim = FALSE
+  ))
 
   sorted <- if (x$sorted) "arranged by block" else "not arranged by block"
 
@@ -550,7 +558,16 @@ print.directed_dcsbm <- function(x, ...) {
   cat("Allow self loops:", as.character(x$allow_self_loops), "\n\n")
 
   cat(glue("Expected edges: {round(expected_edges(x))}\n", .trim = FALSE))
-  cat(glue("Expected in degree: {round(expected_out_degree(x), 1)}\n", .trim = FALSE))
-  cat(glue("Expected out degree: {round(expected_in_degree(x), 1)}\n", .trim = FALSE))
-  cat(glue("Expected density: {round(expected_density(x), 5)}\n", .trim = FALSE))
+  cat(glue(
+    "Expected in degree: {round(expected_out_degree(x), 1)}\n",
+    .trim = FALSE
+  ))
+  cat(glue(
+    "Expected out degree: {round(expected_in_degree(x), 1)}\n",
+    .trim = FALSE
+  ))
+  cat(glue(
+    "Expected density: {round(expected_density(x), 5)}\n",
+    .trim = FALSE
+  ))
 }

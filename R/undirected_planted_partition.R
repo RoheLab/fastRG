@@ -24,7 +24,9 @@ validate_undirected_planted_partition <- function(x) {
     stop("`within_block` must be between zero and one.", call. = FALSE)
   }
 
-  if (!is.null(x$between_block) && (x$between_block < 0 || x$between_block > 1)) {
+  if (
+    !is.null(x$between_block) && (x$between_block < 0 || x$between_block > 1)
+  ) {
     stop("`between_block` must be between zero and one.", call. = FALSE)
   }
 
@@ -35,7 +37,6 @@ validate_undirected_planted_partition <- function(x) {
   if (!is.null(x$b) && x$b < 0) {
     stop("`b` must be greater than zero.", call. = FALSE)
   }
-
 
   # diagonal B must be constant
 
@@ -120,18 +121,19 @@ validate_undirected_planted_partition <- function(x) {
 #' lazy_pp
 #'
 planted_partition <- function(
-    n,
-    k,
-    ...,
-    within_block = NULL,
-    between_block = NULL,
-    a = NULL,
-    b = NULL,
-    block_sizes = NULL,
-    pi = NULL,
-    sort_nodes = TRUE,
-    poisson_edges = TRUE,
-    allow_self_loops = TRUE) {
+  n,
+  k,
+  ...,
+  within_block = NULL,
+  between_block = NULL,
+  a = NULL,
+  b = NULL,
+  block_sizes = NULL,
+  pi = NULL,
+  sort_nodes = TRUE,
+  poisson_edges = TRUE,
+  allow_self_loops = TRUE
+) {
   if (is.null(within_block)) {
     within_block <- a / n
   }
