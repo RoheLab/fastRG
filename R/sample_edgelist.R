@@ -144,8 +144,9 @@
 #' sample_tidygraph(fm)
 #'
 sample_edgelist <- function(
-    factor_model,
-    ...) {
+  factor_model,
+  ...
+) {
   rlang::check_dots_unnamed()
   UseMethod("sample_edgelist")
 }
@@ -153,8 +154,9 @@ sample_edgelist <- function(
 #' @rdname sample_edgelist
 #' @export
 sample_edgelist.undirected_factor_model <- function(
-    factor_model,
-    ...) {
+  factor_model,
+  ...
+) {
   X <- factor_model$X
 
   # see #43, move the scaling factor here so it's temporary during sampling
@@ -162,7 +164,9 @@ sample_edgelist.undirected_factor_model <- function(
   S <- factor_model$S / 2
 
   sample_edgelist(
-    X, S, X,
+    X,
+    S,
+    X,
     FALSE,
     factor_model$poisson_edges,
     factor_model$allow_self_loops
@@ -172,14 +176,17 @@ sample_edgelist.undirected_factor_model <- function(
 #' @rdname sample_edgelist
 #' @export
 sample_edgelist.directed_factor_model <- function(
-    factor_model,
-    ...) {
+  factor_model,
+  ...
+) {
   X <- factor_model$X
   S <- factor_model$S
   Y <- factor_model$Y
 
   sample_edgelist(
-    X, S, Y,
+    X,
+    S,
+    Y,
     TRUE,
     factor_model$poisson_edges,
     factor_model$allow_self_loops
@@ -251,11 +258,14 @@ sample_edgelist.directed_factor_model <- function(
 #' sample_edgelist(X, S, Y, TRUE, TRUE, TRUE)
 #'
 sample_edgelist.matrix <- function(
-    factor_model, S, Y,
-    directed,
-    poisson_edges,
-    allow_self_loops,
-    ...) {
+  factor_model,
+  S,
+  Y,
+  directed,
+  poisson_edges,
+  allow_self_loops,
+  ...
+) {
   X <- factor_model
 
   stopifnot(is.logical(directed))
