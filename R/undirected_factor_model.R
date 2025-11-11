@@ -1,9 +1,11 @@
 new_undirected_factor_model <- function(
-    X, S,
-    ...,
-    poisson_edges = TRUE,
-    allow_self_loops = TRUE,
-    subclass = character()) {
+  X,
+  S,
+  ...,
+  poisson_edges = TRUE,
+  allow_self_loops = TRUE,
+  subclass = character()
+) {
   rlang::check_dots_unnamed()
 
   n <- nrow(X)
@@ -143,12 +145,14 @@ validate_undirected_factor_model <- function(x) {
 #' svds(ufm2)
 #'
 undirected_factor_model <- function(
-    X, S,
-    ...,
-    expected_degree = NULL,
-    expected_density = NULL,
-    poisson_edges = TRUE,
-    allow_self_loops = TRUE) {
+  X,
+  S,
+  ...,
+  expected_degree = NULL,
+  expected_density = NULL,
+  poisson_edges = TRUE,
+  allow_self_loops = TRUE
+) {
   X <- Matrix(X)
   S <- Matrix(S)
 
@@ -159,7 +163,10 @@ undirected_factor_model <- function(
     )
   }
 
-  ufm <- new_undirected_factor_model(X, S, ...,
+  ufm <- new_undirected_factor_model(
+    X,
+    S,
+    ...,
     poisson_edges = poisson_edges,
     allow_self_loops = allow_self_loops
   )

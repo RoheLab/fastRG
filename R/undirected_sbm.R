@@ -100,14 +100,16 @@ validate_undirected_sbm <- function(x) {
 #' e$values
 #'
 sbm <- function(
-    n,
-    k = NULL, B = NULL,
-    ...,
-    block_sizes = NULL,
-    pi = NULL,
-    sort_nodes = TRUE,
-    poisson_edges = TRUE,
-    allow_self_loops = TRUE) {
+  n,
+  k = NULL,
+  B = NULL,
+  ...,
+  block_sizes = NULL,
+  pi = NULL,
+  sort_nodes = TRUE,
+  poisson_edges = TRUE,
+  allow_self_loops = TRUE
+) {
   sbm <- dcsbm(
     theta = rep(1, n),
     k = k,

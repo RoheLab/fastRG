@@ -13,8 +13,10 @@ test_that("undirected graphs poisson_edges = FALSE", {
   S <- matrix(runif(n = k * k, 0, .1), nrow = k)
 
   ufm <- undirected_factor_model(
-    X, S,
-    expected_density = 0.1, poisson_edges = FALSE
+    X,
+    S,
+    expected_density = 0.1,
+    poisson_edges = FALSE
   )
 
   edgelist <- sample_edgelist(ufm)
@@ -54,7 +56,13 @@ test_that("directed graphs poisson_edges = FALSE", {
   S <- matrix(runif(n = k1 * k2, 0, .1), nrow = k1, ncol = k2)
   Y <- matrix(rexp(n = k2 * d, 1), nrow = d)
 
-  fm <- directed_factor_model(X, S, Y, expected_density = 0.01, poisson_edges = FALSE)
+  fm <- directed_factor_model(
+    X,
+    S,
+    Y,
+    expected_density = 0.01,
+    poisson_edges = FALSE
+  )
 
   edgelist <- sample_edgelist(fm)
 

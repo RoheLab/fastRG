@@ -22,8 +22,9 @@
 #' @family samplers
 #'
 sample_sparse <- function(
-    factor_model,
-    ...) {
+  factor_model,
+  ...
+) {
   rlang::check_dots_unnamed()
   UseMethod("sample_sparse")
 }
@@ -31,8 +32,9 @@ sample_sparse <- function(
 #' @rdname sample_sparse
 #' @export
 sample_sparse.undirected_factor_model <- function(
-    factor_model,
-    ...) {
+  factor_model,
+  ...
+) {
   # to construct a symmetric sparseMatrix, we only pass in elements
   # of either the upper or lower diagonal (otherwise we'll get an error)
   # so we're going to sample as we want a directed graph, and then
@@ -90,8 +92,9 @@ sample_sparse.undirected_factor_model <- function(
 #' @rdname sample_sparse
 #' @export
 sample_sparse.directed_factor_model <- function(
-    factor_model,
-    ...) {
+  factor_model,
+  ...
+) {
   edgelist <- sample_edgelist(factor_model, ...)
 
   n <- factor_model$n

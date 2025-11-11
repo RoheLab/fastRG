@@ -16,7 +16,6 @@ validate_undirected_mmsbm <- function(x) {
     stop("Elements of `theta` must be strictly positive.", call. = FALSE)
   }
 
-
   if (min(values$S) < 0) {
     stop(
       "All elements of `S` must be non-negative.",
@@ -35,13 +34,15 @@ validate_undirected_mmsbm <- function(x) {
 }
 
 new_undirected_mmsbm <- function(
-    X, S,
-    theta,
-    Z,
-    alpha,
-    sorted,
-    ...,
-    subclass = character()) {
+  X,
+  S,
+  theta,
+  Z,
+  alpha,
+  sorted,
+  ...,
+  subclass = character()
+) {
   subclass <- c(subclass, "undirected_mmsbm")
   mmsbm <- undirected_factor_model(X, S, ..., subclass = subclass)
   mmsbm$theta <- theta
@@ -181,14 +182,17 @@ new_undirected_mmsbm <- function(
 #' svds(custom_mmsbm)$d
 #'
 mmsbm <- function(
-    n = NULL, theta = NULL,
-    k = NULL, B = NULL,
-    ...,
-    alpha = rep(1, k),
-    sort_nodes = TRUE,
-    force_pure = TRUE,
-    poisson_edges = TRUE,
-    allow_self_loops = TRUE) {
+  n = NULL,
+  theta = NULL,
+  k = NULL,
+  B = NULL,
+  ...,
+  alpha = rep(1, k),
+  sort_nodes = TRUE,
+  force_pure = TRUE,
+  poisson_edges = TRUE,
+  allow_self_loops = TRUE
+) {
   ### degree heterogeneity parameters
 
   if (is.null(n) && is.null(theta)) {
@@ -286,8 +290,14 @@ mmsbm <- function(
 #' @method print undirected_mmsbm
 #' @export
 print.undirected_mmsbm <- function(x, ...) {
-  cat(glue("Undirected Degree-Corrected Mixed Membership Stochastic Blockmodel\n", .trim = FALSE))
-  cat(glue("------------------------------------------------------------------\n\n", .trim = FALSE))
+  cat(glue(
+    "Undirected Degree-Corrected Mixed Membership Stochastic Blockmodel\n",
+    .trim = FALSE
+  ))
+  cat(glue(
+    "------------------------------------------------------------------\n\n",
+    .trim = FALSE
+  ))
 
   sorted <- if (x$sorted) "arranged by block" else "not arranged by block"
 

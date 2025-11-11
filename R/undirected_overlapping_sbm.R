@@ -1,13 +1,15 @@
 new_undirected_overlapping_sbm <- function(
-    X, S,
-    Z,
-    poisson_edges = TRUE,
-    allow_self_loops = TRUE,
-    pi,
-    B,
-    sorted,
-    ...,
-    subclass = character()) {
+  X,
+  S,
+  Z,
+  poisson_edges = TRUE,
+  allow_self_loops = TRUE,
+  pi,
+  B,
+  sorted,
+  ...,
+  subclass = character()
+) {
   subclass <- c(subclass, "undirected_overlapping_sbm")
   overlapping_sbm <- undirected_factor_model(X, S, ..., subclass = subclass)
   overlapping_sbm$Z <- Z
@@ -199,13 +201,16 @@ validate_undirected_overlapping_sbm <- function(x) {
 #' population_eigs <- eigs_sym(custom_overlapping_sbm)
 #'
 overlapping_sbm <- function(
-    n, k = NULL, B = NULL,
-    ...,
-    pi = rep(1 / k, k),
-    sort_nodes = TRUE,
-    force_pure = TRUE,
-    poisson_edges = TRUE,
-    allow_self_loops = TRUE) {
+  n,
+  k = NULL,
+  B = NULL,
+  ...,
+  pi = rep(1 / k, k),
+  sort_nodes = TRUE,
+  force_pure = TRUE,
+  poisson_edges = TRUE,
+  allow_self_loops = TRUE
+) {
   ### mixing matrix
 
   if (is.null(k) && is.null(B)) {
@@ -291,8 +296,14 @@ overlapping_sbm <- function(
 #' @method print undirected_overlapping_sbm
 #' @export
 print.undirected_overlapping_sbm <- function(x, ...) {
-  cat(glue("Undirected Degree-Corrected Overlapping Blockmodel\n", .trim = FALSE))
-  cat(glue("-------------------------------------------------\n\n", .trim = FALSE))
+  cat(glue(
+    "Undirected Degree-Corrected Overlapping Blockmodel\n",
+    .trim = FALSE
+  ))
+  cat(glue(
+    "-------------------------------------------------\n\n",
+    .trim = FALSE
+  ))
 
   sorted <- if (x$sorted) "sorted" else "sorted"
 

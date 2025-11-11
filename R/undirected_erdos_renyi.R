@@ -1,6 +1,8 @@
 new_undirected_erdos_renyi <- function(X, S, p, ...) {
   er <- undirected_factor_model(
-    X, S, ...,
+    X,
+    S,
+    ...,
     subclass = "undirected_erdos_renyi"
   )
   er$p <- p
@@ -54,9 +56,12 @@ validate_undirected_erdos_renyi <- function(x) {
 #' A
 #'
 erdos_renyi <- function(
-    n, ..., p = NULL,
-    poisson_edges = TRUE,
-    allow_self_loops = TRUE) {
+  n,
+  ...,
+  p = NULL,
+  poisson_edges = TRUE,
+  allow_self_loops = TRUE
+) {
   X <- Matrix(1, nrow = n, ncol = 1)
 
   if (is.null(p) && is.null(expected_degree)) {
@@ -69,8 +74,11 @@ erdos_renyi <- function(
 
   B <- matrix(p)
 
-  er <- new_undirected_erdos_renyi(X, B,
-    p = p, ...,
+  er <- new_undirected_erdos_renyi(
+    X,
+    B,
+    p = p,
+    ...,
     poisson_edges = poisson_edges,
     allow_self_loops = allow_self_loops
   )

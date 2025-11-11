@@ -16,10 +16,13 @@ RSpectra::eigs_sym
 #' @method eigs_sym undirected_factor_model
 #' @export
 eigs_sym.undirected_factor_model <- function(
-    A, k = A$k,
-    which = "LM", sigma = NULL,
-    opts = list(),
-    ...) {
+  A,
+  k = A$k,
+  which = "LM",
+  sigma = NULL,
+  opts = list(),
+  ...
+) {
   rlang::check_installed("RSpectra")
 
   Ax <- function(x, args) as.numeric(args$X %*% (args$SXt %*% x))
@@ -37,12 +40,13 @@ eigs_sym.undirected_factor_model <- function(
 #' @method svds undirected_factor_model
 #' @export
 svds.undirected_factor_model <- function(
-    A,
-    k = A$k,
-    nu = k,
-    nv = k,
-    opts = list(),
-    ...) {
+  A,
+  k = A$k,
+  nu = k,
+  nv = k,
+  opts = list(),
+  ...
+) {
   rlang::check_installed("RSpectra")
 
   Ax <- function(x, args) {
@@ -76,12 +80,13 @@ svds.undirected_factor_model <- function(
 #' @method svds directed_factor_model
 #' @export
 svds.directed_factor_model <- function(
-    A,
-    k = min(A$k1, A$k2),
-    nu = k,
-    nv = k,
-    opts = list(),
-    ...) {
+  A,
+  k = min(A$k1, A$k2),
+  nu = k,
+  nv = k,
+  opts = list(),
+  ...
+) {
   rlang::check_installed("RSpectra")
 
   Ax <- function(x, args) {
