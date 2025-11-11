@@ -12,21 +12,21 @@
 
 ## Non-breaking changes
 
-- Added `vignette("consistency")` demonstratingn how to check consistency of spectral estimators using `fastRG` for sampling and population spectra computations (#33, #43)
+- Added `vignette("consistency")` demonstrating how to check consistency of spectral estimators using `fastRG` for sampling and population spectra computations (#33, #43)
 
 ## Details about degree over-sampling bug and the fix
 
-The `fastRG` sampling algorithm, as implemented in `sample_edgelist.matrix()`, is fundamentally a sampler for asymmetric, directed networks with conditional expectation $\mathbb E[A \mid X, S, Y] = X S Y^top \in \mathbb R^{n_1 \times n_2}$. That is, you can think of the sampler as a very efficient procedure for iterating through $i = 1, ..., n_1$ and $j = 1, ..., n_2$ and sampling from a Poisson with rate $(X S Y^\top)_{ij}$.
+The `fastRG` sampling algorithm, as implemented in `sample_edgelist.matrix()`, is fundamentally a sampler for asymmetric, directed networks with conditional expectation $\mathbb E[A \mid X, S, Y] = X S Y^\top \in \mathbb R^{n_1 \times n_2}$. That is, you can think of the sampler as a very efficient procedure for iterating through $i = 1, ..., n_1$ and $j = 1, ..., n_2$ and sampling from a Poisson with rate $(X S Y^\top)_{ij}$.
 
-However, we would also like to use this same sampler to sample from undirected networks. In an undirected networks, we have the conditional expectation $\mathbb E[A \mid X, S, Y] = Z B Y^top \in \mathbb R^{n \times n}$ is a square matrix with $(X S Y^\top)_{ij} = (X S Y^\top)_{ji}$. To sample from this matrix, you want to sample the upper triangle of $A$ from a Poisson with rate $(X S Y^\top)_{ij}$ for all $1 \le i \le j \le n$, and then symmetrize $A$.
+However, we would also like to use this same sampler to sample from undirected networks. In an undirected networks, the conditional expectation $\mathbb E[A \mid X, S] = X S X^\top \in \mathbb R^{n \times n}$ is a square matrix with $(X S X^\top)_{ij} = (X S X^\top)_{ji}$. To sample from this matrix, it's typical to sample the upper triangle of $A$ from a Poisson with rate $(X S X^\top)_{ij}$ for all $1 \le i \le j \le n$, and then symmetrize $A$.
 
-Since the `fastRG` algorithm samples $A_{ij}$ for all $i, j$, not just the upper triangle of $A$, we use a trick to sample from undirected networks. First, we force the conditional expectation to the symmetric by symmetrizing $S$. Then, we still sample for all $i, j$. To set $A_{ij}$ we sample once from a Poisson with rate $(X S Y^\top)_{ij}$ and once from a Poisson with rate $(X S Y^\top)_{ji}$ (these rates are equal by symmetry!). Then we set $A_{ij} = A_{ji}$ to the sum of these sample Poisson random variables. The issue is that this doubles the expected value of $A_{ij} = A_{ji}$ and so we sample twice as many edges as we should. Up until this release of `fastRG`, we've unfortunately been doing this double sampling (see #19).
+Since the `fastRG` algorithm samples $A_{ij}$ for all $i, j$, not just the upper triangle of $A$, we use a trick to sample from undirected networks. First, we force the conditional expectation to the symmetric by symmetrizing $S$. Then, we still sample for all $i, j$. To set $A_{ij}$ we sample once from a Poisson with rate $(X S X^\top)_{ij}$ and once from a Poisson with rate $(X S X^\top)_{ji}$ (these rates are equal by symmetry!). Then we set $A_{ij} = A_{ji}$ to the sum of these Poisson random variables. The issue is that this doubles the expected value of $A_{ij} = A_{ji}$ and so we sample twice as many edges as we should. Up until this release of `fastRG`, we've unfortunately been doing this double sampling in undirected networks (#19).
 
 In this release, we fix this over-sampling. The key is that we divide $S$ by two at sampling time. We do not modify $S$ at all in the `undirected_factor_model()`! You can always use $X S X^\top$ to compute the expected value of $A$. This new change *only affects sampling*. 
 
 That is, instead of passing the $S$ from an `undirected_factor_model()` to the sampler `sample_edgelist.matrix()`, we pass $S / 2$ (see `sample_edgelist.undirected_factor_model()`). This fixes double sampling on the off-diagonal of $A$. The downside is that we're now undersampling by half the diagonal of $A$. I'm assuming that for most use cases this doesn't matter. We could correct for this undersampling of the diagonal of $A$, so please open an issue if self-loops are important to your project.
 
-As a consequence of this change, $A$ and $\mathbb E[A | X, S, Y]$ show now be on the same scale, rather than off by a factor of 2. Importantly, the spectrums should match up now, so you can now use `fastRG` to check how closely you're recovering the spectrum of the your model. See `vignette("consistency")` for a quick demonstration show consistency of spectral estimates.
+As a consequence of this change, $A$ and $\mathbb E[A | X, S]$ show now be on the same scale, rather than off by a factor of 2. Importantly, the spectrums should match up now, so you can now use `fastRG` to check how closely you're recovering the spectrum of the your model. See `vignette("consistency")` for a quick demonstration showing consistency of spectral estimates.
 
 # fastRG 0.3.3
 
