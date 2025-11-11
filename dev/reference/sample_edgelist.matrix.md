@@ -1,11 +1,11 @@
 # Low level interface to sample RPDG edgelists
 
-**This is a breaks-off, no safety checks interface.** We strongly
+**This is a brakes-off, no safety checks interface.** We strongly
 recommend that you do not call `sample_edgelist.matrix()` unless you
 know what you are doing, and even then, we still do not recommend it, as
-you will bypass all typical input validation. ***extremely loud
-coughing*** All those who bypass input validation suffer foolishly at
-their own hand. ***extremely loud coughing***
+you will bypass all typical input validation. **extremely loud
+coughing** All those who bypass input validation suffer foolishly at
+their own hand. **extremely loud coughing**
 
 ## Usage
 

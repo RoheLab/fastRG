@@ -121,20 +121,20 @@ ufm
 
 edgelist <- sample_edgelist(ufm)
 edgelist
-#> # A tibble: 500 × 2
+#> # A tibble: 251 × 2
 #>     from    to
 #>    <int> <int>
-#>  1    66    71
-#>  2    85    87
-#>  3    37    54
-#>  4    70    92
-#>  5    14    44
-#>  6    66    85
-#>  7    76    83
-#>  8    57    87
-#>  9    57    95
-#> 10    22    94
-#> # ℹ 490 more rows
+#>  1    44    57
+#>  2    65    66
+#>  3    75    97
+#>  4    12    87
+#>  5    13    71
+#>  6    24    87
+#>  7    37    65
+#>  8    92    98
+#>  9    14    94
+#> 10    22    85
+#> # ℹ 241 more rows
 
 ### sampling graphs as sparse matrices ----------------
 
@@ -159,25 +159,25 @@ dim(B)
 ### sampling graphs as igraph graphs ------------------
 
 sample_igraph(ufm)
-#> IGRAPH fe5136a UN-- 100 486 -- 
+#> IGRAPH 6c5ead6 UN-- 100 236 -- 
 #> + attr: name (v/c)
-#> + edges from fe5136a (vertex names):
-#>  [1] 65--87  84--100 12--87  13--95  3 --92  25--94  54--98  16--22  1 --66 
-#> [10] 13--94  65--79  12--66  79--94  55--56  30--64  13--22  22--40  37--80 
-#> [19] 88--95  11--22  85--94  52--94  11--37  12--16  19--75  47--74  63--97 
-#> [28] 12--61  11--73  2 --71  25--28  61--70  88--98  44--71  61--97  46--56 
-#> [37] 14--85  36--65  14--17  20--71  12--12  57--85  59--71  46--90  30--38 
-#> [46] 17--55  59--98  15--47  37--62  49--85  65--98  37--98  22--33  56--77 
-#> [55] 25--51  20--80  16--57  25--71  52--64  12--47  8 --80  18--79  22--62 
-#> [64] 14--31  37--69  16--54  26--90  38--94  20--79  70--97  19--90  11--71 
+#> + edges from 6c5ead6 (vertex names):
+#>  [1] 16--98  45--98  57--88  19--88  22--100 1 --70  37--87  13--66  19--84 
+#> [10] 17--74  37--92  65--83  1 --46  17--94  86--92  59--94  70--90  30--66 
+#> [19] 10--61  44--87  43--79  39--92  46--73  6 --100 12--17  30--44  16--64 
+#> [28] 17--54  11--71  64--100 9 --56  41--80  47--79  11--100 62--99  9 --14 
+#> [37] 71--81  11--80  5 --11  32--76  1 --94  55--81  22--38  62--79  46--88 
+#> [46] 41--82  37--79  76--98  73--86  17--75  34--74  52--56  71--90  2 --39 
+#> [55] 14--14  17--61  3 --11  82--91  72--87  17--23  16--46  87--97  47--98 
+#> [64] 61--66  5 --94  45--51  43--71  30--97  36--72  28--47  85--97  15--27 
 #> + ... omitted several edges
 
 ### sampling graphs as tidygraph graphs ---------------
 
 sample_tidygraph(ufm)
-#> # A tbl_graph: 100 nodes and 501 edges
+#> # A tbl_graph: 100 nodes and 238 edges
 #> #
-#> # An undirected multigraph with 1 component
+#> # An undirected multigraph with 8 components
 #> #
 #> # Node Data: 100 × 1 (active)
 #>    name 
@@ -194,13 +194,13 @@ sample_tidygraph(ufm)
 #> 10 10   
 #> # ℹ 90 more rows
 #> #
-#> # Edge Data: 501 × 2
+#> # Edge Data: 238 × 2
 #>    from    to
 #>   <int> <int>
-#> 1    54    94
-#> 2    56    94
-#> 3    16    22
-#> # ℹ 498 more rows
+#> 1    46    80
+#> 2    12    25
+#> 3    54    66
+#> # ℹ 235 more rows
 
 ##### directed examples ----------------------------
 
@@ -241,20 +241,20 @@ fm
 
 edgelist2 <- sample_edgelist(fm)
 edgelist2
-#> # A tibble: 105 × 2
+#> # A tibble: 96 × 2
 #>     from    to
 #>    <int> <int>
-#>  1    84    34
-#>  2    80    16
-#>  3    42    30
-#>  4    42    31
-#>  5    47    26
-#>  6     7    31
-#>  7    39    14
-#>  8    14    11
-#>  9    49    47
-#> 10    54    28
-#> # ℹ 95 more rows
+#>  1    40    10
+#>  2    46    36
+#>  3    31    36
+#>  4     4    34
+#>  5    40     9
+#>  6    54    32
+#>  7    38    24
+#>  8   100    17
+#>  9    79    11
+#> 10    53    11
+#> # ℹ 86 more rows
 
 ### sampling graphs as sparse matrices ----------------
 
@@ -292,9 +292,9 @@ is_bipartite(dig)
 ### sampling graphs as tidygraph graphs ---------------
 
 sample_tidygraph(fm)
-#> # A tbl_graph: 150 nodes and 105 edges
+#> # A tbl_graph: 150 nodes and 104 edges
 #> #
-#> # A bipartite multigraph with 59 components
+#> # A bipartite multigraph with 58 components
 #> #
 #> # Node Data: 150 × 1 (active)
 #>    type 
@@ -311,11 +311,11 @@ sample_tidygraph(fm)
 #> 10 FALSE
 #> # ℹ 140 more rows
 #> #
-#> # Edge Data: 105 × 2
+#> # Edge Data: 104 × 2
 #>    from    to
 #>   <int> <int>
-#> 1    55   101
-#> 2    61   101
-#> 3    89   101
-#> # ℹ 102 more rows
+#> 1     2   102
+#> 2    34   102
+#> 3    45   102
+#> # ℹ 101 more rows
 ```

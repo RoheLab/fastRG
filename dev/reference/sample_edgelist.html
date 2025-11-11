@@ -17,7 +17,7 @@ in your preferred format."><meta name="robots" content="noindex"></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">fastRG</a>
 
-    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.3.3.9000</small>
+    <small class="nav-text text-danger me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="In-development version">0.3.3.9001</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -26,6 +26,10 @@ in your preferred format."><meta name="robots" content="noindex"></head><body>
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/consistency.html">Demonstration: simulation study</a></li>
+  </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -177,20 +181,20 @@ Journal of Machine Learning Research; 19(77):1-13, 2018.
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">edgelist</span> <span class="op">&lt;-</span> <span class="fu">sample_edgelist</span><span class="op">(</span><span class="va">ufm</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">edgelist</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 500 × 2</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 251 × 2</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     from    to</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>    66    71</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>    85    87</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>    37    54</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>    70    92</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>    14    44</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>    66    85</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>    76    83</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>    57    87</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>    57    95</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>    22    94</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 490 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>    44    57</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>    65    66</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>    75    97</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>    12    87</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>    13    71</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>    24    87</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>    37    65</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>    92    98</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>    14    94</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>    22    85</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 241 more rows</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">### sampling graphs as sparse matrices ----------------</span></span></span>
 <span class="r-in"><span></span></span>
@@ -215,25 +219,25 @@ Journal of Machine Learning Research; 19(77):1-13, 2018.
 <span class="r-in"><span><span class="co">### sampling graphs as igraph graphs ------------------</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="sample_igraph.html">sample_igraph</a></span><span class="op">(</span><span class="va">ufm</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> IGRAPH 0199eee UN-- 100 486 -- </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> IGRAPH 0db287e UN-- 100 236 -- </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> + attr: name (v/c)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> + edges from 0199eee (vertex names):</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 65--87  84--100 12--87  13--95  3 --92  25--94  54--98  16--22  1 --66 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [10] 13--94  65--79  12--66  79--94  55--56  30--64  13--22  22--40  37--80 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [19] 88--95  11--22  85--94  52--94  11--37  12--16  19--75  47--74  63--97 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [28] 12--61  11--73  2 --71  25--28  61--70  88--98  44--71  61--97  46--56 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [37] 14--85  36--65  14--17  20--71  12--12  57--85  59--71  46--90  30--38 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [46] 17--55  59--98  15--47  37--62  49--85  65--98  37--98  22--33  56--77 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [55] 25--51  20--80  16--57  25--71  52--64  12--47  8 --80  18--79  22--62 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [64] 14--31  37--69  16--54  26--90  38--94  20--79  70--97  19--90  11--71 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> + edges from 0db287e (vertex names):</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [1] 16--98  45--98  57--88  19--88  22--100 1 --70  37--87  13--66  19--84 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [10] 17--74  37--92  65--83  1 --46  17--94  86--92  59--94  70--90  30--66 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [19] 10--61  44--87  43--79  39--92  46--73  6 --100 12--17  30--44  16--64 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [28] 17--54  11--71  64--100 9 --56  41--80  47--79  11--100 62--99  9 --14 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [37] 71--81  11--80  5 --11  32--76  1 --94  55--81  22--38  62--79  46--88 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [46] 41--82  37--79  76--98  73--86  17--75  34--74  52--56  71--90  2 --39 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [55] 14--14  17--61  3 --11  82--91  72--87  17--23  16--46  87--97  47--98 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [64] 61--66  5 --94  45--51  43--71  30--97  36--72  28--47  85--97  15--27 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> + ... omitted several edges</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">### sampling graphs as tidygraph graphs ---------------</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="sample_tidygraph.html">sample_tidygraph</a></span><span class="op">(</span><span class="va">ufm</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tbl_graph: 100 nodes and 501 edges</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tbl_graph: 100 nodes and 238 edges</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># An undirected multigraph with 1 component</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># An undirected multigraph with 8 components</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Node Data: 100 × 1 (active)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    name </span>
@@ -250,13 +254,13 @@ Journal of Machine Learning Research; 19(77):1-13, 2018.
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> 10   </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 90 more rows</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Edge Data: 501 × 2</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Edge Data: 238 × 2</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    from    to</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>    54    94</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>    56    94</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>    16    22</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 498 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>    46    80</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>    12    25</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>    54    66</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 235 more rows</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">##### directed examples ----------------------------</span></span></span>
 <span class="r-in"><span></span></span>
@@ -297,20 +301,20 @@ Journal of Machine Learning Research; 19(77):1-13, 2018.
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">edgelist2</span> <span class="op">&lt;-</span> <span class="fu">sample_edgelist</span><span class="op">(</span><span class="va">fm</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">edgelist2</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 105 × 2</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tibble: 96 × 2</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>     from    to</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>    84    34</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>    80    16</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>    42    30</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>    42    31</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>    47    26</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>     7    31</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>    39    14</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>    14    11</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>    49    47</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>    54    28</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 95 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 1</span>    40    10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 2</span>    46    36</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 3</span>    31    36</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 4</span>     4    34</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 5</span>    40     9</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 6</span>    54    32</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 7</span>    38    24</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 8</span>   100    17</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;"> 9</span>    79    11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span>    53    11</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 86 more rows</span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">### sampling graphs as sparse matrices ----------------</span></span></span>
 <span class="r-in"><span></span></span>
@@ -348,9 +352,9 @@ Journal of Machine Learning Research; 19(77):1-13, 2018.
 <span class="r-in"><span><span class="co">### sampling graphs as tidygraph graphs ---------------</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="sample_tidygraph.html">sample_tidygraph</a></span><span class="op">(</span><span class="va">fm</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tbl_graph: 150 nodes and 105 edges</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A tbl_graph: 150 nodes and 104 edges</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A bipartite multigraph with 59 components</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># A bipartite multigraph with 58 components</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Node Data: 150 × 1 (active)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    type </span>
@@ -367,13 +371,13 @@ Journal of Machine Learning Research; 19(77):1-13, 2018.
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">10</span> FALSE</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 140 more rows</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;">#</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Edge Data: 105 × 2</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># Edge Data: 104 × 2</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>    from    to</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;int&gt;</span> <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>    55   101</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>    61   101</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>    89   101</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 102 more rows</span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">1</span>     2   102</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">2</span>    34   102</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #BCBCBC;">3</span>    45   102</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> <span style="color: #949494;"># ℹ 101 more rows</span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

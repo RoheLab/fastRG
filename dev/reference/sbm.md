@@ -46,7 +46,7 @@ sbm(
   The probability that a node in block `i` connects to a node in
   community `j` is `Poisson(B[i, j])`. Must be a square matrix. `matrix`
   and `Matrix` objects are both acceptable. If `B` is not symmetric, it
-  will be symmetrized via the update `B := B + t(B)`. Defaults to
+  will be symmetrized via the update `B := B + t(B) / 2`. Defaults to
   `NULL`. You must specify either `k` or `B`, but not both.
 
 - ...:
@@ -163,7 +163,7 @@ lazy_sbm
 #>     }
 #>     res
 #> }
-#> <bytecode: 0x55b6a8ff8b50>
+#> <bytecode: 0x556fe3092d08>
 #> <environment: namespace:igraph>
 #> 
 #> $args
@@ -220,7 +220,7 @@ bernoulli_sbm
 #>     }
 #>     res
 #> }
-#> <bytecode: 0x55b6a8ff8b50>
+#> <bytecode: 0x556fe3092d08>
 #> <environment: namespace:igraph>
 #> 
 #> $args

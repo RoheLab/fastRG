@@ -26,11 +26,11 @@
   : Compute the singular value decomposition of the expected adjacency
   matrix of an undirected factor model
 - [`expected_edges()`](https://rohelab.github.io/fastRG/dev/reference/expected_edges.md)
+  [`expected_degrees()`](https://rohelab.github.io/fastRG/dev/reference/expected_edges.md)
   [`expected_degree()`](https://rohelab.github.io/fastRG/dev/reference/expected_edges.md)
   [`expected_in_degree()`](https://rohelab.github.io/fastRG/dev/reference/expected_edges.md)
   [`expected_out_degree()`](https://rohelab.github.io/fastRG/dev/reference/expected_edges.md)
   [`expected_density()`](https://rohelab.github.io/fastRG/dev/reference/expected_edges.md)
-  [`expected_degrees()`](https://rohelab.github.io/fastRG/dev/reference/expected_edges.md)
   : Calculate the expected edges in Poisson RDPG graph
 - [`expectation()`](https://rohelab.github.io/fastRG/dev/reference/expectation.md)
   : Calculate the expected adjacency matrix

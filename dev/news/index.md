@@ -2,23 +2,106 @@
 
 ## fastRG (development version)
 
-- Added option to specify precise number of nodes in each block of a
-  [`dcsbm()`](https://rohelab.github.io/fastRG/dev/reference/dcsbm.md)
-  or [`sbm()`](https://rohelab.github.io/fastRG/dev/reference/sbm.md)
-  via the `block_sizes` argument. This makes it easier to construct
-  blockmodels with exactly repeated eigenvalues.
-- The default behavior of
-  [`dcsbm()`](https://rohelab.github.io/fastRG/dev/reference/dcsbm.md),
-  [`sbm()`](https://rohelab.github.io/fastRG/dev/reference/sbm.md) and
-  [`planted_partition()`](https://rohelab.github.io/fastRG/dev/reference/planted_partition.md)
-  has changed: when `block_sizes` or `pi` is unspecified, the new
-  default is to balance block sizes as evenly as possible. Previously,
-  `pi` was set to a constant vector, balancing block sizes in
-  expectation only.
+### Major changes
+
+- This release fixes a long-standing inconsistency in how degrees are
+  counted, which resulted in sampling twice as many edges as desired in
+  [`undirected_factor_model()`](https://rohelab.github.io/fastRG/dev/reference/undirected_factor_model.md).
+  See below for details
+  ([\#19](https://github.com/RoheLab/fastRG/issues/19)). This also
+  caused population singular values for undirected factors models to be
+  off by a factor of 2
+  ([\#31](https://github.com/RoheLab/fastRG/issues/31)).
+
+### Breaking changes
+
 - Specifying both `k` and `B` in
   [`dcsbm()`](https://rohelab.github.io/fastRG/dev/reference/dcsbm.md)
   and [`sbm()`](https://rohelab.github.io/fastRG/dev/reference/sbm.md)
-  now results in an error; only specify one of these arguments.
+  now results in an error. You should only specify one of these
+  arguments.
+
+- It is now possible to specify the precise number of nodes in each
+  block of a
+  [`dcsbm()`](https://rohelab.github.io/fastRG/dev/reference/dcsbm.md)
+  (and subclasses
+  [`sbm()`](https://rohelab.github.io/fastRG/dev/reference/sbm.md) and
+  [`planted_partition()`](https://rohelab.github.io/fastRG/dev/reference/planted_partition.md))
+  via the `block_sizes` argument. This makes it easier to construct
+  blockmodels with exactly repeated eigenvalues. Additionally, the
+  default behavior is now to use this argument and to balance block
+  sizes as evenly as possible. Previously, the default behavior was to
+  sample blocks memberships with equal probability.
+
+### Non-breaking changes
+
+- Added
+  [`vignette("consistency")`](https://rohelab.github.io/fastRG/dev/articles/consistency.md)
+  demonstrating how to check consistency of spectral estimators using
+  `fastRG` for sampling and population spectra computations
+  ([\#33](https://github.com/RoheLab/fastRG/issues/33),
+  [\#43](https://github.com/RoheLab/fastRG/issues/43))
+
+### Details about degree over-sampling bug and the fix
+
+The `fastRG` sampling algorithm, as implemented in
+[`sample_edgelist.matrix()`](https://rohelab.github.io/fastRG/dev/reference/sample_edgelist.matrix.md),
+is fundamentally a sampler for asymmetric, directed networks with
+conditional expectation
+${\mathbb{E}}\lbrack A \mid X,S,Y\rbrack = XSY^{\top} \in {\mathbb{R}}^{n_{1} \times n_{2}}$.
+That is, you can think of the sampler as a very efficient procedure for
+iterating through $i = 1,...,n_{1}$ and $j = 1,...,n_{2}$ and sampling
+from a Poisson with rate $\left( XSY^{\top} \right)_{ij}$.
+
+However, we would also like to use this same sampler to sample from
+undirected networks. In an undirected networks, the conditional
+expectation
+${\mathbb{E}}\lbrack A \mid X,S\rbrack = XSX^{\top} \in {\mathbb{R}}^{n \times n}$
+is a square matrix with
+$\left( XSX^{\top} \right)_{ij} = \left( XSX^{\top} \right)_{ji}$. To
+sample from this matrix, it’s typical to sample the upper triangle of
+$A$ from a Poisson with rate $\left( XSX^{\top} \right)_{ij}$ for all
+$1 \leq i \leq j \leq n$, and then symmetrize $A$.
+
+Since the `fastRG` algorithm samples $A_{ij}$ for all $i,j$, not just
+the upper triangle of $A$, we use a trick to sample from undirected
+networks. First, we force the conditional expectation to the symmetric
+by symmetrizing $S$. Then, we still sample for all $i,j$. To set
+$A_{ij}$ we sample once from a Poisson with rate
+$\left( XSX^{\top} \right)_{ij}$ and once from a Poisson with rate
+$\left( XSX^{\top} \right)_{ji}$ (these rates are equal by symmetry!).
+Then we set $A_{ij} = A_{ji}$ to the sum of these Poisson random
+variables. The issue is that this doubles the expected value of
+$A_{ij} = A_{ji}$ and so we sample twice as many edges as we should. Up
+until this release of `fastRG`, we’ve unfortunately been doing this
+double sampling in undirected networks
+([\#19](https://github.com/RoheLab/fastRG/issues/19)).
+
+In this release, we fix this over-sampling. The key is that we divide
+$S$ by two at sampling time. We do not modify $S$ at all in the
+[`undirected_factor_model()`](https://rohelab.github.io/fastRG/dev/reference/undirected_factor_model.md)!
+You can always use $XSX^{\top}$ to compute the expected value of $A$.
+This new change *only affects sampling*.
+
+That is, instead of passing the $S$ from an
+[`undirected_factor_model()`](https://rohelab.github.io/fastRG/dev/reference/undirected_factor_model.md)
+to the sampler
+[`sample_edgelist.matrix()`](https://rohelab.github.io/fastRG/dev/reference/sample_edgelist.matrix.md),
+we pass $S/2$ (see
+[`sample_edgelist.undirected_factor_model()`](https://rohelab.github.io/fastRG/dev/reference/sample_edgelist.md)).
+This fixes double sampling on the off-diagonal of $A$. The downside is
+that we’re now undersampling by half the diagonal of $A$. I’m assuming
+that for most use cases this doesn’t matter. We could correct for this
+undersampling of the diagonal of $A$, so please open an issue if
+self-loops are important to your project.
+
+As a consequence of this change, $A$ and
+${\mathbb{E}}\left\lbrack A|X,S \right\rbrack$ show now be on the same
+scale, rather than off by a factor of 2. Importantly, the spectrums
+should match up now, so you can now use `fastRG` to check how closely
+you’re recovering the spectrum of the your model. See
+[`vignette("consistency")`](https://rohelab.github.io/fastRG/dev/articles/consistency.md)
+for a quick demonstration showing consistency of spectral estimates.
 
 ## fastRG 0.3.3
 

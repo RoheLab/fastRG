@@ -61,7 +61,7 @@ mmsbm(
   The probability that a node in block `i` connects to a node in
   community `j` is `Poisson(B[i, j])`. Must be a square matrix. `matrix`
   and `Matrix` objects are both acceptable. If `B` is not symmetric, it
-  will be symmetrized via the update `B := B + t(B)`. Defaults to
+  will be symmetrized via the update `B := B + t(B) / 2`. Defaults to
   `NULL`. You must specify either `k` or `B`, but not both.
 
 - ...:
@@ -307,20 +307,20 @@ custom_mmsbm
 
 edgelist <- sample_edgelist(custom_mmsbm)
 edgelist
-#> # A tibble: 5,043 × 2
+#> # A tibble: 2,530 × 2
 #>     from    to
 #>    <int> <int>
-#>  1    10    11
-#>  2     3    10
-#>  3     1     1
-#>  4     2    33
-#>  5    13    20
-#>  6     2    35
-#>  7     3    14
-#>  8     1    39
+#>  1    32    63
+#>  2    11    19
+#>  3    10    17
+#>  4     1    15
+#>  5     3    33
+#>  6    13    14
+#>  7     2    21
+#>  8    14    46
 #>  9     1     2
-#> 10     3    16
-#> # ℹ 5,033 more rows
+#> 10     2     8
+#> # ℹ 2,520 more rows
 
 # efficient eigendecompostion that leverages low-rank structure in
 # E(A) so that you don't have to form E(A) to find eigenvectors,

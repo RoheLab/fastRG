@@ -62,7 +62,7 @@ dcsbm(
   The probability that a node in block `i` connects to a node in
   community `j` is `Poisson(B[i, j])`. Must be a square matrix. `matrix`
   and `Matrix` objects are both acceptable. If `B` is not symmetric, it
-  will be symmetrized via the update `B := B + t(B)`. Defaults to
+  will be symmetrized via the update `B := B + t(B) / 2`. Defaults to
   `NULL`. You must specify either `k` or `B`, but not both.
 
 - ...:
@@ -321,20 +321,20 @@ custom_dcsbm
 
 edgelist <- sample_edgelist(custom_dcsbm)
 edgelist
-#> # A tibble: 4,925 × 2
+#> # A tibble: 2,447 × 2
 #>     from    to
 #>    <int> <int>
-#>  1     8    12
-#>  2     3     7
-#>  3     3     6
-#>  4     3     6
-#>  5     1    10
-#>  6     2     9
-#>  7     2     7
-#>  8     1     4
-#>  9     2     3
-#> 10     1     5
-#> # ℹ 4,915 more rows
+#>  1     1     4
+#>  2     5     7
+#>  3     2     8
+#>  4     3     9
+#>  5     1     6
+#>  6     3     3
+#>  7     1     7
+#>  8     4     9
+#>  9     2     7
+#> 10     1     4
+#> # ℹ 2,437 more rows
 
 
 dcsbm_explicit_block_sizes <- dcsbm(

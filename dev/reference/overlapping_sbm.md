@@ -294,20 +294,20 @@ custom_overlapping_sbm
 
 edgelist <- sample_edgelist(custom_overlapping_sbm)
 edgelist
-#> # A tibble: 1,026 × 2
+#> # A tibble: 518 × 2
 #>     from    to
 #>    <int> <int>
-#>  1     3    33
-#>  2     2     8
-#>  3     1     1
-#>  4    28    39
-#>  5    26    33
-#>  6    10    19
-#>  7    19    32
-#>  8    21    24
-#>  9    25    41
-#> 10    23    33
-#> # ℹ 1,016 more rows
+#>  1    19    35
+#>  2    38    40
+#>  3    25    33
+#>  4    11    13
+#>  5    20    23
+#>  6     3    34
+#>  7    30    33
+#>  8    15    32
+#>  9    20    34
+#> 10    19    37
+#> # ℹ 508 more rows
 
 # efficient eigendecompostion that leverages low-rank structure in
 # E(A) so that you don't have to form E(A) to find eigenvectors,
