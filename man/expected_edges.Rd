@@ -2,6 +2,7 @@
 % Please edit documentation in R/expected-degrees.R
 \name{expected_edges}
 \alias{expected_edges}
+\alias{expected_degrees}
 \alias{expected_degree}
 \alias{expected_in_degree}
 \alias{expected_out_degree}
@@ -9,6 +10,8 @@
 \title{Calculate the expected edges in Poisson RDPG graph}
 \usage{
 expected_edges(factor_model, ...)
+
+expected_degrees(factor_model, ...)
 
 expected_degree(factor_model, ...)
 
