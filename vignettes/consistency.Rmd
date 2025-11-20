@@ -38,7 +38,7 @@ model_distinct <- function(n, k = 5) {
   latent <- dcsbm(
     theta = rexp(n) + 1,
     B = B,
-    expected_degree = 2 * sqrt(n)
+    expected_degree = 0.1 * n
   )
 }
 
@@ -46,7 +46,7 @@ model_repeated <- function(n, k = 5) {
   latent <- dcsbm(
     theta = rep(1, n),
     B = diag(0.5, k),
-    expected_degree = 2 * sqrt(n)
+    expected_degree = 0.1 * n
   )
 }
 ```
@@ -55,7 +55,7 @@ Now, if we want to compare the population singular values of the distinct eigenv
 
 ```{r}
 # sample the latent parameters of the blockmodel
-latent <- model_distinct(100)
+latent <- model_distinct(1000)
 
 # compute the population singular value decomposition of the blockmodel
 s_pop <- svds(latent)
@@ -77,10 +77,21 @@ That's really it! To run a short simulation study, most of the remaining work co
 - two-to-infinity loss of the singular vectors, both scaled and unscaled by the square root of the singular values
 - the spectral norm of the difference between the population and sample singular values
 
-```{r setup}
+```{r}
 sin_theta_distance <- function(u, v) {
   s <- svd(crossprod(u, v))
   ncol(u) - sum(s$d^2)
+}
+
+find_procrustes_rotation <- function(X, Y) {
+  s <- svd(crossprod(X, Y))
+  tcrossprod(s$v, s$u) # NOTE U, V swap versus next one
+}
+
+procrustes_align <- function(X, Y) {
+  s <- svd(crossprod(X, Y))
+  rotation <- tcrossprod(s$v, s$u)
+  Y %*% rotation
 }
 
 two_to_infinity_loss <- function(X, Y) {
@@ -104,7 +115,12 @@ loss_helper <- function(s_pop, s_obs) {
   # spectral norm difference of pop and obs, simplified computation
   # since d_pop and d_obs are diagonal
   spectral_loss <- max(abs(d_pop - d_obs))
-
+  spectral_loss <- norm(diag(d_pop) - diag(d_obs), type = "F")
+  spectral_loss_relative <- abs(d_pop - d_obs) / d_pop
+  
+  Wstar <- find_procrustes_rotation(u_pop, u_obs)
+  spectral_loss_rotated <- norm(Wstar %*% diag(d_obs) - diag(d_pop) %*% Wstar, type = "F")
+  
   k <- ncol(u_pop)
 
   column_sin_theta_loss <- map_dbl(
@@ -119,6 +135,12 @@ loss_helper <- function(s_pop, s_obs) {
     u_two_inf_loss = two_to_infinity_loss(u_pop, u_obs),
     x_two_inf_loss = two_to_infinity_loss(x_pop, x_obs),
     spectral_loss = spectral_loss,
+    spectral_loss_rotated = spectral_loss_rotated,
+    spectral_loss_relative1 = spectral_loss_relative[1],
+    spectral_loss_relative2 = spectral_loss_relative[2],
+    spectral_loss_relative3 = spectral_loss_relative[3],
+    spectral_loss_relative4 = spectral_loss_relative[4],
+    spectral_loss_relative5 = spectral_loss_relative[5],
     sin_theta_loss1 = column_sin_theta_loss[1],
     sin_theta_loss2 = column_sin_theta_loss[2],
     sin_theta_loss3 = column_sin_theta_loss[3],
@@ -221,6 +243,49 @@ model_repeated |>
 ```
 
 Now we see that we can only recover the subspace spanned by the singular vectors, but not the singular vectors themselves, exactly as expected.
+
+```{r}
+spectral_df <- sims |> 
+  mutate(
+      diagnostics = map2(s_pop, s_obs, function(pop, obs) {
+        tibble(
+          rank = 1:length(pop$d),
+          val_pop = pop$d,
+          val_obs = obs$d
+        )
+      })
+    ) |>
+    select(n, reps, diagnostics) |>
+    unnest(diagnostics)
+
+plot_all_scree <- function(spectral_df) {
+  spectral_df |>
+    pivot_longer(
+      cols = c(val_pop, val_obs), 
+      names_to = "type", 
+      values_to = "value"
+    ) |>
+    mutate(type = recode(type, val_pop = "Population", val_obs = "Observed")) |>
+    ggplot(aes(x = factor(rank), y = value, color = type, group = interaction(reps, type))) +
+    # Jitter slightly to show overlapping replicates
+    geom_point(position = position_jitter(width = 0.1), alpha = 0.5, size = 1.5) +
+    geom_line(alpha = 0.3) + 
+    facet_wrap(~ n, scales = "free_y", labeller = label_both) +
+    scale_color_manual(values = c("Population" = "#377eb8", "Observed" = "#e41a1c")) +
+    labs(
+      title = "Scree Plots: Population vs Observed",
+      subtitle = "Comparing singular values across multiple simulation replicates",
+      x = "Rank (Index)",
+      y = "Singular Value Magnitude",
+      color = "Spectrum"
+    ) +
+    theme_minimal() +
+    theme(legend.position = "bottom")
+}
+
+plot_all_scree(spectral_df)
+```
+
 
 Here's one last trick. We might also be interested in using a different estimator, the Laplacian Spectral Embedding, to recover the singular value decomposition of the expected (degree-normalized, regularized) graph Laplacian. This is also straightforward using `fastRG`.
 
