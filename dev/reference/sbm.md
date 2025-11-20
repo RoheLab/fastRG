@@ -163,7 +163,7 @@ lazy_sbm
 #>     }
 #>     res
 #> }
-#> <bytecode: 0x55f2ba1cb1c8>
+#> <bytecode: 0x55f4b0db3728>
 #> <environment: namespace:igraph>
 #> 
 #> $args
@@ -220,7 +220,7 @@ bernoulli_sbm
 #>     }
 #>     res
 #> }
-#> <bytecode: 0x55f2ba1cb1c8>
+#> <bytecode: 0x55f4b0db3728>
 #> <environment: namespace:igraph>
 #> 
 #> $args

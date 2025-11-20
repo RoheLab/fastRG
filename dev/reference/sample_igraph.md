@@ -159,9 +159,9 @@ dim(B)
 ### sampling graphs as igraph graphs ------------------
 
 sample_igraph(ufm)
-#> IGRAPH 35ac6a0 UN-- 100 236 -- 
+#> IGRAPH 80d4da0 UN-- 100 236 -- 
 #> + attr: name (v/c)
-#> + edges from 35ac6a0 (vertex names):
+#> + edges from 80d4da0 (vertex names):
 #>  [1] 16--98  45--98  57--88  19--88  22--100 1 --70  37--87  13--66  19--84 
 #> [10] 17--74  37--92  65--83  1 --46  17--94  86--92  59--94  70--90  30--66 
 #> [19] 10--61  44--87  43--79  39--92  46--73  6 --100 12--17  30--44  16--64 
