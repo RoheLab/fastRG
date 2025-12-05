@@ -61,12 +61,13 @@ is a square matrix with
 $\left( XSX^{\top} \right)_{ij} = \left( XSX^{\top} \right)_{ji}$. To
 sample from this matrix, it’s typical to sample the upper triangle of
 $A$ from a Poisson with rate $\left( XSX^{\top} \right)_{ij}$ for all
-$1 \leq i \leq j \leq n$, and then symmetrize $A$.
+$1 \leq i \leq j \leq n$, and then fill the lower triangle of $A$ to
+make $A$ symmetric.
 
 Since the `fastRG` algorithm samples $A_{ij}$ for all $i,j$, not just
 the upper triangle of $A$, we use a trick to sample from undirected
-networks. First, we force the conditional expectation to the symmetric
-by symmetrizing $S$. Then, we still sample for all $i,j$. To set
+networks. First, we force the conditional expectation to be symmetric by
+symmetrizing $S$. Then, we still sample for all $i,j$. That is, to set
 $A_{ij}$ we sample once from a Poisson with rate
 $\left( XSX^{\top} \right)_{ij}$ and once from a Poisson with rate
 $\left( XSX^{\top} \right)_{ji}$ (these rates are equal by symmetry!).

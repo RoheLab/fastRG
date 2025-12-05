@@ -64,15 +64,13 @@ s_pop$d - s_obs$d
 
 That’s really it! To run a short simulation study, most of the remaining
 work comes down to choosing various losses that you want to compute and
-implemeting them in. The following chunk computes several losses that we
+implementing them. The following chunk computes several losses that we
 might care about:
 
 - sin Theta loss for subspace spanned by all the singular vectors
 - sin Theta loss for each individual singular vector
-- two-to-infinity loss of the singular vectors, both scaled and unscaled
-  by the square root of the singular values
-- the spectral norm of the difference between the population and sample
-  singular values
+- two-to-infinity loss of the singular vectors, both scaled and
+  un-scaled by the square root of the singular values
 
 ``` r
 sin_theta_distance <- function(u, v) {
@@ -109,19 +107,10 @@ loss_helper <- function(s_pop, s_obs) {
   x_pop <- u_pop %*% sqrt(diag(d_pop))
   x_obs <- u_obs %*% sqrt(diag(d_obs))
 
-  # spectral norm difference of pop and obs, simplified computation
-  # since d_pop and d_obs are diagonal
-  spectral_loss <- max(abs(d_pop - d_obs))
-  spectral_loss <- norm(diag(d_pop) - diag(d_obs), type = "F")
   spectral_loss_relative <- abs(d_pop - d_obs) / d_pop
   
-  Wstar <- find_procrustes_rotation(u_pop, u_obs)
-  spectral_loss_rotated <- norm(Wstar %*% diag(d_obs) - diag(d_pop) %*% Wstar, type = "F")
-  
-  k <- ncol(u_pop)
-
   column_sin_theta_loss <- map_dbl(
-    1:k,
+    1:ncol(u_pop),
     \(j) {
       sin_theta_distance(u_pop[, j, drop = FALSE], u_obs[, j, drop = FALSE])
     }
@@ -131,8 +120,6 @@ loss_helper <- function(s_pop, s_obs) {
     sin_theta_loss = sin_theta_distance(u_pop, u_obs),
     u_two_inf_loss = two_to_infinity_loss(u_pop, u_obs),
     x_two_inf_loss = two_to_infinity_loss(x_pop, x_obs),
-    spectral_loss = spectral_loss,
-    spectral_loss_rotated = spectral_loss_rotated,
     spectral_loss_relative1 = spectral_loss_relative[1],
     spectral_loss_relative2 = spectral_loss_relative[2],
     spectral_loss_relative3 = spectral_loss_relative[3],
@@ -163,7 +150,7 @@ run_simulation <- function(model, num_reps = 30) {
       pop = map(n, model),
       s_pop = map(pop, svds),
       A = map(pop, sample_sparse),
-      s_obs = map(A, irlba, 5), # rank five svd,
+      s_obs = map(A, irlba, 5), # rank five svd
       loss = map2(s_pop, s_obs, loss_helper)
     )
 }
@@ -207,34 +194,39 @@ summarize_simulations <- function(sims) {
       loss_type = recode(
         loss_type,
         "sin_theta_loss" = "Sin Theta Loss",
-        "u_two_inf_loss" = "U two-inf",
-        "x_two_inf_loss" = "X two-inf",
+        "u_two_inf_loss" = "Two-to-infinity (un-scaled)",
+        "x_two_inf_loss" = "Two-to-infinity (scaled)",
         "spectral_loss" = "Spectral",
         "sin_theta_loss1" = "Sin Theta Loss (column 1)",
         "sin_theta_loss2" = "Sin Theta Loss (column 2)",
         "sin_theta_loss3" = "Sin Theta Loss (column 3)",
         "sin_theta_loss4" = "Sin Theta Loss (column 4)",
-        "sin_theta_loss5" = "Sin Theta Loss (column 5)"
+        "sin_theta_loss5" = "Sin Theta Loss (column 5)",
+        "spectral_loss_relative1" = "Rel. error (sigma 1)",
+        "spectral_loss_relative2" = "Rel. error (sigma 2)",
+        "spectral_loss_relative3" = "Rel. error (sigma 3)",
+        "spectral_loss_relative4" = "Rel. error (sigma 4)",
+        "spectral_loss_relative5" = "Rel. error (sigma 5)",
       )
     )
 }
 
 results <- summarize_simulations(sims)
 results
-#> # A tibble: 90 × 3
-#>        n loss_type                 loss
-#>    <dbl> <chr>                    <dbl>
-#>  1   100 Sin Theta Loss          1.78  
-#>  2   100 U two-inf               0.538 
-#>  3   100 X two-inf               1.53  
-#>  4   100 Spectral                3.78  
-#>  5   100 spectral_loss_rotated   4.42  
-#>  6   100 spectral_loss_relative1 0.0538
-#>  7   100 spectral_loss_relative2 0.101 
-#>  8   100 spectral_loss_relative3 0.137 
-#>  9   100 spectral_loss_relative4 0.294 
-#> 10   100 spectral_loss_relative5 0.513 
-#> # ℹ 80 more rows
+#> # A tibble: 78 × 3
+#>        n loss_type                     loss
+#>    <dbl> <chr>                        <dbl>
+#>  1   100 Sin Theta Loss              1.78  
+#>  2   100 Two-to-infinity (un-scaled) 0.538 
+#>  3   100 Two-to-infinity (scaled)    1.53  
+#>  4   100 Rel. error (sigma 1)        0.0538
+#>  5   100 Rel. error (sigma 2)        0.101 
+#>  6   100 Rel. error (sigma 3)        0.137 
+#>  7   100 Rel. error (sigma 4)        0.294 
+#>  8   100 Rel. error (sigma 5)        0.513 
+#>  9   100 Sin Theta Loss (column 1)   0.129 
+#> 10   100 Sin Theta Loss (column 2)   0.277 
+#> # ℹ 68 more rows
 ```
 
 And now that we have our results, all that remains is to plot them.
@@ -280,50 +272,6 @@ model_repeated |>
 
 Now we see that we can only recover the subspace spanned by the singular
 vectors, but not the singular vectors themselves, exactly as expected.
-
-``` r
-spectral_df <- sims |> 
-  mutate(
-      diagnostics = map2(s_pop, s_obs, function(pop, obs) {
-        tibble(
-          rank = 1:length(pop$d),
-          val_pop = pop$d,
-          val_obs = obs$d
-        )
-      })
-    ) |>
-    select(n, reps, diagnostics) |>
-    unnest(diagnostics)
-
-plot_all_scree <- function(spectral_df) {
-  spectral_df |>
-    pivot_longer(
-      cols = c(val_pop, val_obs), 
-      names_to = "type", 
-      values_to = "value"
-    ) |>
-    mutate(type = recode(type, val_pop = "Population", val_obs = "Observed")) |>
-    ggplot(aes(x = factor(rank), y = value, color = type, group = interaction(reps, type))) +
-    # Jitter slightly to show overlapping replicates
-    geom_point(position = position_jitter(width = 0.1), alpha = 0.5, size = 1.5) +
-    geom_line(alpha = 0.3) + 
-    facet_wrap(~ n, scales = "free_y", labeller = label_both) +
-    scale_color_manual(values = c("Population" = "#377eb8", "Observed" = "#e41a1c")) +
-    labs(
-      title = "Scree Plots: Population vs Observed",
-      subtitle = "Comparing singular values across multiple simulation replicates",
-      x = "Rank (Index)",
-      y = "Singular Value Magnitude",
-      color = "Spectrum"
-    ) +
-    theme_minimal() +
-    theme(legend.position = "bottom")
-}
-
-plot_all_scree(spectral_df)
-```
-
-![](consistency_files/figure-html/unnamed-chunk-9-1.png)
 
 Here’s one last trick. We might also be interested in using a different
 estimator, the Laplacian Spectral Embedding, to recover the singular
@@ -375,6 +323,72 @@ model_distinct |>
   run_laplacian_simulation() |>
   summarize_simulations() |>
   plot_results()
+```
+
+![](consistency_files/figure-html/unnamed-chunk-10-1.png)
+
+## A quick note about recovering the spectrum
+
+In our earlier simulations, we only look at relative error in recovering
+the spectrum. This is because (1) the spectrum is changing as a function
+of sample size, so we want to stabilize it somehow when we think about
+convergence, but (2) absolute errors might be growing with sample size.
+In random dot product graphs, we have theoretical results stating that
+
+$$\left. \parallel\widehat{S} - S\parallel \right. = \mathcal{O}_{p}\left( \sqrt{n\rho_{n}} \right)$$
+and
+
+$$\left. \parallel Q\widehat{S} - SQ\parallel \right. = \mathcal{O}_{p}\left( \log n \right),$$
+
+but I am unaware of tighter theoretical bounds. Note that the error in
+the *rotated* spectrum is much lower than the error in the raw spectrum
+estimate $\widehat{S}$.
+
+This makes it a little bit harder to check that we’re correctly
+recovering the singular values, so here’s a figure plotting estimated
+and true singular values side-by-side as some additional re-assurance.
+
+``` r
+sims |>
+  mutate(diagnostics = map2(s_pop, s_obs, function(pop, obs) {
+    tibble(
+      rank = 1:length(pop$d),
+      val_pop = pop$d,
+      val_obs = obs$d
+    )
+  })) |>
+  select(n, reps, diagnostics) |>
+  unnest(diagnostics) |>
+  pivot_longer(
+    cols = c(val_pop, val_obs),
+    names_to = "type",
+    values_to = "value"
+  ) |>
+  mutate(type = recode(type, val_pop = "Population", val_obs = "Observed")) |>
+  ggplot(aes(
+    x = factor(rank),
+    y = value,
+    color = type,
+    group = interaction(reps, type)
+  )) +
+  geom_point(position = position_jitter(width = 0.1),
+             alpha = 0.5,
+             size = 1.5) +
+  geom_line(alpha = 0.3) +
+  facet_wrap( ~ n, scales = "free_y", labeller = label_both) +
+  scale_color_manual(values = c(
+    "Population" = "#377eb8",
+    "Observed" = "#e41a1c"
+  )) +
+  labs(
+    title = "Scree Plots: Population vs Observed",
+    subtitle = "Comparing singular values across multiple simulation replicates",
+    x = "Index of singular value",
+    y = "Singular Value",
+    color = "Spectrum"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "bottom")
 ```
 
 ![](consistency_files/figure-html/unnamed-chunk-11-1.png)
