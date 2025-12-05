@@ -9,6 +9,7 @@ development:
 
 template:
   bootstrap: 5
+  math-rendering: mathjax
   params:
     bootswatch: flatly
 
