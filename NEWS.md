@@ -28,6 +28,8 @@
 
 - Fixed undersampling of self-loops in undirected models. Since 0.4.0, the diagonal of `A` was sampled at half the intended rate, so `E[A | X, S]` did not equal `X S X'` on the diagonal. `sample_edgelist.undirected_factor_model()` now adds independent Poisson self-loops at the missing rate when `allow_self_loops = TRUE`, so `E[A | X, S] = X S X'` holds exactly. This only affects sampling: `S`, `expected_*()` and population spectra are unchanged, and so are the off-diagonal fixes from #19 and #31. Graphs sampled with a given seed will differ from previous versions (#46).
 
+- Fixed math rendering on the pkgdown site. The home page showed stray backticks because `README.md` used GitHub's `` $`...`$ `` math syntax, which pkgdown can't parse. Also fixed malformed LaTeX (e.g. `\pi_out`, `theta_in`) in the `dcsbm()` and `directed_dcsbm()` documentation (#48).
+
 - Finished the documentation for `overlapping_sbm()`: it now describes the generative model (binary block memberships, additive edge rates), identifiability conditions, related models (OSBM, OCCAM), every argument and the returned fields, and has updated references and examples (#42).
 
 # fastRG 0.4.0

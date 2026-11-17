@@ -272,9 +272,9 @@ graph representation.
 Let \eqn{x} represent the incoming block membership of a node
 and \eqn{y} represent the outgoing block membership of a node.
 To generate \eqn{x} we sample from a categorical
-distribution with parameter \eqn{\pi_out}.
+distribution with parameter \eqn{\pi_{out}}.
 To generate \eqn{y} we sample from a categorical
-distribution with parameter \eqn{\pi_in}.
+distribution with parameter \eqn{\pi_{in}}.
 Block memberships are independent across nodes. Incoming and outgoing
 block memberships of the same node are also independent.
 
@@ -295,10 +295,10 @@ In addition to block membership, the DCSBM also
 nodes to have different propensities for incoming and
 outgoing edge formation.
 We represent the propensity to form incoming edges for a
-given node by a positive number \eqn{\theta_out}.
+given node by a positive number \eqn{\theta_{out}}.
 We represent the propensity to form outgoing edges for a
-given node by a positive number \eqn{\theta_in}.
-Typically the \eqn{\theta_out} (and \eqn{theta_in}) across all nodes are
+given node by a positive number \eqn{\theta_{in}}.
+Typically the \eqn{\theta_{out}} (and \eqn{\theta_{in}}) across all nodes are
 constrained to sum to one for identifiability purposes,
 but this doesn't really matter during sampling.
 }
@@ -314,7 +314,7 @@ independently according to a Poisson distribution with
 parameters
 
 \deqn{
-  \lambda = \theta_{in} * B_{x, y} * \theta_{out}.
+  \lambda = \theta_{in} \cdot B_{x, y} \cdot \theta_{out}.
 }
 }
 }
