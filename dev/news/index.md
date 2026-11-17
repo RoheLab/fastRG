@@ -2,6 +2,45 @@
 
 ## fastRG (development version)
 
+- **Breaking change:** fixed
+  [`expected_edges()`](https://rohelab.github.io/fastRG/dev/reference/expected_edges.md)
+  and
+  [`expected_density()`](https://rohelab.github.io/fastRG/dev/reference/expected_edges.md)
+  double counting edges in undirected models. Since 0.4.0 fixed the edge
+  over-sampling in [\#19](https://github.com/RoheLab/fastRG/issues/19),
+  both have been twice the true value, because each undirected edge
+  appears in `A` twice (as `A[i, j]` and `A[j, i]`). As a result,
+  **specifying `expected_density = d` for any undirected model produced
+  graphs with density about `d / 2`**, and print methods reported twice
+  the number of edges actually sampled.
+
+  - [`expected_edges()`](https://rohelab.github.io/fastRG/dev/reference/expected_edges.md)
+    is now the expected number of undirected edges, counting self-loops
+    once: `(sum(P) + trace(P)) / 2` for `P = X S X'`.
+  - [`expected_density()`](https://rohelab.github.io/fastRG/dev/reference/expected_edges.md)
+    is now the expected number of edges between distinct nodes divided
+    by `choose(n, 2)`: `(sum(P) - trace(P)) / (n (n - 1))`.
+  - [`expected_degree()`](https://rohelab.github.io/fastRG/dev/reference/expected_edges.md),
+    [`expected_degrees()`](https://rohelab.github.io/fastRG/dev/reference/expected_edges.md),
+    sampling and population spectra were already correct and are
+    unchanged, as are all directed models.
+  - Undirected models built with `expected_density` now sample twice as
+    many edges as before, so graphs sampled with a given seed will
+    differ.
+
+- [`erdos_renyi()`](https://rohelab.github.io/fastRG/dev/reference/erdos_renyi.md)
+  and
+  [`directed_erdos_renyi()`](https://rohelab.github.io/fastRG/dev/reference/directed_erdos_renyi.md)
+  now error when neither `p` nor a scaling argument such as
+  `expected_degree` or `expected_density` is given. Previously the check
+  never fired, because it looked up the generic functions
+  [`expected_degree()`](https://rohelab.github.io/fastRG/dev/reference/expected_edges.md)
+  (or
+  [`expected_in_degree()`](https://rohelab.github.io/fastRG/dev/reference/expected_edges.md)
+  /
+  [`expected_out_degree()`](https://rohelab.github.io/fastRG/dev/reference/expected_edges.md))
+  instead of the arguments, and the model silently used `p = 0.5`.
+
 - [`sample_edgelist()`](https://rohelab.github.io/fastRG/dev/reference/sample_edgelist.md),
   [`sample_igraph()`](https://rohelab.github.io/fastRG/dev/reference/sample_igraph.md)
   and

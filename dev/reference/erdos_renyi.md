@@ -29,7 +29,7 @@ erdos_renyi(n, ..., p = NULL, poisson_edges = TRUE, allow_self_loops = TRUE)
 - p:
 
   Probability of an edge between any two nodes. You must specify either
-  `p` or `expected_degree`.
+  `p`, `expected_degree` or `expected_density`.
 
 - poisson_edges:
 
@@ -100,9 +100,9 @@ er
 #> Poisson edges: TRUE 
 #> Allow self loops: TRUE 
 #> 
-#> Expected edges: 10
+#> Expected edges: 6
 #> Expected degree: 1
-#> Expected density: 0.22222
+#> Expected density: 0.1
 
 
 er <- erdos_renyi(n = 10, expected_density = 0.1)
@@ -119,8 +119,8 @@ er
 #> Poisson edges: TRUE 
 #> Allow self loops: TRUE 
 #> 
-#> Expected edges: 4
-#> Expected degree: 0.4
+#> Expected edges: 6
+#> Expected degree: 1
 #> Expected density: 0.1
 
 big_er <- erdos_renyi(n = 1000, expected_degree = 5)
@@ -137,20 +137,20 @@ big_er
 #> Poisson edges: TRUE 
 #> Allow self loops: TRUE 
 #> 
-#> Expected edges: 5000
+#> Expected edges: 2502
 #> Expected degree: 5
-#> Expected density: 0.01001
+#> Expected density: 0.005
 
 A <- sample_sparse(er)
 A
 #> 10 x 10 sparse Matrix of class "dsCMatrix"
 #>                          
 #>  [1,] . . . . . . . . . .
-#>  [2,] . . . . . . . . . .
+#>  [2,] . . . 1 . . . . . .
 #>  [3,] . . . . . . . . . .
-#>  [4,] . . . . . . . . . .
+#>  [4,] . 1 . . . . . . . .
 #>  [5,] . . . . . . . . . .
-#>  [6,] . . . . . . . . . .
+#>  [6,] . . . . . 1 . . . .
 #>  [7,] . . . . . . . . . .
 #>  [8,] . . . . . . . . . .
 #>  [9,] . . . . . . . . . .

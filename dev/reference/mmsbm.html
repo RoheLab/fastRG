@@ -141,7 +141,9 @@ to achieve this. Defaults to <code>NULL</code>. Do not specify both
 
     <dt><code>expected_density</code></dt>
 <dd><p>If specified, the desired expected density
-of the graph. Specifying <code>expected_density</code> simply rescales <code>S</code>
+of the graph, that is, the expected number of edges between distinct
+nodes divided by <code>choose(n, 2)</code>. See <code><a href="expected_edges.html">expected_density()</a></code>.
+Specifying <code>expected_density</code> simply rescales <code>S</code>
 to achieve this. Defaults to <code>NULL</code>. Do not specify both
 <code>expected_degree</code> and <code>expected_density</code> at the same time.</p></dd>
 
@@ -302,8 +304,8 @@ $$</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Poisson edges: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Allow self loops: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 50</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Expected degree: 0.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 52</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected degree: 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected density: 0.01</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># sometimes you gotta let the world burn and</span></span></span>
@@ -333,8 +335,8 @@ $$</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Poisson edges: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Allow self loops: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 99800</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Expected degree: 199.6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 101573</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected degree: 402.7</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected density: 0.8</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># explicitly setting the degree heterogeneity parameter,</span></span></span>
@@ -377,9 +379,9 @@ $$</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Poisson edges: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Allow self loops: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 5000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 2560</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected degree: 50</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Expected density: 1.0101</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected density: 0.49296</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">edgelist</span> <span class="op">&lt;-</span> <span class="fu"><a href="sample_edgelist.html">sample_edgelist</a></span><span class="op">(</span><span class="va">custom_mmsbm</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">edgelist</span></span></span>

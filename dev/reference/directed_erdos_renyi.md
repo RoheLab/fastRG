@@ -44,7 +44,8 @@ directed_erdos_renyi(
 - p:
 
   Probability of an edge between any two nodes. You must specify either
-  `p`, `expected_in_degree`, or `expected_out_degree`.
+  `p`, `expected_in_degree`, `expected_out_degree` or
+  `expected_density`.
 
 - poisson_edges:
 

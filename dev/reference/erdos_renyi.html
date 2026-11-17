@@ -73,7 +73,7 @@ to achieve this. Defaults to <code>NULL</code>. Do not specify both
 
 <dt id="arg-p">p<a class="anchor" aria-label="anchor" href="#arg-p"></a></dt>
 <dd><p>Probability of an edge between any two nodes. You must specify
-either <code>p</code> or <code>expected_degree</code>.</p></dd>
+either <code>p</code>, <code>expected_degree</code> or <code>expected_density</code>.</p></dd>
 
 
 <dt id="arg-poisson-edges">poisson_edges<a class="anchor" aria-label="anchor" href="#arg-poisson-edges"></a></dt>
@@ -136,9 +136,9 @@ the dimension of the latent node position vectors.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Poisson edges: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Allow self loops: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 10</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 6</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected degree: 1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Expected density: 0.22222</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected density: 0.1</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">er</span> <span class="op">&lt;-</span> <span class="fu">erdos_renyi</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">10</span>, expected_density <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span></span>
@@ -155,8 +155,8 @@ the dimension of the latent node position vectors.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Poisson edges: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Allow self loops: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 4</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Expected degree: 0.4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected degree: 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected density: 0.1</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">big_er</span> <span class="op">&lt;-</span> <span class="fu">erdos_renyi</span><span class="op">(</span>n <span class="op">=</span> <span class="fl">1000</span>, expected_degree <span class="op">=</span> <span class="fl">5</span><span class="op">)</span></span></span>
@@ -173,20 +173,20 @@ the dimension of the latent node position vectors.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Poisson edges: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Allow self loops: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 5000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 2502</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected degree: 5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Expected density: 0.01001</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected density: 0.005</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">A</span> <span class="op">&lt;-</span> <span class="fu"><a href="sample_sparse.html">sample_sparse</a></span><span class="op">(</span><span class="va">er</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">A</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> 10 x 10 sparse Matrix of class "dsCMatrix"</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                          </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [1,] . . . . . . . . . .</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [2,] . . . . . . . . . .</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [2,] . . . 1 . . . . . .</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [3,] . . . . . . . . . .</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [4,] . . . . . . . . . .</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [4,] . 1 . . . . . . . .</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [5,] . . . . . . . . . .</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  [6,] . . . . . . . . . .</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  [6,] . . . . . 1 . . . .</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [7,] . . . . . . . . . .</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [8,] . . . . . . . . . .</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  [9,] . . . . . . . . . .</span>

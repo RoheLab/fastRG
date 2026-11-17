@@ -55,7 +55,10 @@ chung_lu(
 
   `expected_density`
 
-  :   If specified, the desired expected density of the graph.
+  :   If specified, the desired expected density of the graph, that is,
+      the expected number of edges between distinct nodes divided by
+      `choose(n, 2)`. See
+      [`expected_density()`](https://rohelab.github.io/fastRG/dev/reference/expected_edges.md).
       Specifying `expected_density` simply rescales `S` to achieve this.
       Defaults to `NULL`. Do not specify both `expected_degree` and
       `expected_density` at the same time.
@@ -135,8 +138,8 @@ cl
 #> Poisson edges: TRUE 
 #> Allow self loops: TRUE 
 #> 
-#> Expected edges: 50
-#> Expected degree: 0.5
+#> Expected edges: 52
+#> Expected degree: 1
 #> Expected density: 0.01
 
 theta <- round(stats::rlnorm(100, 2))
@@ -167,24 +170,24 @@ cl2
 #> Poisson edges: TRUE 
 #> Allow self loops: TRUE 
 #> 
-#> Expected edges: 500
+#> Expected edges: 257
 #> Expected degree: 5
-#> Expected density: 0.10101
+#> Expected density: 0.04905
 
 edgelist <- sample_edgelist(cl)
 edgelist
-#> # A tibble: 28 × 2
+#> # A tibble: 57 × 2
 #>     from    to
 #>    <int> <int>
-#>  1    14    76
-#>  2     3     4
-#>  3     8    23
-#>  4     5     8
-#>  5    20    59
-#>  6     1     2
-#>  7     8    33
-#>  8     1    80
-#>  9     2    43
-#> 10     1     5
-#> # ℹ 18 more rows
+#>  1    21    76
+#>  2     4    23
+#>  3     8    55
+#>  4     5     6
+#>  5     1    59
+#>  6     2    19
+#>  7     2     8
+#>  8     1    36
+#>  9     2     6
+#> 10     5     5
+#> # ℹ 47 more rows
 ```

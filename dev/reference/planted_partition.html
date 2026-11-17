@@ -115,7 +115,9 @@ to achieve this. Defaults to <code>NULL</code>. Do not specify both
 
     <dt><code>expected_density</code></dt>
 <dd><p>If specified, the desired expected density
-of the graph. Specifying <code>expected_density</code> simply rescales <code>S</code>
+of the graph, that is, the expected number of edges between distinct
+nodes divided by <code>choose(n, 2)</code>. See <code><a href="expected_edges.html">expected_density()</a></code>.
+Specifying <code>expected_density</code> simply rescales <code>S</code>
 to achieve this. Defaults to <code>NULL</code>. Do not specify both
 <code>expected_degree</code> and <code>expected_density</code> at the same time.</p></dd>
 
@@ -266,8 +268,8 @@ don't have any impact apart from this.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Poisson edges: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Allow self loops: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 50</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Expected degree: 0.5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 53</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected degree: 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected density: 0.01</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>

@@ -136,7 +136,9 @@ to achieve this. Defaults to <code>NULL</code>. Do not specify both
 
     <dt><code>expected_density</code></dt>
 <dd><p>If specified, the desired expected density
-of the graph. Specifying <code>expected_density</code> simply rescales <code>S</code>
+of the graph, that is, the expected number of edges between distinct
+nodes divided by <code>choose(n, 2)</code>. See <code><a href="expected_edges.html">expected_density()</a></code>.
+Specifying <code>expected_density</code> simply rescales <code>S</code>
 to achieve this. Defaults to <code>NULL</code>. Do not specify both
 <code>expected_degree</code> and <code>expected_density</code> at the same time.</p></dd>
 
@@ -412,8 +414,8 @@ Overlapping Communities in Networks Using Spectral Methods."
 <span class="r-out co"><span class="r-pr">#&gt;</span> Poisson edges: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Allow self loops: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 4995</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Expected degree: 5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 5029</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected degree: 10</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected density: 0.01</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># block memberships: a binary matrix, nodes can belong to several blocks</span></span></span>
@@ -460,8 +462,8 @@ Overlapping Communities in Networks Using Spectral Methods."
 <span class="r-out co"><span class="r-pr">#&gt;</span> Poisson edges: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Allow self loops: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 99800</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Expected degree: 199.6</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 100645</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected degree: 400.9</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected density: 0.8</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># explicitly setting the mixing matrix and block membership</span></span></span>
@@ -503,9 +505,9 @@ Overlapping Communities in Networks Using Spectral Methods."
 <span class="r-out co"><span class="r-pr">#&gt;</span> Poisson edges: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Allow self loops: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 5000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 2503</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected degree: 5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Expected density: 0.01001</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected density: 0.005</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># pi is sorted, and B is permuted to match</span></span></span>
 <span class="r-in"><span><span class="va">custom_overlapping_sbm</span><span class="op">$</span><span class="va">pi</span></span></span>

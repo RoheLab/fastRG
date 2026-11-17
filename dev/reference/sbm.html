@@ -124,7 +124,9 @@ to achieve this. Defaults to <code>NULL</code>. Do not specify both
 
     <dt><code>expected_density</code></dt>
 <dd><p>If specified, the desired expected density
-of the graph. Specifying <code>expected_density</code> simply rescales <code>S</code>
+of the graph, that is, the expected number of edges between distinct
+nodes divided by <code>choose(n, 2)</code>. See <code><a href="expected_edges.html">expected_density()</a></code>.
+Specifying <code>expected_density</code> simply rescales <code>S</code>
 to achieve this. Defaults to <code>NULL</code>. Do not specify both
 <code>expected_degree</code> and <code>expected_density</code> at the same time.</p></dd>
 

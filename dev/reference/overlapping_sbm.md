@@ -71,7 +71,10 @@ overlapping_sbm(
 
   `expected_density`
 
-  :   If specified, the desired expected density of the graph.
+  :   If specified, the desired expected density of the graph, that is,
+      the expected number of edges between distinct nodes divided by
+      `choose(n, 2)`. See
+      [`expected_density()`](https://rohelab.github.io/fastRG/dev/reference/expected_edges.md).
       Specifying `expected_density` simply rescales `S` to achieve this.
       Defaults to `NULL`. Do not specify both `expected_degree` and
       `expected_density` at the same time.
@@ -343,8 +346,8 @@ lazy_overlapping_sbm
 #> Poisson edges: TRUE 
 #> Allow self loops: TRUE 
 #> 
-#> Expected edges: 4995
-#> Expected degree: 5
+#> Expected edges: 5029
+#> Expected degree: 10
 #> Expected density: 0.01
 
 # block memberships: a binary matrix, nodes can belong to several blocks
@@ -391,8 +394,8 @@ dense_lazy_overlapping_sbm
 #> Poisson edges: TRUE 
 #> Allow self loops: TRUE 
 #> 
-#> Expected edges: 99800
-#> Expected degree: 199.6
+#> Expected edges: 100645
+#> Expected degree: 400.9
 #> Expected density: 0.8
 
 # explicitly setting the mixing matrix and block membership
@@ -434,9 +437,9 @@ custom_overlapping_sbm
 #> Poisson edges: TRUE 
 #> Allow self loops: TRUE 
 #> 
-#> Expected edges: 5000
+#> Expected edges: 2503
 #> Expected degree: 5
-#> Expected density: 0.01001
+#> Expected density: 0.005
 
 # pi is sorted, and B is permuted to match
 custom_overlapping_sbm$pi

@@ -54,7 +54,10 @@ planted_partition(
 
   `expected_density`
 
-  :   If specified, the desired expected density of the graph.
+  :   If specified, the desired expected density of the graph, that is,
+      the expected number of edges between distinct nodes divided by
+      `choose(n, 2)`. See
+      [`expected_density()`](https://rohelab.github.io/fastRG/dev/reference/expected_edges.md).
       Specifying `expected_density` simply rescales `S` to achieve this.
       Defaults to `NULL`. Do not specify both `expected_degree` and
       `expected_density` at the same time.
@@ -198,7 +201,7 @@ lazy_pp
 #> Poisson edges: TRUE 
 #> Allow self loops: TRUE 
 #> 
-#> Expected edges: 50
-#> Expected degree: 0.5
+#> Expected edges: 53
+#> Expected degree: 1
 #> Expected density: 0.01
 ```

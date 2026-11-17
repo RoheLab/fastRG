@@ -112,7 +112,9 @@ to achieve this. Defaults to <code>NULL</code>. Do not specify both
 
 <dt id="arg-expected-density">expected_density<a class="anchor" aria-label="anchor" href="#arg-expected-density"></a></dt>
 <dd><p>If specified, the desired expected density
-of the graph. Specifying <code>expected_density</code> simply rescales <code>S</code>
+of the graph, that is, the expected number of edges between distinct
+nodes divided by <code>choose(n, 2)</code>. See <code><a href="expected_edges.html">expected_density()</a></code>.
+Specifying <code>expected_density</code> simply rescales <code>S</code>
 to achieve this. Defaults to <code>NULL</code>. Do not specify both
 <code>expected_degree</code> and <code>expected_density</code> at the same time.</p></dd>
 
@@ -169,9 +171,9 @@ the dimension of the latent node position vectors.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Poisson edges: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Allow self loops: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 12649</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 6394</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected degree: 126.5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Expected density: 2.55529</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected density: 1.26357</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">ufm2</span> <span class="op">&lt;-</span> <span class="fu">undirected_factor_model</span><span class="op">(</span><span class="va">X</span>, <span class="va">S</span>, expected_degree <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">ufm2</span></span></span>
@@ -187,9 +189,9 @@ the dimension of the latent node position vectors.</p></li>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Poisson edges: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Allow self loops: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 5000</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 2528</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected degree: 50</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Expected density: 1.0101</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected density: 0.49949</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/pkg/RSpectra/man/svds.html" class="external-link">svds</a></span><span class="op">(</span><span class="va">ufm2</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> $d</span>
