@@ -314,12 +314,9 @@ sample_block_memberships <- function(n, k, pi, block_sizes = NULL) {
 #'   used for both `theta_out` and `theta_in`: either specify `n` (one
 #'   vector is then generated at random), or only one of `theta_out` and
 #'   `theta_in`. If you specify both `theta_out` and `theta_in`, they must
-#'   be identical. Note that when `force_identifiability = TRUE`,
-#'   `theta_out` is normalized within outgoing blocks and `theta_in` within
-#'   incoming blocks, so the stored `theta_out` and `theta_in` are only
-#'   identical when blocks are shared as well (or when
-#'   `force_identifiability = FALSE`). Within each pair of an outgoing and
-#'   an incoming block they are always proportional.
+#'   be identical. Requires `shared_blocks = TRUE`, so that the stored
+#'   `theta_out` and `theta_in` are identical (also after normalization
+#'   by `force_identifiability`).
 #'
 #' @param sort_nodes Logical indicating whether or not to sort the nodes
 #'   so that they are grouped by block. Useful for plotting.
@@ -333,15 +330,20 @@ sample_block_memberships <- function(n, k, pi, block_sizes = NULL) {
 #'   new orderings. When `block_sizes_out` or `block_sizes_in` are
 #'   specified, they are permuted in the same way, so each block keeps
 #'   exactly the requested number of nodes and its row (or column) of `B`.
-#'   When `shared_blocks = TRUE` or `shared_theta = TRUE`, rows and columns
-#'   are instead permuted together, so that row `i` and column `i` of the
-#'   expected adjacency matrix still refer to the same node: nodes are
-#'   sorted by outgoing block, then by incoming block, and then by
-#'   decreasing `theta_out` and `theta_in`. With shared blocks this groups
-#'   both rows and columns by block. With `shared_theta = TRUE` but
-#'   `shared_blocks = FALSE`, only the rows are grouped contiguously by
-#'   block; columns are grouped by incoming block within each outgoing
-#'   block.
+#'
+#'   **Rows and columns index different nodes.** In the default co-factor
+#'   model (`shared_blocks = FALSE`), the rows and the columns are permuted
+#'   *independently*, so after sorting, row `i` and column `i` of the
+#'   adjacency matrix are generally not the same node. In particular, the
+#'   diagonal of `A` (self-loops, see `allow_self_loops`) does not mean
+#'   "node `i` to itself", and `X[i, ]` and `Y[i, ]` describe different
+#'   nodes. If you need rows and columns to index the same nodes, use
+#'   `shared_blocks = TRUE` or `sort_nodes = FALSE`.
+#'
+#'   When `shared_blocks = TRUE`, rows and columns are instead permuted
+#'   together, so that row `i` and column `i` of the expected adjacency
+#'   matrix refer to the same node: nodes are sorted by block, and then by
+#'   decreasing `theta_out` and `theta_in` within each block.
 #'
 #' @param force_identifiability Logical indicating whether or not to
 #'   normalize `theta_out` such that it sums to one within each incoming
@@ -388,8 +390,8 @@ sample_block_memberships <- function(n, k, pi, block_sizes = NULL) {
 #'     are identical.
 #'
 #'   - `shared_theta`: Logical indicating whether outgoing and incoming
-#'     degree-heterogeneity parameters were generated from a single
-#'     shared vector.
+#'     degree-heterogeneity parameters are shared, in which case `theta_out`
+#'     and `theta_in` are identical.
 #'
 #' @export
 #' @family stochastic block models
@@ -469,8 +471,18 @@ sample_block_memberships <- function(n, k, pi, block_sizes = NULL) {
 #' the communities a node sends edges from and receives edges into are
 #' unrelated, and the two sets of communities can even have different
 #' numbers of blocks. This is the model targeted by co-clustering methods
-#' that estimate separate sending and receiving communities. In this case
-#' the rows and columns are sorted independently when `sort_nodes = TRUE`.
+#' that estimate separate sending and receiving communities.
+#'
+#' In the co-factor model, `sort_nodes = TRUE` (the default) sorts the rows
+#' and the columns of \eqn{A} *independently*, so row \eqn{i} and column
+#' \eqn{i} are generally not the same node. Consequently the diagonal of
+#' \eqn{A}, and so the self-loops controlled by `allow_self_loops`, is not
+#' meaningful as "node \eqn{i} to itself": entry \eqn{A_{ii}} connects the
+#' \eqn{i}-th sender to the \eqn{i}-th receiver in their respective
+#' orderings. If you need rows and columns to index the same nodes (for
+#' example, to interpret self-loops or to read the graph as a directed
+#' graph on a single set of nodes), use `shared_blocks = TRUE` or
+#' `sort_nodes = FALSE`.
 #'
 #' Often it is more natural to think of each node as belonging to a single
 #' community, which shapes both the edges it sends and the edges it
@@ -478,12 +490,13 @@ sample_block_memberships <- function(n, k, pi, block_sizes = NULL) {
 #' \eqn{z} with \eqn{z_{out} = z_{in} = z}, so that
 #' \eqn{E[A_{ij}] = \theta_{out, i} B_{z_i, z_j} \theta_{in, j}}, where
 #' an asymmetric `B` encodes directed relationships between the communities.
-#' Similarly, `shared_theta = TRUE` uses one degree-heterogeneity vector
-#' \eqn{\theta} for both \eqn{\theta_{out}} and \eqn{\theta_{in}}, so nodes
-#' that send many edges also tend to receive many edges. The two options
-#' can be used separately or together. When either of them is `TRUE`,
-#' `sort_nodes = TRUE` permutes rows and columns together, so that row
-#' `i` and column `i` of \eqn{A} always refer to the same node.
+#' With shared blocks you can additionally set `shared_theta = TRUE`, which
+#' uses one degree-heterogeneity vector \eqn{\theta} for both
+#' \eqn{\theta_{out}} and \eqn{\theta_{in}}, so nodes that send many edges
+#' also tend to receive many edges. (`shared_theta = TRUE` requires
+#' `shared_blocks = TRUE`.) With shared blocks, `sort_nodes = TRUE`
+#' permutes rows and columns together, so that row `i` and column `i` of
+#' \eqn{A} always refer to the same node.
 #'
 #' @examples
 #'
@@ -564,6 +577,15 @@ directed_dcsbm <- function(
 
   check_flag(shared_blocks, "shared_blocks")
   check_flag(shared_theta, "shared_theta")
+
+  if (shared_theta && !shared_blocks) {
+    stop(
+      "`shared_theta = TRUE` requires `shared_blocks = TRUE`. Shared degree ",
+      "heterogeneity is only supported when outgoing and incoming blocks ",
+      "are shared as well.",
+      call. = FALSE
+    )
+  }
 
   ### heterogeneity parameters
 
@@ -854,10 +876,11 @@ directed_dcsbm <- function(
     z_in <- factor(z_in, levels = 1:k_in, labels = paste0(1:k_in))
   }
 
-  if (shared_blocks || shared_theta) {
+  if (shared_blocks) {
     # outgoing and incoming parameters are tied together node by node, so
     # node i must correspond to row i of both X and Y. keep everything
-    # aligned in node order, and permute all of it jointly when sorting
+    # aligned in node order, and permute all of it jointly when sorting.
+    # (`shared_theta = TRUE` implies `shared_blocks = TRUE`)
 
     if (force_identifiability) {
       theta_out <- l1_normalize_within(theta_out, z_out)
@@ -997,7 +1020,7 @@ print.directed_dcsbm <- function(x, ...) {
   }
 
   shared_theta <- if (isTRUE(x$shared_theta)) {
-    "TRUE (theta_out and theta_in come from one vector)"
+    "TRUE (theta_out and theta_in are identical)"
   } else {
     "FALSE (theta_out and theta_in are separate)"
   }
