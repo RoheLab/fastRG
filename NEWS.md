@@ -1,5 +1,7 @@
 # fastRG (development version)
 
+- `directed_dcsbm()` gains `shared_blocks` and `shared_theta` arguments, both `FALSE` by default. `shared_blocks = TRUE` samples one block membership vector and uses it for both outgoing and incoming blocks (`z_out` and `z_in` are identical, `B` must be square). `shared_theta = TRUE` uses one degree-heterogeneity vector for both `theta_out` and `theta_in`. When either is `TRUE`, `sort_nodes` permutes rows and columns together so that row `i` and column `i` refer to the same node. The defaults keep the existing co-factor model, and graphs sampled with a given seed are unchanged. The print method now shows whether blocks and degree parameters are shared, and labels outgoing/incoming blocks and degrees correctly (#40).
+
 - `directed_dcsbm()` gains `block_sizes_out` and `block_sizes_in` arguments to specify the exact number of nodes in each outgoing and incoming block, as an alternative to sampling block memberships from `pi_out` and `pi_in`. `pi_out` and `pi_in` now default to `NULL`, which still means balanced block probabilities, so the default behavior (and graphs sampled with a given seed) is unchanged (#41).
 
 - fastRG now requires R >= 4.4.0. irlba 2.4.1, which fastRG uses in tests and vignettes, fails on earlier R versions because `is.atomic(NULL)` changed in R 4.4.0.

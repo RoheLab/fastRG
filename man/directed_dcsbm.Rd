@@ -16,6 +16,8 @@ directed_dcsbm(
   block_sizes_in = NULL,
   pi_out = NULL,
   pi_in = NULL,
+  shared_blocks = FALSE,
+  shared_theta = FALSE,
   sort_nodes = TRUE,
   force_identifiability = TRUE,
   poisson_edges = TRUE,
@@ -30,7 +32,9 @@ parameters \code{theta_out} and \code{theta_in} by hand. When \code{n} is specif
 a \code{LogNormal(2, 1)} distribution.
 This is subject to change, and may not be reproducible.
 \code{n} defaults to \code{NULL}. You must specify either \code{n}
-or \code{theta_out} and \code{theta_in} together, but not both.}
+or \code{theta_out} and \code{theta_in} together, but not both.
+When \code{shared_theta = TRUE}, a single vector is generated and used
+for both \code{theta_out} and \code{theta_in}.}
 
 \item{theta_out}{(degree heterogeneity) A numeric vector
 explicitly specifying the degree heterogeneity
@@ -131,6 +135,31 @@ case \code{rep(1 / k_in, k_in)}, i.e. balanced incoming blocks, is used
 unless \code{block_sizes_in} is specified. You can specify either \code{pi_in}
 or \code{block_sizes_in}, but not both.}
 
+\item{shared_blocks}{(block memberships) Logical indicating whether each
+node should belong to the same outgoing and incoming block. Defaults to
+\code{FALSE}, in which case outgoing and incoming block memberships are
+sampled independently. When \code{TRUE}, a single block membership vector is
+sampled and used for both, so that \code{z_out} and \code{z_in} are identical.
+This requires the same number of outgoing and incoming blocks, i.e.
+\code{B} must be square (or \code{k_out} must equal \code{k_in}; specifying only one
+of them is enough). It is enough to specify only one of \code{pi_out} and
+\code{pi_in} (or of \code{block_sizes_out} and \code{block_sizes_in}); if both are
+specified, they must agree.}
+
+\item{shared_theta}{(degree heterogeneity) Logical indicating whether
+each node should have the same propensity to form outgoing and incoming
+edges. Defaults to \code{FALSE}, in which case \code{theta_out} and \code{theta_in}
+are unrelated. When \code{TRUE}, a single degree-heterogeneity vector is
+used for both \code{theta_out} and \code{theta_in}: either specify \code{n} (one
+vector is then generated at random), or only one of \code{theta_out} and
+\code{theta_in}. If you specify both \code{theta_out} and \code{theta_in}, they must
+be identical. Note that when \code{force_identifiability = TRUE},
+\code{theta_out} is normalized within outgoing blocks and \code{theta_in} within
+incoming blocks, so the stored \code{theta_out} and \code{theta_in} are only
+identical when blocks are shared as well (or when
+\code{force_identifiability = FALSE}). Within each pair of an outgoing and
+an incoming block they are always proportional.}
+
 \item{sort_nodes}{Logical indicating whether or not to sort the nodes
 so that they are grouped by block. Useful for plotting.
 Defaults to \code{TRUE}. When \code{TRUE}, rows of the expected adjacency matrix
@@ -142,7 +171,16 @@ Additionally, \code{pi_out} and \code{pi_in} are sorted in increasing order,
 and the rows and columns of the \code{B} matrix are permuted to match the
 new orderings. When \code{block_sizes_out} or \code{block_sizes_in} are
 specified, they are permuted in the same way, so each block keeps
-exactly the requested number of nodes and its row (or column) of \code{B}.}
+exactly the requested number of nodes and its row (or column) of \code{B}.
+When \code{shared_blocks = TRUE} or \code{shared_theta = TRUE}, rows and columns
+are instead permuted together, so that row \code{i} and column \code{i} of the
+expected adjacency matrix still refer to the same node: nodes are
+sorted by outgoing block, then by incoming block, and then by
+decreasing \code{theta_out} and \code{theta_in}. With shared blocks this groups
+both rows and columns by block. With \code{shared_theta = TRUE} but
+\code{shared_blocks = FALSE}, only the rows are grouped contiguously by
+block; columns are grouped by incoming block within each outgoing
+block.}
 
 \item{force_identifiability}{Logical indicating whether or not to
 normalize \code{theta_out} such that it sums to one within each incoming
@@ -169,27 +207,33 @@ A \code{directed_dcsbm} S3 object, a subclass of the
 \code{\link[=directed_factor_model]{directed_factor_model()}} with the following additional
 fields:
 \itemize{
-\item \code{theta_out}: A numeric vector of incoming community
+\item \code{theta_out}: A numeric vector of outgoing
 degree-heterogeneity parameters.
-\item \code{theta_in}: A numeric vector of outgoing community
+\item \code{theta_in}: A numeric vector of incoming
 degree-heterogeneity parameters.
-\item \code{z_out}: The incoming community memberships of each node,
+\item \code{z_out}: The outgoing community memberships of each node,
 as a \code{\link[=factor]{factor()}}. The factor will have \code{k_out} levels,
-where \code{k_out} is the number of incoming
+where \code{k_out} is the number of outgoing
 communities in the stochastic blockmodel. There will not
 always necessarily be observed nodes in each community.
-\item \code{z_in}: The outgoing community memberships of each node,
+\item \code{z_in}: The incoming community memberships of each node,
 as a \code{\link[=factor]{factor()}}. The factor will have \code{k_in} levels,
-where \code{k_in} is the number of outgoing
+where \code{k_in} is the number of incoming
 communities in the stochastic blockmodel. There will not
 always necessarily be observed nodes in each community.
-\item \code{pi_out}: Sampling probabilities for each incoming
+\item \code{pi_out}: Sampling probabilities for each outgoing
 community.
-\item \code{pi_in}: Sampling probabilities for each outgoing
+\item \code{pi_in}: Sampling probabilities for each incoming
 community.
 \item \code{sorted}: Logical indicating where nodes are arranged by
 block (and additionally by degree heterogeneity parameter)
 within each block.
+\item \code{shared_blocks}: Logical indicating whether outgoing and incoming
+block memberships are shared, in which case \code{z_out} and \code{z_in}
+are identical.
+\item \code{shared_theta}: Logical indicating whether outgoing and incoming
+degree-heterogeneity parameters were generated from a single
+shared vector.
 }
 }
 \description{
@@ -199,6 +243,9 @@ the degree-heterogeneity parameters (via \code{n} or \code{theta_out} and
 (via \code{k_out} and \code{k_in}, or \code{B}), and the block sizes (optional,
 either as relative block probabilities via \code{pi_out} and \code{pi_in}, or as
 exact block counts via \code{block_sizes_out} and \code{block_sizes_in}).
+By default, outgoing and incoming block memberships and degree
+parameters are unrelated (a co-factor model); use \code{shared_blocks} and
+\code{shared_theta} to tie them together.
 We provide defaults for most of these
 options to enable rapid exploration, or you can invest the effort
 for more control over the model parameters. We \strong{strongly recommend}
@@ -267,6 +314,33 @@ parameters
 }
 }
 
+\section{Co-factor models versus shared blocks and degree heterogeneity}{
+By default (\code{shared_blocks = FALSE} and \code{shared_theta = FALSE}),
+\code{directed_dcsbm()} is a \emph{co-factor} model: every node has an outgoing
+block \eqn{z_{out}} and degree parameter \eqn{\theta_{out}} that govern
+the edges it sends (the rows of \eqn{A}), and a separate incoming block
+\eqn{z_{in}} and degree parameter \eqn{\theta_{in}} that govern the edges
+it receives (the columns of \eqn{A}). These are drawn independently, so
+the communities a node sends edges from and receives edges into are
+unrelated, and the two sets of communities can even have different
+numbers of blocks. This is the model targeted by co-clustering methods
+that estimate separate sending and receiving communities. In this case
+the rows and columns are sorted independently when \code{sort_nodes = TRUE}.
+
+Often it is more natural to think of each node as belonging to a single
+community, which shapes both the edges it sends and the edges it
+receives. Setting \code{shared_blocks = TRUE} draws one membership vector
+\eqn{z} with \eqn{z_{out} = z_{in} = z}, so that
+\eqn{E[A_{ij}] = \theta_{out, i} B_{z_i, z_j} \theta_{in, j}}, where
+an asymmetric \code{B} encodes directed relationships between the communities.
+Similarly, \code{shared_theta = TRUE} uses one degree-heterogeneity vector
+\eqn{\theta} for both \eqn{\theta_{out}} and \eqn{\theta_{in}}, so nodes
+that send many edges also tend to receive many edges. The two options
+can be used separately or together. When either of them is \code{TRUE},
+\code{sort_nodes = TRUE} permutes rows and columns together, so that row
+\code{i} and column \code{i} of \eqn{A} always refer to the same node.
+}
+
 \examples{
 
 set.seed(27)
@@ -301,6 +375,25 @@ ddcsbm_explicit_block_sizes <- directed_dcsbm(
 # respects block sizes
 table(ddcsbm_explicit_block_sizes$z_out)
 table(ddcsbm_explicit_block_sizes$z_in)
+
+# each node belongs to the same outgoing and incoming community, and has
+# the same propensity to send and receive edges
+
+B_square <- matrix(0.1, nrow = 4, ncol = 4)
+diag(B_square) <- 0.8
+B_square[1, 2] <- 0.5 # block 1 sends many edges to block 2
+
+shared_ddcsbm <- directed_dcsbm(
+  theta_out = rexp(100, 1 / 3) + 1,
+  B = B_square,
+  shared_blocks = TRUE,
+  shared_theta = TRUE,
+  expected_density = 0.05
+)
+
+shared_ddcsbm
+
+identical(shared_ddcsbm$z_out, shared_ddcsbm$z_in)
 
 }
 \seealso{
