@@ -11,7 +11,14 @@ new_undirected_overlapping_sbm <- function(
   subclass = character()
 ) {
   subclass <- c(subclass, "undirected_overlapping_sbm")
-  overlapping_sbm <- undirected_factor_model(X, S, ..., subclass = subclass)
+  overlapping_sbm <- undirected_factor_model(
+    X,
+    S,
+    ...,
+    poisson_edges = poisson_edges,
+    allow_self_loops = allow_self_loops,
+    subclass = subclass
+  )
   overlapping_sbm$Z <- Z
   overlapping_sbm$pi <- pi
   overlapping_sbm$B <- B
@@ -31,7 +38,8 @@ validate_undirected_overlapping_sbm <- function(x) {
 
   if (!is_invertible(values$S)) {
     stop(
-      "`B` must be an invertible matrix.",
+      "`B` must be invertible after symmetrizing and rescaling ",
+      "(i.e. `S` must be invertible).",
       call. = FALSE
     )
   }
@@ -90,10 +98,15 @@ validate_undirected_overlapping_sbm <- function(x) {
 #'   block `j`. All elements must be contained in \eqn{[0, 1]}. Each node
 #'   joins each block independently, so `pi` is **not** normalized and
 #'   does not need to sum to one: `sum(pi)` is the expected number of
-#'   blocks a node belongs to (ignoring `force_pure`). Defaults to
-#'   `rep(1 / k, k)`, in which case each node belongs to one block on
-#'   average, and a fraction of roughly \eqn{(1 - 1/k)^k \approx e^{-1}}{(1 - 1/k)^k, approximately exp(-1),}
-#'   of nodes belongs to no block at all. Regardless of `sort_nodes`,
+#'   blocks a node joins before nodes in no block are reassigned
+#'   (ignoring `force_pure`). A node that joins no block is instead
+#'   assigned to exactly one block, chosen with probability
+#'   proportional to `pi`, so every node belongs to at least one block
+#'   and at least one element of `pi` must be positive. Defaults to
+#'   `rep(1 / k, k)`, in which case a fraction of roughly
+#'   \eqn{(1 - 1/k)^k \approx e^{-1}}{(1 - 1/k)^k, approximately exp(-1),}
+#'   of nodes initially join no block and are reassigned to a single
+#'   block chosen uniformly at random. Regardless of `sort_nodes`,
 #'   `pi` is sorted in increasing order, and the rows and columns
 #'   of `B` are permuted to match the new order of `pi`.
 #'
@@ -102,8 +115,7 @@ validate_undirected_overlapping_sbm <- function(x) {
 #'   Defaults to `TRUE`. When `TRUE`, the rows of `Z` are sorted in
 #'   decreasing lexicographic order, so that members of the first
 #'   block come first, and within the members of the first block,
-#'   members of the second block come first, and so on. Nodes that
-#'   belong to no block come last.
+#'   members of the second block come first, and so on.
 #'
 #' @param force_pure Logical indicating whether or not to force presence of
 #'   "pure nodes" (nodes that belong only to a single block) for the sake
@@ -113,17 +125,20 @@ validate_undirected_overlapping_sbm <- function(x) {
 #'   `j`th chosen node are overwritten so that it belongs to block `j`
 #'   and to no other block. Requires `n >= k`. Defaults to `TRUE`.
 #'
-#' @param poisson_edges Currently **ignored** by `overlapping_sbm()`.
-#'   The argument is accepted but not passed on to
-#'   [undirected_factor_model()], so the returned object always has
-#'   `poisson_edges = TRUE`, `S` is not back-transformed to a Bernoulli
-#'   parameterization, and sampled graphs may contain multiple edges
-#'   between a pair of nodes.
+#' @param poisson_edges Logical indicating whether or not
+#'   multiple edges are allowed to form between a pair of
+#'   nodes. Defaults to `TRUE`. When `FALSE`, sampling proceeds
+#'   as usual, and duplicate edges are removed afterwards. Further,
+#'   when `FALSE`, we assume that `S` specifies a desired Bernoulli
+#'   edge probability, and back-transform `S` to a Poisson
+#'   parameterization before sampling (see "Edge formulation" below),
+#'   so all elements of `S` (after symmetrizing and any rescaling)
+#'   must be at most `1`.
 #'
-#' @param allow_self_loops Currently **ignored** by `overlapping_sbm()`.
-#'   The argument is accepted but not passed on to
-#'   [undirected_factor_model()], so the returned object always has
-#'   `allow_self_loops = TRUE` and sampled graphs may contain self-loops.
+#' @param allow_self_loops Logical indicating whether or not
+#'   nodes should be allowed to form edges with themselves.
+#'   Defaults to `TRUE`. When `FALSE`, sampling proceeds allowing
+#'   self-loops, and these are then removed after the fact.
 #'
 #' @inheritDotParams undirected_factor_model expected_degree expected_density
 #'
@@ -205,8 +220,15 @@ validate_undirected_overlapping_sbm <- function(x) {
 #' Unlike in [dcsbm()], where each node belongs to exactly one block,
 #' or in [mmsbm()], where each node splits one unit of membership among
 #' blocks, here a node can be a full member of several blocks at
-#' once. A node can also belong to no block at all, in which case it
-#' has no edges. When `force_pure = TRUE`, `k` randomly chosen nodes
+#' once.
+#'
+#' Every node must belong to at least one block. After the Bernoulli
+#' draws above, any node with \eqn{Z_{ia} = 0}{Z[i, a] = 0} for every
+#' block \eqn{a} is assigned to exactly one block, chosen at random with
+#' probability \eqn{\pi_a / \sum_b \pi_b}{pi[a] / sum(pi)}. As a result,
+#' the entries of \eqn{Z} are not exactly independent, and nodes that
+#' belong to a single block are somewhat more common than independent
+#' Bernoulli draws alone would give. When `force_pure = TRUE`, `k` randomly chosen nodes
 #' are then made pure members of one block each (see "Identifiability").
 #'
 #' ## Degree heterogeneity
@@ -245,6 +267,23 @@ validate_undirected_overlapping_sbm <- function(x) {
 #' rescaled \eqn{B}, so that
 #' \eqn{\mathbb{E}[A \mid Z] = Z S Z^T}{E[A | Z] = Z S Z'}.
 #'
+#' When `poisson_edges = FALSE`, the symmetrized and rescaled \eqn{B}
+#' is instead treated as a matrix of Bernoulli probabilities, and
+#' replaced by \eqn{-\log(1 - B)}{-log(1 - B)} (elementwise) before
+#' sampling. Nodes \eqn{i} and \eqn{j} are then connected with
+#' probability
+#'
+#' \deqn{
+#'   1 - \prod_{a = 1}^k \prod_{b = 1}^k (1 - B_{ab})^{Z_{ia} Z_{jb}},
+#' }{
+#'   1 - prod_a prod_b (1 - B[a, b])^(Z[i, a] Z[j, b]),
+#' }
+#'
+#' that is, each pair of shared blocks independently gets a chance to
+#' connect \eqn{i} and \eqn{j}. This is the "noisy-OR" model discussed
+#' in Section 3 of Kaufmann, Bonald and Lelarge (2016), and for sparse
+#' graphs it is close to the SBMO with Bernoulli edges.
+#'
 #' ## Identifiability
 #'
 #' Kaufmann, Bonald and Lelarge (2016, Theorem 1) show that the
@@ -259,7 +298,8 @@ validate_undirected_overlapping_sbm <- function(x) {
 #' \eqn{B} (i.e. `S`) is invertible, and `force_pure = TRUE` guarantees
 #' the second condition. Kaufmann, Bonald and Lelarge (2016) further
 #' assume that every node belongs to at least one block, which
-#' `overlapping_sbm()` does not enforce.
+#' `overlapping_sbm()` guarantees by reassigning nodes that join no
+#' block (see "Block memberships" above).
 #'
 #' ## Related models
 #'
@@ -289,8 +329,8 @@ validate_undirected_overlapping_sbm <- function(x) {
 #' # block memberships: a binary matrix, nodes can belong to several blocks
 #' lazy_overlapping_sbm$Z[1:5, ]
 #'
-#' # how many blocks does each node belong to? with the default pi,
-#' # roughly a third of nodes belong to no block and have no edges
+#' # how many blocks does each node belong to? every node belongs to
+#' # at least one block
 #' table(Matrix::rowSums(lazy_overlapping_sbm$Z))
 #'
 #' # sometimes you gotta let the world burn and
@@ -373,6 +413,8 @@ overlapping_sbm <- function(
     }
 
     k <- nrow(B)
+  } else {
+    stop("Must specify only one of `B` and `k`, not both.", call. = FALSE)
   }
 
   ### block membership
@@ -383,6 +425,10 @@ overlapping_sbm <- function(
 
   if (any(pi < 0) || any(pi > 1)) {
     stop("All elements of `pi` must be contained in [0, 1].", call. = FALSE)
+  }
+
+  if (sum(pi) <= 0) {
+    stop("At least one element of `pi` must be positive.", call. = FALSE)
   }
 
   # order mixing matrix by expected group size
@@ -402,6 +448,17 @@ overlapping_sbm <- function(
   for (i in 1:k) {
     ind <- stats::rbinom(n, 1, pi[i])
     X[, i] <- ind
+  }
+
+  # every node must belong to at least one block. nodes that joined no
+  # block above are assigned to exactly one block, chosen with
+  # probability proportional to pi
+
+  empty <- which(Matrix::rowSums(X) == 0)
+
+  if (length(empty) > 0) {
+    blocks <- sample.int(k, length(empty), replace = TRUE, prob = pi)
+    X[cbind(empty, blocks)] <- 1
   }
 
   if (force_pure) {
@@ -436,15 +493,15 @@ overlapping_sbm <- function(
 #' @export
 print.undirected_overlapping_sbm <- function(x, ...) {
   cat(glue(
-    "Undirected Degree-Corrected Overlapping Blockmodel\n",
+    "Undirected Overlapping Stochastic Blockmodel\n",
     .trim = FALSE
   ))
   cat(glue(
-    "-------------------------------------------------\n\n",
+    "--------------------------------------------\n\n",
     .trim = FALSE
   ))
 
-  sorted <- if (x$sorted) "sorted" else "sorted"
+  sorted <- if (x$sorted) "sorted" else "not sorted"
 
   cat(glue("Nodes (n): {x$n} ({sorted})\n", .trim = FALSE))
   cat(glue("Blocks (k): {x$k}\n\n", .trim = FALSE))

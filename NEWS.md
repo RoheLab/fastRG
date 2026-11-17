@@ -1,5 +1,13 @@
 # fastRG (development version)
 
+- `overlapping_sbm()` bug fixes:
+  - `poisson_edges` and `allow_self_loops` were silently ignored, so every overlapping SBM was a Poisson graph with self-loops. They are now passed on, and Bernoulli overlapping SBMs follow the "noisy-OR" edge probability `1 - prod (1 - B[a, b])^(Z[i, a] Z[j, b])`.
+  - Specifying both `k` and `B` is now an error, as in `dcsbm()`.
+  - The invertibility error now says that it is the symmetrized and rescaled `B` (i.e. `S`) that must be invertible.
+  - `print()` now says "not sorted" for unsorted models, and no longer calls the model degree-corrected.
+
+- `overlapping_sbm()` now puts every node in at least one block. A node that joins no block in the independent Bernoulli draws is assigned to exactly one block, chosen with probability proportional to `pi`. Previously, with the default `pi`, about a third of nodes belonged to no block and had no edges. `pi` must now have at least one positive element. Graphs sampled with a given seed will differ from previous versions.
+
 - New `directed_planted_partition()`, a directed stochastic blockmodel with `k` outgoing and `k` incoming blocks whose mixing matrix has `within_block` (or `a / n`) on the diagonal and `between_block` (or `b / n`) off the diagonal. Outgoing and incoming communities are independent by default; set `shared_blocks = TRUE` to give each node a single community. Supports `block_sizes` / `pi`, `sort_nodes`, `poisson_edges`, `allow_self_loops` and expected degree / density scaling. Like `planted_partition()`, blocks are as balanced as possible by default (#10).
 
 - `planted_partition()` now returns an object with class `undirected_planted_partition` (on top of `undirected_sbm`), so it prints with its own print method, which now shows the within- and between-block edge probabilities. Its validator is now run: `within_block` and `between_block` (or `a / n` and `b / n`) must be scalars between zero and one, as documented, and `B` must have a constant diagonal and off-diagonal. Sampling is unchanged.
