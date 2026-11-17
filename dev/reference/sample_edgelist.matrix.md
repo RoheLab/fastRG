@@ -18,7 +18,8 @@ sample_edgelist(
   directed,
   poisson_edges,
   allow_self_loops,
-  ...
+  ...,
+  multigraph = TRUE
 )
 
 # S3 method for class 'Matrix'
@@ -29,7 +30,8 @@ sample_edgelist(
   directed,
   poisson_edges,
   allow_self_loops,
-  ...
+  ...,
+  multigraph = TRUE
 )
 ```
 
@@ -82,12 +84,31 @@ sample_edgelist(
 
   Ignored, for generic consistency only.
 
+- multigraph:
+
+  Logical scalar, only relevant for Poisson graphs
+  (`poisson_edges = TRUE`), where a pair of nodes can be connected by
+  more than one edge. When `TRUE` (the default), such repeated edges are
+  represented as a multigraph, that is, as repeated edges (or repeated
+  rows of an edgelist) without any edge weights. When `FALSE`, repeated
+  edges between the same pair of nodes are collapsed into a single edge
+  with an integer `weight` attribute that counts the number of times the
+  edge was sampled. This weight is the corresponding entry of the
+  adjacency matrix returned by
+  [`sample_sparse()`](https://rohelab.github.io/fastRG/dev/reference/sample_sparse.md).
+  In undirected graphs, the edges `(i, j)` and `(j, i)` are the same
+  edge and are collapsed together. When `multigraph = FALSE` the
+  `weight` attribute is always present, even for Bernoulli graphs
+  (`poisson_edges = FALSE`), where every weight is `1`.
+
 ## Value
 
 A single realization of a random Poisson (or Bernoulli) Dot Product
 Graph, represented as a
 [`tibble::tibble()`](https://tibble.tidyverse.org/reference/tibble.html)
-with two integer columns, `from` and `to`.
+with two integer columns, `from` and `to`. When `multigraph = FALSE`,
+there is an additional integer column `weight` and each `(from, to)`
+pair appears at most once.
 
 **NOTE**: Indices for isolated nodes will not appear in the edgelist!
 This can lead to issues if you construct network objects from the

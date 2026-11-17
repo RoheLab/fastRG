@@ -188,11 +188,11 @@ change is uncertain).
 ### Edge formulation
 
 Once we know the block memberships \\z\\ and the degree heterogeneity
-parameters \\theta\\, we need one more ingredient, which is the baseline
-intensity of connections between nodes in block `i` and block `j`. Then
-each edge \\A\_{i,j}\\ is Poisson distributed with parameter
+parameters \\\theta\\, we need one more ingredient, which is the
+baseline intensity of connections between nodes in block `i` and block
+`j`. Then each edge \\A\_{i,j}\\ is Poisson distributed with parameter
 
-\$\$ \lambda\[i, j\] = \theta_i \cdot B\_{z_i, z_j} \cdot \theta_j. \$\$
+\$\$ \lambda\_{i, j} = \theta_i \cdot B\_{z_i, z_j} \cdot \theta_j. \$\$
 
 ## See also
 

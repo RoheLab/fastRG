@@ -2,6 +2,36 @@
 
 ## fastRG (development version)
 
+- [`sample_edgelist()`](https://rohelab.github.io/fastRG/dev/reference/sample_edgelist.md),
+  [`sample_igraph()`](https://rohelab.github.io/fastRG/dev/reference/sample_igraph.md)
+  and
+  [`sample_tidygraph()`](https://rohelab.github.io/fastRG/dev/reference/sample_tidygraph.md)
+  gain a `multigraph` argument. The default, `multigraph = TRUE`, keeps
+  the current behavior: Poisson graphs are returned as multigraphs with
+  repeated edges. With `multigraph = FALSE`, repeated edges are
+  collapsed into a single edge with an integer `weight` attribute (an
+  edgelist column, or an `igraph` edge attribute) that equals the
+  corresponding entry of
+  [`sample_sparse()`](https://rohelab.github.io/fastRG/dev/reference/sample_sparse.md).
+  In undirected graphs `(i, j)` and `(j, i)` are collapsed together. The
+  `weight` attribute is always present when `multigraph = FALSE`, so
+  Bernoulli graphs (`poisson_edges = FALSE`) get weights of 1
+  ([\#30](https://github.com/RoheLab/fastRG/issues/30)).
+
+- Fixed
+  [`sample_sparse()`](https://rohelab.github.io/fastRG/dev/reference/sample_sparse.md),
+  [`sample_igraph()`](https://rohelab.github.io/fastRG/dev/reference/sample_igraph.md)
+  and
+  [`sample_tidygraph()`](https://rohelab.github.io/fastRG/dev/reference/sample_tidygraph.md)
+  erroring on directed rectangular models (`n != d`) when no edges are
+  sampled. Empty graphs now have the same output types as non-empty
+  ones:
+  [`sample_edgelist()`](https://rohelab.github.io/fastRG/dev/reference/sample_edgelist.md)
+  returns a tibble with integer `from` and `to` columns instead of a
+  base matrix of doubles, and
+  [`sample_sparse()`](https://rohelab.github.io/fastRG/dev/reference/sample_sparse.md)
+  returns a symmetric `dsCMatrix` for undirected models.
+
 - [`overlapping_sbm()`](https://rohelab.github.io/fastRG/dev/reference/overlapping_sbm.md)
   bug fixes:
 
@@ -124,6 +154,15 @@
   [\#31](https://github.com/RoheLab/fastRG/issues/31). Graphs sampled
   with a given seed will differ from previous versions
   ([\#46](https://github.com/RoheLab/fastRG/issues/46)).
+
+- Fixed math rendering on the pkgdown site. The home page showed stray
+  backticks because `README.md` used GitHub’s `` $`...`$ `` math syntax,
+  which pkgdown can’t parse. Also fixed malformed LaTeX (e.g. `\pi_out`,
+  `theta_in`) in the
+  [`dcsbm()`](https://rohelab.github.io/fastRG/dev/reference/dcsbm.md)
+  and
+  [`directed_dcsbm()`](https://rohelab.github.io/fastRG/dev/reference/directed_dcsbm.md)
+  documentation ([\#48](https://github.com/RoheLab/fastRG/issues/48)).
 
 - Finished the documentation for
   [`overlapping_sbm()`](https://rohelab.github.io/fastRG/dev/reference/overlapping_sbm.md):

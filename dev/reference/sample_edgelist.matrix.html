@@ -78,7 +78,8 @@ validation suffer foolishly at their own hand.
 <span>  <span class="va">directed</span>,</span>
 <span>  <span class="va">poisson_edges</span>,</span>
 <span>  <span class="va">allow_self_loops</span>,</span>
-<span>  <span class="va">...</span></span>
+<span>  <span class="va">...</span>,</span>
+<span>  multigraph <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># S3 method for class 'Matrix'</span></span>
@@ -89,7 +90,8 @@ validation suffer foolishly at their own hand.
 <span>  <span class="va">directed</span>,</span>
 <span>  <span class="va">poisson_edges</span>,</span>
 <span>  <span class="va">allow_self_loops</span>,</span>
-<span>  <span class="va">...</span></span>
+<span>  <span class="va">...</span>,</span>
+<span>  multigraph <span class="op">=</span> <span class="cn">TRUE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -141,12 +143,30 @@ self-loops, and these are then removed after the fact.</p></dd>
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Ignored, for generic consistency only.</p></dd>
 
+
+<dt id="arg-multigraph">multigraph<a class="anchor" aria-label="anchor" href="#arg-multigraph"></a></dt>
+<dd><p>Logical scalar, only relevant for Poisson graphs
+(<code>poisson_edges = TRUE</code>), where a pair of nodes can be connected by
+more than one edge. When <code>TRUE</code> (the default), such repeated edges are
+represented as a multigraph, that is, as repeated edges (or repeated
+rows of an edgelist) without any edge weights. When <code>FALSE</code>, repeated
+edges between the same pair of nodes are collapsed into a single edge
+with an integer <code>weight</code> attribute that counts the number of times
+the edge was sampled. This weight is the corresponding entry of the
+adjacency matrix returned by <code><a href="sample_sparse.html">sample_sparse()</a></code>. In undirected graphs,
+the edges <code>(i, j)</code> and <code>(j, i)</code> are the same edge and are collapsed
+together. When <code>multigraph = FALSE</code> the <code>weight</code> attribute is always
+present, even for Bernoulli graphs (<code>poisson_edges = FALSE</code>), where
+every weight is <code>1</code>.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A single realization of a random Poisson (or Bernoulli)
 Dot Product Graph, represented as a <code><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble::tibble()</a></code> with two
-integer columns, <code>from</code> and <code>to</code>.</p>
+integer columns, <code>from</code> and <code>to</code>. When <code>multigraph = FALSE</code>, there
+is an additional integer column <code>weight</code> and each <code>(from, to)</code> pair
+appears at most once.</p>
 <p><strong>NOTE</strong>: Indices for isolated nodes will not appear in the edgelist!
 This can lead to issues if you construct network objects from the
 edgelist directly.</p>

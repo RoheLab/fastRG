@@ -384,9 +384,9 @@ graph representation.</p><div class="section">
 <p>Let \(x\) represent the incoming block membership of a node
 and \(y\) represent the outgoing block membership of a node.
 To generate \(x\) we sample from a categorical
-distribution with parameter \(\pi_out\).
+distribution with parameter \(\pi_{out}\).
 To generate \(y\) we sample from a categorical
-distribution with parameter \(\pi_in\).
+distribution with parameter \(\pi_{in}\).
 Block memberships are independent across nodes. Incoming and outgoing
 block memberships of the same node are also independent.</p>
 <p>These categorical draws are used when <code>pi_out</code> (<code>pi_in</code>) is specified.
@@ -408,10 +408,10 @@ values.</p>
 nodes to have different propensities for incoming and
 outgoing edge formation.
 We represent the propensity to form incoming edges for a
-given node by a positive number \(\theta_out\).
+given node by a positive number \(\theta_{out}\).
 We represent the propensity to form outgoing edges for a
-given node by a positive number \(\theta_in\).
-Typically the \(\theta_out\) (and \(theta_in\)) across all nodes are
+given node by a positive number \(\theta_{in}\).
+Typically the \(\theta_{out}\) (and \(\theta_{in}\)) across all nodes are
 constrained to sum to one for identifiability purposes,
 but this doesn't really matter during sampling.</p>
 </div>
@@ -428,7 +428,7 @@ between nodes in block <code>i</code> and block <code>j</code>. Then each edge f
 independently according to a Poisson distribution with
 parameters</p>
 <p>$$
-  \lambda = \theta_{in} * B_{x, y} * \theta_{out}.
+  \lambda = \theta_{in} \cdot B_{x, y} \cdot \theta_{out}.
 $$</p>
 </div>
 

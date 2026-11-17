@@ -11,13 +11,13 @@ generate a random graph in your preferred format.
 ## Usage
 
 ``` r
-sample_tidygraph(factor_model, ...)
+sample_tidygraph(factor_model, ..., multigraph = TRUE)
 
 # S3 method for class 'undirected_factor_model'
-sample_tidygraph(factor_model, ...)
+sample_tidygraph(factor_model, ..., multigraph = TRUE)
 
 # S3 method for class 'directed_factor_model'
-sample_tidygraph(factor_model, ...)
+sample_tidygraph(factor_model, ..., multigraph = TRUE)
 ```
 
 ## Arguments
@@ -33,12 +33,35 @@ sample_tidygraph(factor_model, ...)
 
   Ignored. Do not use.
 
+- multigraph:
+
+  Logical scalar, only relevant for Poisson graphs
+  (`poisson_edges = TRUE`), where a pair of nodes can be connected by
+  more than one edge. When `TRUE` (the default), such repeated edges are
+  represented as a multigraph, that is, as repeated edges (or repeated
+  rows of an edgelist) without any edge weights. When `FALSE`, repeated
+  edges between the same pair of nodes are collapsed into a single edge
+  with an integer `weight` attribute that counts the number of times the
+  edge was sampled. This weight is the corresponding entry of the
+  adjacency matrix returned by
+  [`sample_sparse()`](https://rohelab.github.io/fastRG/dev/reference/sample_sparse.md).
+  In undirected graphs, the edges `(i, j)` and `(j, i)` are the same
+  edge and are collapsed together. When `multigraph = FALSE` the
+  `weight` attribute is always present, even for Bernoulli graphs
+  (`poisson_edges = FALSE`), where every weight is `1`.
+
 ## Value
 
 A
 [`tidygraph::tbl_graph()`](https://tidygraph.data-imaginist.com/reference/tbl_graph.html)
-object that is possibly a multigraph (that is, we take there to be
-multiple edges rather than weighted edges).
+object. For Poisson graphs (`poisson_edges = TRUE`) with
+`multigraph = TRUE` (the default), this is possibly a multigraph (that
+is, we take there to be multiple edges rather than weighted edges). With
+`multigraph = FALSE`, repeated edges are instead collapsed into a single
+edge, and the edge data has an integer `weight` column equal to the
+corresponding entry of the
+[`sample_sparse()`](https://rohelab.github.io/fastRG/dev/reference/sample_sparse.md)
+adjacency matrix (all weights are `1` when `poisson_edges = FALSE`).
 
 When `factor_model` is **undirected**:
 
@@ -160,9 +183,9 @@ dim(B)
 ### sampling graphs as igraph graphs ------------------
 
 sample_igraph(ufm)
-#> IGRAPH d14434b UN-- 100 213 -- 
+#> IGRAPH 9d524de UN-- 100 213 -- 
 #> + attr: name (v/c)
-#> + edges from d14434b (vertex names):
+#> + edges from 9d524de (vertex names):
 #>  [1] 40--56  71--85  80--80  25--97  66--94  6 --22  47--86  15--50  62--94 
 #> [10] 56--98  12--75  26--30  14--84  13--95  85--94  15--40  47--95  17--70 
 #> [19] 46--78  44--84  6 --68  94--98  26--38  61--87  48--100 6 --36  12--93 
@@ -203,6 +226,39 @@ sample_tidygraph(ufm)
 #> 3    27    76
 #> # ℹ 236 more rows
 
+### weighted graphs instead of multigraphs ------------
+
+# collapse repeated edges into a single edge with an integer weight
+
+sample_edgelist(ufm, multigraph = FALSE)
+#> # A tibble: 263 × 3
+#>     from    to weight
+#>    <int> <int>  <int>
+#>  1     1    37      1
+#>  2     1    49      1
+#>  3     1    74      1
+#>  4     2     5      1
+#>  5     2    30      1
+#>  6     2    38      1
+#>  7     2    61      1
+#>  8     2    64      1
+#>  9     2    72      1
+#> 10     2    74      1
+#> # ℹ 253 more rows
+sample_igraph(ufm, multigraph = FALSE)
+#> IGRAPH 0f291a3 UNW- 100 245 -- 
+#> + attr: name (v/c), weight (e/n)
+#> + edges from 0f291a3 (vertex names):
+#>  [1] 1 --17  1 --56  1 --99  2 --20  2 --24  2 --63  2 --70  2 --87  2 --100
+#> [10] 3 --59  3 --73  3 --87  4 --7   4 --8   4 --31  5 --16  5 --80  5 --100
+#> [19] 6 --61  6 --63  6 --70  6 --98  8 --14  9 --14  9 --19  9 --24  9 --37 
+#> [28] 9 --38  9 --44  9 --46  9 --59  9 --76  9 --77  9 --78  9 --85  9 --94 
+#> [37] 10--10  10--20  10--31  10--49  10--69  10--75  10--86  11--58  11--59 
+#> [46] 11--63  12--19  12--49  12--54  12--69  12--75  12--82  13--45  13--47 
+#> [55] 13--76  13--95  14--59  14--69  15--34  16--16  16--46  16--63  16--84 
+#> [64] 16--96  16--98  17--29  17--31  17--36  17--46  17--49  17--52  17--62 
+#> + ... omitted several edges
+
 ##### directed examples ----------------------------
 
 n2 <- 100
@@ -242,20 +298,20 @@ fm
 
 edgelist2 <- sample_edgelist(fm)
 edgelist2
-#> # A tibble: 95 × 2
+#> # A tibble: 109 × 2
 #>     from    to
 #>    <int> <int>
-#>  1    99    16
-#>  2    88    15
-#>  3     8    37
-#>  4    65    48
-#>  5    25     9
-#>  6    19    47
-#>  7     9    49
-#>  8    97    19
-#>  9    75    50
-#> 10    36    40
-#> # ℹ 85 more rows
+#>  1    94    38
+#>  2    95     5
+#>  3    12    10
+#>  4    61     6
+#>  5    40    17
+#>  6    47    46
+#>  7    54    27
+#>  8    24     5
+#>  9    19    41
+#> 10    40     2
+#> # ℹ 99 more rows
 
 ### sampling graphs as sparse matrices ----------------
 
@@ -293,9 +349,9 @@ is_bipartite(dig)
 ### sampling graphs as tidygraph graphs ---------------
 
 sample_tidygraph(fm)
-#> # A tbl_graph: 150 nodes and 88 edges
+#> # A tbl_graph: 150 nodes and 98 edges
 #> #
-#> # A bipartite multigraph with 69 components
+#> # A bipartite multigraph with 65 components
 #> #
 #> # Node Data: 150 × 1 (active)
 #>    type 
@@ -312,11 +368,11 @@ sample_tidygraph(fm)
 #> 10 FALSE
 #> # ℹ 140 more rows
 #> #
-#> # Edge Data: 88 × 2
+#> # Edge Data: 98 × 2
 #>    from    to
 #>   <int> <int>
-#> 1    83   101
-#> 2    99   101
-#> 3    90   102
-#> # ℹ 85 more rows
+#> 1    75   102
+#> 2    10   104
+#> 3    79   104
+#> # ℹ 95 more rows
 ```

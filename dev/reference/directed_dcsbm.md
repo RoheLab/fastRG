@@ -308,10 +308,10 @@ depending on your desired graph representation.
 
 Let \\x\\ represent the incoming block membership of a node and \\y\\
 represent the outgoing block membership of a node. To generate \\x\\ we
-sample from a categorical distribution with parameter \\\pi_out\\. To
+sample from a categorical distribution with parameter \\\pi\_{out}\\. To
 generate \\y\\ we sample from a categorical distribution with parameter
-\\\pi_in\\. Block memberships are independent across nodes. Incoming and
-outgoing block memberships of the same node are also independent.
+\\\pi\_{in}\\. Block memberships are independent across nodes. Incoming
+and outgoing block memberships of the same node are also independent.
 
 These categorical draws are used when `pi_out` (`pi_in`) is specified.
 Otherwise, the outgoing (incoming) block memberships are a uniformly
@@ -329,11 +329,11 @@ with exactly repeated singular values.
 In addition to block membership, the DCSBM also nodes to have different
 propensities for incoming and outgoing edge formation. We represent the
 propensity to form incoming edges for a given node by a positive number
-\\\theta_out\\. We represent the propensity to form outgoing edges for a
-given node by a positive number \\\theta_in\\. Typically the
-\\\theta_out\\ (and \\theta_in\\) across all nodes are constrained to
-sum to one for identifiability purposes, but this doesn't really matter
-during sampling.
+\\\theta\_{out}\\. We represent the propensity to form outgoing edges
+for a given node by a positive number \\\theta\_{in}\\. Typically the
+\\\theta\_{out}\\ (and \\\theta\_{in}\\) across all nodes are
+constrained to sum to one for identifiability purposes, but this doesn't
+really matter during sampling.
 
 ### Edge formulation
 
@@ -343,7 +343,7 @@ one more ingredient, which is the baseline intensity of connections
 between nodes in block `i` and block `j`. Then each edge forms
 independently according to a Poisson distribution with parameters
 
-\$\$ \lambda = \theta\_{in} \* B\_{x, y} \* \theta\_{out}. \$\$
+\$\$ \lambda = \theta\_{in} \cdot B\_{x, y} \cdot \theta\_{out}. \$\$
 
 ## Co-factor models versus shared blocks and degree heterogeneity
 
