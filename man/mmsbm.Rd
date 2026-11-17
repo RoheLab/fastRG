@@ -80,10 +80,12 @@ Additionally, \code{pi} is sorted in increasing order, and the columns
 of the \code{B} matrix are permuted to match the new order of \code{pi}.}
 
 \item{force_pure}{Logical indicating whether or not to force presence of
-"pure nodes" (nodes that belong only to a single community) for the sake
+"pure nodes" (nodes that belong only to a single block) for the sake
 of identifiability. To include pure nodes, block membership sampling
-first proceeds as per usual. Then, after it is complete, \code{k} nodes
-are chosen randomly as pure nodes, one for each block. Defaults to \code{TRUE}.}
+first proceeds as per usual. Then, after it is complete, \code{k} distinct
+nodes are chosen uniformly at random, and the memberships of the
+\code{j}th chosen node are overwritten so that it belongs to block \code{j}
+and to no other block. Requires \code{n >= k}. Defaults to \code{TRUE}.}
 
 \item{poisson_edges}{Logical indicating whether or not
 multiple edges are allowed to form between a pair of
@@ -218,6 +220,7 @@ svds(custom_mmsbm)$d
 Other stochastic block models: 
 \code{\link{dcsbm}()},
 \code{\link{directed_dcsbm}()},
+\code{\link{directed_planted_partition}()},
 \code{\link{overlapping_sbm}()},
 \code{\link{planted_partition}()},
 \code{\link{sbm}()}

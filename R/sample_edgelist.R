@@ -12,9 +12,25 @@
 #'
 #' @param ... Ignored. Do not use.
 #'
+#' @param multigraph Logical scalar, only relevant for Poisson graphs
+#'   (`poisson_edges = TRUE`), where a pair of nodes can be connected by
+#'   more than one edge. When `TRUE` (the default), such repeated edges are
+#'   represented as a multigraph, that is, as repeated edges (or repeated
+#'   rows of an edgelist) without any edge weights. When `FALSE`, repeated
+#'   edges between the same pair of nodes are collapsed into a single edge
+#'   with an integer `weight` attribute that counts the number of times
+#'   the edge was sampled. This weight is the corresponding entry of the
+#'   adjacency matrix returned by [sample_sparse()]. In undirected graphs,
+#'   the edges `(i, j)` and `(j, i)` are the same edge and are collapsed
+#'   together. When `multigraph = FALSE` the `weight` attribute is always
+#'   present, even for Bernoulli graphs (`poisson_edges = FALSE`), where
+#'   every weight is `1`.
+#'
 #' @return A single realization of a random Poisson (or Bernoulli)
 #'   Dot Product Graph, represented as a [tibble::tibble()] with two
-#'   integer columns, `from` and `to`.
+#'   integer columns, `from` and `to`. When `multigraph = FALSE`, there
+#'   is an additional integer column `weight` and each `(from, to)` pair
+#'   appears at most once.
 #'
 #'   **NOTE**: Indices for isolated nodes will not appear in the edgelist!
 #'   This can lead to issues if you construct network objects from the
@@ -92,6 +108,13 @@
 #'
 #' sample_tidygraph(ufm)
 #'
+#' ### weighted graphs instead of multigraphs ------------
+#'
+#' # collapse repeated edges into a single edge with an integer weight
+#'
+#' sample_edgelist(ufm, multigraph = FALSE)
+#' sample_igraph(ufm, multigraph = FALSE)
+#'
 #' ##### directed examples ----------------------------
 #'
 #' n2 <- 100
@@ -145,9 +168,11 @@
 #'
 sample_edgelist <- function(
   factor_model,
-  ...
+  ...,
+  multigraph = TRUE
 ) {
   rlang::check_dots_unnamed()
+  check_multigraph(multigraph)
   UseMethod("sample_edgelist")
 }
 
@@ -155,7 +180,8 @@ sample_edgelist <- function(
 #' @export
 sample_edgelist.undirected_factor_model <- function(
   factor_model,
-  ...
+  ...,
+  multigraph = TRUE
 ) {
   X <- factor_model$X
   n <- factor_model$n
@@ -191,6 +217,13 @@ sample_edgelist.undirected_factor_model <- function(
     edgelist <- dplyr::filter(edgelist, to != from)
   }
 
+  # from <= to for every edge here (including the self-loops added above),
+  # so (i, j) and (j, i) are already the same row and collapsing by
+  # (from, to) counts undirected edges, matching sample_sparse()
+  if (!multigraph) {
+    edgelist <- collapse_multiedges(edgelist)
+  }
+
   edgelist
 }
 
@@ -198,7 +231,8 @@ sample_edgelist.undirected_factor_model <- function(
 #' @export
 sample_edgelist.directed_factor_model <- function(
   factor_model,
-  ...
+  ...,
+  multigraph = TRUE
 ) {
   X <- factor_model$X
   S <- factor_model$S
@@ -210,7 +244,8 @@ sample_edgelist.directed_factor_model <- function(
     Y,
     TRUE,
     factor_model$poisson_edges,
-    factor_model$allow_self_loops
+    factor_model$allow_self_loops,
+    multigraph = multigraph
   )
 }
 
@@ -256,6 +291,7 @@ sample_edgelist.directed_factor_model <- function(
 #'
 #' @param ... Ignored, for generic consistency only.
 #'
+#' @inheritParams sample_edgelist
 #' @inherit sample_edgelist return details references
 #'
 #' @export
@@ -285,13 +321,15 @@ sample_edgelist.matrix <- function(
   directed,
   poisson_edges,
   allow_self_loops,
-  ...
+  ...,
+  multigraph = TRUE
 ) {
   X <- factor_model
 
   stopifnot(is.logical(directed))
   stopifnot(is.logical(poisson_edges))
   stopifnot(is.logical(allow_self_loops))
+  check_multigraph(multigraph)
 
   n <- nrow(X)
   d <- nrow(Y)
@@ -309,9 +347,14 @@ sample_edgelist.matrix <- function(
   m <- rpois(n = 1, lambda = expected_edges)
 
   if (m == 0) {
-    edge_list <- matrix(0, nrow = 0, ncol = 2)
-    colnames(edge_list) <- c("from", "to")
-    return(edge_list)
+    # match the type of a non-empty edgelist: a tibble of integers
+    edgelist <- tibble(from = integer(0), to = integer(0))
+
+    if (!multigraph) {
+      return(collapse_multiedges(edgelist))
+    }
+
+    return(edgelist)
   }
 
   # varpi in section 2.4 of Rohe et al (2017), the number of
@@ -429,6 +472,10 @@ sample_edgelist.matrix <- function(
 
   if (!allow_self_loops) {
     edgelist <- dplyr::filter(edgelist, to != from)
+  }
+
+  if (!multigraph) {
+    edgelist <- collapse_multiedges(edgelist)
   }
 
   edgelist

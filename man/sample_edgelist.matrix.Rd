@@ -12,7 +12,8 @@
   directed,
   poisson_edges,
   allow_self_loops,
-  ...
+  ...,
+  multigraph = TRUE
 )
 
 \method{sample_edgelist}{Matrix}(
@@ -22,7 +23,8 @@
   directed,
   poisson_edges,
   allow_self_loops,
-  ...
+  ...,
+  multigraph = TRUE
 )
 }
 \arguments{
@@ -56,11 +58,27 @@ Defaults to \code{TRUE}. When \code{FALSE}, sampling proceeds allowing
 self-loops, and these are then removed after the fact.}
 
 \item{...}{Ignored, for generic consistency only.}
+
+\item{multigraph}{Logical scalar, only relevant for Poisson graphs
+(\code{poisson_edges = TRUE}), where a pair of nodes can be connected by
+more than one edge. When \code{TRUE} (the default), such repeated edges are
+represented as a multigraph, that is, as repeated edges (or repeated
+rows of an edgelist) without any edge weights. When \code{FALSE}, repeated
+edges between the same pair of nodes are collapsed into a single edge
+with an integer \code{weight} attribute that counts the number of times
+the edge was sampled. This weight is the corresponding entry of the
+adjacency matrix returned by \code{\link[=sample_sparse]{sample_sparse()}}. In undirected graphs,
+the edges \verb{(i, j)} and \verb{(j, i)} are the same edge and are collapsed
+together. When \code{multigraph = FALSE} the \code{weight} attribute is always
+present, even for Bernoulli graphs (\code{poisson_edges = FALSE}), where
+every weight is \code{1}.}
 }
 \value{
 A single realization of a random Poisson (or Bernoulli)
 Dot Product Graph, represented as a \code{\link[tibble:tibble]{tibble::tibble()}} with two
-integer columns, \code{from} and \code{to}.
+integer columns, \code{from} and \code{to}. When \code{multigraph = FALSE}, there
+is an additional integer column \code{weight} and each \verb{(from, to)} pair
+appears at most once.
 
 \strong{NOTE}: Indices for isolated nodes will not appear in the edgelist!
 This can lead to issues if you construct network objects from the

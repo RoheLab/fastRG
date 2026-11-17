@@ -100,6 +100,13 @@ sample_igraph(ufm)
 
 sample_tidygraph(ufm)
 
+### weighted graphs instead of multigraphs ------------
+
+# collapse repeated edges into a single edge with an integer weight
+
+sample_edgelist(ufm, multigraph = FALSE)
+sample_igraph(ufm, multigraph = FALSE)
+
 ##### directed examples ----------------------------
 
 n2 <- 100
