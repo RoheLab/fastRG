@@ -13,6 +13,11 @@ RSpectra::eigs_sym
 #' @inherit RSpectra::eigs_sym params details
 #' @param ... Unused, included only for consistency with generic signature.
 #'
+#' @note `A` is on the Poisson scale (see [expectation()]). For Bernoulli
+#'   graphs (`poisson_edges = FALSE`), these are the spectra of the matrix
+#'   of Poisson rates \eqn{P}{P}, not of the expected adjacency matrix
+#'   \eqn{1 - \exp(-P)}{1 - exp(-P)}.
+#'
 #' @method eigs_sym undirected_factor_model
 #' @export
 eigs_sym.undirected_factor_model <- function(
@@ -36,6 +41,11 @@ eigs_sym.undirected_factor_model <- function(
 #' @param k Desired rank of decomposition.
 #' @inherit RSpectra::svds params details
 #' @param ... Unused, included only for consistency with generic signature.
+#'
+#' @note `A` is on the Poisson scale (see [expectation()]). For Bernoulli
+#'   graphs (`poisson_edges = FALSE`), these are the spectra of the matrix
+#'   of Poisson rates \eqn{P}{P}, not of the expected adjacency matrix
+#'   \eqn{1 - \exp(-P)}{1 - exp(-P)}.
 #'
 #' @method svds undirected_factor_model
 #' @export
@@ -72,10 +82,15 @@ svds.undirected_factor_model <- function(
 
 #' Compute the singular value decomposition of the expected adjacency matrix of a directed factor model
 #'
-#' @param A An [undirected_factor_model()].
+#' @param A A [directed_factor_model()].
 #' @param k Desired rank of decomposition.
 #' @inherit RSpectra::svds params details
 #' @param ... Unused, included only for consistency with generic signature.
+#'
+#' @note `A` is on the Poisson scale (see [expectation()]). For Bernoulli
+#'   graphs (`poisson_edges = FALSE`), these are the spectra of the matrix
+#'   of Poisson rates \eqn{P}{P}, not of the expected adjacency matrix
+#'   \eqn{1 - \exp(-P)}{1 - exp(-P)}.
 #'
 #' @method svds directed_factor_model
 #' @export
