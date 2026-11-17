@@ -243,6 +243,7 @@ population_eigs <- eigs_sym(custom_dcsbm)
 \seealso{
 Other stochastic block models: 
 \code{\link{directed_dcsbm}()},
+\code{\link{directed_planted_partition}()},
 \code{\link{mmsbm}()},
 \code{\link{overlapping_sbm}()},
 \code{\link{planted_partition}()},

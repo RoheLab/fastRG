@@ -354,6 +354,7 @@ Overlapping Communities in Networks Using Spectral Methods."
 Other stochastic block models: 
 \code{\link{dcsbm}()},
 \code{\link{directed_dcsbm}()},
+\code{\link{directed_planted_partition}()},
 \code{\link{mmsbm}()},
 \code{\link{planted_partition}()},
 \code{\link{sbm}()}
