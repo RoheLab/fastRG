@@ -1,5 +1,7 @@
 # fastRG (development version)
 
+- `directed_dcsbm()` gains `block_sizes_out` and `block_sizes_in` arguments to specify the exact number of nodes in each outgoing and incoming block, as an alternative to sampling block memberships from `pi_out` and `pi_in`. `pi_out` and `pi_in` now default to `NULL`, which still means balanced block probabilities, so the default behavior (and graphs sampled with a given seed) is unchanged (#41).
+
 - fastRG now requires R >= 4.4.0. irlba 2.4.1, which fastRG uses in tests and vignettes, fails on earlier R versions because `is.atomic(NULL)` changed in R 4.4.0.
 
 - Fixed undersampling of self-loops in undirected models. Since 0.4.0, the diagonal of `A` was sampled at half the intended rate, so `E[A | X, S]` did not equal `X S X'` on the diagonal. `sample_edgelist.undirected_factor_model()` now adds independent Poisson self-loops at the missing rate when `allow_self_loops = TRUE`, so `E[A | X, S] = X S X'` holds exactly. This only affects sampling: `S`, `expected_*()` and population spectra are unchanged, and so are the off-diagonal fixes from #19 and #31. Graphs sampled with a given seed will differ from previous versions (#46).
