@@ -322,20 +322,20 @@ custom_dcsbm
 
 edgelist <- sample_edgelist(custom_dcsbm)
 edgelist
-#> # A tibble: 2,512 × 2
+#> # A tibble: 2,491 × 2
 #>     from    to
 #>    <int> <int>
-#>  1     1     4
-#>  2     5     7
-#>  3     2     8
-#>  4     3     9
-#>  5     1     6
-#>  6     3     3
-#>  7     1     7
-#>  8     4     9
-#>  9     2     7
-#> 10     1     4
-#> # ℹ 2,502 more rows
+#>  1     5     7
+#>  2     2     8
+#>  3     3     9
+#>  4     1     6
+#>  5     3     3
+#>  6     1     7
+#>  7     4     9
+#>  8     2     7
+#>  9     1     4
+#> 10     3     6
+#> # ℹ 2,481 more rows
 
 
 dcsbm_explicit_block_sizes <- dcsbm(
@@ -348,7 +348,7 @@ dcsbm_explicit_block_sizes <- dcsbm(
 # respects block sizes
 summary(dcsbm_explicit_block_sizes$z)
 #> block1 block2 block3 block4 block5 
-#>     13     17     40     14     16 
+#>     13     14     16     17     40 
 
 # efficient eigendecompostion that leverages low-rank structure in
 # E(A) so that you don't have to form E(A) to find eigenvectors,
