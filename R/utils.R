@@ -42,12 +42,6 @@ set_membership_weights <- function(X, theta) {
   X
 }
 
-# like `l1_normalize_within()`, but the result is in the same order as `x`,
-# rather than grouped by block
-l1_normalize_within_in_place <- function(x, block) {
-  x / stats::ave(x, block, FUN = sum)
-}
-
 check_flag <- function(x, arg) {
   if (!is.logical(x) || length(x) != 1 || is.na(x)) {
     stop(glue("`{arg}` must be `TRUE` or `FALSE`."), call. = FALSE)
