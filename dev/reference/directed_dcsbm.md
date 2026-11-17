@@ -3,12 +3,14 @@
 To specify a degree-corrected stochastic blockmodel, you must specify
 the degree-heterogeneity parameters (via `n` or `theta_out` and
 `theta_in`), the mixing matrix (via `k_out` and `k_in`, or `B`), and the
-relative block probabilities (optional, via `p_out` and `pi_in`). We
-provide defaults for most of these options to enable rapid exploration,
-or you can invest the effort for more control over the model parameters.
-We **strongly recommend** setting the `expected_out_degree`,
-`expected_in_degree`, or `expected_density` argument to avoid large
-memory allocations associated with sampling large, dense graphs.
+block sizes (optional, either as relative block probabilities via
+`pi_out` and `pi_in`, or as exact block counts via `block_sizes_out` and
+`block_sizes_in`). We provide defaults for most of these options to
+enable rapid exploration, or you can invest the effort for more control
+over the model parameters. We **strongly recommend** setting the
+`expected_out_degree`, `expected_in_degree`, or `expected_density`
+argument to avoid large memory allocations associated with sampling
+large, dense graphs.
 
 ## Usage
 
@@ -21,8 +23,10 @@ directed_dcsbm(
   k_in = NULL,
   B = NULL,
   ...,
-  pi_out = rep(1/k_out, k_out),
-  pi_in = rep(1/k_in, k_in),
+  block_sizes_out = NULL,
+  block_sizes_in = NULL,
+  pi_out = NULL,
+  pi_in = NULL,
   sort_nodes = TRUE,
   force_identifiability = TRUE,
   poisson_edges = TRUE,
@@ -72,8 +76,7 @@ directed_dcsbm(
   `Uniform(0, 1)` distribution. This is subject to change, and may not
   be reproducible. `k_out` defaults to `NULL`. You must specify either
   `k_out` and `k_in` together, or `B`. You may specify all three at
-  once, in which case `k_out` is only used to set `pi_out` (when
-  `pi_out` is left at its default argument value).
+  once, in which case the number of outgoing blocks is taken from `B`.
 
 - k_in:
 
@@ -82,8 +85,8 @@ directed_dcsbm(
   is specified, the elements of `B` are drawn randomly from a
   `Uniform(0, 1)` distribution. This is subject to change, and may not
   be reproducible. `k_in` defaults to `NULL`. You may specify all three
-  at once, in which case `k_in` is only used to set `pi_in` (when
-  `pi_in` is left at its default argument value).
+  at once, in which case the number of incoming blocks is taken from
+  `B`.
 
 - B:
 
@@ -121,31 +124,61 @@ directed_dcsbm(
       Defaults to `NULL`. Specify only one of `expected_in_degree`,
       `expected_out_degree`, and `expected_density`.
 
+- block_sizes_out:
+
+  (block sizes) Number of nodes in each outgoing block, as a vector of
+  non-negative integers. Must match the number of rows of `B` (or
+  `k_out`) and must sum to `n` (or `length(theta_out)`). When specified,
+  exactly `block_sizes_out[j]` nodes are assigned to outgoing block `j`,
+  and which nodes land in which block is uniformly random. Defaults to
+  `NULL`, in which case outgoing blocks are made to be as balanced as
+  possible, unless `pi_out` is specified. You can specify either
+  `pi_out` or `block_sizes_out`, but not both.
+
+- block_sizes_in:
+
+  (block sizes) Number of nodes in each incoming block, as a vector of
+  non-negative integers. Must match the number of columns of `B` (or
+  `k_in`) and must sum to `n` (or `length(theta_in)`). When specified,
+  exactly `block_sizes_in[j]` nodes are assigned to incoming block `j`,
+  and which nodes land in which block is uniformly random. Defaults to
+  `NULL`, in which case incoming blocks are made to be as balanced as
+  possible, unless `pi_in` is specified. You can specify either `pi_in`
+  or `block_sizes_in`, but not both.
+
 - pi_out:
 
-  (relative block probabilities) Relative block probabilities. Must be
-  positive, but do not need to sum to one, as they will be normalized
-  internally. Must match the rows of `B`, or `k_out`. Defaults to
-  `rep(1 / k_out, k_out)`, or a balanced outgoing blocks.
+  (block sizes) Relative block probabilities for outgoing blocks. Must
+  be positive, but do not need to sum to one, as they will be normalized
+  internally. Must match the rows of `B`, or `k_out`. When specified,
+  outgoing block memberships are sampled independently for each node
+  with these probabilities. Defaults to `NULL`, in which case the
+  `block_sizes_out` argument (or its balanced default) takes precedence.
+  You can specify either `pi_out` or `block_sizes_out`, but not both.
 
 - pi_in:
 
-  (relative block probabilities) Relative block probabilities. Must be
-  positive, but do not need to sum to one, as they will be normalized
-  internally. Must match the columns of `B`, or `k_in`. Defaults to
-  `rep(1 / k_in, k_in)`, or a balanced incoming blocks.
+  (block sizes) Relative block probabilities for incoming blocks. Must
+  be positive, but do not need to sum to one, as they will be normalized
+  internally. Must match the columns of `B`, or `k_in`. When specified,
+  incoming block memberships are sampled independently for each node
+  with these probabilities. Defaults to `NULL`, in which case the
+  `block_sizes_in` argument (or its balanced default) takes precedence.
+  You can specify either `pi_in` or `block_sizes_in`, but not both.
 
 - sort_nodes:
 
   Logical indicating whether or not to sort the nodes so that they are
   grouped by block. Useful for plotting. Defaults to `TRUE`. When
   `TRUE`, rows of the expected adjacency matrix are first sorted by
-  outgoing block membership, and then by incoming degree-correction
-  parameters within each incoming block. A similar sorting procedure
-  occurs independently from the columns, according to the incoming
+  outgoing block membership, and then by outgoing degree-correction
+  parameters within each outgoing block. A similar sorting procedure
+  occurs independently for the columns, according to the incoming
   blocks. Additionally, `pi_out` and `pi_in` are sorted in increasing
-  order, and the columns of the `B` matrix are permuted to match the new
-  orderings.
+  order, and the rows and columns of the `B` matrix are permuted to
+  match the new orderings. When `block_sizes_out` or `block_sizes_in`
+  are specified, they are permuted in the same way, so each block keeps
+  exactly the requested number of nodes and its row (or column) of `B`.
 
 - force_identifiability:
 
@@ -225,6 +258,17 @@ sample from a categorical distribution with parameter \\\pi_out\\. To
 generate \\y\\ we sample from a categorical distribution with parameter
 \\\pi_in\\. Block memberships are independent across nodes. Incoming and
 outgoing block memberships of the same node are also independent.
+
+These categorical draws are used when `pi_out` (`pi_in`) is specified.
+Otherwise, the outgoing (incoming) block memberships are a uniformly
+random assignment of nodes to blocks with fixed block sizes: either
+exactly the sizes given in `block_sizes_out` (`block_sizes_in`), or, by
+default, block sizes that are as balanced as possible (every block gets
+`floor(n / k_out)` nodes, and the remainder is spread over the first
+blocks, one node each), as in
+[`dcsbm()`](https://rohelab.github.io/fastRG/dev/reference/dcsbm.md).
+Fixed block sizes are useful, for instance, to construct blockmodels
+with exactly repeated singular values.
 
 ### Degree heterogeneity
 
@@ -309,4 +353,26 @@ ddcsbm
 #> Expected density: 0.01
 
 population_svd <- svds(ddcsbm)
+
+# specify the exact number of nodes in each outgoing and incoming block,
+# rather than sampling block memberships
+
+ddcsbm_explicit_block_sizes <- directed_dcsbm(
+  theta_out = rexp(100, 1 / 3) + 1,
+  theta_in = rexp(100, 1 / 3) + 1,
+  B = B,
+  block_sizes_out = c(10, 15, 20, 25, 30),
+  block_sizes_in = c(5, 5, 10, 10, 15, 15, 20, 20),
+  expected_density = 0.01
+)
+
+# respects block sizes
+table(ddcsbm_explicit_block_sizes$z_out)
+#> 
+#>  1  2  3  4  5 
+#> 10 15 20 25 30 
+table(ddcsbm_explicit_block_sizes$z_in)
+#> 
+#>  1  2  3  4  5  6  7  8 
+#>  5  5 10 10 15 15 20 20 
 ```

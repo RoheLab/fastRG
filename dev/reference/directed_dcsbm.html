@@ -8,8 +8,9 @@
 </script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"><link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet"><script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet"><link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet"><script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Create a directed degree corrected stochastic blockmodel object — directed_dcsbm"><meta name="description" content="To specify a degree-corrected stochastic blockmodel, you must specify
 the degree-heterogeneity parameters (via n or theta_out and
 theta_in), the mixing matrix
-(via k_out and k_in, or B), and the relative block
-probabilities (optional, via p_out and pi_in).
+(via k_out and k_in, or B), and the block sizes (optional,
+either as relative block probabilities via pi_out and pi_in, or as
+exact block counts via block_sizes_out and block_sizes_in).
 We provide defaults for most of these
 options to enable rapid exploration, or you can invest the effort
 for more control over the model parameters. We strongly recommend
@@ -19,8 +20,9 @@ to avoid large memory allocations associated with
 sampling large, dense graphs."><meta property="og:description" content="To specify a degree-corrected stochastic blockmodel, you must specify
 the degree-heterogeneity parameters (via n or theta_out and
 theta_in), the mixing matrix
-(via k_out and k_in, or B), and the relative block
-probabilities (optional, via p_out and pi_in).
+(via k_out and k_in, or B), and the block sizes (optional,
+either as relative block probabilities via pi_out and pi_in, or as
+exact block counts via block_sizes_out and block_sizes_in).
 We provide defaults for most of these
 options to enable rapid exploration, or you can invest the effort
 for more control over the model parameters. We strongly recommend
@@ -69,8 +71,9 @@ sampling large, dense graphs."><meta name="robots" content="noindex"></head><bod
     <p>To specify a degree-corrected stochastic blockmodel, you must specify
 the degree-heterogeneity parameters (via <code>n</code> or <code>theta_out</code> and
 <code>theta_in</code>), the mixing matrix
-(via <code>k_out</code> and <code>k_in</code>, or <code>B</code>), and the relative block
-probabilities (optional, via <code>p_out</code> and <code>pi_in</code>).
+(via <code>k_out</code> and <code>k_in</code>, or <code>B</code>), and the block sizes (optional,
+either as relative block probabilities via <code>pi_out</code> and <code>pi_in</code>, or as
+exact block counts via <code>block_sizes_out</code> and <code>block_sizes_in</code>).
 We provide defaults for most of these
 options to enable rapid exploration, or you can invest the effort
 for more control over the model parameters. We <strong>strongly recommend</strong>
@@ -90,8 +93,10 @@ sampling large, dense graphs.</p>
 <span>  k_in <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  B <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  <span class="va">...</span>,</span>
-<span>  pi_out <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">/</span><span class="va">k_out</span>, <span class="va">k_out</span><span class="op">)</span>,</span>
-<span>  pi_in <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">/</span><span class="va">k_in</span>, <span class="va">k_in</span><span class="op">)</span>,</span>
+<span>  block_sizes_out <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  block_sizes_in <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  pi_out <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  pi_in <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  sort_nodes <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  force_identifiability <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  poisson_edges <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -148,8 +153,7 @@ randomly from a <code>Uniform(0, 1)</code> distribution.
 This is subject to change, and may not be reproducible.
 <code>k_out</code> defaults to <code>NULL</code>. You must specify either <code>k_out</code> and
 <code>k_in</code> together, or <code>B</code>. You may specify all three at once, in which
-case <code>k_out</code> is only used to set <code>pi_out</code> (when <code>pi_out</code> is
-left at its default argument value).</p></dd>
+case the number of outgoing blocks is taken from <code>B</code>.</p></dd>
 
 
 <dt id="arg-k-in">k_in<a class="anchor" aria-label="anchor" href="#arg-k-in"></a></dt>
@@ -159,8 +163,7 @@ When <code>k_in</code> is specified, the elements of <code>B</code> are drawn
 randomly from a <code>Uniform(0, 1)</code> distribution.
 This is subject to change, and may not be reproducible.
 <code>k_in</code> defaults to <code>NULL</code>. You may specify all three at once, in which
-case <code>k_in</code> is only used to set <code>pi_in</code> (when <code>pi_in</code> is
-left at its default argument value).</p></dd>
+case the number of incoming blocks is taken from <code>B</code>.</p></dd>
 
 
 <dt id="arg-b">B<a class="anchor" aria-label="anchor" href="#arg-b"></a></dt>
@@ -195,20 +198,48 @@ to achieve this. Defaults to <code>NULL</code>. Specify only one of
 </dl></dd>
 
 
+<dt id="arg-block-sizes-out">block_sizes_out<a class="anchor" aria-label="anchor" href="#arg-block-sizes-out"></a></dt>
+<dd><p>(block sizes) Number of nodes in each outgoing
+block, as a vector of non-negative integers. Must match the number of
+rows of <code>B</code> (or <code>k_out</code>) and must sum to <code>n</code> (or <code>length(theta_out)</code>).
+When specified, exactly <code>block_sizes_out[j]</code> nodes are assigned to
+outgoing block <code>j</code>, and which nodes land in which block is uniformly
+random. Defaults to <code>NULL</code>, in which case outgoing blocks are made to
+be as balanced as possible, unless <code>pi_out</code> is specified. You can
+specify either <code>pi_out</code> or <code>block_sizes_out</code>, but not both.</p></dd>
+
+
+<dt id="arg-block-sizes-in">block_sizes_in<a class="anchor" aria-label="anchor" href="#arg-block-sizes-in"></a></dt>
+<dd><p>(block sizes) Number of nodes in each incoming
+block, as a vector of non-negative integers. Must match the number of
+columns of <code>B</code> (or <code>k_in</code>) and must sum to <code>n</code> (or <code>length(theta_in)</code>).
+When specified, exactly <code>block_sizes_in[j]</code> nodes are assigned to
+incoming block <code>j</code>, and which nodes land in which block is uniformly
+random. Defaults to <code>NULL</code>, in which case incoming blocks are made to
+be as balanced as possible, unless <code>pi_in</code> is specified. You can
+specify either <code>pi_in</code> or <code>block_sizes_in</code>, but not both.</p></dd>
+
+
 <dt id="arg-pi-out">pi_out<a class="anchor" aria-label="anchor" href="#arg-pi-out"></a></dt>
-<dd><p>(relative block probabilities) Relative block
-probabilities. Must be positive, but do not need to sum
-to one, as they will be normalized internally.
-Must match the rows of <code>B</code>, or <code>k_out</code>. Defaults to
-<code>rep(1 / k_out, k_out)</code>, or a balanced outgoing blocks.</p></dd>
+<dd><p>(block sizes) Relative block
+probabilities for outgoing blocks. Must be positive, but do not need to
+sum to one, as they will be normalized internally.
+Must match the rows of <code>B</code>, or <code>k_out</code>. When specified, outgoing block
+memberships are sampled independently for each node with these
+probabilities. Defaults to <code>NULL</code>, in which case the <code>block_sizes_out</code>
+argument (or its balanced default) takes precedence. You can specify
+either <code>pi_out</code> or <code>block_sizes_out</code>, but not both.</p></dd>
 
 
 <dt id="arg-pi-in">pi_in<a class="anchor" aria-label="anchor" href="#arg-pi-in"></a></dt>
-<dd><p>(relative block probabilities) Relative block
-probabilities. Must be positive, but do not need to sum
-to one, as they will be normalized internally.
-Must match the columns of <code>B</code>, or <code>k_in</code>. Defaults to
-<code>rep(1 / k_in, k_in)</code>, or a balanced incoming blocks.</p></dd>
+<dd><p>(block sizes) Relative block
+probabilities for incoming blocks. Must be positive, but do not need to
+sum to one, as they will be normalized internally.
+Must match the columns of <code>B</code>, or <code>k_in</code>. When specified, incoming
+block memberships are sampled independently for each node with these
+probabilities. Defaults to <code>NULL</code>, in which case the <code>block_sizes_in</code>
+argument (or its balanced default) takes precedence. You can specify
+either <code>pi_in</code> or <code>block_sizes_in</code>, but not both.</p></dd>
 
 
 <dt id="arg-sort-nodes">sort_nodes<a class="anchor" aria-label="anchor" href="#arg-sort-nodes"></a></dt>
@@ -216,12 +247,14 @@ Must match the columns of <code>B</code>, or <code>k_in</code>. Defaults to
 so that they are grouped by block. Useful for plotting.
 Defaults to <code>TRUE</code>. When <code>TRUE</code>, rows of the expected adjacency matrix
 are first sorted by outgoing block membership, and then by
-incoming degree-correction parameters within each incoming block.
-A similar sorting procedure occurs independently from the columns,
+outgoing degree-correction parameters within each outgoing block.
+A similar sorting procedure occurs independently for the columns,
 according to the incoming blocks.
 Additionally, <code>pi_out</code> and <code>pi_in</code> are sorted in increasing order,
-and the columns of the <code>B</code> matrix are permuted to match the
-new orderings.</p></dd>
+and the rows and columns of the <code>B</code> matrix are permuted to match the
+new orderings. When <code>block_sizes_out</code> or <code>block_sizes_in</code> are
+specified, they are permuted in the same way, so each block keeps
+exactly the requested number of nodes and its row (or column) of <code>B</code>.</p></dd>
 
 
 <dt id="arg-force-identifiability">force_identifiability<a class="anchor" aria-label="anchor" href="#arg-force-identifiability"></a></dt>
@@ -299,6 +332,15 @@ To generate \(y\) we sample from a categorical
 distribution with parameter \(\pi_in\).
 Block memberships are independent across nodes. Incoming and outgoing
 block memberships of the same node are also independent.</p>
+<p>These categorical draws are used when <code>pi_out</code> (<code>pi_in</code>) is specified.
+Otherwise, the outgoing (incoming) block memberships are a uniformly
+random assignment of nodes to blocks with fixed block sizes: either
+exactly the sizes given in <code>block_sizes_out</code> (<code>block_sizes_in</code>), or, by
+default, block sizes that are as balanced as possible (every block gets
+<code>floor(n / k_out)</code> nodes, and the remainder is spread over the first
+blocks, one node each), as in <code><a href="dcsbm.html">dcsbm()</a></code>. Fixed block sizes are useful,
+for instance, to construct blockmodels with exactly repeated singular
+values.</p>
 </div>
 
 <div class="section">
@@ -395,6 +437,28 @@ $$</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected density: 0.01</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">population_svd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/RSpectra/man/svds.html" class="external-link">svds</a></span><span class="op">(</span><span class="va">ddcsbm</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># specify the exact number of nodes in each outgoing and incoming block,</span></span></span>
+<span class="r-in"><span><span class="co"># rather than sampling block memberships</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">ddcsbm_explicit_block_sizes</span> <span class="op">&lt;-</span> <span class="fu">directed_dcsbm</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  theta_out <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html" class="external-link">rexp</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">1</span> <span class="op">/</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1</span>,</span></span>
+<span class="r-in"><span>  theta_in <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html" class="external-link">rexp</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">1</span> <span class="op">/</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1</span>,</span></span>
+<span class="r-in"><span>  B <span class="op">=</span> <span class="va">B</span>,</span></span>
+<span class="r-in"><span>  block_sizes_out <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">10</span>, <span class="fl">15</span>, <span class="fl">20</span>, <span class="fl">25</span>, <span class="fl">30</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  block_sizes_in <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">5</span>, <span class="fl">10</span>, <span class="fl">10</span>, <span class="fl">15</span>, <span class="fl">15</span>, <span class="fl">20</span>, <span class="fl">20</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>  expected_density <span class="op">=</span> <span class="fl">0.01</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># respects block sizes</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">ddcsbm_explicit_block_sizes</span><span class="op">$</span><span class="va">z_out</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  1  2  3  4  5 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10 15 20 25 30 </span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">ddcsbm_explicit_block_sizes</span><span class="op">$</span><span class="va">z_in</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  1  2  3  4  5  6  7  8 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>  5  5 10 10 15 15 20 20 </span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

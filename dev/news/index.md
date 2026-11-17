@@ -2,6 +2,25 @@
 
 ## fastRG (development version)
 
+- [`directed_dcsbm()`](https://rohelab.github.io/fastRG/dev/reference/directed_dcsbm.md)
+  gains `block_sizes_out` and `block_sizes_in` arguments to specify the
+  exact number of nodes in each outgoing and incoming block, as an
+  alternative to sampling block memberships from `pi_out` and `pi_in`
+  (which now default to `NULL`)
+  ([\#41](https://github.com/RoheLab/fastRG/issues/41)).
+
+- Breaking change: by default (when neither `pi_out` nor
+  `block_sizes_out` is given, and likewise for the incoming side),
+  [`directed_dcsbm()`](https://rohelab.github.io/fastRG/dev/reference/directed_dcsbm.md)
+  now makes blocks as balanced as possible, using the same rule as
+  [`dcsbm()`](https://rohelab.github.io/fastRG/dev/reference/dcsbm.md),
+  instead of sampling block memberships with equal probabilities. Graphs
+  sampled with a given seed from the
+  [`directed_dcsbm()`](https://rohelab.github.io/fastRG/dev/reference/directed_dcsbm.md)
+  defaults will differ from previous versions. Passing `pi_out` /
+  `pi_in` explicitly gives the old behavior
+  ([\#41](https://github.com/RoheLab/fastRG/issues/41)).
+
 - Fixed
   [`dcsbm()`](https://rohelab.github.io/fastRG/dev/reference/dcsbm.md)
   pairing blocks with the wrong rows and columns of `B` when
