@@ -42,6 +42,15 @@ set_membership_weights <- function(X, theta) {
   X
 }
 
+# block sizes for `n` nodes in `k` blocks that are as balanced as possible:
+# every block gets floor(n / k) nodes, and the remainder is spread over the
+# first blocks, one node each. this is the same rule `dcsbm()` uses by default
+balanced_block_sizes <- function(n, k) {
+  base_value <- floor(n / k)
+  remainder <- n %% k
+  c(rep(base_value + 1, remainder), rep(base_value, k - remainder))
+}
+
 utils::globalVariables(
   c("i", "j", "value", "x")
 )
