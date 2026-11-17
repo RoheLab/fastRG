@@ -36,6 +36,7 @@ reference:
   - title: Directed graphs
     contents:
       - directed_erdos_renyi
+      - directed_planted_partition
       - directed_dcsbm
       - directed_factor_model
 

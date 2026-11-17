@@ -137,9 +137,16 @@ validate_directed_dcsbm <- function(x) {
 }
 
 # check that `block_sizes` is a valid vector of block counts for `k` blocks
-# and `n` nodes. `arg`, `dimension` and `theta_arg` only appear in error
-# messages
-check_block_sizes <- function(block_sizes, arg, k, dimension, n, theta_arg) {
+# and `n` nodes. `arg`, `k_description` and `n_description` only appear in
+# error messages
+check_block_sizes <- function(
+  block_sizes,
+  arg,
+  k,
+  n,
+  k_description,
+  n_description
+) {
   if (
     !is.numeric(block_sizes) ||
       anyNA(block_sizes) ||
@@ -154,14 +161,14 @@ check_block_sizes <- function(block_sizes, arg, k, dimension, n, theta_arg) {
 
   if (length(block_sizes) != k) {
     stop(
-      glue("Length of `{arg}` must match number of {dimension} in `B`."),
+      glue("Length of `{arg}` must match {k_description}."),
       call. = FALSE
     )
   }
 
   if (sum(block_sizes) != n) {
     stop(
-      glue("Sum of `{arg}` must equal `n` or `length({theta_arg})`."),
+      glue("Sum of `{arg}` must equal {n_description}."),
       call. = FALSE
     )
   }
@@ -768,9 +775,9 @@ directed_dcsbm <- function(
       block_sizes_out,
       arg = "block_sizes_out",
       k = nrow(B),
-      dimension = "rows",
       n = n,
-      theta_arg = "theta_out"
+      k_description = "number of rows in `B`",
+      n_description = "`n` or `length(theta_out)`"
     )
 
     # for sorting by block size later
@@ -784,9 +791,9 @@ directed_dcsbm <- function(
       block_sizes_in,
       arg = "block_sizes_in",
       k = ncol(B),
-      dimension = "columns",
       n = n,
-      theta_arg = "theta_in"
+      k_description = "number of columns in `B`",
+      n_description = "`n` or `length(theta_in)`"
     )
 
     # for sorting by block size later

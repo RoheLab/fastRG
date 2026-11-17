@@ -216,6 +216,7 @@ svds(custom_mmsbm)$d
 Other stochastic block models: 
 \code{\link{dcsbm}()},
 \code{\link{directed_dcsbm}()},
+\code{\link{directed_planted_partition}()},
 \code{\link{overlapping_sbm}()},
 \code{\link{planted_partition}()},
 \code{\link{sbm}()}

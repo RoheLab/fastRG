@@ -197,6 +197,7 @@ ArXiv:1412.3432, December 10, 2014. http://arxiv.org/abs/1412.3432.
 Other stochastic block models: 
 \code{\link{dcsbm}()},
 \code{\link{directed_dcsbm}()},
+\code{\link{directed_planted_partition}()},
 \code{\link{mmsbm}()},
 \code{\link{planted_partition}()},
 \code{\link{sbm}()}
