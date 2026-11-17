@@ -1,5 +1,7 @@
 # fastRG (development version)
 
+- `overlapping_sbm()` now puts every node in at least one block. A node that joins no block in the independent Bernoulli draws is assigned to exactly one block, chosen with probability proportional to `pi`. Previously, with the default `pi`, about a third of nodes belonged to no block and had no edges. `pi` must now have at least one positive element. Graphs sampled with a given seed will differ from previous versions.
+
 - fastRG now requires R >= 4.4.0. irlba 2.4.1, which fastRG uses in tests and vignettes, fails on earlier R versions because `is.atomic(NULL)` changed in R 4.4.0.
 
 - Fixed undersampling of self-loops in undirected models. Since 0.4.0, the diagonal of `A` was sampled at half the intended rate, so `E[A | X, S]` did not equal `X S X'` on the diagonal. `sample_edgelist.undirected_factor_model()` now adds independent Poisson self-loops at the missing rate when `allow_self_loops = TRUE`, so `E[A | X, S] = X S X'` holds exactly. This only affects sampling: `S`, `expected_*()` and population spectra are unchanged, and so are the off-diagonal fixes from #19 and #31. Graphs sampled with a given seed will differ from previous versions (#46).

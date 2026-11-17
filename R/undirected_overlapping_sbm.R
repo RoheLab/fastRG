@@ -90,10 +90,15 @@ validate_undirected_overlapping_sbm <- function(x) {
 #'   block `j`. All elements must be contained in \eqn{[0, 1]}. Each node
 #'   joins each block independently, so `pi` is **not** normalized and
 #'   does not need to sum to one: `sum(pi)` is the expected number of
-#'   blocks a node belongs to (ignoring `force_pure`). Defaults to
-#'   `rep(1 / k, k)`, in which case each node belongs to one block on
-#'   average, and a fraction of roughly \eqn{(1 - 1/k)^k \approx e^{-1}}{(1 - 1/k)^k, approximately exp(-1),}
-#'   of nodes belongs to no block at all. Regardless of `sort_nodes`,
+#'   blocks a node joins before nodes in no block are reassigned
+#'   (ignoring `force_pure`). A node that joins no block is instead
+#'   assigned to exactly one block, chosen with probability
+#'   proportional to `pi`, so every node belongs to at least one block
+#'   and at least one element of `pi` must be positive. Defaults to
+#'   `rep(1 / k, k)`, in which case a fraction of roughly
+#'   \eqn{(1 - 1/k)^k \approx e^{-1}}{(1 - 1/k)^k, approximately exp(-1),}
+#'   of nodes initially join no block and are reassigned to a single
+#'   block chosen uniformly at random. Regardless of `sort_nodes`,
 #'   `pi` is sorted in increasing order, and the rows and columns
 #'   of `B` are permuted to match the new order of `pi`.
 #'
@@ -102,8 +107,7 @@ validate_undirected_overlapping_sbm <- function(x) {
 #'   Defaults to `TRUE`. When `TRUE`, the rows of `Z` are sorted in
 #'   decreasing lexicographic order, so that members of the first
 #'   block come first, and within the members of the first block,
-#'   members of the second block come first, and so on. Nodes that
-#'   belong to no block come last.
+#'   members of the second block come first, and so on.
 #'
 #' @param force_pure Logical indicating whether or not to force presence of
 #'   "pure nodes" (nodes that belong only to a single block) for the sake
@@ -205,8 +209,15 @@ validate_undirected_overlapping_sbm <- function(x) {
 #' Unlike in [dcsbm()], where each node belongs to exactly one block,
 #' or in [mmsbm()], where each node splits one unit of membership among
 #' blocks, here a node can be a full member of several blocks at
-#' once. A node can also belong to no block at all, in which case it
-#' has no edges. When `force_pure = TRUE`, `k` randomly chosen nodes
+#' once.
+#'
+#' Every node must belong to at least one block. After the Bernoulli
+#' draws above, any node with \eqn{Z_{ia} = 0}{Z[i, a] = 0} for every
+#' block \eqn{a} is assigned to exactly one block, chosen at random with
+#' probability \eqn{\pi_a / \sum_b \pi_b}{pi[a] / sum(pi)}. As a result,
+#' the entries of \eqn{Z} are not exactly independent, and nodes that
+#' belong to a single block are somewhat more common than independent
+#' Bernoulli draws alone would give. When `force_pure = TRUE`, `k` randomly chosen nodes
 #' are then made pure members of one block each (see "Identifiability").
 #'
 #' ## Degree heterogeneity
@@ -259,7 +270,8 @@ validate_undirected_overlapping_sbm <- function(x) {
 #' \eqn{B} (i.e. `S`) is invertible, and `force_pure = TRUE` guarantees
 #' the second condition. Kaufmann, Bonald and Lelarge (2016) further
 #' assume that every node belongs to at least one block, which
-#' `overlapping_sbm()` does not enforce.
+#' `overlapping_sbm()` guarantees by reassigning nodes that join no
+#' block (see "Block memberships" above).
 #'
 #' ## Related models
 #'
@@ -289,8 +301,8 @@ validate_undirected_overlapping_sbm <- function(x) {
 #' # block memberships: a binary matrix, nodes can belong to several blocks
 #' lazy_overlapping_sbm$Z[1:5, ]
 #'
-#' # how many blocks does each node belong to? with the default pi,
-#' # roughly a third of nodes belong to no block and have no edges
+#' # how many blocks does each node belong to? every node belongs to
+#' # at least one block
 #' table(Matrix::rowSums(lazy_overlapping_sbm$Z))
 #'
 #' # sometimes you gotta let the world burn and
@@ -385,6 +397,10 @@ overlapping_sbm <- function(
     stop("All elements of `pi` must be contained in [0, 1].", call. = FALSE)
   }
 
+  if (sum(pi) <= 0) {
+    stop("At least one element of `pi` must be positive.", call. = FALSE)
+  }
+
   # order mixing matrix by expected group size
 
   if (k > 1) {
@@ -402,6 +418,17 @@ overlapping_sbm <- function(
   for (i in 1:k) {
     ind <- stats::rbinom(n, 1, pi[i])
     X[, i] <- ind
+  }
+
+  # every node must belong to at least one block. nodes that joined no
+  # block above are assigned to exactly one block, chosen with
+  # probability proportional to pi
+
+  empty <- which(Matrix::rowSums(X) == 0)
+
+  if (length(empty) > 0) {
+    blocks <- sample.int(k, length(empty), replace = TRUE, prob = pi)
+    X[cbind(empty, blocks)] <- 1
   }
 
   if (force_pure) {

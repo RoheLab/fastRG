@@ -60,10 +60,15 @@ whose \code{j}th element is the probability that a node belongs to
 block \code{j}. All elements must be contained in \eqn{[0, 1]}. Each node
 joins each block independently, so \code{pi} is \strong{not} normalized and
 does not need to sum to one: \code{sum(pi)} is the expected number of
-blocks a node belongs to (ignoring \code{force_pure}). Defaults to
-\code{rep(1 / k, k)}, in which case each node belongs to one block on
-average, and a fraction of roughly \eqn{(1 - 1/k)^k \approx e^{-1}}{(1 - 1/k)^k, approximately exp(-1),}
-of nodes belongs to no block at all. Regardless of \code{sort_nodes},
+blocks a node joins before nodes in no block are reassigned
+(ignoring \code{force_pure}). A node that joins no block is instead
+assigned to exactly one block, chosen with probability
+proportional to \code{pi}, so every node belongs to at least one block
+and at least one element of \code{pi} must be positive. Defaults to
+\code{rep(1 / k, k)}, in which case a fraction of roughly
+\eqn{(1 - 1/k)^k \approx e^{-1}}{(1 - 1/k)^k, approximately exp(-1),}
+of nodes initially join no block and are reassigned to a single
+block chosen uniformly at random. Regardless of \code{sort_nodes},
 \code{pi} is sorted in increasing order, and the rows and columns
 of \code{B} are permuted to match the new order of \code{pi}.}
 
@@ -72,8 +77,7 @@ so that they are grouped by block. Useful for plotting.
 Defaults to \code{TRUE}. When \code{TRUE}, the rows of \code{Z} are sorted in
 decreasing lexicographic order, so that members of the first
 block come first, and within the members of the first block,
-members of the second block come first, and so on. Nodes that
-belong to no block come last.}
+members of the second block come first, and so on.}
 
 \item{force_pure}{Logical indicating whether or not to force presence of
 "pure nodes" (nodes that belong only to a single block) for the sake
@@ -157,8 +161,15 @@ that \eqn{Z_{ia} = 1}{Z[i, a] = 1} when node \eqn{i} belongs to block
 Unlike in \code{\link[=dcsbm]{dcsbm()}}, where each node belongs to exactly one block,
 or in \code{\link[=mmsbm]{mmsbm()}}, where each node splits one unit of membership among
 blocks, here a node can be a full member of several blocks at
-once. A node can also belong to no block at all, in which case it
-has no edges. When \code{force_pure = TRUE}, \code{k} randomly chosen nodes
+once.
+
+Every node must belong to at least one block. After the Bernoulli
+draws above, any node with \eqn{Z_{ia} = 0}{Z[i, a] = 0} for every
+block \eqn{a} is assigned to exactly one block, chosen at random with
+probability \eqn{\pi_a / \sum_b \pi_b}{pi[a] / sum(pi)}. As a result,
+the entries of \eqn{Z} are not exactly independent, and nodes that
+belong to a single block are somewhat more common than independent
+Bernoulli draws alone would give. When \code{force_pure = TRUE}, \code{k} randomly chosen nodes
 are then made pure members of one block each (see "Identifiability").
 }
 
@@ -215,7 +226,8 @@ other blocks.
 \eqn{B} (i.e. \code{S}) is invertible, and \code{force_pure = TRUE} guarantees
 the second condition. Kaufmann, Bonald and Lelarge (2016) further
 assume that every node belongs to at least one block, which
-\code{overlapping_sbm()} does not enforce.
+\code{overlapping_sbm()} guarantees by reassigning nodes that join no
+block (see "Block memberships" above).
 }
 
 \subsection{Related models}{
@@ -248,8 +260,8 @@ lazy_overlapping_sbm
 # block memberships: a binary matrix, nodes can belong to several blocks
 lazy_overlapping_sbm$Z[1:5, ]
 
-# how many blocks does each node belong to? with the default pi,
-# roughly a third of nodes belong to no block and have no edges
+# how many blocks does each node belong to? every node belongs to
+# at least one block
 table(Matrix::rowSums(lazy_overlapping_sbm$Z))
 
 # sometimes you gotta let the world burn and
