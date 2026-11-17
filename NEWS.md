@@ -1,5 +1,9 @@
 # fastRG (development version)
 
+- `directed_dcsbm()` gains `shared_blocks` and `shared_theta` arguments, both `FALSE` by default. `shared_blocks = TRUE` samples one block membership vector and uses it for both outgoing and incoming blocks (`z_out` and `z_in` are identical, `B` must be square). `shared_theta = TRUE` uses one degree-heterogeneity vector for both `theta_out` and `theta_in`, and requires `shared_blocks = TRUE`. With shared blocks, `sort_nodes` permutes rows and columns together so that row `i` and column `i` refer to the same node. The defaults keep the co-factor model. The print method now shows whether blocks and degree parameters are shared, and labels outgoing/incoming blocks and degrees correctly (#40).
+
+- The `directed_dcsbm()` documentation now states that in the default co-factor model, `sort_nodes = TRUE` sorts rows and columns independently, so row `i` and column `i` are generally not the same node and self-loops are not meaningful as "node `i` to itself". Use `shared_blocks = TRUE` or `sort_nodes = FALSE` if rows and columns must index the same nodes (#40).
+
 - `directed_dcsbm()` gains `block_sizes_out` and `block_sizes_in` arguments to specify the exact number of nodes in each outgoing and incoming block, as an alternative to sampling block memberships from `pi_out` and `pi_in` (which now default to `NULL`) (#41).
 
 - Breaking change: by default (when neither `pi_out` nor `block_sizes_out` is given, and likewise for the incoming side), `directed_dcsbm()` now makes blocks as balanced as possible, using the same rule as `dcsbm()`, instead of sampling block memberships with equal probabilities. Graphs sampled with a given seed from the `directed_dcsbm()` defaults will differ from previous versions. Passing `pi_out` / `pi_in` explicitly gives the old behavior (#41).

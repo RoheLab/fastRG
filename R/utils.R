@@ -42,6 +42,14 @@ set_membership_weights <- function(X, theta) {
   X
 }
 
+check_flag <- function(x, arg) {
+  if (!is.logical(x) || length(x) != 1 || is.na(x)) {
+    stop(glue("`{arg}` must be `TRUE` or `FALSE`."), call. = FALSE)
+  }
+
+  invisible(x)
+}
+
 # block sizes for `n` nodes in `k` blocks that are as balanced as possible:
 # every block gets floor(n / k) nodes, and the remainder is spread over the
 # first blocks, one node each. this is the same rule `dcsbm()` uses by default
