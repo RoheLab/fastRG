@@ -309,9 +309,8 @@ sample_edgelist.matrix <- function(
   m <- rpois(n = 1, lambda = expected_edges)
 
   if (m == 0) {
-    edge_list <- matrix(0, nrow = 0, ncol = 2)
-    colnames(edge_list) <- c("from", "to")
-    return(edge_list)
+    # match the type of a non-empty edgelist: a tibble of integers
+    return(tibble(from = integer(0), to = integer(0)))
   }
 
   # varpi in section 2.4 of Rohe et al (2017), the number of

@@ -1,5 +1,7 @@
 # fastRG (development version)
 
+- Fixed `sample_sparse()`, `sample_igraph()` and `sample_tidygraph()` erroring on directed rectangular models (`n != d`) when no edges are sampled. Empty graphs now have the same output types as non-empty ones: `sample_edgelist()` returns a tibble with integer `from` and `to` columns instead of a base matrix of doubles, and `sample_sparse()` returns a symmetric `dsCMatrix` for undirected models.
+
 - `overlapping_sbm()` bug fixes:
   - `poisson_edges` and `allow_self_loops` were silently ignored, so every overlapping SBM was a Poisson graph with self-loops. They are now passed on, and Bernoulli overlapping SBMs follow the "noisy-OR" edge probability `1 - prod (1 - B[a, b])^(Z[i, a] Z[j, b])`.
   - Specifying both `k` and `B` is now an error, as in `dcsbm()`.

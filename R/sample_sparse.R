@@ -47,7 +47,14 @@ sample_sparse.undirected_factor_model <- function(
   n <- factor_model$n
 
   if (nrow(el) == 0) {
-    return(sparseMatrix(1:n, 1:n, x = 0, dims = c(n, n)))
+    A <- sparseMatrix(
+      i = integer(0),
+      j = integer(0),
+      x = numeric(0),
+      dims = c(n, n),
+      symmetric = TRUE
+    )
+    return(A)
   }
 
   if (factor_model$poisson_edges) {
@@ -101,7 +108,15 @@ sample_sparse.directed_factor_model <- function(
   d <- factor_model$d
 
   if (nrow(edgelist) == 0) {
-    return(sparseMatrix(1:n, 1:d, x = 0, dims = c(n, d)))
+    # NOTE: n and d can differ, so we can't build an empty matrix from
+    # explicit zeros on the diagonal (1:n and 1:d have different lengths)
+    A <- sparseMatrix(
+      i = integer(0),
+      j = integer(0),
+      x = numeric(0),
+      dims = c(n, d)
+    )
+    return(A)
   }
 
   if (factor_model$poisson_edges) {
