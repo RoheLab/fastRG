@@ -1,5 +1,9 @@
 # fastRG (development version)
 
+- `directed_dcsbm()` gains `block_sizes_out` and `block_sizes_in` arguments to specify the exact number of nodes in each outgoing and incoming block, as an alternative to sampling block memberships from `pi_out` and `pi_in` (which now default to `NULL`) (#41).
+
+- Breaking change: by default (when neither `pi_out` nor `block_sizes_out` is given, and likewise for the incoming side), `directed_dcsbm()` now makes blocks as balanced as possible, using the same rule as `dcsbm()`, instead of sampling block memberships with equal probabilities. Graphs sampled with a given seed from the `directed_dcsbm()` defaults will differ from previous versions. Passing `pi_out` / `pi_in` explicitly gives the old behavior (#41).
+
 - Fixed `dcsbm()` pairing blocks with the wrong rows and columns of `B` when `sort_nodes = TRUE` (the default). Block memberships were sampled before `B` and `pi` were reordered by block size, and were never relabeled to match. Models with unequal `pi` or `block_sizes`, or with `n` not divisible by `k`, connected the wrong groups of nodes at each rate in `B`. Graphs sampled with a given seed will differ for those models.
 
 - Fixed `dcsbm()` and `directed_dcsbm()` assigning degree parameters to the wrong nodes when `sort_nodes = FALSE`. Theta was written into `X` (and `Y`) in block order rather than node order. With `force_identifiability = FALSE`, nodes got another node's theta; with `force_identifiability = TRUE`, `X` was correct but the returned `theta` was in block order. Sorted models (the default) are unaffected.
