@@ -75,6 +75,23 @@ collapse_multiedges <- function(edgelist) {
   dplyr::count(edgelist, .data$from, .data$to, name = "weight")
 }
 
+check_flag <- function(x, arg) {
+  if (!is.logical(x) || length(x) != 1 || is.na(x)) {
+    stop(glue("`{arg}` must be `TRUE` or `FALSE`."), call. = FALSE)
+  }
+
+  invisible(x)
+}
+
+# block sizes for `n` nodes in `k` blocks that are as balanced as possible:
+# every block gets floor(n / k) nodes, and the remainder is spread over the
+# first blocks, one node each. this is the same rule `dcsbm()` uses by default
+balanced_block_sizes <- function(n, k) {
+  base_value <- floor(n / k)
+  remainder <- n %% k
+  c(rep(base_value + 1, remainder), rep(base_value, k - remainder))
+}
+
 utils::globalVariables(
   c("i", "j", "value", "x")
 )

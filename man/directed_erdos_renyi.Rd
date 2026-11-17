@@ -89,7 +89,8 @@ Other erdos renyi:
 \code{\link{erdos_renyi}()}
 
 Other directed graphs: 
-\code{\link{directed_dcsbm}()}
+\code{\link{directed_dcsbm}()},
+\code{\link{directed_planted_partition}()}
 }
 \concept{directed graphs}
 \concept{erdos renyi}

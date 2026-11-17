@@ -30,17 +30,15 @@ validate_undirected_planted_partition <- function(x) {
     stop("`between_block` must be between zero and one.", call. = FALSE)
   }
 
-  if (!is.null(x$a) && x$a < 0) {
-    stop("`a` must be greater than zero.", call. = FALSE)
+  S <- as.matrix(values$S)
+
+  if (length(unique(diag(S))) > 1) {
+    stop("The diagonal of `B` must be constant.", call. = FALSE)
   }
 
-  if (!is.null(x$b) && x$b < 0) {
-    stop("`b` must be greater than zero.", call. = FALSE)
+  if (length(unique(S[row(S) != col(S)])) > 1) {
+    stop("The off-diagonal elements of `B` must be constant.", call. = FALSE)
   }
-
-  # diagonal B must be constant
-
-  # off-diagonal of B must be constant
 
   x
 }
@@ -145,23 +143,28 @@ planted_partition <- function(
   B <- matrix(between_block, nrow = k, ncol = k)
   diag(B) <- rep(within_block, k)
 
-  pp <- sbm(
-    n = n,
+  # same as sbm(), but with the planted partition subclass on top of the
+  # sbm subclass, so that print.undirected_planted_partition() is used
+  pp <- dcsbm(
+    theta = rep(1, n),
     k = NULL, # implicit in dimensions of B
     B = B,
     ...,
     block_sizes = block_sizes,
     pi = pi,
     sort_nodes = sort_nodes,
+    force_identifiability = FALSE,
     poisson_edges = poisson_edges,
-    allow_self_loops = allow_self_loops
+    allow_self_loops = allow_self_loops,
+    subclass = c("undirected_planted_partition", "undirected_sbm")
   )
+
+  pp <- validate_undirected_sbm(pp)
 
   pp$within_block <- within_block
   pp$between_block <- between_block
 
-  # validate_undirected_planted_partition(pp)
-  pp
+  validate_undirected_planted_partition(pp)
 }
 
 #' @method print undirected_planted_partition
@@ -176,10 +179,10 @@ print.undirected_planted_partition <- function(x, ...) {
   cat(glue("Blocks (k): {x$k}\n\n", .trim = FALSE))
 
   cat("Traditional planted partition parameterization:\n\n")
-  cat("Within block edge probability:", dim_and_class(x$within_block), "\n")
-  cat("Between block edge probability:", dim_and_class(x$between_block), "\n")
+  cat("Within block edge probability:", signif(x$within_block, 4), "\n")
+  cat("Between block edge probability:", signif(x$between_block, 4), "\n")
   cat("Block memberships (z):", dim_and_class(x$z), "\n")
-  cat("Block probabilities (pi):", dim_and_class(x$pi), "\n")
+  cat("Block probabilities (pi):", dim_and_class(x$pi), "\n\n")
 
   cat("Factor model parameterization:\n\n")
   cat("X:", dim_and_class(x$X), "\n")
