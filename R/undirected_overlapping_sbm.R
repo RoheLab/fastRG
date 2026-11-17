@@ -11,7 +11,14 @@ new_undirected_overlapping_sbm <- function(
   subclass = character()
 ) {
   subclass <- c(subclass, "undirected_overlapping_sbm")
-  overlapping_sbm <- undirected_factor_model(X, S, ..., subclass = subclass)
+  overlapping_sbm <- undirected_factor_model(
+    X,
+    S,
+    ...,
+    poisson_edges = poisson_edges,
+    allow_self_loops = allow_self_loops,
+    subclass = subclass
+  )
   overlapping_sbm$Z <- Z
   overlapping_sbm$pi <- pi
   overlapping_sbm$B <- B
@@ -31,7 +38,8 @@ validate_undirected_overlapping_sbm <- function(x) {
 
   if (!is_invertible(values$S)) {
     stop(
-      "`B` must be an invertible matrix.",
+      "`B` must be invertible after symmetrizing and rescaling ",
+      "(i.e. `S` must be invertible).",
       call. = FALSE
     )
   }
@@ -117,17 +125,20 @@ validate_undirected_overlapping_sbm <- function(x) {
 #'   `j`th chosen node are overwritten so that it belongs to block `j`
 #'   and to no other block. Requires `n >= k`. Defaults to `TRUE`.
 #'
-#' @param poisson_edges Currently **ignored** by `overlapping_sbm()`.
-#'   The argument is accepted but not passed on to
-#'   [undirected_factor_model()], so the returned object always has
-#'   `poisson_edges = TRUE`, `S` is not back-transformed to a Bernoulli
-#'   parameterization, and sampled graphs may contain multiple edges
-#'   between a pair of nodes.
+#' @param poisson_edges Logical indicating whether or not
+#'   multiple edges are allowed to form between a pair of
+#'   nodes. Defaults to `TRUE`. When `FALSE`, sampling proceeds
+#'   as usual, and duplicate edges are removed afterwards. Further,
+#'   when `FALSE`, we assume that `S` specifies a desired Bernoulli
+#'   edge probability, and back-transform `S` to a Poisson
+#'   parameterization before sampling (see "Edge formulation" below),
+#'   so all elements of `S` (after symmetrizing and any rescaling)
+#'   must be at most `1`.
 #'
-#' @param allow_self_loops Currently **ignored** by `overlapping_sbm()`.
-#'   The argument is accepted but not passed on to
-#'   [undirected_factor_model()], so the returned object always has
-#'   `allow_self_loops = TRUE` and sampled graphs may contain self-loops.
+#' @param allow_self_loops Logical indicating whether or not
+#'   nodes should be allowed to form edges with themselves.
+#'   Defaults to `TRUE`. When `FALSE`, sampling proceeds allowing
+#'   self-loops, and these are then removed after the fact.
 #'
 #' @inheritDotParams undirected_factor_model expected_degree expected_density
 #'
@@ -255,6 +266,23 @@ validate_undirected_overlapping_sbm <- function(x) {
 #' \eqn{X = Z} and the mixing matrix \eqn{S} is the symmetrized and
 #' rescaled \eqn{B}, so that
 #' \eqn{\mathbb{E}[A \mid Z] = Z S Z^T}{E[A | Z] = Z S Z'}.
+#'
+#' When `poisson_edges = FALSE`, the symmetrized and rescaled \eqn{B}
+#' is instead treated as a matrix of Bernoulli probabilities, and
+#' replaced by \eqn{-\log(1 - B)}{-log(1 - B)} (elementwise) before
+#' sampling. Nodes \eqn{i} and \eqn{j} are then connected with
+#' probability
+#'
+#' \deqn{
+#'   1 - \prod_{a = 1}^k \prod_{b = 1}^k (1 - B_{ab})^{Z_{ia} Z_{jb}},
+#' }{
+#'   1 - prod_a prod_b (1 - B[a, b])^(Z[i, a] Z[j, b]),
+#' }
+#'
+#' that is, each pair of shared blocks independently gets a chance to
+#' connect \eqn{i} and \eqn{j}. This is the "noisy-OR" model discussed
+#' in Section 3 of Kaufmann, Bonald and Lelarge (2016), and for sparse
+#' graphs it is close to the SBMO with Bernoulli edges.
 #'
 #' ## Identifiability
 #'
@@ -385,6 +413,8 @@ overlapping_sbm <- function(
     }
 
     k <- nrow(B)
+  } else {
+    stop("Must specify only one of `B` and `k`, not both.", call. = FALSE)
   }
 
   ### block membership
@@ -463,15 +493,15 @@ overlapping_sbm <- function(
 #' @export
 print.undirected_overlapping_sbm <- function(x, ...) {
   cat(glue(
-    "Undirected Degree-Corrected Overlapping Blockmodel\n",
+    "Undirected Overlapping Stochastic Blockmodel\n",
     .trim = FALSE
   ))
   cat(glue(
-    "-------------------------------------------------\n\n",
+    "--------------------------------------------\n\n",
     .trim = FALSE
   ))
 
-  sorted <- if (x$sorted) "sorted" else "sorted"
+  sorted <- if (x$sorted) "sorted" else "not sorted"
 
   cat(glue("Nodes (n): {x$n} ({sorted})\n", .trim = FALSE))
   cat(glue("Blocks (k): {x$k}\n\n", .trim = FALSE))

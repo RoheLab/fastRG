@@ -87,17 +87,20 @@ nodes are chosen uniformly at random, and the memberships of the
 \code{j}th chosen node are overwritten so that it belongs to block \code{j}
 and to no other block. Requires \code{n >= k}. Defaults to \code{TRUE}.}
 
-\item{poisson_edges}{Currently \strong{ignored} by \code{overlapping_sbm()}.
-The argument is accepted but not passed on to
-\code{\link[=undirected_factor_model]{undirected_factor_model()}}, so the returned object always has
-\code{poisson_edges = TRUE}, \code{S} is not back-transformed to a Bernoulli
-parameterization, and sampled graphs may contain multiple edges
-between a pair of nodes.}
+\item{poisson_edges}{Logical indicating whether or not
+multiple edges are allowed to form between a pair of
+nodes. Defaults to \code{TRUE}. When \code{FALSE}, sampling proceeds
+as usual, and duplicate edges are removed afterwards. Further,
+when \code{FALSE}, we assume that \code{S} specifies a desired Bernoulli
+edge probability, and back-transform \code{S} to a Poisson
+parameterization before sampling (see "Edge formulation" below),
+so all elements of \code{S} (after symmetrizing and any rescaling)
+must be at most \code{1}.}
 
-\item{allow_self_loops}{Currently \strong{ignored} by \code{overlapping_sbm()}.
-The argument is accepted but not passed on to
-\code{\link[=undirected_factor_model]{undirected_factor_model()}}, so the returned object always has
-\code{allow_self_loops = TRUE} and sampled graphs may contain self-loops.}
+\item{allow_self_loops}{Logical indicating whether or not
+nodes should be allowed to form edges with themselves.
+Defaults to \code{TRUE}. When \code{FALSE}, sampling proceeds allowing
+self-loops, and these are then removed after the fact.}
 }
 \value{
 An \code{undirected_overlapping_sbm} S3 object, a subclass of the
@@ -209,6 +212,23 @@ In the factor model parameterization, the latent positions are
 \eqn{X = Z} and the mixing matrix \eqn{S} is the symmetrized and
 rescaled \eqn{B}, so that
 \eqn{\mathbb{E}[A \mid Z] = Z S Z^T}{E[A | Z] = Z S Z'}.
+
+When \code{poisson_edges = FALSE}, the symmetrized and rescaled \eqn{B}
+is instead treated as a matrix of Bernoulli probabilities, and
+replaced by \eqn{-\log(1 - B)}{-log(1 - B)} (elementwise) before
+sampling. Nodes \eqn{i} and \eqn{j} are then connected with
+probability
+
+\deqn{
+  1 - \prod_{a = 1}^k \prod_{b = 1}^k (1 - B_{ab})^{Z_{ia} Z_{jb}},
+}{
+  1 - prod_a prod_b (1 - B[a, b])^(Z[i, a] Z[j, b]),
+}
+
+that is, each pair of shared blocks independently gets a chance to
+connect \eqn{i} and \eqn{j}. This is the "noisy-OR" model discussed
+in Section 3 of Kaufmann, Bonald and Lelarge (2016), and for sparse
+graphs it is close to the SBMO with Bernoulli edges.
 }
 
 \subsection{Identifiability}{

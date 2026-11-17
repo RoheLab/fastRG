@@ -1,5 +1,11 @@
 # fastRG (development version)
 
+- `overlapping_sbm()` bug fixes:
+  - `poisson_edges` and `allow_self_loops` were silently ignored, so every overlapping SBM was a Poisson graph with self-loops. They are now passed on, and Bernoulli overlapping SBMs follow the "noisy-OR" edge probability `1 - prod (1 - B[a, b])^(Z[i, a] Z[j, b])`.
+  - Specifying both `k` and `B` is now an error, as in `dcsbm()`.
+  - The invertibility error now says that it is the symmetrized and rescaled `B` (i.e. `S`) that must be invertible.
+  - `print()` now says "not sorted" for unsorted models, and no longer calls the model degree-corrected.
+
 - `overlapping_sbm()` now puts every node in at least one block. A node that joins no block in the independent Bernoulli draws is assigned to exactly one block, chosen with probability proportional to `pi`. Previously, with the default `pi`, about a third of nodes belonged to no block and had no edges. `pi` must now have at least one positive element. Graphs sampled with a given seed will differ from previous versions.
 
 - fastRG now requires R >= 4.4.0. irlba 2.4.1, which fastRG uses in tests and vignettes, fails on earlier R versions because `is.atomic(NULL)` changed in R 4.4.0.
