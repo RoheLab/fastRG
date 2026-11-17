@@ -46,7 +46,15 @@ test_that("undirected expected degree computed consistently", {
 })
 
 test_that("undirected density computed consistently", {
-  # see issue 19
+  # see issue 19. density is the expected number of edges between
+  # distinct nodes, divided by choose(n, 2). in a two block SBM with equal
+  # blocks of size pop, there are 2 * choose(pop, 2) within-block pairs and
+  # pop^2 between-block pairs, so the analytic density is
+  #
+  #   (2 * choose(pop, 2) * a + pop^2 * b) / choose(n, 2)
+  #
+  # which is approximately (a + b) / 2 for large n. before this fix, this test
+  # (and expected_density()) used twice that value
 
   set.seed(27)
 
@@ -56,40 +64,37 @@ test_that("undirected density computed consistently", {
   b <- .05
   B <- matrix(c(a, b, b, a), nrow = 2)
 
+  analytic_density <- (2 * choose(pop, 2) * a + pop^2 * b) / choose(n, 2)
+
   b_model <- sbm(
     n = n,
     B = B,
     poisson_edges = TRUE
   )
 
-  expect_equal(
-    expected_density(b_model), # computed
-    n * (pop * a + pop * b) / choose(n, 2), # expected undirected degree density, possibly being a little sloppy about the diagonal
-    tolerance = 0.05
-  )
+  expect_equal(expected_density(b_model), analytic_density)
 
   A <- sample_sparse(b_model)
 
+  # edges between distinct nodes are the strict upper triangle of A
+  off_diagonal_edges <- (sum(A) - sum(Matrix::diag(A))) / 2
+
   expect_equal(
-    sum(A) / choose(n, 2), # computed
-    n * (pop * a + pop * b) / choose(n, 2), # expected "undirected edge degree",
-    tolerance = 0.05
+    off_diagonal_edges / choose(n, 2),
+    analytic_density,
+    tolerance = 0.02
   )
 
   model2 <- sbm(n = n, B = B, expected_density = 0.15)
 
-  expect_equal(
-    expected_density(model2), # computed
-    n * (pop * a + pop * b) / choose(n, 2), # expected undirected degree density, possibly being a little sloppy about the diagonal
-    tolerance = 0.02
-  )
+  expect_equal(expected_density(model2), 0.15)
 
   A2 <- sample_sparse(model2)
 
   expect_equal(
-    sum(A2) / choose(n, 2), # computed
-    0.15, # expected "undirected edge degree",
-    tolerance = 0.05
+    (sum(A2) - sum(Matrix::diag(A2))) / 2 / choose(n, 2),
+    0.15,
+    tolerance = 0.02
   )
 })
 

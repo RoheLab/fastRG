@@ -44,7 +44,8 @@ validate_directed_erdos_renyi <- function(x) {
 #' @param n Number of nodes in graph.
 #'
 #' @param p Probability of an edge between any two nodes. You must specify
-#'   either `p`, `expected_in_degree`, or `expected_out_degree`.
+#'   either `p`, `expected_in_degree`, `expected_out_degree` or
+#'   `expected_density`.
 #'
 #' @inheritDotParams directed_factor_model expected_in_degree expected_out_degree
 #' @inherit directed_factor_model params return
@@ -77,12 +78,14 @@ directed_erdos_renyi <- function(
   X <- Matrix(1, nrow = n, ncol = 1)
   Y <- Matrix(1, nrow = n, ncol = 1)
 
-  if (
-    is.null(p) && is.null(expected_in_degree) && is.null(expected_out_degree)
-  ) {
+  # the scaling arguments arrive via `...`, so look for them by name (a
+  # bare `expected_in_degree` would find the generic function)
+  scaling <- c("expected_in_degree", "expected_out_degree", "expected_density")
+
+  if (is.null(p) && !any(scaling %in% names(list(...)))) {
     stop(
-      "Must specify either `p`, `expected_in_degree` or ",
-      " `expected_out_degree`.",
+      "Must specify either `p`, `expected_in_degree`, ",
+      "`expected_out_degree` or `expected_density`.",
       call. = FALSE
     )
   }

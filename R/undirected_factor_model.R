@@ -108,7 +108,9 @@ validate_undirected_factor_model <- function(x) {
 #'   `expected_degree` and `expected_density` at the same time.
 #'
 #' @param expected_density If specified, the desired expected density
-#'   of the graph. Specifying `expected_density` simply rescales `S`
+#'   of the graph, that is, the expected number of edges between distinct
+#'   nodes divided by `choose(n, 2)`. See [expected_density()].
+#'   Specifying `expected_density` simply rescales `S`
 #'   to achieve this. Defaults to `NULL`. Do not specify both
 #'   `expected_degree` and `expected_density` at the same time.
 #'

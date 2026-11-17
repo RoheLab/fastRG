@@ -28,7 +28,7 @@ validate_undirected_erdos_renyi <- function(x) {
 #' @param n Number of nodes in graph.
 #'
 #' @param p Probability of an edge between any two nodes. You must specify
-#'   either `p` or `expected_degree`.
+#'   either `p`, `expected_degree` or `expected_density`.
 #'
 #' @inheritDotParams undirected_factor_model expected_degree
 #' @inherit undirected_factor_model params return
@@ -64,8 +64,15 @@ erdos_renyi <- function(
 ) {
   X <- Matrix(1, nrow = n, ncol = 1)
 
-  if (is.null(p) && is.null(expected_degree)) {
-    stop("Must specify either `p` or `expected_degree`.", call. = FALSE)
+  # `expected_degree` and `expected_density` arrive via `...`, so look for
+  # them by name (a bare `expected_degree` would find the generic function)
+  scaling <- c("expected_degree", "expected_density")
+
+  if (is.null(p) && !any(scaling %in% names(list(...)))) {
+    stop(
+      "Must specify either `p`, `expected_degree` or `expected_density`.",
+      call. = FALSE
+    )
   }
 
   if (is.null(p)) {

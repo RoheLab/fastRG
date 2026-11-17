@@ -1,5 +1,13 @@
 # fastRG (development version)
 
+- **Breaking change:** fixed `expected_edges()` and `expected_density()` double counting edges in undirected models. Since 0.4.0 fixed the edge over-sampling in #19, both have been twice the true value, because each undirected edge appears in `A` twice (as `A[i, j]` and `A[j, i]`). As a result, **specifying `expected_density = d` for any undirected model produced graphs with density about `d / 2`**, and print methods reported twice the number of edges actually sampled.
+  - `expected_edges()` is now the expected number of undirected edges, counting self-loops once: `(sum(P) + trace(P)) / 2` for `P = X S X'`.
+  - `expected_density()` is now the expected number of edges between distinct nodes divided by `choose(n, 2)`: `(sum(P) - trace(P)) / (n (n - 1))`.
+  - `expected_degree()`, `expected_degrees()`, sampling and population spectra were already correct and are unchanged, as are all directed models.
+  - Undirected models built with `expected_density` now sample twice as many edges as before, so graphs sampled with a given seed will differ.
+
+- `erdos_renyi()` and `directed_erdos_renyi()` now error when neither `p` nor a scaling argument such as `expected_degree` or `expected_density` is given. Previously the check never fired, because it looked up the generic functions `expected_degree()` (or `expected_in_degree()` / `expected_out_degree()`) instead of the arguments, and the model silently used `p = 0.5`.
+
 - `sample_edgelist()`, `sample_igraph()` and `sample_tidygraph()` gain a `multigraph` argument. The default, `multigraph = TRUE`, keeps the current behavior: Poisson graphs are returned as multigraphs with repeated edges. With `multigraph = FALSE`, repeated edges are collapsed into a single edge with an integer `weight` attribute (an edgelist column, or an `igraph` edge attribute) that equals the corresponding entry of `sample_sparse()`. In undirected graphs `(i, j)` and `(j, i)` are collapsed together. The `weight` attribute is always present when `multigraph = FALSE`, so Bernoulli graphs (`poisson_edges = FALSE`) get weights of 1 (#30).
 
 - Fixed `sample_sparse()`, `sample_igraph()` and `sample_tidygraph()` erroring on directed rectangular models (`n != d`) when no edges are sampled. Empty graphs now have the same output types as non-empty ones: `sample_edgelist()` returns a tibble with integer `from` and `to` columns instead of a base matrix of doubles, and `sample_sparse()` returns a symmetric `dsCMatrix` for undirected models.
