@@ -257,34 +257,45 @@ test_that("shared_blocks validates its inputs", {
 })
 
 test_that("shared_theta uses one degree heterogeneity vector", {
-  B <- matrix(1:6, nrow = 2, ncol = 3)
+  B <- matrix(1:9, nrow = 3, ncol = 3)
   theta <- stats::rexp(40) + 1
 
-  for (sort_nodes in c(TRUE, FALSE)) {
-    set.seed(27)
-    model <- directed_dcsbm(
-      theta_in = theta,
-      B = B,
-      shared_theta = TRUE,
-      force_identifiability = FALSE,
-      sort_nodes = sort_nodes
-    )
+  for (force_identifiability in c(TRUE, FALSE)) {
+    for (sort_nodes in c(TRUE, FALSE)) {
+      set.seed(27)
+      model <- directed_dcsbm(
+        theta_in = theta,
+        B = B,
+        shared_blocks = TRUE,
+        shared_theta = TRUE,
+        force_identifiability = force_identifiability,
+        sort_nodes = sort_nodes
+      )
 
-    expect_true(model$shared_theta)
-    expect_false(model$shared_blocks)
-    expect_identical(model$theta_out, model$theta_in)
-    expect_setequal(model$theta_out, theta)
+      expect_true(model$shared_theta)
+      expect_true(model$shared_blocks)
+      expect_identical(model$z_out, model$z_in)
+      expect_identical(model$theta_out, model$theta_in)
 
-    # row i of X and row i of Y belong to the same node
-    expect_equal(Matrix::rowSums(model$X), model$theta_out, ignore_attr = TRUE)
-    expect_equal(Matrix::rowSums(model$Y), model$theta_in, ignore_attr = TRUE)
-    expect_equal(block_of_row(model$X), as.integer(model$z_out))
-    expect_equal(block_of_row(model$Y), as.integer(model$z_in))
+      # row i of X and row i of Y belong to the same node
+      expect_equal(Matrix::rowSums(model$X), model$theta_out, ignore_attr = TRUE)
+      expect_equal(Matrix::rowSums(model$Y), model$theta_in, ignore_attr = TRUE)
+      expect_equal(block_of_row(model$X), as.integer(model$z_out))
 
-    if (sort_nodes) {
-      expect_false(is.unsorted(model$z_out))
-    } else {
-      expect_identical(model$theta_out, theta)
+      if (force_identifiability) {
+        expect_equal(
+          as.vector(tapply(model$theta_out, model$z_out, sum)),
+          rep(1, 3)
+        )
+      } else {
+        expect_setequal(model$theta_out, theta)
+      }
+
+      if (sort_nodes) {
+        expect_false(is.unsorted(model$z_out))
+      } else if (!force_identifiability) {
+        expect_identical(model$theta_out, theta)
+      }
     }
   }
 
@@ -292,6 +303,7 @@ test_that("shared_theta uses one degree heterogeneity vector", {
   from_out <- directed_dcsbm(
     theta_out = theta,
     B = B,
+    shared_blocks = TRUE,
     shared_theta = TRUE
   )
 
@@ -300,6 +312,7 @@ test_that("shared_theta uses one degree heterogeneity vector", {
     theta_out = theta,
     theta_in = theta,
     B = B,
+    shared_blocks = TRUE,
     shared_theta = TRUE
   )
 
@@ -312,6 +325,7 @@ test_that("shared_theta generates a single random vector from n", {
     model <- directed_dcsbm(
       n = 25,
       B = diag(2),
+      shared_blocks = TRUE,
       shared_theta = TRUE,
       force_identifiability = FALSE,
       sort_nodes = FALSE
@@ -327,36 +341,26 @@ test_that("shared_theta generates a single random vector from n", {
   expect_identical(model$theta_in, expected_theta)
 })
 
-test_that("shared_theta with force_identifiability normalizes within blocks", {
-  set.seed(27)
-  model <- directed_dcsbm(
-    theta_out = stats::rexp(50) + 1,
-    B = matrix(1, 2, 3),
-    shared_theta = TRUE,
-    force_identifiability = TRUE
+test_that("shared_theta requires shared_blocks", {
+  expect_error(
+    directed_dcsbm(
+      theta_out = c(1, 2, 3),
+      B = matrix(1, 2, 3),
+      shared_theta = TRUE
+    ),
+    "`shared_theta = TRUE` requires `shared_blocks = TRUE`.",
+    fixed = TRUE
   )
 
-  # normalized separately within outgoing / incoming blocks, so theta_out
-  # and theta_in are proportional within each pair of blocks
-  ratio <- model$theta_out / model$theta_in
-  cell <- interaction(model$z_out, model$z_in, drop = TRUE)
-  ratio_spread <- tapply(ratio, cell, function(r) diff(range(r)))
-  expect_true(all(ratio_spread < 1e-12))
-
-  # and equal when blocks are shared too
-  set.seed(27)
-  both <- directed_dcsbm(
-    theta_out = stats::rexp(50) + 1,
-    B = diag(3),
-    shared_theta = TRUE,
-    shared_blocks = TRUE
-  )
-
-  expect_identical(both$theta_out, both$theta_in)
-  expect_identical(both$z_out, both$z_in)
-  expect_equal(
-    as.vector(tapply(both$theta_out, both$z_out, sum)),
-    rep(1, 3)
+  expect_error(
+    directed_dcsbm(
+      n = 10,
+      B = diag(2),
+      shared_theta = TRUE,
+      shared_blocks = FALSE
+    ),
+    "`shared_theta = TRUE` requires `shared_blocks = TRUE`.",
+    fixed = TRUE
   )
 })
 
@@ -368,6 +372,7 @@ test_that("shared_theta validates its inputs", {
       theta_out = c(1, 2, 3),
       theta_in = c(1, 2, 4),
       B = B,
+      shared_blocks = TRUE,
       shared_theta = TRUE
     ),
     "`theta_out` and `theta_in` must be identical",
@@ -379,6 +384,7 @@ test_that("shared_theta validates its inputs", {
       theta_out = c(1, 2, 3),
       theta_in = c(1, 2),
       B = B,
+      shared_blocks = TRUE,
       shared_theta = TRUE
     ),
     "`theta_out` and `theta_in` must be identical",
@@ -386,13 +392,19 @@ test_that("shared_theta validates its inputs", {
   )
 
   expect_error(
-    directed_dcsbm(n = 3, theta_out = c(1, 2, 3), B = B, shared_theta = TRUE),
+    directed_dcsbm(
+      n = 3,
+      theta_out = c(1, 2, 3),
+      B = B,
+      shared_blocks = TRUE,
+      shared_theta = TRUE
+    ),
     "Must specify only one of `n` and `theta_out` / `theta_in`, not both.",
     fixed = TRUE
   )
 
   expect_error(
-    directed_dcsbm(B = B, shared_theta = TRUE),
+    directed_dcsbm(B = B, shared_blocks = TRUE, shared_theta = TRUE),
     "Must specify either `n`, or `theta_out` or `theta_in`.",
     fixed = TRUE
   )
@@ -415,6 +427,41 @@ test_that("shared_theta validates its inputs", {
     fixed = TRUE
   )
 })
+
+test_that("co-factor model sorts rows and columns independently", {
+  # documents (rather than changes) the default behavior: with
+  # sort_nodes = TRUE, row i and column i need not be the same node
+  theta_out <- as.numeric(1:20)
+  theta_in <- as.numeric(20:1)
+
+  set.seed(27)
+  model <- directed_dcsbm(
+    theta_out = theta_out,
+    theta_in = theta_in,
+    B = diag(2),
+    force_identifiability = FALSE
+  )
+
+  expect_false(isTRUE(all(model$theta_out + model$theta_in == 21)))
+
+  # without sorting, rows and columns index the same nodes
+  set.seed(27)
+  unsorted <- directed_dcsbm(
+    theta_out = theta_out,
+    theta_in = theta_in,
+    B = diag(2),
+    force_identifiability = FALSE,
+    sort_nodes = FALSE
+  )
+
+  expect_equal(unsorted$theta_out + unsorted$theta_in, rep(21, 20))
+  expect_equal(
+    Matrix::rowSums(unsorted$X) + Matrix::rowSums(unsorted$Y),
+    rep(21, 20),
+    ignore_attr = TRUE
+  )
+})
+
 
 test_that("print method shows shared structure", {
   set.seed(27)

@@ -19,11 +19,19 @@ expect_reference_case <- function(case, z_out, z_in, theta_out, theta_in, S, i, 
   expect_equal(sparse_triplets(case$A), list(i = i, j = j, x = x))
 }
 
-# reference values were generated with fastRG 0.4.0.9000 (commit 30679ae),
-# before `block_sizes_out` / `block_sizes_in` were added, to guarantee that
-# default sampling behavior (and RNG order) is unchanged for a fixed seed
+# reference values pin seeded output so that accidental changes to sampling
+# behavior (or RNG order) are caught.
+#
+# - the default-case pins were regenerated when the directed default changed
+#   from sampling memberships with balanced `pi` to exactly balanced block
+#   sizes (matching `dcsbm()`), which intentionally changes seeded output
+#   of the defaults. they also reflect the theta-order fix (theta in node
+#   order).
+# - the explicit `pi` pin was generated with fastRG 0.4.0.9000 (commit
+#   30679ae), before `block_sizes_out` / `block_sizes_in` were added, and is
+#   unchanged
 
-test_that("directed_dcsbm() default sampling is unchanged (sorted)", {
+test_that("directed_dcsbm() default sampling is pinned (sorted)", {
   case <- sample_reference_case(
     n = 15,
     k_out = 3,
@@ -33,43 +41,46 @@ test_that("directed_dcsbm() default sampling is unchanged (sorted)", {
 
   expect_reference_case(
     case,
-    z_out = c(1L, 1L, 1L, 1L, 1L, 1L, 1L, 2L, 2L, 3L, 3L, 3L, 3L, 3L, 3L),
-    z_in = c(1L, 1L, 1L, 2L, 2L, 2L, 3L, 3L, 3L, 3L, 3L, 3L, 4L, 4L, 4L),
+    z_out = c(1L, 1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 2L, 3L, 3L, 3L, 3L, 3L),
+    z_in = c(1L, 1L, 1L, 2L, 2L, 2L, 2L, 3L, 3L, 3L, 3L, 4L, 4L, 4L, 4L),
     theta_out = c(
-      0.5078471, 0.2369608, 0.1013175, 0.07593698, 0.03511004, 0.02526826,
-      0.01755933, 0.7265576, 0.2734424, 0.5322092, 0.1404127, 0.1296387,
-      0.1146138, 0.05250676, 0.03061879
+      0.617259, 0.2880123, 0.04267424, 0.03071212, 0.02134236, 0.5541946,
+      0.208573, 0.08806888, 0.08315635, 0.06600721, 0.619145, 0.1508151,
+      0.1333359, 0.06108368, 0.03562034
     ),
     theta_in = c(
-      0.3888567, 0.3887706, 0.2223727, 0.4724212, 0.3344391, 0.1931396,
-      0.3574478, 0.3054359, 0.1208858, 0.1035465, 0.09634407, 0.01634001,
-      0.5672038, 0.2172587, 0.2155375
+      0.3888567, 0.3887706, 0.2223727, 0.4261955, 0.3017147, 0.1742412,
+      0.09784863, 0.4608853, 0.3938223, 0.1242239, 0.02106845, 0.5364644,
+      0.2054845, 0.2038565, 0.05419462
     ),
     S = structure(
       c(
-        3.287976, 3.37821, 1.262552, 4.444437, 7.243754,
-        6.082634, 0.4312557, 4.136733, 2.58251, 4.604851, 6.235598, 1.309489
+        4.604851, 6.235598, 1.309489, 3.287976, 3.37821,
+        1.262552, 4.444437, 7.243754, 6.082634, 0.4312557, 4.136733,
+        2.58251
       ),
       dim = 3:4
     ),
     i = c(
-      4L, 6L, 2L, 4L, 9L, 1L, 8L, 1L, 2L, 8L, 9L, 10L, 12L, 15L,
-      1L, 2L, 8L, 10L, 13L, 8L, 9L, 9L, 9L, 10L, 8L, 3L, 8L, 8L, 9L,
-      15L, 1L, 7L, 3L
+      1L, 2L, 6L, 7L, 8L, 13L, 1L, 3L, 6L, 9L, 10L, 1L, 2L, 5L, 6L,
+      12L, 1L, 6L, 1L, 2L, 6L, 7L, 8L, 11L, 6L, 9L, 2L, 1L, 6L, 9L,
+      10L, 11L, 12L, 13L, 6L, 7L, 10L, 13L, 6L, 7L, 11L, 7L, 11L, 6L,
+      11L
     ),
     j = c(
-      1L, 1L, 2L, 2L, 2L, 3L, 3L, 4L, 4L, 4L, 4L, 4L, 4L, 4L, 5L,
-      5L, 5L, 5L, 5L, 6L, 6L, 7L, 8L, 9L, 10L, 11L, 11L, 13L, 13L,
-      13L, 14L, 14L, 15L
+      1L, 1L, 1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 2L, 3L, 3L, 3L, 3L,
+      3L, 4L, 4L, 5L, 5L, 5L, 5L, 5L, 5L, 6L, 6L, 7L, 8L, 8L, 8L, 8L,
+      8L, 8L, 8L, 9L, 9L, 9L, 9L, 10L, 10L, 10L, 12L, 12L, 13L, 14L
     ),
     x = c(
-      1, 1, 1, 1, 1, 1, 1, 1, 1, 7, 2, 3, 1, 2, 1, 2, 1, 2, 1, 1,
-      1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+      1, 2, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1,
+      3, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 2, 1, 1, 2, 1, 1, 1, 1, 1, 3,
+      1, 1, 1, 1
     )
   )
 })
 
-test_that("directed_dcsbm() default sampling is unchanged (unsorted)", {
+test_that("directed_dcsbm() default sampling is pinned (unsorted)", {
   case <- sample_reference_case(
     n = 15,
     k_out = 3,
@@ -80,20 +91,17 @@ test_that("directed_dcsbm() default sampling is unchanged (unsorted)", {
 
   expect_reference_case(
     case,
-    z_out = c(1L, 3L, 1L, 3L, 3L, 2L, 1L, 1L, 2L, 3L, 3L, 1L, 1L, 3L, 1L),
-    z_in = c(3L, 2L, 3L, 2L, 1L, 2L, 1L, 4L, 3L, 4L, 1L, 3L, 3L, 3L, 4L),
-    # on 30679ae the returned theta was in block order rather than node
-    # order (X, S and A were already correct). these are the same values
-    # in node order
+    z_out = c(3L, 1L, 3L, 1L, 1L, 3L, 2L, 3L, 2L, 3L, 2L, 1L, 2L, 1L, 2L),
+    z_in = c(3L, 3L, 2L, 3L, 3L, 1L, 4L, 1L, 4L, 1L, 4L, 2L, 1L, 2L, 2L),
     theta_out = c(
-      0.3803212, 0.4889409, 0.02629353, 0.03623162, 0.0521381, 0.1371227,
-      0.05686839, 0.1796956, 0.8628773, 0.1973955, 0.04304463, 0.05847977,
-      0.2715507, 0.1822492, 0.02679068
+      0.5182694, 0.5310611, 0.03583059, 0.03935283, 0.05662958, 0.1033968,
+      0.06703823, 0.2448739, 0.562851, 0.09762926, 0.01841655, 0.1750073,
+      0.3201125, 0.1979492, 0.03158169
     ),
     theta_in = c(
-      0.0487861, 0.1133026, 0.0487969, 0.5620892, 0.6929032, 0.3246082,
-      0.1590811, 0.4314359, 0.1324318, 0.01972223, 0.1480158, 0.05241399,
-      0.198733, 0.5188382, 0.5488419
+      0.1187938, 0.06794876, 0.05971175, 0.3370907, 0.4761668, 0.1813899,
+      0.2049101, 0.3516366, 0.6044328, 0.01607437, 0.1906571, 0.06413791,
+      0.4508992, 0.6348915, 0.2412588
     ),
     S = structure(
       c(
@@ -103,20 +111,47 @@ test_that("directed_dcsbm() default sampling is unchanged (unsorted)", {
       dim = 3:4
     ),
     i = c(
-      9L, 9L, 1L, 2L, 4L, 8L, 9L, 13L, 14L, 3L, 6L, 12L, 2L, 8L,
-      9L, 13L, 8L, 12L, 1L, 3L, 4L, 8L, 9L, 1L, 9L, 8L, 2L, 6L, 9L,
-      9L
-    ),
-    j = c(
-      2L, 3L, 4L, 4L, 4L, 4L, 4L, 4L, 4L, 5L, 5L, 5L, 6L, 6L, 6L,
-      6L, 7L, 7L, 8L, 8L, 8L, 8L, 9L, 11L, 11L, 12L, 13L, 14L, 14L,
+      15L, 1L, 9L, 6L, 1L, 9L, 11L, 13L, 12L, 1L, 9L, 2L, 4L, 13L,
+      1L, 9L, 13L, 2L, 7L, 13L, 2L, 12L, 2L, 8L, 9L, 10L, 12L, 13L,
+      14L, 1L, 2L, 5L, 7L, 8L, 9L, 13L, 14L, 1L, 2L, 6L, 9L, 13L, 14L,
       15L
     ),
+    j = c(
+      1L, 3L, 3L, 4L, 5L, 5L, 5L, 5L, 6L, 7L, 7L, 8L, 8L, 8L, 9L,
+      9L, 9L, 11L, 11L, 11L, 12L, 12L, 13L, 13L, 13L, 13L, 13L, 13L,
+      13L, 14L, 14L, 14L, 14L, 14L, 14L, 14L, 14L, 15L, 15L, 15L, 15L,
+      15L, 15L, 15L
+    ),
     x = c(
-      1, 1, 1, 3, 2, 1, 9, 1, 2, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1,
-      1, 1, 1, 1, 1, 1, 1, 2, 1, 2
+      1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1,
+      1, 1, 1, 1, 2, 1, 1, 1, 2, 2, 2, 1, 1, 1, 6, 2, 1, 1, 1, 1, 1,
+      1, 1, 1
     )
   )
+})
+
+test_that("directed_dcsbm() defaults to balanced block sizes", {
+  set.seed(27)
+
+  model <- suppressMessages(
+    directed_dcsbm(n = 23, k_out = 4, k_in = 5, sort_nodes = FALSE)
+  )
+
+  # 23 = 6 + 6 + 6 + 5 and 23 = 5 + 5 + 5 + 4 + 4
+  expect_equal(as.vector(table(model$z_out)), c(6, 6, 6, 5))
+  expect_equal(as.vector(table(model$z_in)), c(5, 5, 5, 4, 4))
+  expect_equal(model$pi_out, c(6, 6, 6, 5) / 23)
+  expect_equal(model$pi_in, c(5, 5, 5, 4, 4) / 23)
+
+  set.seed(27)
+
+  sorted <- suppressMessages(
+    directed_dcsbm(n = 23, k_out = 4, k_in = 5)
+  )
+
+  # sorting relabels blocks in increasing order of size
+  expect_equal(as.vector(table(sorted$z_out)), c(5, 6, 6, 6))
+  expect_equal(as.vector(table(sorted$z_in)), c(4, 4, 5, 5, 5))
 })
 
 test_that("directed_dcsbm() sampling with explicit pi is unchanged", {

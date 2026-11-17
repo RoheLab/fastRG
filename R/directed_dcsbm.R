@@ -250,8 +250,7 @@ sample_block_memberships <- function(n, k, pi, block_sizes = NULL) {
 #'   This is subject to change, and may not be reproducible.
 #'   `k_out` defaults to `NULL`. You must specify either `k_out` and
 #'   `k_in` together, or `B`. You may specify all three at once, in which
-#'   case `k_out` is only used to set `pi_out` (when `pi_out` and
-#'   `block_sizes_out` are left at their default `NULL` values).
+#'   case the number of outgoing blocks is taken from `B`.
 #'
 #' @param k_in (mixing matrix) The number of incoming blocks in the blockmodel.
 #'   Use when you don't want to specify the mixing-matrix by hand.
@@ -259,8 +258,7 @@ sample_block_memberships <- function(n, k, pi, block_sizes = NULL) {
 #'   randomly from a `Uniform(0, 1)` distribution.
 #'   This is subject to change, and may not be reproducible.
 #'   `k_in` defaults to `NULL`. You may specify all three at once, in which
-#'   case `k_in` is only used to set `pi_in` (when `pi_in` and
-#'   `block_sizes_in` are left at their default `NULL` values).
+#'   case the number of incoming blocks is taken from `B`.
 #'
 #' @param B (mixing matrix) A `k_out` by `k_in` matrix of block connection
 #'   probabilities. The probability that a node in block `i` connects
@@ -274,34 +272,36 @@ sample_block_memberships <- function(n, k, pi, block_sizes = NULL) {
 #'   rows of `B` (or `k_out`) and must sum to `n` (or `length(theta_out)`).
 #'   When specified, exactly `block_sizes_out[j]` nodes are assigned to
 #'   outgoing block `j`, and which nodes land in which block is uniformly
-#'   random. Defaults to `NULL`, in which case outgoing block memberships
-#'   are sampled independently according to `pi_out`. You can specify
-#'   either `pi_out` or `block_sizes_out`, but not both.
+#'   random. Defaults to `NULL`, in which case outgoing blocks are made to
+#'   be as balanced as possible, unless `pi_out` is specified. You can
+#'   specify either `pi_out` or `block_sizes_out`, but not both.
 #'
 #' @param block_sizes_in (block sizes) Number of nodes in each incoming
 #'   block, as a vector of non-negative integers. Must match the number of
 #'   columns of `B` (or `k_in`) and must sum to `n` (or `length(theta_in)`).
 #'   When specified, exactly `block_sizes_in[j]` nodes are assigned to
 #'   incoming block `j`, and which nodes land in which block is uniformly
-#'   random. Defaults to `NULL`, in which case incoming block memberships
-#'   are sampled independently according to `pi_in`. You can specify
-#'   either `pi_in` or `block_sizes_in`, but not both.
+#'   random. Defaults to `NULL`, in which case incoming blocks are made to
+#'   be as balanced as possible, unless `pi_in` is specified. You can
+#'   specify either `pi_in` or `block_sizes_in`, but not both.
 #'
 #' @param pi_out (block sizes) Relative block
 #'   probabilities for outgoing blocks. Must be positive, but do not need to
 #'   sum to one, as they will be normalized internally.
-#'   Must match the rows of `B`, or `k_out`. Defaults to `NULL`, in which
-#'   case `rep(1 / k_out, k_out)`, i.e. balanced outgoing blocks, is used
-#'   unless `block_sizes_out` is specified. You can specify either `pi_out`
-#'   or `block_sizes_out`, but not both.
+#'   Must match the rows of `B`, or `k_out`. When specified, outgoing block
+#'   memberships are sampled independently for each node with these
+#'   probabilities. Defaults to `NULL`, in which case the `block_sizes_out`
+#'   argument (or its balanced default) takes precedence. You can specify
+#'   either `pi_out` or `block_sizes_out`, but not both.
 #'
 #' @param pi_in (block sizes) Relative block
 #'   probabilities for incoming blocks. Must be positive, but do not need to
 #'   sum to one, as they will be normalized internally.
-#'   Must match the columns of `B`, or `k_in`. Defaults to `NULL`, in which
-#'   case `rep(1 / k_in, k_in)`, i.e. balanced incoming blocks, is used
-#'   unless `block_sizes_in` is specified. You can specify either `pi_in`
-#'   or `block_sizes_in`, but not both.
+#'   Must match the columns of `B`, or `k_in`. When specified, incoming
+#'   block memberships are sampled independently for each node with these
+#'   probabilities. Defaults to `NULL`, in which case the `block_sizes_in`
+#'   argument (or its balanced default) takes precedence. You can specify
+#'   either `pi_in` or `block_sizes_in`, but not both.
 #'
 #' @param shared_blocks (block memberships) Logical indicating whether each
 #'   node should belong to the same outgoing and incoming block. Defaults to
@@ -321,12 +321,9 @@ sample_block_memberships <- function(n, k, pi, block_sizes = NULL) {
 #'   used for both `theta_out` and `theta_in`: either specify `n` (one
 #'   vector is then generated at random), or only one of `theta_out` and
 #'   `theta_in`. If you specify both `theta_out` and `theta_in`, they must
-#'   be identical. Note that when `force_identifiability = TRUE`,
-#'   `theta_out` is normalized within outgoing blocks and `theta_in` within
-#'   incoming blocks, so the stored `theta_out` and `theta_in` are only
-#'   identical when blocks are shared as well (or when
-#'   `force_identifiability = FALSE`). Within each pair of an outgoing and
-#'   an incoming block they are always proportional.
+#'   be identical. Requires `shared_blocks = TRUE`, so that the stored
+#'   `theta_out` and `theta_in` are identical (also after normalization
+#'   by `force_identifiability`).
 #'
 #' @param sort_nodes Logical indicating whether or not to sort the nodes
 #'   so that they are grouped by block. Useful for plotting.
@@ -340,15 +337,20 @@ sample_block_memberships <- function(n, k, pi, block_sizes = NULL) {
 #'   new orderings. When `block_sizes_out` or `block_sizes_in` are
 #'   specified, they are permuted in the same way, so each block keeps
 #'   exactly the requested number of nodes and its row (or column) of `B`.
-#'   When `shared_blocks = TRUE` or `shared_theta = TRUE`, rows and columns
-#'   are instead permuted together, so that row `i` and column `i` of the
-#'   expected adjacency matrix still refer to the same node: nodes are
-#'   sorted by outgoing block, then by incoming block, and then by
-#'   decreasing `theta_out` and `theta_in`. With shared blocks this groups
-#'   both rows and columns by block. With `shared_theta = TRUE` but
-#'   `shared_blocks = FALSE`, only the rows are grouped contiguously by
-#'   block; columns are grouped by incoming block within each outgoing
-#'   block.
+#'
+#'   **Rows and columns index different nodes.** In the default co-factor
+#'   model (`shared_blocks = FALSE`), the rows and the columns are permuted
+#'   *independently*, so after sorting, row `i` and column `i` of the
+#'   adjacency matrix are generally not the same node. In particular, the
+#'   diagonal of `A` (self-loops, see `allow_self_loops`) does not mean
+#'   "node `i` to itself", and `X[i, ]` and `Y[i, ]` describe different
+#'   nodes. If you need rows and columns to index the same nodes, use
+#'   `shared_blocks = TRUE` or `sort_nodes = FALSE`.
+#'
+#'   When `shared_blocks = TRUE`, rows and columns are instead permuted
+#'   together, so that row `i` and column `i` of the expected adjacency
+#'   matrix refer to the same node: nodes are sorted by block, and then by
+#'   decreasing `theta_out` and `theta_in` within each block.
 #'
 #' @param force_identifiability Logical indicating whether or not to
 #'   normalize `theta_out` such that it sums to one within each incoming
@@ -395,8 +397,8 @@ sample_block_memberships <- function(n, k, pi, block_sizes = NULL) {
 #'     are identical.
 #'
 #'   - `shared_theta`: Logical indicating whether outgoing and incoming
-#'     degree-heterogeneity parameters were generated from a single
-#'     shared vector.
+#'     degree-heterogeneity parameters are shared, in which case `theta_out`
+#'     and `theta_in` are identical.
 #'
 #' @export
 #' @family stochastic block models
@@ -428,12 +430,15 @@ sample_block_memberships <- function(n, k, pi, block_sizes = NULL) {
 #' Block memberships are independent across nodes. Incoming and outgoing
 #' block memberships of the same node are also independent.
 #'
-#' Alternatively, you can fix the exact number of nodes in each outgoing
-#' (incoming) block with `block_sizes_out` (`block_sizes_in`). In this case
-#' the block memberships are a uniformly random assignment of nodes to
-#' blocks with exactly the requested block sizes, rather than independent
-#' categorical draws. Fixed block sizes are useful, for instance, to
-#' construct blockmodels with exactly repeated singular values.
+#' These categorical draws are used when `pi_out` (`pi_in`) is specified.
+#' Otherwise, the outgoing (incoming) block memberships are a uniformly
+#' random assignment of nodes to blocks with fixed block sizes: either
+#' exactly the sizes given in `block_sizes_out` (`block_sizes_in`), or, by
+#' default, block sizes that are as balanced as possible (every block gets
+#' `floor(n / k_out)` nodes, and the remainder is spread over the first
+#' blocks, one node each), as in [dcsbm()]. Fixed block sizes are useful,
+#' for instance, to construct blockmodels with exactly repeated singular
+#' values.
 #'
 #' ## Degree heterogeneity
 #'
@@ -473,8 +478,18 @@ sample_block_memberships <- function(n, k, pi, block_sizes = NULL) {
 #' the communities a node sends edges from and receives edges into are
 #' unrelated, and the two sets of communities can even have different
 #' numbers of blocks. This is the model targeted by co-clustering methods
-#' that estimate separate sending and receiving communities. In this case
-#' the rows and columns are sorted independently when `sort_nodes = TRUE`.
+#' that estimate separate sending and receiving communities.
+#'
+#' In the co-factor model, `sort_nodes = TRUE` (the default) sorts the rows
+#' and the columns of \eqn{A} *independently*, so row \eqn{i} and column
+#' \eqn{i} are generally not the same node. Consequently the diagonal of
+#' \eqn{A}, and so the self-loops controlled by `allow_self_loops`, is not
+#' meaningful as "node \eqn{i} to itself": entry \eqn{A_{ii}} connects the
+#' \eqn{i}-th sender to the \eqn{i}-th receiver in their respective
+#' orderings. If you need rows and columns to index the same nodes (for
+#' example, to interpret self-loops or to read the graph as a directed
+#' graph on a single set of nodes), use `shared_blocks = TRUE` or
+#' `sort_nodes = FALSE`.
 #'
 #' Often it is more natural to think of each node as belonging to a single
 #' community, which shapes both the edges it sends and the edges it
@@ -482,12 +497,13 @@ sample_block_memberships <- function(n, k, pi, block_sizes = NULL) {
 #' \eqn{z} with \eqn{z_{out} = z_{in} = z}, so that
 #' \eqn{E[A_{ij}] = \theta_{out, i} B_{z_i, z_j} \theta_{in, j}}, where
 #' an asymmetric `B` encodes directed relationships between the communities.
-#' Similarly, `shared_theta = TRUE` uses one degree-heterogeneity vector
-#' \eqn{\theta} for both \eqn{\theta_{out}} and \eqn{\theta_{in}}, so nodes
-#' that send many edges also tend to receive many edges. The two options
-#' can be used separately or together. When either of them is `TRUE`,
-#' `sort_nodes = TRUE` permutes rows and columns together, so that row
-#' `i` and column `i` of \eqn{A} always refer to the same node.
+#' With shared blocks you can additionally set `shared_theta = TRUE`, which
+#' uses one degree-heterogeneity vector \eqn{\theta} for both
+#' \eqn{\theta_{out}} and \eqn{\theta_{in}}, so nodes that send many edges
+#' also tend to receive many edges. (`shared_theta = TRUE` requires
+#' `shared_blocks = TRUE`.) With shared blocks, `sort_nodes = TRUE`
+#' permutes rows and columns together, so that row `i` and column `i` of
+#' \eqn{A} always refer to the same node.
 #'
 #' @examples
 #'
@@ -568,6 +584,15 @@ directed_dcsbm <- function(
 
   check_flag(shared_blocks, "shared_blocks")
   check_flag(shared_theta, "shared_theta")
+
+  if (shared_theta && !shared_blocks) {
+    stop(
+      "`shared_theta = TRUE` requires `shared_blocks = TRUE`. Shared degree ",
+      "heterogeneity is only supported when outgoing and incoming blocks ",
+      "are shared as well.",
+      call. = FALSE
+    )
+  }
 
   ### heterogeneity parameters
 
@@ -783,7 +808,9 @@ directed_dcsbm <- function(
     # for sorting by block size later
     pi_out <- block_sizes_out / n
   } else if (is.null(pi_out)) {
-    pi_out <- rep(1 / k_out, k_out)
+    # default: blocks as balanced as possible, like `dcsbm()`
+    block_sizes_out <- balanced_block_sizes(n, k_out)
+    pi_out <- block_sizes_out / n
   }
 
   if (!is.null(block_sizes_in)) {
@@ -799,7 +826,9 @@ directed_dcsbm <- function(
     # for sorting by block size later
     pi_in <- block_sizes_in / n
   } else if (is.null(pi_in)) {
-    pi_in <- rep(1 / k_in, k_in)
+    # default: blocks as balanced as possible, like `dcsbm()`
+    block_sizes_in <- balanced_block_sizes(n, k_in)
+    pi_in <- block_sizes_in / n
   }
 
   if (length(pi_out) != nrow(B)) {
@@ -854,10 +883,11 @@ directed_dcsbm <- function(
     z_in <- factor(z_in, levels = 1:k_in, labels = paste0(1:k_in))
   }
 
-  if (shared_blocks || shared_theta) {
+  if (shared_blocks) {
     # outgoing and incoming parameters are tied together node by node, so
     # node i must correspond to row i of both X and Y. keep everything
-    # aligned in node order, and permute all of it jointly when sorting
+    # aligned in node order, and permute all of it jointly when sorting.
+    # (`shared_theta = TRUE` implies `shared_blocks = TRUE`)
 
     if (force_identifiability) {
       theta_out <- l1_normalize_within(theta_out, z_out)
@@ -997,7 +1027,7 @@ print.directed_dcsbm <- function(x, ...) {
   }
 
   shared_theta <- if (isTRUE(x$shared_theta)) {
-    "TRUE (theta_out and theta_in come from one vector)"
+    "TRUE (theta_out and theta_in are identical)"
   } else {
     "FALSE (theta_out and theta_in are separate)"
   }
