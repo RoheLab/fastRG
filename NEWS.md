@@ -1,5 +1,7 @@
 # fastRG (development version)
 
+- `sample_edgelist()`, `sample_igraph()` and `sample_tidygraph()` gain a `multigraph` argument. The default, `multigraph = TRUE`, keeps the current behavior: Poisson graphs are returned as multigraphs with repeated edges. With `multigraph = FALSE`, repeated edges are collapsed into a single edge with an integer `weight` attribute (an edgelist column, or an `igraph` edge attribute) that equals the corresponding entry of `sample_sparse()`. In undirected graphs `(i, j)` and `(j, i)` are collapsed together. The `weight` attribute is always present when `multigraph = FALSE`, so Bernoulli graphs (`poisson_edges = FALSE`) get weights of 1 (#30).
+
 - fastRG now requires R >= 4.4.0. irlba 2.4.1, which fastRG uses in tests and vignettes, fails on earlier R versions because `is.atomic(NULL)` changed in R 4.4.0.
 
 - Fixed undersampling of self-loops in undirected models. Since 0.4.0, the diagonal of `A` was sampled at half the intended rate, so `E[A | X, S]` did not equal `X S X'` on the diagonal. `sample_edgelist.undirected_factor_model()` now adds independent Poisson self-loops at the missing rate when `allow_self_loops = TRUE`, so `E[A | X, S] = X S X'` holds exactly. This only affects sampling: `S`, `expected_*()` and population spectra are unchanged, and so are the off-diagonal fixes from #19 and #31. Graphs sampled with a given seed will differ from previous versions (#46).
