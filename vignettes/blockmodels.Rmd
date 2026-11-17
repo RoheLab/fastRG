@@ -1,0 +1,1123 @@
+---
+title: "A tour of the models in fastRG"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{A tour of the models in fastRG}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 5,
+  fig.height = 4
+)
+```
+
+This vignette is a collection of extended examples, one section for each
+model that `fastRG` implements. Every model works the same way, in two steps:
+
+1. **Specify the model.** A function like `sbm()` or `dcsbm()` samples (or
+   takes) the latent parameters, such as block memberships and degree
+   parameters, and stores them as a *factor model*. For undirected graphs,
+   the expected adjacency matrix is
+   $\mathbb{E}[A \mid X] = X S X^T$, and for directed graphs it is
+   $\mathbb{E}[A \mid X, Y] = X S Y^T$.
+2. **Sample a graph.** `sample_edgelist()`, `sample_sparse()`,
+   `sample_igraph()` and `sample_tidygraph()` draw a graph from the factor
+   model, using the fastRG algorithm of Rohe et al. (2018). Its running time
+   is proportional to the number of edges, not to $n^2$.
+
+By default, edges are Poisson, so a pair of nodes can be joined by more than
+one edge. Set `poisson_edges = FALSE` to get a graph where each pair of nodes
+is joined by at most one edge (Bernoulli edges).
+
+```{r}
+#| message: false
+library(fastRG)
+library(dplyr)
+library(ggplot2)
+library(Matrix)
+
+set.seed(27)
+```
+
+We call igraph functions with the `igraph::` prefix instead of attaching
+igraph. igraph also exports functions called `sbm()` and `chung_lu()`, so
+if you run `library(igraph)` after `library(fastRG)`, they mask the fastRG
+versions.
+
+Throughout, we compare the expectations that `fastRG` computes with the
+same quantities in a sampled graph. These two helpers compute the
+realized values from a sampled adjacency matrix `A`, using the same
+definitions as `expected_edges()`, `expected_degree()` and
+`expected_density()` (see the section on scaling below):
+
+```{r}
+compare_undirected <- function(model, A) {
+  n <- nrow(A)
+  loops <- sum(diag(A))
+  tibble(
+    quantity = c("edges", "mean degree", "density"),
+    expected = c(
+      expected_edges(model),
+      expected_degree(model),
+      expected_density(model)
+    ),
+    realized = c(
+      (sum(A) + loops) / 2, # each undirected edge once, self-loops once
+      sum(A) / n,
+      (sum(A) - loops) / (n * (n - 1)) # edges between distinct nodes / choose(n, 2)
+    )
+  )
+}
+
+compare_directed <- function(model, A) {
+  tibble(
+    quantity = c("edges", "mean out-degree", "mean in-degree", "density"),
+    expected = c(
+      expected_edges(model),
+      expected_out_degree(model),
+      expected_in_degree(model),
+      expected_density(model)
+    ),
+    realized = c(
+      sum(A),
+      sum(A) / nrow(A),
+      sum(A) / ncol(A),
+      sum(A) / (nrow(A) * ncol(A))
+    )
+  )
+}
+```
+
+# Undirected graphs
+
+## Erdős-Rényi graphs
+
+In an Erdős-Rényi graph (Erdős and Rényi), every pair of nodes is connected
+with the same probability `p`, independently of every other pair. It is the
+simplest model in the package: a factor model with a single latent
+dimension, where every node has the same latent position.
+
+```{r}
+er <- erdos_renyi(n = 1000, p = 0.01)
+er
+```
+
+The print method reports the expected number of edges, the expected mean
+degree and the expected density. With `n = 1000` and `p = 0.01`, a node
+expects about `n * p = 10` neighbors. Let's sample a graph and compare:
+
+```{r}
+A <- sample_sparse(er)
+compare_undirected(er, A)
+```
+
+Rather than choosing `p`, you can ask for a target expected degree (or
+density) and let `fastRG` find the edge probability. This is usually more
+convenient, and it is the recommended way to control the size of a graph.
+Here, `expected_degree = 10` gives the same model as `p = 0.01`:
+
+```{r}
+er_degree <- erdos_renyi(n = 1000, expected_degree = 10)
+as.numeric(er_degree$S)
+```
+
+You must give either `p` or one of the scaling arguments.
+
+## Chung-Lu graphs
+
+A Chung-Lu graph (Chung, Lu, and Vu 2003) lets each node $i$ have its own
+propensity $\theta_i$ to form edges, and connects nodes $i$ and $j$ at rate
+proportional to $\theta_i \theta_j$. Expected degrees are then proportional
+to $\theta$, so a heavy-tailed $\theta$ gives a heavy-tailed degree
+distribution. Setting every $\theta_i$ to the same value gives back an
+Erdős-Rényi graph.
+
+```{r}
+n <- 1000
+theta <- rlnorm(n, meanlog = 0, sdlog = 1)
+
+cl <- chung_lu(theta = theta, expected_degree = 10)
+cl
+```
+
+`chung_lu()` is implemented as a degree-corrected blockmodel (see `dcsbm()`
+below) with a single block, and it prints as one. Since `sort_nodes = TRUE`
+by default, nodes are reordered by decreasing $\theta$, so use `cl$theta`
+rather than the original `theta` to line parameters up with rows of `A`.
+Expected degrees are exactly proportional to `cl$theta`:
+
+```{r}
+range(expected_degrees(cl) / cl$theta)
+```
+
+Both this graph and the Erdős-Rényi graph above have mean degree about 10,
+but the Chung-Lu degrees are much more spread out:
+
+```{r}
+A_cl <- sample_sparse(cl)
+compare_undirected(cl, A_cl)
+
+degrees <- bind_rows(
+  tibble(model = "Erdos-Renyi", degree = rowSums(A)),
+  tibble(model = "Chung-Lu", degree = rowSums(A_cl))
+)
+
+degrees |>
+  summarize(mean = mean(degree), sd = sd(degree), max = max(degree), .by = model)
+```
+
+Node by node, realized degrees scatter around their expectations:
+
+```{r}
+tibble(expected = expected_degrees(cl), realized = rowSums(A_cl)) |>
+  ggplot(aes(expected, realized)) +
+  geom_point(alpha = 0.3) +
+  geom_abline(color = "red") +
+  labs(x = "Expected degree", y = "Realized degree") +
+  theme_minimal()
+```
+
+## Stochastic blockmodels
+
+In a stochastic blockmodel (SBM, Holland, Laskey, and Leinhardt 1983),
+each node belongs to one of $k$ blocks, and the rate of edges between a
+node in block $a$ and a node in block $b$ is $B_{ab}$. Nodes in the same
+block are interchangeable.
+
+### Specifying the mixing matrix: `B` or `k`
+
+The most direct way to specify an SBM is to give the mixing matrix `B`:
+
+```{r}
+B <- matrix(
+  c(
+    0.80, 0.10, 0.05,
+    0.10, 0.60, 0.10,
+    0.05, 0.10, 0.40
+  ),
+  nrow = 3
+)
+
+sb <- sbm(n = 300, B = B, expected_degree = 20)
+sb
+```
+
+When you use `expected_degree` or `expected_density`, `B` is multiplied
+by a constant to reach the target, so only the relative sizes of its entries
+matter. The rescaled matrix is stored as `S`:
+
+```{r}
+as.matrix(sb$S) / B
+```
+
+`plot_expectation()` shows the expected adjacency matrix
+$\mathbb{E}[A \mid X] = X S X^T$. Since nodes are sorted by block, the
+blocks appear as rectangles, with the strongest connections within block 1:
+
+```{r}
+plot_expectation(sb)
+```
+
+A sampled graph has the same block structure, with noise:
+
+```{r}
+A_sb <- sample_sparse(sb)
+plot_sparse_matrix(A_sb)
+compare_undirected(sb, A_sb)
+```
+
+For quick exploration, you can give the number of blocks `k` instead of
+`B`. `B` is then filled with independent `Uniform(0, 1)` entries, and
+`sbm()` prints a message saying so. Because this default may change in the
+future, pass `B` explicitly whenever you need reproducible results. You
+can't specify both `k` and `B`.
+
+```{r}
+#| message: false
+sb_k <- sbm(n = 300, k = 3, expected_degree = 20)
+round(as.matrix(sb_k$S), 3)
+```
+
+### Block sizes: `block_sizes` or `pi`
+
+By default, blocks are as close to equal in size as possible, and the sizes
+are exact, not random:
+
+```{r}
+table(sbm(n = 300, B = B, expected_degree = 20)$z)
+```
+
+To choose the exact sizes yourself, use `block_sizes`. To sample block
+memberships independently for each node instead, give relative block
+probabilities `pi`. Block sizes are then random:
+
+```{r}
+table(sbm(n = 300, B = B, block_sizes = c(150, 100, 50), expected_degree = 20)$z)
+table(sbm(n = 300, B = B, pi = c(3, 2, 1), expected_degree = 20)$z)
+```
+
+Notice that the blocks were relabeled: we asked for 150 nodes in the first
+block, but `block1` has 50 nodes. When `sort_nodes = TRUE` (the default),
+blocks are reordered from smallest to largest, and the rows and columns of
+`B` are permuted to match, so every block keeps its own row and column of
+`B`. The diagonal of `S` is now in the reverse order of the diagonal of
+`B`:
+
+```{r}
+sized <- sbm(n = 300, B = B, block_sizes = c(150, 100, 50), expected_degree = 20)
+diag(as.matrix(sized$S)) / diag(B)[3:1]
+```
+
+### Sorting nodes
+
+`sort_nodes = TRUE` also sorts the nodes by block, which is what makes the
+block structure visible in plots. With `sort_nodes = FALSE`, nodes keep
+the random order in which block memberships were drawn. The model is the
+same, but the blocks can't be seen by eye:
+
+```{r}
+sb_unsorted <- sbm(n = 300, B = B, expected_degree = 20, sort_nodes = FALSE)
+head(sb_unsorted$z)
+plot_expectation(sb_unsorted)
+```
+
+### Poisson or Bernoulli edges, and self-loops
+
+With Poisson edges (the default), the same pair of nodes can be joined
+more than once. To see this clearly, we use a denser graph. Here are the
+counts of the entries in the upper triangle of `A`, including the
+diagonal:
+
+```{r}
+dense_poisson <- sbm(n = 300, B = B, expected_degree = 60)
+A_poisson <- sample_sparse(dense_poisson)
+table(as.matrix(A_poisson)[upper.tri(A_poisson, diag = TRUE)])
+```
+
+With `poisson_edges = FALSE`, `S` is treated as a matrix of edge
+*probabilities*, so after rescaling its entries can be at most one, and
+`A` contains only zeros and ones:
+
+```{r}
+dense_bernoulli <- sbm(
+  n = 300,
+  B = B,
+  expected_degree = 60,
+  poisson_edges = FALSE
+)
+
+A_bernoulli <- sample_sparse(dense_bernoulli)
+table(as.matrix(A_bernoulli)[upper.tri(A_bernoulli, diag = TRUE)])
+```
+
+Internally, the Bernoulli probabilities $p$ are converted to Poisson rates
+$-\log(1 - p)$, and the graph is sampled from those rates, keeping one
+copy of each edge. A Poisson count with rate $-\log(1 - p)$ is positive
+with probability exactly $p$. The `expected_*()` functions (and the print
+method) are computed from the Poisson rates, so for Bernoulli graphs they
+overstate the number of edges, and by a lot when probabilities are large,
+as they are in this dense example. Rescaling via `expected_degree`
+happens *before* the conversion to Poisson rates, so the realized mean
+degree is close to the target of 60, while the reported expected degree is
+`r round(expected_degree(dense_bernoulli), 1)`:
+
+```{r}
+compare_undirected(dense_bernoulli, A_bernoulli)
+```
+
+Self-loops are allowed by default. With `allow_self_loops = FALSE`, they
+are removed after sampling:
+
+```{r}
+no_loops <- sbm(n = 300, B = B, expected_degree = 20, allow_self_loops = FALSE)
+A_no_loops <- sample_sparse(no_loops)
+
+sum(diag(A_sb))
+sum(diag(A_no_loops))
+```
+
+The expectations still count the expected self-loops (see
+`?expected_edges`), so without self-loops the realized number of edges and
+mean degree are slightly below their expectations. The density only counts
+edges between distinct nodes, so it is unaffected:
+
+```{r}
+compare_undirected(no_loops, A_no_loops)
+```
+
+## Degree-corrected stochastic blockmodels
+
+The degree-corrected SBM (DC-SBM, Karrer and Newman 2011) combines the SBM
+with Chung-Lu style degree heterogeneity. Each node has a block $z_i$ and a
+degree parameter $\theta_i$, and
+
+$$
+\mathbb{E}[A_{ij} \mid z, \theta] = \theta_i \, B_{z_i z_j} \, \theta_j.
+$$
+
+`dcsbm()` takes the same `B` / `k`, `block_sizes` / `pi`, `sort_nodes`,
+`poisson_edges` and `allow_self_loops` arguments as `sbm()`. Degree
+heterogeneity comes from `theta` (or from `n`, in which case `theta` is
+drawn at random, with a message).
+
+```{r}
+n <- 300
+theta <- rlnorm(n, meanlog = 0, sdlog = 0.7)
+
+dc <- dcsbm(theta = theta, B = B, expected_degree = 20)
+dc
+```
+
+Within each block, nodes are sorted by decreasing $\theta$, so the expected
+adjacency matrix fades from the top-left corner of each block:
+
+```{r}
+plot_expectation(dc)
+```
+
+```{r}
+A_dc <- sample_sparse(dc)
+plot_sparse_matrix(A_dc)
+compare_undirected(dc, A_dc)
+```
+
+Mean degrees by block agree with their expectations, but there is much
+more variation within blocks than in the SBM:
+
+```{r}
+tibble(
+  block = dc$z,
+  expected = expected_degrees(dc),
+  realized = rowSums(A_dc)
+) |>
+  summarize(
+    mean_expected = mean(expected),
+    mean_realized = mean(realized),
+    sd_realized = sd(realized),
+    .by = block
+  )
+```
+
+### `force_identifiability`
+
+$\theta$ and $B$ aren't separately identifiable: multiplying every
+$\theta_i$ in block $a$ by a constant and dividing row and column $a$ of
+$B$ by the same constant gives the same expected adjacency matrix.
+With `force_identifiability = TRUE`, `theta` is normalized to sum to one
+within each block:
+
+```{r}
+dc_id <- dcsbm(
+  theta = theta,
+  B = B,
+  expected_degree = 20,
+  force_identifiability = TRUE
+)
+
+tapply(dc_id$theta, dc_id$z, sum)
+```
+
+Note that normalizing `theta` changes the model, not just its
+parameterization, unless the sums of `theta` happen to be equal across
+blocks. In return, `S` gets a simple meaning: $S_{ab}$ is the expected
+number of edges from block $a$ to block $b$, counting the entries of `A`.
+We can check this by summing the expected adjacency matrix over pairs of
+blocks:
+
+```{r}
+Z <- sparse.model.matrix(~ dc_id$z + 0)
+block_totals <- as.matrix(t(Z) %*% expectation(dc_id) %*% Z)
+
+all.equal(block_totals, as.matrix(dc_id$S), check.attributes = FALSE)
+```
+
+`force_identifiability` is `FALSE` by default in `dcsbm()`, so that
+`theta = rep(1, n)` gives an SBM.
+
+## Planted partition models
+
+A planted partition model is an SBM in which `B` has one value on the
+diagonal and another off the diagonal: nodes connect at one rate within
+blocks and at another rate between blocks. Specify the two probabilities
+directly with `within_block` and `between_block`, or, for sparse graphs,
+with `a` and `b`, which mean `within_block = a / n` and
+`between_block = b / n`. These two models are the same:
+
+```{r}
+pp <- planted_partition(n = 1000, k = 4, within_block = 0.04, between_block = 0.004)
+pp_ab <- planted_partition(n = 1000, k = 4, a = 40, b = 4)
+
+all.equal(pp$S, pp_ab$S)
+pp
+```
+
+With balanced blocks, each node expects about $(a + (k - 1) b) / k$
+neighbors, here $(40 + 3 \cdot 4) / 4 = 13$:
+
+```{r}
+A_pp <- sample_sparse(pp)
+compare_undirected(pp, A_pp)
+```
+
+If you also pass `expected_degree` or `expected_density`, `B` is rescaled
+as usual. The printed within- and between-block probabilities are the
+values you supplied, before rescaling, while `S` holds the rescaled values.
+
+## Mixed membership stochastic blockmodels
+
+In a mixed membership SBM (MMSB, Airoldi et al. 2008), each node splits
+one unit of membership among the blocks. Node $i$ has a membership vector
+$Z_i$ on the simplex, drawn from a Dirichlet distribution with parameter
+$\alpha$, and
+
+$$
+\mathbb{E}[A_{ij} \mid Z, \theta] = \theta_i \, Z_i^T B Z_j \, \theta_j.
+$$
+
+`mmsbm()` includes degree heterogeneity `theta`; use `theta = rep(1, n)`
+for a model without it. The Dirichlet parameter `alpha` controls how mixed
+the memberships are. With small `alpha`, most nodes are close to a single
+block; with large `alpha`, most nodes belong to all blocks about equally.
+
+```{r}
+n <- 300
+
+mm_pure <- mmsbm(theta = rep(1, n), B = B, alpha = rep(0.1, 3), expected_degree = 20)
+mm_mixed <- mmsbm(theta = rep(1, n), B = B, alpha = rep(5, 3), expected_degree = 20)
+
+mm_pure
+```
+
+The largest membership of each node summarizes how pure it is:
+
+```{r}
+summary(apply(mm_pure$Z, 1, max))
+summary(apply(mm_mixed$Z, 1, max))
+```
+
+With small `alpha`, the expected adjacency matrix looks like an SBM with
+blurred block boundaries:
+
+```{r}
+plot_expectation(mm_pure)
+```
+
+With large `alpha`, the block structure mostly washes out:
+
+```{r}
+plot_expectation(mm_mixed)
+```
+
+By default, `force_pure = TRUE` makes one randomly chosen node a pure
+member of each block, which helps make the memberships identifiable.
+Sampling works
+as for every other model:
+
+```{r}
+A_mm <- sample_sparse(mm_pure)
+compare_undirected(mm_pure, A_mm)
+```
+
+## Overlapping stochastic blockmodels
+
+In the overlapping SBM of Kaufmann, Bonald, and Lelarge (2016), block
+memberships are binary, and a node can be a full member of several blocks
+at once. Node $i$ joins block $a$ independently with probability $\pi_a$,
+so `pi` does not need to sum to one. Each pair of blocks that $i$ and $j$
+belong to contributes to the rate of edges between them:
+
+$$
+\mathbb{E}[A_{ij} \mid Z] = \sum_{a, b} Z_{ia} Z_{jb} B_{ab} = Z_i^T B Z_j.
+$$
+
+`B` must be invertible, and its entries must be in $[0, 1]$. Related
+models, which `fastRG` doesn't implement, are the overlapping SBM of
+Latouche, Birmelé, and Ambroise (2011), where block contributions add up
+on the logit scale, and the OCCAM model of Zhang, Levina, and Zhu (2020),
+which allows real-valued memberships and degree heterogeneity.
+
+```{r}
+B_overlap <- matrix(0.02, nrow = 3, ncol = 3)
+diag(B_overlap) <- 0.2
+
+os <- overlapping_sbm(n = 300, B = B_overlap, pi = c(0.2, 0.3, 0.4))
+os
+```
+
+`Z` is a binary matrix, and some nodes belong to more than one block:
+
+```{r}
+os$Z[c(1, 100, 200, 300), ]
+table(rowSums(os$Z))
+```
+
+Every node belongs to at least one block. A node that joins no block in
+the independent draws is assigned to exactly one block, chosen with
+probability proportional to `pi`. This is why the fraction of nodes in
+each block is somewhat larger than `pi`:
+
+```{r}
+colMeans(os$Z)
+```
+
+`force_pure = TRUE` (the default) also makes one randomly chosen node a
+pure member of each block, as in `mmsbm()`.
+
+Nodes in more blocks have higher expected degree, because they collect
+contributions from more pairs of blocks:
+
+```{r}
+tapply(expected_degrees(os), rowSums(os$Z), mean)
+```
+
+In the expected adjacency matrix, rows and columns for nodes that belong
+to several blocks light up across several blocks:
+
+```{r}
+plot_expectation(os)
+```
+
+### Bernoulli edges follow the noisy-OR model
+
+With `poisson_edges = FALSE`, `B` is treated as a matrix of probabilities.
+Each pair of blocks $(a, b)$ with $i$ in $a$ and $j$ in $b$ independently
+gets a chance $B_{ab}$ to connect $i$ and $j$, so
+
+$$
+\mathbb{P}(A_{ij} = 1 \mid Z) = 1 - \prod_{a, b} (1 - B_{ab})^{Z_{ia} Z_{jb}}.
+$$
+
+This is the "noisy-OR" model of Kaufmann, Bonald, and Lelarge (2016). Here
+we check that the edge probabilities implied by the model, $1 - e^{-P}$
+for the Poisson rates $P = X S X^T$, equal the noisy-OR probabilities.
+We don't rescale `B`, so that it is exactly the matrix of edge
+probabilities:
+
+```{r}
+os_bernoulli <- overlapping_sbm(
+  n = 300,
+  B = B_overlap,
+  pi = c(0.2, 0.3, 0.4),
+  poisson_edges = FALSE
+)
+
+Z <- as.matrix(os_bernoulli$Z)
+noisy_or <- 1 - exp(Z %*% log(1 - os_bernoulli$B) %*% t(Z))
+edge_prob <- 1 - exp(-as.matrix(expectation(os_bernoulli)))
+
+all.equal(noisy_or, edge_prob, check.attributes = FALSE)
+```
+
+A sampled graph has only zeros and ones, and its density matches the mean
+noisy-OR probability between distinct nodes:
+
+```{r}
+A_os <- sample_sparse(os_bernoulli)
+max(A_os)
+
+n <- nrow(A_os)
+c(
+  noisy_or = (sum(noisy_or) - sum(diag(noisy_or))) / (n * (n - 1)),
+  realized = (sum(A_os) - sum(diag(A_os))) / (n * (n - 1))
+)
+```
+
+As with other Bernoulli models, `expected_density(os_bernoulli)`, which is
+computed from the Poisson rates, is a little larger:
+`r signif(expected_density(os_bernoulli), 3)`.
+
+## General undirected factor models
+
+Every undirected model above is a special case of
+`undirected_factor_model()`, which takes any non-negative $n \times k$
+matrix `X` and any non-negative symmetric $k \times k$ matrix `S`
+(non-symmetric `S` is symmetrized). This is useful for models that don't
+have their own constructor. For example, here the latent positions mix
+continuous and binary features:
+
+```{r}
+n <- 500
+X <- cbind(rexp(n), runif(n), rbinom(n, 1, 0.3))
+S <- matrix(
+  c(
+    1.0, 0.2, 0.0,
+    0.2, 1.0, 0.5,
+    0.0, 0.5, 2.0
+  ),
+  nrow = 3
+)
+
+ufm <- undirected_factor_model(X, S, expected_degree = 10)
+ufm
+
+A_ufm <- sample_sparse(ufm)
+compare_undirected(ufm, A_ufm)
+```
+
+There is no input validation beyond checking dimensions, symmetry and
+non-negativity, so the model-specific constructors are usually more
+convenient.
+
+# Directed graphs
+
+In a directed graph, row $i$ of $A$ holds the edges that node $i$ sends,
+and column $j$ the edges that node $j$ receives. Directed models are
+factor models $\mathbb{E}[A \mid X, Y] = X S Y^T$, where `X` describes the
+rows (senders) and `Y` the columns (receivers).
+
+## Directed degree-corrected stochastic blockmodels
+
+### The co-factor model
+
+By default, `directed_dcsbm()` is a *co-factor* model, the directed SBM
+studied by Rohe, Qin, and Yu (2016): every node has an outgoing block and
+degree parameter, which govern the edges it sends, and a separate incoming
+block and degree parameter, which govern the edges it receives. The two are
+drawn independently, and the numbers of outgoing and incoming blocks can
+differ, so `B` can be rectangular. Hayes and Rohe (2025) use co-factor
+models to describe how papers send and receive citations.
+
+Here there are three outgoing blocks and two incoming blocks. Outgoing
+block 1 mostly sends edges to incoming block 1, and outgoing block 3 to
+incoming block 2. We set the exact block sizes with `block_sizes_out` and
+`block_sizes_in`:
+
+```{r}
+B_directed <- matrix(
+  c(
+    0.60, 0.10,
+    0.10, 0.10,
+    0.05, 0.50
+  ),
+  nrow = 3,
+  byrow = TRUE
+)
+
+n <- 300
+
+dd <- directed_dcsbm(
+  theta_out = rlnorm(n, meanlog = 0, sdlog = 0.3),
+  theta_in = rlnorm(n, meanlog = 0, sdlog = 0.3),
+  B = B_directed,
+  block_sizes_out = c(50, 100, 150),
+  block_sizes_in = c(100, 200),
+  expected_out_degree = 15
+)
+
+dd
+table(dd$z_out)
+table(dd$z_in)
+```
+
+Unlike `dcsbm()`, `directed_dcsbm()` uses `force_identifiability = TRUE` by
+default, so `theta_out` and `theta_in` sum to one within each block. As
+in the `dcsbm()` example above, `S[a, b]` is then the expected number of
+edges from outgoing block `a` to incoming block `b`. Outgoing block 1 has
+only 50 nodes, so its edges are concentrated on few rows, and it stands
+out in the plot even though `B[1, 1]` isn't much larger than `B[3, 2]`:
+
+```{r}
+plot_expectation(dd)
+```
+
+```{r}
+A_dd <- sample_sparse(dd)
+
+# plot_sparse_matrix() puts the rows of its argument on the horizontal
+# axis, while plot_expectation() puts them on the vertical axis.
+# transpose so that the two plots have the same orientation
+plot_sparse_matrix(t(A_dd))
+
+compare_directed(dd, A_dd)
+```
+
+### Rows and columns are different nodes
+
+In the co-factor model, `sort_nodes = TRUE` sorts the rows of $A$ by
+outgoing block and the columns by incoming block, *independently*. After
+sorting, row $i$ and column $i$ are generally not the same node, so the
+diagonal of $A$ (and the self-loops controlled by `allow_self_loops`)
+doesn't mean "node $i$ to itself".
+
+This is easy to miss. Outgoing and incoming blocks are drawn
+independently, so in the unsorted model they are unrelated. After
+sorting, `z_out[i]` and `z_in[i]` refer to different nodes, and comparing
+them gives a misleading picture of perfectly aligned blocks:
+
+```{r}
+B_square <- matrix(0.05, nrow = 2, ncol = 2)
+diag(B_square) <- 0.5
+
+unsorted <- directed_dcsbm(
+  theta_out = rep(1, n),
+  theta_in = rep(1, n),
+  B = B_square,
+  expected_out_degree = 10,
+  sort_nodes = FALSE
+)
+
+sorted <- directed_dcsbm(
+  theta_out = rep(1, n),
+  theta_in = rep(1, n),
+  B = B_square,
+  expected_out_degree = 10
+)
+
+table(z_out = unsorted$z_out, z_in = unsorted$z_in)
+table(z_out = sorted$z_out, z_in = sorted$z_in)
+```
+
+If you need rows and columns to index the same nodes, use
+`sort_nodes = FALSE` or `shared_blocks = TRUE`.
+
+### Shared blocks and shared degree parameters
+
+Often it is more natural for each node to belong to a single community,
+which shapes both the edges it sends and the edges it receives. With
+`shared_blocks = TRUE`, a single block membership vector is used for both
+(`B` must then be square), and an asymmetric `B` describes directed
+relationships between communities. `shared_theta = TRUE` additionally uses
+one degree parameter for sending and receiving, so that nodes that send
+many edges also receive many. With shared blocks, sorting permutes rows and
+columns together, so row $i$ and column $i$ are the same node.
+
+```{r}
+B_shared <- matrix(0.05, nrow = 3, ncol = 3)
+diag(B_shared) <- 0.5
+B_shared[1, 2] <- 0.4 # block 1 sends many edges to block 2, but not back
+
+shared <- directed_dcsbm(
+  theta_out = rlnorm(n, meanlog = 0, sdlog = 0.5),
+  B = B_shared,
+  shared_blocks = TRUE,
+  shared_theta = TRUE,
+  expected_out_degree = 15
+)
+
+shared
+identical(shared$z_out, shared$z_in)
+identical(shared$theta_out, shared$theta_in)
+```
+
+```{r}
+plot_expectation(shared)
+```
+
+`shared_theta = TRUE` requires `shared_blocks = TRUE`:
+
+```{r, error = TRUE}
+directed_dcsbm(
+  theta_out = rep(1, n),
+  B = B_shared,
+  shared_theta = TRUE,
+  expected_out_degree = 15
+)
+```
+
+## Directed planted partition models
+
+`directed_planted_partition()` is the directed version of
+`planted_partition()`: `k` outgoing and `k` incoming blocks, with
+`within_block` (or `a / n`) on the diagonal of `B` and `between_block` (or
+`b / n`) off the diagonal. As in `directed_dcsbm()`, outgoing and incoming
+blocks are independent by default, and `shared_blocks = TRUE` gives each
+node a single community:
+
+```{r}
+dpp <- directed_planted_partition(
+  n = 1000,
+  k = 4,
+  a = 40,
+  b = 4,
+  shared_blocks = TRUE
+)
+
+dpp
+
+A_dpp <- sample_sparse(dpp)
+compare_directed(dpp, A_dpp)
+```
+
+## Directed Erdős-Rényi graphs
+
+`directed_erdos_renyi()` puts a directed edge from $i$ to $j$ with the same
+probability `p` for every ordered pair, so $A_{ij}$ and $A_{ji}$ are
+independent. Instead of `p`, you can give `expected_in_degree`,
+`expected_out_degree` or `expected_density`; in a square graph, the
+expected in- and out-degrees are equal.
+
+```{r}
+der <- directed_erdos_renyi(n = 1000, expected_in_degree = 5)
+der
+
+A_der <- sample_sparse(der)
+isSymmetric(A_der)
+compare_directed(der, A_der)
+```
+
+## Rectangular directed factor models
+
+`directed_factor_model()` takes any non-negative `X` ($n \times k_1$), `S`
+($k_1 \times k_2$) and `Y` ($d \times k_2$). The number of rows `n` and the
+number of columns `d` of $A$ don't have to be equal, so this also describes
+bipartite graphs, such as users and the items they interact with.
+
+```{r}
+n <- 300
+d <- 100
+
+X <- matrix(rexp(n * 2), nrow = n)
+Y <- matrix(rexp(d * 3), nrow = d)
+S <- matrix(runif(2 * 3), nrow = 2, ncol = 3)
+
+fm <- directed_factor_model(X, S, Y, expected_out_degree = 5)
+fm
+
+A_fm <- sample_sparse(fm)
+dim(A_fm)
+compare_directed(fm, A_fm)
+```
+
+Since there are more rows than columns, the mean in-degree (per column) is
+three times the mean out-degree (per row). When `n != d`, `sample_igraph()`
+returns an undirected bipartite graph, with `n + d` nodes. The `type`
+vertex attribute is `FALSE` for the `n` row nodes and `TRUE` for the `d`
+column nodes:
+
+```{r}
+g_fm <- sample_igraph(fm)
+igraph::is_bipartite(g_fm)
+table(igraph::V(g_fm)$type)
+```
+
+# Sampling
+
+## Output formats
+
+All four samplers draw from the same distribution, and differ only in how
+they represent the graph:
+
+```{r}
+small <- sbm(n = 100, B = B, expected_degree = 5)
+```
+
+`sample_edgelist()` returns a tibble with one row per edge. For undirected
+graphs, `from <= to`. Nodes without any edges don't appear in the
+edgelist.
+
+```{r}
+sample_edgelist(small)
+```
+
+`sample_sparse()` returns a sparse adjacency matrix from the Matrix
+package. It is symmetric for undirected graphs:
+
+```{r}
+A_small <- sample_sparse(small)
+class(A_small)
+A_small[1:8, 1:8]
+```
+
+`sample_igraph()` and `sample_tidygraph()` return `igraph` and `tidygraph`
+objects that include every node, also isolated ones:
+
+```{r}
+sample_igraph(small)
+sample_tidygraph(small)
+```
+
+## Multigraphs and edge weights
+
+Poisson graphs can have repeated edges. By default (`multigraph = TRUE`),
+`sample_edgelist()`, `sample_igraph()` and `sample_tidygraph()` return
+these as repeated edges, i.e. as a multigraph. With `multigraph = FALSE`,
+repeated edges between the same pair of nodes are collapsed into a single
+edge with an integer `weight`, which equals the corresponding entry of the
+adjacency matrix from `sample_sparse()`.
+
+To compare the representations, we sample from the same model with the
+same seed, which gives the same graph each time:
+
+```{r}
+dense_small <- sbm(n = 100, B = B, expected_degree = 30)
+
+set.seed(1)
+el_multi <- sample_edgelist(dense_small)
+
+set.seed(1)
+el_weighted <- sample_edgelist(dense_small, multigraph = FALSE)
+
+set.seed(1)
+A_dense_small <- sample_sparse(dense_small)
+
+el_weighted
+```
+
+The weights add up to the number of rows in the multigraph edgelist, and
+match the entries of `A`:
+
+```{r}
+nrow(el_multi) == sum(el_weighted$weight)
+all(A_dense_small[cbind(el_weighted$from, el_weighted$to)] == el_weighted$weight)
+```
+
+The same holds for `igraph` objects:
+
+```{r}
+set.seed(1)
+g_multi <- sample_igraph(dense_small)
+
+set.seed(1)
+g_weighted <- sample_igraph(dense_small, multigraph = FALSE)
+
+igraph::any_multiple(g_multi)
+igraph::any_multiple(g_weighted)
+table(igraph::E(g_weighted)$weight)
+```
+
+For Bernoulli graphs there are no repeated edges, and with
+`multigraph = FALSE` every weight is 1.
+
+# Scaling: expected degree and density
+
+The undirected models take `expected_degree` or `expected_density`, and
+the directed ones take `expected_out_degree`, `expected_in_degree` or
+`expected_density`. Each of these multiplies `S` by a constant, so that the
+model has the requested expectation; the rest of the model is unchanged.
+We strongly recommend setting one of them, since it is easy to specify an
+unintentionally dense graph otherwise.
+
+For undirected graphs, these quantities are defined as follows, with
+$P = X S X^T$:
+
+- `expected_edges()` is the expected number of edges, counting each
+  undirected edge once and each self-loop once:
+  $(\sum_{ij} P_{ij} + \operatorname{tr}(P)) / 2$.
+- `expected_degree()` is the expected mean degree,
+  $\sum_{ij} P_{ij} / n$, the mean row sum of $P$. `expected_degrees()`
+  gives the expected degree of each node.
+- `expected_density()` is the expected number of edges between distinct
+  nodes, divided by the number of pairs of distinct nodes,
+  $\binom{n}{2}$. Self-loops don't count.
+
+For directed graphs, `expected_edges()` is $\sum_{ij} P_{ij}$, the
+expected in- and out-degrees divide it by the number of columns and rows,
+and `expected_density()` divides it by $n d$.
+
+Here is a slightly larger undirected graph, specified by its density:
+
+```{r}
+set.seed(27)
+n <- 2000
+
+scaled <- sbm(n = n, B = B, expected_density = 0.01)
+scaled
+
+A_scaled <- sample_sparse(scaled)
+compare_undirected(scaled, A_scaled)
+```
+
+Since self-loops are rare, the expected degree is close to
+`expected_density * (n - 1)`, and the expected number of edges is close to
+`expected_density * choose(n, 2)`:
+
+```{r}
+c(expected_degree(scaled), 0.01 * (n - 1))
+c(expected_edges(scaled), 0.01 * choose(n, 2))
+```
+
+`igraph` also counts each undirected edge, and each self-loop, once:
+
+```{r}
+set.seed(2)
+g_scaled <- sample_igraph(scaled)
+
+set.seed(2)
+A_scaled_2 <- sample_sparse(scaled)
+
+c(igraph = igraph::ecount(g_scaled), from_A = (sum(A_scaled_2) + sum(diag(A_scaled_2))) / 2)
+```
+
+# Spectra
+
+Because $\mathbb{E}[A]$ has low rank, its eigenvalues and singular values
+can be computed without forming the dense $n \times n$ matrix.
+`eigs_sym()` (for undirected models) and `svds()` (for undirected and
+directed models) do this with RSpectra. Here we compare the population
+eigenvalues of an SBM with the leading eigenvalues of a sampled graph:
+
+```{r}
+set.seed(27)
+sb_large <- sbm(n = 2000, B = B, expected_degree = 50)
+
+eigs_sym(sb_large)$values
+
+A_large <- sample_sparse(sb_large)
+eigs_sym(as(A_large, "generalMatrix"), k = 3)$values
+```
+
+And the population singular values of the co-factor model from above,
+with those of its sampled graph:
+
+```{r}
+svds(dd)$d
+svds(A_dd, k = 2)$d
+```
+
+For a simulation study of how well sample eigenvectors recover population
+eigenvectors, see `vignette("consistency")`.
+
+# References
+
+Airoldi, Edoardo M., David M. Blei, Stephen E. Fienberg, and Eric P. Xing.
+2008. "Mixed Membership Stochastic Blockmodels." *Journal of Machine
+Learning Research* 9: 1981–2014.
+
+Chung, Fan, Linyuan Lu, and Van Vu. 2003. "Spectra of Random Graphs with
+Given Expected Degrees." *Proceedings of the National Academy of Sciences*
+100 (11): 6313–18. <https://doi.org/10.1073/pnas.0937490100>.
+
+Erdős, Paul, and Alfréd Rényi. "On the Evolution of Random Graphs."
+
+Hayes, Alex, and Karl Rohe. 2025. "Co-Factor Analysis of Citation
+Networks." *Journal of Computational and Graphical Statistics* 34 (2):
+448–61. <https://doi.org/10.1080/10618600.2024.2394464>.
+
+Holland, Paul W., Kathryn Blackmond Laskey, and Samuel Leinhardt. 1983.
+"Stochastic Blockmodels: First Steps." *Social Networks* 5 (2): 109–37.
+<https://doi.org/10.1016/0378-8733(83)90021-7>.
+
+Karrer, Brian, and M. E. J. Newman. 2011. "Stochastic Blockmodels and
+Community Structure in Networks." *Physical Review E* 83 (1): 016107.
+<https://doi.org/10.1103/PhysRevE.83.016107>.
+
+Kaufmann, Emilie, Thomas Bonald, and Marc Lelarge. 2016. "A Spectral
+Algorithm with Additive Clustering for the Recovery of Overlapping
+Communities in Networks." In *Algorithmic Learning Theory (ALT 2016)*,
+355–70. Lecture Notes in Computer Science 9925. Cham: Springer.
+<https://doi.org/10.1007/978-3-319-46379-7_24>.
+
+Latouche, Pierre, Etienne Birmelé, and Christophe Ambroise. 2011.
+"Overlapping Stochastic Block Models with Application to the French
+Political Blogosphere." *The Annals of Applied Statistics* 5 (1): 309–36.
+<https://doi.org/10.1214/10-AOAS382>.
+
+Rohe, Karl, Tai Qin, and Bin Yu. 2016. "Co-Clustering Directed Graphs to
+Discover Asymmetries and Directional Communities." *Proceedings of the
+National Academy of Sciences* 113 (45): 12679–84.
+<https://doi.org/10.1073/pnas.1525793113>.
+
+Rohe, Karl, Jun Tao, Xintian Han, and Norbert Binkiewicz. 2018. "A Note on
+Quickly Sampling a Sparse Matrix with Low Rank Expectation." *Journal of
+Machine Learning Research* 19 (77): 1–13.
+<https://www.jmlr.org/papers/v19/17-128.html>.
+
+Zhang, Yuan, Elizaveta Levina, and Ji Zhu. 2020. "Detecting Overlapping
+Communities in Networks Using Spectral Methods." *SIAM Journal on
+Mathematics of Data Science* 2 (2): 265–83.
+<https://doi.org/10.1137/19M1272238>.
