@@ -1,6 +1,6 @@
 Package: fastRG
 Title: Sample Generalized Random Dot Product Graphs in Linear Time
-Version: 0.4.0
+Version: 0.4.0.9000
 Authors@R: c(
     person("Alex", "Hayes", , "alexpghayes@gmail.com", role = c("aut", "cre", "cph"),
            comment = c(ORCID = "0000-0002-4985-5160")),
@@ -22,7 +22,8 @@ Description: Samples generalized random product graphs, a generalization of
 License: MIT + file LICENSE
 URL: https://rohelab.github.io/fastRG/, https://github.com/RoheLab/fastRG
 BugReports: https://github.com/RoheLab/fastRG/issues
-Depends: 
+Depends:
+    R (>= 4.4.0),
     Matrix
 Imports: 
     dplyr,

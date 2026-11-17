@@ -158,19 +158,40 @@ sample_edgelist.undirected_factor_model <- function(
   ...
 ) {
   X <- factor_model$X
+  n <- factor_model$n
 
   # see #43, move the scaling factor here so it's temporary during sampling
   # E(A) = U S U' holds for undirected factor models
   S <- factor_model$S / 2
 
-  sample_edgelist(
-    X,
-    S,
-    X,
-    FALSE,
-    factor_model$poisson_edges,
-    factor_model$allow_self_loops
-  )
+  # deduplication and self-loop removal must happen after the extra
+  # self-loops are added below, so defer them
+  # as_tibble() because the zero edge case returns a matrix
+  edgelist <- tibble::as_tibble(sample_edgelist(X, S, X, FALSE, TRUE, TRUE))
+
+  if (factor_model$allow_self_loops) {
+    # off the diagonal, {i, j} gets sampled as both (i, j) and (j, i), so
+    # halving S gives the right rate. (i, i) only gets sampled once, so the
+    # diagonal is left at half rate. top it up with independent Poisson
+    # self-loops at the missing rate diag(X (S / 2) X'), so that
+    # E(A_ii) = (X S X')_ii as well. see #46
+    diag_rates <- as.numeric(rowSums((X %*% S) * X))
+    loops <- rep(seq_len(n), times = rpois(n, diag_rates))
+
+    if (length(loops) > 0) {
+      edgelist <- dplyr::bind_rows(edgelist, tibble(from = loops, to = loops))
+    }
+  }
+
+  if (!factor_model$poisson_edges) {
+    edgelist <- dplyr::distinct(edgelist)
+  }
+
+  if (!factor_model$allow_self_loops) {
+    edgelist <- dplyr::filter(edgelist, to != from)
+  }
+
+  edgelist
 }
 
 #' @rdname sample_edgelist
