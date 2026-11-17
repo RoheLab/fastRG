@@ -375,15 +375,18 @@ dcsbm <- function(
     stop("Must at most one of `block_sizes` and `pi`.", call. = FALSE)
   }
 
-  z <- factor(z, levels = 1:k, labels = paste0("block", 1:k))
-
-  # order mixing matrix by expected group size
+  # order mixing matrix by expected group size. `z` was sampled using the
+  # original block labels, so relabel it to match the new order of `B` and
+  # `pi`: the block in position `o[j]` becomes block `j`
 
   if (k > 1 && sort_nodes) {
-    B <- B[order(pi), ]
-    B <- B[, order(pi)]
-    pi <- sort(pi)
+    o <- order(pi)
+    B <- B[o, o, drop = FALSE]
+    pi <- pi[o]
+    z <- order(o)[z]
   }
+
+  z <- factor(z, levels = 1:k, labels = paste0("block", 1:k))
 
   pi <- pi / sum(pi)
 
@@ -401,7 +404,7 @@ dcsbm <- function(
     theta <- l1_normalize_within(theta, z)
   }
 
-  X@x <- theta
+  X <- set_membership_weights(X, theta)
 
   if (sort_nodes) {
     # note that X and z indexing must match

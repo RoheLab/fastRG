@@ -143,6 +143,7 @@ lazy_pp
 Other stochastic block models: 
 \code{\link{dcsbm}()},
 \code{\link{directed_dcsbm}()},
+\code{\link{directed_planted_partition}()},
 \code{\link{mmsbm}()},
 \code{\link{overlapping_sbm}()},
 \code{\link{sbm}()}

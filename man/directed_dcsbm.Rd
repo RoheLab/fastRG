@@ -12,8 +12,12 @@ directed_dcsbm(
   k_in = NULL,
   B = NULL,
   ...,
-  pi_out = rep(1/k_out, k_out),
-  pi_in = rep(1/k_in, k_in),
+  block_sizes_out = NULL,
+  block_sizes_in = NULL,
+  pi_out = NULL,
+  pi_in = NULL,
+  shared_blocks = FALSE,
+  shared_theta = FALSE,
   sort_nodes = TRUE,
   force_identifiability = TRUE,
   poisson_edges = TRUE,
@@ -28,7 +32,9 @@ parameters \code{theta_out} and \code{theta_in} by hand. When \code{n} is specif
 a \code{LogNormal(2, 1)} distribution.
 This is subject to change, and may not be reproducible.
 \code{n} defaults to \code{NULL}. You must specify either \code{n}
-or \code{theta_out} and \code{theta_in} together, but not both.}
+or \code{theta_out} and \code{theta_in} together, but not both.
+When \code{shared_theta = TRUE}, a single vector is generated and used
+for both \code{theta_out} and \code{theta_in}.}
 
 \item{theta_out}{(degree heterogeneity) A numeric vector
 explicitly specifying the degree heterogeneity
@@ -59,8 +65,7 @@ randomly from a \code{Uniform(0, 1)} distribution.
 This is subject to change, and may not be reproducible.
 \code{k_out} defaults to \code{NULL}. You must specify either \code{k_out} and
 \code{k_in} together, or \code{B}. You may specify all three at once, in which
-case \code{k_out} is only used to set \code{pi_out} (when \code{pi_out} is
-left at its default argument value).}
+case the number of outgoing blocks is taken from \code{B}.}
 
 \item{k_in}{(mixing matrix) The number of incoming blocks in the blockmodel.
 Use when you don't want to specify the mixing-matrix by hand.
@@ -68,8 +73,7 @@ When \code{k_in} is specified, the elements of \code{B} are drawn
 randomly from a \code{Uniform(0, 1)} distribution.
 This is subject to change, and may not be reproducible.
 \code{k_in} defaults to \code{NULL}. You may specify all three at once, in which
-case \code{k_in} is only used to set \code{pi_in} (when \code{pi_in} is
-left at its default argument value).}
+case the number of incoming blocks is taken from \code{B}.}
 
 \item{B}{(mixing matrix) A \code{k_out} by \code{k_in} matrix of block connection
 probabilities. The probability that a node in block \code{i} connects
@@ -95,28 +99,90 @@ to achieve this. Defaults to \code{NULL}. Specify only one of
 \code{expected_in_degree}, \code{expected_out_degree}, and \code{expected_density}.}
   }}
 
-\item{pi_out}{(relative block probabilities) Relative block
-probabilities. Must be positive, but do not need to sum
-to one, as they will be normalized internally.
-Must match the rows of \code{B}, or \code{k_out}. Defaults to
-\code{rep(1 / k_out, k_out)}, or a balanced outgoing blocks.}
+\item{block_sizes_out}{(block sizes) Number of nodes in each outgoing
+block, as a vector of non-negative integers. Must match the number of
+rows of \code{B} (or \code{k_out}) and must sum to \code{n} (or \code{length(theta_out)}).
+When specified, exactly \code{block_sizes_out[j]} nodes are assigned to
+outgoing block \code{j}, and which nodes land in which block is uniformly
+random. Defaults to \code{NULL}, in which case outgoing blocks are made to
+be as balanced as possible, unless \code{pi_out} is specified. You can
+specify either \code{pi_out} or \code{block_sizes_out}, but not both.}
 
-\item{pi_in}{(relative block probabilities) Relative block
-probabilities. Must be positive, but do not need to sum
-to one, as they will be normalized internally.
-Must match the columns of \code{B}, or \code{k_in}. Defaults to
-\code{rep(1 / k_in, k_in)}, or a balanced incoming blocks.}
+\item{block_sizes_in}{(block sizes) Number of nodes in each incoming
+block, as a vector of non-negative integers. Must match the number of
+columns of \code{B} (or \code{k_in}) and must sum to \code{n} (or \code{length(theta_in)}).
+When specified, exactly \code{block_sizes_in[j]} nodes are assigned to
+incoming block \code{j}, and which nodes land in which block is uniformly
+random. Defaults to \code{NULL}, in which case incoming blocks are made to
+be as balanced as possible, unless \code{pi_in} is specified. You can
+specify either \code{pi_in} or \code{block_sizes_in}, but not both.}
+
+\item{pi_out}{(block sizes) Relative block
+probabilities for outgoing blocks. Must be positive, but do not need to
+sum to one, as they will be normalized internally.
+Must match the rows of \code{B}, or \code{k_out}. When specified, outgoing block
+memberships are sampled independently for each node with these
+probabilities. Defaults to \code{NULL}, in which case the \code{block_sizes_out}
+argument (or its balanced default) takes precedence. You can specify
+either \code{pi_out} or \code{block_sizes_out}, but not both.}
+
+\item{pi_in}{(block sizes) Relative block
+probabilities for incoming blocks. Must be positive, but do not need to
+sum to one, as they will be normalized internally.
+Must match the columns of \code{B}, or \code{k_in}. When specified, incoming
+block memberships are sampled independently for each node with these
+probabilities. Defaults to \code{NULL}, in which case the \code{block_sizes_in}
+argument (or its balanced default) takes precedence. You can specify
+either \code{pi_in} or \code{block_sizes_in}, but not both.}
+
+\item{shared_blocks}{(block memberships) Logical indicating whether each
+node should belong to the same outgoing and incoming block. Defaults to
+\code{FALSE}, in which case outgoing and incoming block memberships are
+sampled independently. When \code{TRUE}, a single block membership vector is
+sampled and used for both, so that \code{z_out} and \code{z_in} are identical.
+This requires the same number of outgoing and incoming blocks, i.e.
+\code{B} must be square (or \code{k_out} must equal \code{k_in}; specifying only one
+of them is enough). It is enough to specify only one of \code{pi_out} and
+\code{pi_in} (or of \code{block_sizes_out} and \code{block_sizes_in}); if both are
+specified, they must agree.}
+
+\item{shared_theta}{(degree heterogeneity) Logical indicating whether
+each node should have the same propensity to form outgoing and incoming
+edges. Defaults to \code{FALSE}, in which case \code{theta_out} and \code{theta_in}
+are unrelated. When \code{TRUE}, a single degree-heterogeneity vector is
+used for both \code{theta_out} and \code{theta_in}: either specify \code{n} (one
+vector is then generated at random), or only one of \code{theta_out} and
+\code{theta_in}. If you specify both \code{theta_out} and \code{theta_in}, they must
+be identical. Requires \code{shared_blocks = TRUE}, so that the stored
+\code{theta_out} and \code{theta_in} are identical (also after normalization
+by \code{force_identifiability}).}
 
 \item{sort_nodes}{Logical indicating whether or not to sort the nodes
 so that they are grouped by block. Useful for plotting.
 Defaults to \code{TRUE}. When \code{TRUE}, rows of the expected adjacency matrix
 are first sorted by outgoing block membership, and then by
-incoming degree-correction parameters within each incoming block.
-A similar sorting procedure occurs independently from the columns,
+outgoing degree-correction parameters within each outgoing block.
+A similar sorting procedure occurs independently for the columns,
 according to the incoming blocks.
 Additionally, \code{pi_out} and \code{pi_in} are sorted in increasing order,
-and the columns of the \code{B} matrix are permuted to match the
-new orderings.}
+and the rows and columns of the \code{B} matrix are permuted to match the
+new orderings. When \code{block_sizes_out} or \code{block_sizes_in} are
+specified, they are permuted in the same way, so each block keeps
+exactly the requested number of nodes and its row (or column) of \code{B}.
+
+\strong{Rows and columns index different nodes.} In the default co-factor
+model (\code{shared_blocks = FALSE}), the rows and the columns are permuted
+\emph{independently}, so after sorting, row \code{i} and column \code{i} of the
+adjacency matrix are generally not the same node. In particular, the
+diagonal of \code{A} (self-loops, see \code{allow_self_loops}) does not mean
+"node \code{i} to itself", and \code{X[i, ]} and \code{Y[i, ]} describe different
+nodes. If you need rows and columns to index the same nodes, use
+\code{shared_blocks = TRUE} or \code{sort_nodes = FALSE}.
+
+When \code{shared_blocks = TRUE}, rows and columns are instead permuted
+together, so that row \code{i} and column \code{i} of the expected adjacency
+matrix refer to the same node: nodes are sorted by block, and then by
+decreasing \code{theta_out} and \code{theta_in} within each block.}
 
 \item{force_identifiability}{Logical indicating whether or not to
 normalize \code{theta_out} such that it sums to one within each incoming
@@ -143,35 +209,45 @@ A \code{directed_dcsbm} S3 object, a subclass of the
 \code{\link[=directed_factor_model]{directed_factor_model()}} with the following additional
 fields:
 \itemize{
-\item \code{theta_out}: A numeric vector of incoming community
+\item \code{theta_out}: A numeric vector of outgoing
 degree-heterogeneity parameters.
-\item \code{theta_in}: A numeric vector of outgoing community
+\item \code{theta_in}: A numeric vector of incoming
 degree-heterogeneity parameters.
-\item \code{z_out}: The incoming community memberships of each node,
+\item \code{z_out}: The outgoing community memberships of each node,
 as a \code{\link[=factor]{factor()}}. The factor will have \code{k_out} levels,
-where \code{k_out} is the number of incoming
+where \code{k_out} is the number of outgoing
 communities in the stochastic blockmodel. There will not
 always necessarily be observed nodes in each community.
-\item \code{z_in}: The outgoing community memberships of each node,
+\item \code{z_in}: The incoming community memberships of each node,
 as a \code{\link[=factor]{factor()}}. The factor will have \code{k_in} levels,
-where \code{k_in} is the number of outgoing
+where \code{k_in} is the number of incoming
 communities in the stochastic blockmodel. There will not
 always necessarily be observed nodes in each community.
-\item \code{pi_out}: Sampling probabilities for each incoming
+\item \code{pi_out}: Sampling probabilities for each outgoing
 community.
-\item \code{pi_in}: Sampling probabilities for each outgoing
+\item \code{pi_in}: Sampling probabilities for each incoming
 community.
 \item \code{sorted}: Logical indicating where nodes are arranged by
 block (and additionally by degree heterogeneity parameter)
 within each block.
+\item \code{shared_blocks}: Logical indicating whether outgoing and incoming
+block memberships are shared, in which case \code{z_out} and \code{z_in}
+are identical.
+\item \code{shared_theta}: Logical indicating whether outgoing and incoming
+degree-heterogeneity parameters are shared, in which case \code{theta_out}
+and \code{theta_in} are identical.
 }
 }
 \description{
 To specify a degree-corrected stochastic blockmodel, you must specify
 the degree-heterogeneity parameters (via \code{n} or \code{theta_out} and
 \code{theta_in}), the mixing matrix
-(via \code{k_out} and \code{k_in}, or \code{B}), and the relative block
-probabilities (optional, via \code{p_out} and \code{pi_in}).
+(via \code{k_out} and \code{k_in}, or \code{B}), and the block sizes (optional,
+either as relative block probabilities via \code{pi_out} and \code{pi_in}, or as
+exact block counts via \code{block_sizes_out} and \code{block_sizes_in}).
+By default, outgoing and incoming block memberships and degree
+parameters are unrelated (a co-factor model); use \code{shared_blocks} and
+\code{shared_theta} to tie them together.
 We provide defaults for most of these
 options to enable rapid exploration, or you can invest the effort
 for more control over the model parameters. We \strong{strongly recommend}
@@ -201,6 +277,16 @@ To generate \eqn{y} we sample from a categorical
 distribution with parameter \eqn{\pi_{in}}.
 Block memberships are independent across nodes. Incoming and outgoing
 block memberships of the same node are also independent.
+
+These categorical draws are used when \code{pi_out} (\code{pi_in}) is specified.
+Otherwise, the outgoing (incoming) block memberships are a uniformly
+random assignment of nodes to blocks with fixed block sizes: either
+exactly the sizes given in \code{block_sizes_out} (\code{block_sizes_in}), or, by
+default, block sizes that are as balanced as possible (every block gets
+\code{floor(n / k_out)} nodes, and the remainder is spread over the first
+blocks, one node each), as in \code{\link[=dcsbm]{dcsbm()}}. Fixed block sizes are useful,
+for instance, to construct blockmodels with exactly repeated singular
+values.
 }
 
 \subsection{Degree heterogeneity}{
@@ -233,6 +319,44 @@ parameters
 }
 }
 
+\section{Co-factor models versus shared blocks and degree heterogeneity}{
+By default (\code{shared_blocks = FALSE} and \code{shared_theta = FALSE}),
+\code{directed_dcsbm()} is a \emph{co-factor} model: every node has an outgoing
+block \eqn{z_{out}} and degree parameter \eqn{\theta_{out}} that govern
+the edges it sends (the rows of \eqn{A}), and a separate incoming block
+\eqn{z_{in}} and degree parameter \eqn{\theta_{in}} that govern the edges
+it receives (the columns of \eqn{A}). These are drawn independently, so
+the communities a node sends edges from and receives edges into are
+unrelated, and the two sets of communities can even have different
+numbers of blocks. This is the model targeted by co-clustering methods
+that estimate separate sending and receiving communities.
+
+In the co-factor model, \code{sort_nodes = TRUE} (the default) sorts the rows
+and the columns of \eqn{A} \emph{independently}, so row \eqn{i} and column
+\eqn{i} are generally not the same node. Consequently the diagonal of
+\eqn{A}, and so the self-loops controlled by \code{allow_self_loops}, is not
+meaningful as "node \eqn{i} to itself": entry \eqn{A_{ii}} connects the
+\eqn{i}-th sender to the \eqn{i}-th receiver in their respective
+orderings. If you need rows and columns to index the same nodes (for
+example, to interpret self-loops or to read the graph as a directed
+graph on a single set of nodes), use \code{shared_blocks = TRUE} or
+\code{sort_nodes = FALSE}.
+
+Often it is more natural to think of each node as belonging to a single
+community, which shapes both the edges it sends and the edges it
+receives. Setting \code{shared_blocks = TRUE} draws one membership vector
+\eqn{z} with \eqn{z_{out} = z_{in} = z}, so that
+\eqn{E[A_{ij}] = \theta_{out, i} B_{z_i, z_j} \theta_{in, j}}, where
+an asymmetric \code{B} encodes directed relationships between the communities.
+With shared blocks you can additionally set \code{shared_theta = TRUE}, which
+uses one degree-heterogeneity vector \eqn{\theta} for both
+\eqn{\theta_{out}} and \eqn{\theta_{in}}, so nodes that send many edges
+also tend to receive many edges. (\code{shared_theta = TRUE} requires
+\code{shared_blocks = TRUE}.) With shared blocks, \code{sort_nodes = TRUE}
+permutes rows and columns together, so that row \code{i} and column \code{i} of
+\eqn{A} always refer to the same node.
+}
+
 \examples{
 
 set.seed(27)
@@ -252,17 +376,54 @@ ddcsbm
 
 population_svd <- svds(ddcsbm)
 
+# specify the exact number of nodes in each outgoing and incoming block,
+# rather than sampling block memberships
+
+ddcsbm_explicit_block_sizes <- directed_dcsbm(
+  theta_out = rexp(100, 1 / 3) + 1,
+  theta_in = rexp(100, 1 / 3) + 1,
+  B = B,
+  block_sizes_out = c(10, 15, 20, 25, 30),
+  block_sizes_in = c(5, 5, 10, 10, 15, 15, 20, 20),
+  expected_density = 0.01
+)
+
+# respects block sizes
+table(ddcsbm_explicit_block_sizes$z_out)
+table(ddcsbm_explicit_block_sizes$z_in)
+
+# each node belongs to the same outgoing and incoming community, and has
+# the same propensity to send and receive edges
+
+B_square <- matrix(0.1, nrow = 4, ncol = 4)
+diag(B_square) <- 0.8
+B_square[1, 2] <- 0.5 # block 1 sends many edges to block 2
+
+shared_ddcsbm <- directed_dcsbm(
+  theta_out = rexp(100, 1 / 3) + 1,
+  B = B_square,
+  shared_blocks = TRUE,
+  shared_theta = TRUE,
+  expected_density = 0.05
+)
+
+shared_ddcsbm
+
+identical(shared_ddcsbm$z_out, shared_ddcsbm$z_in)
+
 }
 \seealso{
 Other stochastic block models: 
 \code{\link{dcsbm}()},
+\code{\link{directed_planted_partition}()},
 \code{\link{mmsbm}()},
 \code{\link{overlapping_sbm}()},
 \code{\link{planted_partition}()},
 \code{\link{sbm}()}
 
 Other directed graphs: 
-\code{\link{directed_erdos_renyi}()}
+\code{\link{directed_erdos_renyi}()},
+\code{\link{directed_planted_partition}()}
 }
 \concept{directed graphs}
 \concept{stochastic block models}
