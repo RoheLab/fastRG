@@ -6,22 +6,41 @@
 \alias{sample_igraph.directed_factor_model}
 \title{Sample a random dot product graph as an igraph graph}
 \usage{
-sample_igraph(factor_model, ...)
+sample_igraph(factor_model, ..., multigraph = TRUE)
 
-\method{sample_igraph}{undirected_factor_model}(factor_model, ...)
+\method{sample_igraph}{undirected_factor_model}(factor_model, ..., multigraph = TRUE)
 
-\method{sample_igraph}{directed_factor_model}(factor_model, ...)
+\method{sample_igraph}{directed_factor_model}(factor_model, ..., multigraph = TRUE)
 }
 \arguments{
 \item{factor_model}{A \code{\link[=directed_factor_model]{directed_factor_model()}} or
 \code{\link[=undirected_factor_model]{undirected_factor_model()}}.}
 
 \item{...}{Ignored. Do not use.}
+
+\item{multigraph}{Logical scalar, only relevant for Poisson graphs
+(\code{poisson_edges = TRUE}), where a pair of nodes can be connected by
+more than one edge. When \code{TRUE} (the default), such repeated edges are
+represented as a multigraph, that is, as repeated edges (or repeated
+rows of an edgelist) without any edge weights. When \code{FALSE}, repeated
+edges between the same pair of nodes are collapsed into a single edge
+with an integer \code{weight} attribute that counts the number of times
+the edge was sampled. This weight is the corresponding entry of the
+adjacency matrix returned by \code{\link[=sample_sparse]{sample_sparse()}}. In undirected graphs,
+the edges \verb{(i, j)} and \verb{(j, i)} are the same edge and are collapsed
+together. When \code{multigraph = FALSE} the \code{weight} attribute is always
+present, even for Bernoulli graphs (\code{poisson_edges = FALSE}), where
+every weight is \code{1}.}
 }
 \value{
-An \code{\link[igraph:aaa-igraph-package]{igraph::igraph()}} object that is possibly a
-multigraph (that is, we take there to be multiple edges
-rather than weighted edges).
+An \code{\link[igraph:aaa-igraph-package]{igraph::igraph()}} object. For Poisson graphs
+(\code{poisson_edges = TRUE}) with \code{multigraph = TRUE} (the default), this
+is possibly a multigraph (that is, we take there to be multiple edges
+rather than weighted edges). With \code{multigraph = FALSE}, repeated edges
+are instead collapsed into a single edge, and every edge has an integer
+\code{weight} attribute equal to the corresponding entry of the
+\code{\link[=sample_sparse]{sample_sparse()}} adjacency matrix (all weights are \code{1} when
+\code{poisson_edges = FALSE}).
 
 When \code{factor_model} is \strong{undirected}:
 
@@ -105,6 +124,13 @@ sample_igraph(ufm)
 ### sampling graphs as tidygraph graphs ---------------
 
 sample_tidygraph(ufm)
+
+### weighted graphs instead of multigraphs ------------
+
+# collapse repeated edges into a single edge with an integer weight
+
+sample_edgelist(ufm, multigraph = FALSE)
+sample_igraph(ufm, multigraph = FALSE)
 
 ##### directed examples ----------------------------
 

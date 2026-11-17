@@ -6,22 +6,38 @@
 \alias{sample_edgelist.directed_factor_model}
 \title{Sample a random edgelist from a random dot product graph}
 \usage{
-sample_edgelist(factor_model, ...)
+sample_edgelist(factor_model, ..., multigraph = TRUE)
 
-\method{sample_edgelist}{undirected_factor_model}(factor_model, ...)
+\method{sample_edgelist}{undirected_factor_model}(factor_model, ..., multigraph = TRUE)
 
-\method{sample_edgelist}{directed_factor_model}(factor_model, ...)
+\method{sample_edgelist}{directed_factor_model}(factor_model, ..., multigraph = TRUE)
 }
 \arguments{
 \item{factor_model}{A \code{\link[=directed_factor_model]{directed_factor_model()}} or
 \code{\link[=undirected_factor_model]{undirected_factor_model()}}.}
 
 \item{...}{Ignored. Do not use.}
+
+\item{multigraph}{Logical scalar, only relevant for Poisson graphs
+(\code{poisson_edges = TRUE}), where a pair of nodes can be connected by
+more than one edge. When \code{TRUE} (the default), such repeated edges are
+represented as a multigraph, that is, as repeated edges (or repeated
+rows of an edgelist) without any edge weights. When \code{FALSE}, repeated
+edges between the same pair of nodes are collapsed into a single edge
+with an integer \code{weight} attribute that counts the number of times
+the edge was sampled. This weight is the corresponding entry of the
+adjacency matrix returned by \code{\link[=sample_sparse]{sample_sparse()}}. In undirected graphs,
+the edges \verb{(i, j)} and \verb{(j, i)} are the same edge and are collapsed
+together. When \code{multigraph = FALSE} the \code{weight} attribute is always
+present, even for Bernoulli graphs (\code{poisson_edges = FALSE}), where
+every weight is \code{1}.}
 }
 \value{
 A single realization of a random Poisson (or Bernoulli)
 Dot Product Graph, represented as a \code{\link[tibble:tibble]{tibble::tibble()}} with two
-integer columns, \code{from} and \code{to}.
+integer columns, \code{from} and \code{to}. When \code{multigraph = FALSE}, there
+is an additional integer column \code{weight} and each \verb{(from, to)} pair
+appears at most once.
 
 \strong{NOTE}: Indices for isolated nodes will not appear in the edgelist!
 This can lead to issues if you construct network objects from the
@@ -99,6 +115,13 @@ sample_igraph(ufm)
 ### sampling graphs as tidygraph graphs ---------------
 
 sample_tidygraph(ufm)
+
+### weighted graphs instead of multigraphs ------------
+
+# collapse repeated edges into a single edge with an integer weight
+
+sample_edgelist(ufm, multigraph = FALSE)
+sample_igraph(ufm, multigraph = FALSE)
 
 ##### directed examples ----------------------------
 
