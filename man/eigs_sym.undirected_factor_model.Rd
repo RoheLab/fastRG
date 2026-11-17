@@ -72,3 +72,9 @@ following parameters:
                       if \code{initvec} is close to an eigenvector of \eqn{A}.}
 }
 }
+\note{
+\code{A} is on the Poisson scale (see \code{\link[=expectation]{expectation()}}). For Bernoulli
+graphs (\code{poisson_edges = FALSE}), these are the spectra of the matrix
+of Poisson rates \eqn{P}{P}, not of the expected adjacency matrix
+\eqn{1 - \exp(-P)}{1 - exp(-P)}.
+}

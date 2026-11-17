@@ -19,9 +19,63 @@ object.}
 \item{...}{Unused.}
 }
 \value{
-The expected value of the adjacency matrix, conditional on the
-latent factors \code{X} and \code{Y} (if the model is directed).
+The matrix \eqn{P = X S X^T}{P = X S X'} (undirected models) or
+\eqn{P = X S Y^T}{P = X S Y'} (directed models), as a
+\code{\link[Matrix:Matrix]{Matrix::Matrix()}}. This is on the \strong{Poisson scale}: it is the
+expected adjacency matrix, conditional on the latent factors, when
+edges are Poisson (\code{poisson_edges = TRUE}, the default), and not when
+edges are Bernoulli. See "Bernoulli graphs" below.
 }
 \description{
 Calculate the expected adjacency matrix
+}
+\section{Bernoulli graphs}{
+
+
+When \code{poisson_edges = FALSE}, the model stores \code{S} on the Poisson scale:
+the requested Bernoulli edge probabilities are transformed to Poisson
+rates via \eqn{-\log(1 - p)}{-log(1 - p)} when the model is created.
+Sampling then draws a Poisson number of edges for each pair of nodes and
+keeps a single edge whenever that number is positive, so the probability
+of an edge between nodes \code{i} and \code{j} is
+
+\deqn{
+  \mathbb{E}[A_{ij} \mid X, S] = P(A_{ij} = 1 \mid X, S) = 1 - \exp(-P_{ij}),
+}{
+  E[A[i, j] | X, S] = P(A[i, j] = 1 | X, S) = 1 - exp(-P[i, j]),
+}
+
+where \eqn{P}{P} is the matrix returned by \code{expectation()}. So for
+Bernoulli graphs, compute the expected adjacency matrix as
+\code{1 - exp(-as.matrix(expectation(model)))}. Since
+\eqn{1 - e^{-x} \le x}{1 - exp(-x) <= x}, \code{expectation()} overestimates
+edge probabilities for Bernoulli graphs, and the difference is small
+when edge probabilities are small. For blockmodels, where each node
+belongs to a single block with no degree heterogeneity, the result
+recovers the requested probabilities exactly. If
+\code{allow_self_loops = FALSE}, the diagonal of the expected adjacency matrix
+is zero, whatever the edge distribution.
+
+The same Poisson scale applies to \code{\link[=expected_edges]{expected_edges()}},
+\code{\link[=expected_degree]{expected_degree()}}, \code{\link[=expected_density]{expected_density()}} and the population spectra
+computed by \code{\link[=eigs_sym]{eigs_sym()}} and \code{\link[=svds]{svds()}}.
+}
+
+\examples{
+
+set.seed(27)
+
+B <- matrix(c(0.6, 0.1, 0.1, 0.4), nrow = 2)
+
+# Poisson edges: expectation() is E[A | X, S]
+poisson_sbm <- sbm(n = 6, B = B, block_sizes = c(3, 3))
+expectation(poisson_sbm)
+
+# Bernoulli edges: expectation() is on the Poisson scale
+bernoulli_sbm <- sbm(n = 6, B = B, block_sizes = c(3, 3), poisson_edges = FALSE)
+expectation(bernoulli_sbm)
+
+# the expected adjacency matrix, which recovers B for a blockmodel
+1 - exp(-as.matrix(expectation(bernoulli_sbm)))
+
 }

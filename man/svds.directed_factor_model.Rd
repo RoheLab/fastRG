@@ -7,7 +7,7 @@
 \method{svds}{directed_factor_model}(A, k = min(A$k1, A$k2), nu = k, nv = k, opts = list(), ...)
 }
 \arguments{
-\item{A}{An \code{\link[=undirected_factor_model]{undirected_factor_model()}}.}
+\item{A}{A \code{\link[=directed_factor_model]{directed_factor_model()}}.}
 
 \item{k}{Desired rank of decomposition.}
 
@@ -52,4 +52,10 @@ following parameters:
                     the column norm of \eqn{A - 1c'}{A - 1 * c'}.
                     Default is \code{FALSE}.}
 }
+}
+\note{
+\code{A} is on the Poisson scale (see \code{\link[=expectation]{expectation()}}). For Bernoulli
+graphs (\code{poisson_edges = FALSE}), these are the spectra of the matrix
+of Poisson rates \eqn{P}{P}, not of the expected adjacency matrix
+\eqn{1 - \exp(-P)}{1 - exp(-P)}.
 }
