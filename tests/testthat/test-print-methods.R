@@ -173,6 +173,25 @@ test_that("print methods of the remaining models report the right values", {
   )
 })
 
+test_that("blockmodel print methods report unsorted nodes", {
+  set.seed(8)
+  models <- list(
+    planted_partition(n = 20, k = 2, within_block = 0.3, between_block = 0.05, sort_nodes = FALSE),
+    directed_dcsbm(theta_out = rexp(20), theta_in = rexp(20), B = diag(2), sort_nodes = FALSE),
+    directed_planted_partition(
+      n = 20,
+      k = 2,
+      within_block = 0.3,
+      between_block = 0.05,
+      sort_nodes = FALSE
+    )
+  )
+
+  for (m in models) {
+    expect_output(print(m), "Nodes (n): 20 (not arranged by block)", fixed = TRUE)
+  }
+})
+
 test_that("dim_and_class() describes matrices and vectors", {
   expect_equal(dim_and_class(matrix(0, 2, 3)), "2 x 3 [matrix]")
   expect_equal(dim_and_class(Matrix::Diagonal(2)), "2 x 2 [ddiMatrix]")

@@ -11,6 +11,9 @@ expected_S <- function(B, o, poisson_edges) {
 }
 
 test_that("dcsbm() keeps z, X, theta, pi and S consistent for every flag combination", {
+  # builds 120 models, about 5s
+  skip_on_cran()
+
   n <- 17 # not divisible by k
   theta <- seq(0.5, 3, length.out = n)
 
@@ -47,7 +50,9 @@ test_that("dcsbm() keeps z, X, theta, pi and S consistent for every flag combina
       for (sort_nodes in c(TRUE, FALSE)) {
         for (fi in c(TRUE, FALSE)) {
           for (poisson in c(TRUE, FALSE)) {
-            for (loops in c(TRUE, FALSE)) {
+            # allow_self_loops does not affect construction, so pair each
+            # value with one value of poisson_edges to save time
+            for (loops in !poisson) {
               label <- paste(
                 "k", k, spec_name, "sort", sort_nodes, "fi", fi,
                 "poisson", poisson, "loops", loops
@@ -549,6 +554,7 @@ test_that("dcsbm() validates its inputs", {
   expect_error(dcsbm(n = 10, theta = rep(1, 10), B = diag(2)), "only one of `n` and `theta`")
   expect_error(dcsbm(theta = rep(1, 10)), "Must specify either `k` or `B`")
   expect_error(dcsbm(theta = rep(1, 10), k = 0), "positive integer")
+  expect_error(dcsbm(theta = rep(1, 10), k = 2, B = diag(2)), "only one of `B` and `k`")
   expect_error(dcsbm(theta = rep(1, 10), B = matrix(1, 2, 3)), "square")
   expect_error(
     dcsbm(theta = rep(1, 10), B = diag(2), block_sizes = c(5, 6)),

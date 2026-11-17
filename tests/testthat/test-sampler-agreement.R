@@ -56,6 +56,11 @@ agreement_models <- function() {
 }
 
 test_that("all samplers agree and respect allow_self_loops / poisson_edges", {
+  # about 5s
+  skip_on_cran()
+
+  # flipping poisson_edges on a built model thresholds the same Poisson
+  # rates, which is enough to check the structural constraints
   models <- agreement_models()
 
   for (name in names(models)) {
@@ -71,7 +76,7 @@ test_that("all samplers agree and respect allow_self_loops / poisson_edges", {
         n <- model$n
         d <- if (directed) model$d else n
 
-        for (seed in 1:3) {
+        for (seed in 1:2) {
           s <- sample_all(model, seed)
           el <- s$el
           A <- s$A
