@@ -415,13 +415,15 @@ identical(shared_ddcsbm$z_out, shared_ddcsbm$z_in)
 \seealso{
 Other stochastic block models: 
 \code{\link{dcsbm}()},
+\code{\link{directed_planted_partition}()},
 \code{\link{mmsbm}()},
 \code{\link{overlapping_sbm}()},
 \code{\link{planted_partition}()},
 \code{\link{sbm}()}
 
 Other directed graphs: 
-\code{\link{directed_erdos_renyi}()}
+\code{\link{directed_erdos_renyi}()},
+\code{\link{directed_planted_partition}()}
 }
 \concept{directed graphs}
 \concept{stochastic block models}
