@@ -83,6 +83,7 @@ Other undirected graphs:
 ## Examples
 
 ``` r
+
 set.seed(87)
 
 er <- erdos_renyi(n = 10, p = 0.1)

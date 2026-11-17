@@ -43,16 +43,16 @@ eigs_sym(A, k = A$k, which = "LM", sigma = NULL, opts = list(), ...)
 The `which` argument is a character string that specifies the type of
 eigenvalues to be computed. Possible values are:
 
-|      |                                                                                                                                         |
-|------|-----------------------------------------------------------------------------------------------------------------------------------------|
-| "LM" | The \\k\\ eigenvalues with largest magnitude. Here the magnitude means the Euclidean norm of complex numbers.                           |
-| "SM" | The \\k\\ eigenvalues with smallest magnitude.                                                                                          |
-| "LR" | The \\k\\ eigenvalues with largest real part.                                                                                           |
-| "SR" | The \\k\\ eigenvalues with smallest real part.                                                                                          |
-| "LI" | The \\k\\ eigenvalues with largest imaginary part.                                                                                      |
-| "SI" | The \\k\\ eigenvalues with smallest imaginary part.                                                                                     |
-| "LA" | The \\k\\ largest (algebraic) eigenvalues, considering any negative sign.                                                               |
-| "SA" | The \\k\\ smallest (algebraic) eigenvalues, considering any negative sign.                                                              |
+|  |  |
+|----|----|
+| "LM" | The \\k\\ eigenvalues with largest magnitude. Here the magnitude means the Euclidean norm of complex numbers. |
+| "SM" | The \\k\\ eigenvalues with smallest magnitude. |
+| "LR" | The \\k\\ eigenvalues with largest real part. |
+| "SR" | The \\k\\ eigenvalues with smallest real part. |
+| "LI" | The \\k\\ eigenvalues with largest imaginary part. |
+| "SI" | The \\k\\ eigenvalues with smallest imaginary part. |
+| "LA" | The \\k\\ largest (algebraic) eigenvalues, considering any negative sign. |
+| "SA" | The \\k\\ smallest (algebraic) eigenvalues, considering any negative sign. |
 | "BE" | Compute \\k\\ eigenvalues, half from each end of the spectrum. When \\k\\ is odd, compute more from the high and then from the low end. |
 
 `eigs()` with matrix types "matrix", "dgeMatrix", "dgCMatrix" and

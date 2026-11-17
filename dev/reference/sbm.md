@@ -142,54 +142,13 @@ Other undirected graphs:
 ## Examples
 
 ``` r
+
 set.seed(27)
 
 lazy_sbm <- sbm(n = 100, k = 5, expected_density = 0.01)
+#> Error in sbm(n = 100, k = 5, expected_density = 0.01): unused arguments (k = 5, expected_density = 0.01)
 lazy_sbm
-#> $fun
-#> function (n, pref.matrix, block.sizes, directed = FALSE, loops = FALSE) 
-#> {
-#>     n <- as.numeric(n)
-#>     pref.matrix[] <- as.numeric(pref.matrix)
-#>     block.sizes <- as.numeric(block.sizes)
-#>     directed <- as.logical(directed)
-#>     loops <- as.logical(loops)
-#>     on.exit(.Call(R_igraph_finalizer))
-#>     res <- .Call(R_igraph_sbm_game, n, pref.matrix, block.sizes, 
-#>         directed, loops)
-#>     if (igraph_opt("add.params")) {
-#>         res$name <- "Stochastic block model"
-#>         res$loops <- loops
-#>     }
-#>     res
-#> }
-#> <bytecode: 0x56556389aa50>
-#> <environment: namespace:igraph>
-#> 
-#> $args
-#> <list_of<quosure>>
-#> 
-#> $n
-#> <quosure>
-#> expr: ^100
-#> env:  empty
-#> 
-#> $k
-#> <quosure>
-#> expr: ^5
-#> env:  empty
-#> 
-#> $expected_density
-#> <quosure>
-#> expr: ^0.01
-#> env:  empty
-#> 
-#> 
-#> $lazy
-#> [1] FALSE
-#> 
-#> attr(,"class")
-#> [1] "igraph_constructor_spec"
+#> Error: object 'lazy_sbm' not found
 
 # by default we get a multigraph (i.e. multiple edges are
 # allowed between the same two nodes). using bernoulli edges
@@ -201,65 +160,18 @@ bernoulli_sbm <- sbm(
   poisson_edges = FALSE,
   expected_degree = 8
 )
+#> Error in sbm(n = 500, k = 30, poisson_edges = FALSE, expected_degree = 8): unused arguments (k = 30, poisson_edges = FALSE, expected_degree = 8)
 
 bernoulli_sbm
-#> $fun
-#> function (n, pref.matrix, block.sizes, directed = FALSE, loops = FALSE) 
-#> {
-#>     n <- as.numeric(n)
-#>     pref.matrix[] <- as.numeric(pref.matrix)
-#>     block.sizes <- as.numeric(block.sizes)
-#>     directed <- as.logical(directed)
-#>     loops <- as.logical(loops)
-#>     on.exit(.Call(R_igraph_finalizer))
-#>     res <- .Call(R_igraph_sbm_game, n, pref.matrix, block.sizes, 
-#>         directed, loops)
-#>     if (igraph_opt("add.params")) {
-#>         res$name <- "Stochastic block model"
-#>         res$loops <- loops
-#>     }
-#>     res
-#> }
-#> <bytecode: 0x56556389aa50>
-#> <environment: namespace:igraph>
-#> 
-#> $args
-#> <list_of<quosure>>
-#> 
-#> $n
-#> <quosure>
-#> expr: ^500
-#> env:  empty
-#> 
-#> $k
-#> <quosure>
-#> expr: ^30
-#> env:  empty
-#> 
-#> $poisson_edges
-#> <quosure>
-#> expr: ^FALSE
-#> env:  empty
-#> 
-#> $expected_degree
-#> <quosure>
-#> expr: ^8
-#> env:  empty
-#> 
-#> 
-#> $lazy
-#> [1] FALSE
-#> 
-#> attr(,"class")
-#> [1] "igraph_constructor_spec"
+#> Error: object 'bernoulli_sbm' not found
 
 edgelist <- sample_edgelist(bernoulli_sbm)
-#> Error in UseMethod("sample_edgelist"): no applicable method for 'sample_edgelist' applied to an object of class "igraph_constructor_spec"
+#> Error: object 'bernoulli_sbm' not found
 edgelist
 #> Error: object 'edgelist' not found
 
 A <- sample_sparse(bernoulli_sbm)
-#> Error in UseMethod("sample_sparse"): no applicable method for 'sample_sparse' applied to an object of class "igraph_constructor_spec"
+#> Error: object 'bernoulli_sbm' not found
 
 # only zeroes and ones!
 sign(A)
@@ -277,10 +189,11 @@ repeated_eigen <- sbm(
   B = diag(rep(0.8, 5)),
   expected_degree = 10
 )
+#> Error in sbm(n = 100, B = diag(rep(0.8, 5)), expected_degree = 10): unused arguments (B = diag(rep(0.8, 5)), expected_degree = 10)
 
 # exactly repeated eigenvalues in the population
 e <- eigs_sym(repeated_eigen)
-#> Error in UseMethod("eigs_sym"): no applicable method for 'eigs_sym' applied to an object of class "igraph_constructor_spec"
+#> Error: object 'repeated_eigen' not found
 e$values
 #> Error: object 'e' not found
 ```

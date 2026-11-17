@@ -10,6 +10,7 @@ well-separated, and a stochastic blockmodel with exactly repeated
 eigenvalues. We define the data generating process as follows:
 
 ``` r
+
 library(dplyr)
 library(ggplot2)
 library(fastRG)
@@ -45,6 +46,7 @@ distinct eigenvalue model with the sample singular values, we could do
 so as follows:
 
 ``` r
+
 # sample the latent parameters of the blockmodel
 latent <- model_distinct(1000)
 
@@ -59,7 +61,7 @@ s_obs <- irlba(A, 5)
 
 # difference between population and sample singular values
 s_pop$d - s_obs$d
-#> [1] -0.6686638 -1.3409713 -2.3022241  0.8946001 -3.6481462
+#> [1] -1.4046361 -2.0799891 -2.7805734  0.4422279 -4.0338341
 ```
 
 That’s really it! To run a short simulation study, most of the remaining
@@ -73,6 +75,7 @@ might care about:
   un-scaled by the square root of the singular values
 
 ``` r
+
 sin_theta_distance <- function(u, v) {
   s <- svd(crossprod(u, v))
   ncol(u) - sum(s$d^2)
@@ -141,6 +144,7 @@ with replication indices. Then we compute out hearts out.
 
 ``` r
 
+
 run_simulation <- function(model, num_reps = 30) {
   expand_grid(
     n = c(100, 180, 330, 600, 1100, 2000),
@@ -177,6 +181,7 @@ Now we’d like to summarize the results across the 30 different runs of
 the simulation, so we write a short helper to do this as well.
 
 ``` r
+
 summarize_simulations <- function(sims) {
   sims |>
     unnest_wider(c(loss)) |>
@@ -214,24 +219,25 @@ summarize_simulations <- function(sims) {
 results <- summarize_simulations(sims)
 results
 #> # A tibble: 78 × 3
-#>        n loss_type                     loss
-#>    <dbl> <chr>                        <dbl>
-#>  1   100 Sin Theta Loss              1.78  
-#>  2   100 Two-to-infinity (un-scaled) 0.538 
-#>  3   100 Two-to-infinity (scaled)    1.53  
-#>  4   100 Rel. error (sigma 1)        0.0538
-#>  5   100 Rel. error (sigma 2)        0.101 
-#>  6   100 Rel. error (sigma 3)        0.137 
-#>  7   100 Rel. error (sigma 4)        0.294 
-#>  8   100 Rel. error (sigma 5)        0.513 
-#>  9   100 Sin Theta Loss (column 1)   0.129 
-#> 10   100 Sin Theta Loss (column 2)   0.277 
+#>        n loss_type                    loss
+#>    <dbl> <chr>                       <dbl>
+#>  1   100 Sin Theta Loss              1.46 
+#>  2   100 Two-to-infinity (un-scaled) 0.458
+#>  3   100 Two-to-infinity (scaled)    1.34 
+#>  4   100 Rel. error (sigma 1)        0.116
+#>  5   100 Rel. error (sigma 2)        0.128
+#>  6   100 Rel. error (sigma 3)        0.170
+#>  7   100 Rel. error (sigma 4)        0.294
+#>  8   100 Rel. error (sigma 5)        0.560
+#>  9   100 Sin Theta Loss (column 1)   0.155
+#> 10   100 Sin Theta Loss (column 2)   0.324
 #> # ℹ 68 more rows
 ```
 
 And now that we have our results, all that remains is to plot them.
 
 ``` r
+
 plot_results <- function(results) {
   results |>
     ggplot() +
@@ -262,6 +268,7 @@ see results for the model with repeated eigenvalues, it’s as
 straightforward as:
 
 ``` r
+
 model_repeated |>
   run_simulation() |>
   summarize_simulations() |>
@@ -279,6 +286,7 @@ value decomposition of the expected (degree-normalized, regularized)
 graph Laplacian. This is also straightforward using `fastRG`.
 
 ``` r
+
 graph_laplacian <- function(A) {
   degrees <- rowSums(A)
   tau <- mean(degrees)
@@ -319,6 +327,7 @@ With our helpers defined we’re once again off to the races and see that
 Laplacian Spectral Embedding also does well
 
 ``` r
+
 model_distinct |>
   run_laplacian_simulation() |>
   summarize_simulations() |>
@@ -335,20 +344,22 @@ of sample size, so we want to stabilize it somehow when we think about
 convergence, but (2) absolute errors might be growing with sample size.
 In random dot product graphs, we have theoretical results stating that
 
-$$\left. \parallel\widehat{S} - S\parallel \right. = \mathcal{O}_{p}\left( \sqrt{n\rho_{n}} \right)$$
-and
+\\\left\\ \widehat{S} - S \right \\ = \mathcal O_p \left( \sqrt{n
+\rho_n} \right)\\ and
 
-$$\left. \parallel Q\widehat{S} - SQ\parallel \right. = \mathcal{O}_{p}\left( \log n \right),$$
+\\\left\\ Q \widehat{S} - S Q \right \\ = \mathcal O_p \left( \log n
+\right),\\
 
 but I am unaware of tighter theoretical bounds. Note that the error in
 the *rotated* spectrum is much lower than the error in the raw spectrum
-estimate $\widehat{S}$.
+estimate \\\widehat{S}\\.
 
 This makes it a little bit harder to check that we’re correctly
 recovering the singular values, so here’s a figure plotting estimated
 and true singular values side-by-side as some additional re-assurance.
 
 ``` r
+
 sims |>
   mutate(diagnostics = map2(s_pop, s_obs, function(pop, obs) {
     tibble(

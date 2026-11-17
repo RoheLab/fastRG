@@ -214,6 +214,7 @@ Other undirected graphs:
 ## Examples
 
 ``` r
+
 set.seed(27)
 
 lazy_dcsbm <- dcsbm(n = 100, k = 5, expected_density = 0.01)
@@ -321,7 +322,7 @@ custom_dcsbm
 
 edgelist <- sample_edgelist(custom_dcsbm)
 edgelist
-#> # A tibble: 2,447 × 2
+#> # A tibble: 2,512 × 2
 #>     from    to
 #>    <int> <int>
 #>  1     1     4
@@ -334,7 +335,7 @@ edgelist
 #>  8     4     9
 #>  9     2     7
 #> 10     1     4
-#> # ℹ 2,437 more rows
+#> # ℹ 2,502 more rows
 
 
 dcsbm_explicit_block_sizes <- dcsbm(

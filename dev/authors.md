@@ -18,14 +18,14 @@
 Source:
 [`DESCRIPTION`](https://github.com/RoheLab/fastRG/blob/main/DESCRIPTION)
 
-Hayes A, Rohe K, Tao J, Han X, Binkiewicz N (2025). *fastRG: Sample
+Hayes A, Rohe K, Tao J, Han X, Binkiewicz N (2026). *fastRG: Sample
 Generalized Random Dot Product Graphs in Linear Time*. R package version
-0.3.3.9002, <https://rohelab.github.io/fastRG/>.
+0.4.0.9000, <https://rohelab.github.io/fastRG/>.
 
     @Manual{,
       title = {fastRG: Sample Generalized Random Dot Product Graphs in Linear Time},
       author = {Alex Hayes and Karl Rohe and Jun Tao and Xintian Han and Norbert Binkiewicz},
-      year = {2025},
-      note = {R package version 0.3.3.9002},
+      year = {2026},
+      note = {R package version 0.4.0.9000},
       url = {https://rohelab.github.io/fastRG/},
     }

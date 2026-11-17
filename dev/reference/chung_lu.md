@@ -109,6 +109,7 @@ Other undirected graphs:
 ## Examples
 
 ``` r
+
 set.seed(27)
 
 cl <- chung_lu(n = 100, expected_density = 0.01)

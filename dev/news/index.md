@@ -2,6 +2,27 @@
 
 ## fastRG (development version)
 
+- fastRG now requires R \>= 4.4.0. irlba 2.4.1, which fastRG uses in
+  tests and vignettes, fails on earlier R versions because
+  `is.atomic(NULL)` changed in R 4.4.0.
+
+- Fixed undersampling of self-loops in undirected models. Since 0.4.0,
+  the diagonal of `A` was sampled at half the intended rate, so
+  `E[A | X, S]` did not equal `X S X'` on the diagonal.
+  [`sample_edgelist.undirected_factor_model()`](https://rohelab.github.io/fastRG/dev/reference/sample_edgelist.md)
+  now adds independent Poisson self-loops at the missing rate when
+  `allow_self_loops = TRUE`, so `E[A | X, S] = X S X'` holds exactly.
+  This only affects sampling: `S`, `expected_*()` and population spectra
+  are unchanged, and so are the off-diagonal fixes from
+  [\#19](https://github.com/RoheLab/fastRG/issues/19) and
+  [\#31](https://github.com/RoheLab/fastRG/issues/31). Graphs sampled
+  with a given seed will differ from previous versions
+  ([\#46](https://github.com/RoheLab/fastRG/issues/46)).
+
+## fastRG 0.4.0
+
+CRAN release: 2025-12-06
+
 ### Major changes
 
 - This release fixes a long-standing inconsistency in how degrees are
@@ -47,60 +68,58 @@
 The `fastRG` sampling algorithm, as implemented in
 [`sample_edgelist.matrix()`](https://rohelab.github.io/fastRG/dev/reference/sample_edgelist.matrix.md),
 is fundamentally a sampler for asymmetric, directed networks with
-conditional expectation
-${\mathbb{E}}\lbrack A \mid X,S,Y\rbrack = XSY^{\top} \in {\mathbb{R}}^{n_{1} \times n_{2}}$.
-That is, you can think of the sampler as a very efficient procedure for
-iterating through $i = 1,...,n_{1}$ and $j = 1,...,n_{2}$ and sampling
-from a Poisson with rate $\left( XSY^{\top} \right)_{ij}$.
+conditional expectation \\\mathbb E\[A \mid X, S, Y\] = X S Y^\top \in
+\mathbb R^{n_1 \times n_2}\\. That is, you can think of the sampler as a
+very efficient procedure for iterating through \\i = 1, ..., n_1\\ and
+\\j = 1, ..., n_2\\ and sampling from a Poisson with rate \\(X S
+Y^\top)\_{ij}\\.
 
 However, we would also like to use this same sampler to sample from
 undirected networks. In an undirected networks, the conditional
-expectation
-${\mathbb{E}}\lbrack A \mid X,S\rbrack = XSX^{\top} \in {\mathbb{R}}^{n \times n}$
-is a square matrix with
-$\left( XSX^{\top} \right)_{ij} = \left( XSX^{\top} \right)_{ji}$. To
-sample from this matrix, it’s typical to sample the upper triangle of
-$A$ from a Poisson with rate $\left( XSX^{\top} \right)_{ij}$ for all
-$1 \leq i \leq j \leq n$, and then fill the lower triangle of $A$ to
-make $A$ symmetric.
+expectation \\\mathbb E\[A \mid X, S\] = X S X^\top \in \mathbb R^{n
+\times n}\\ is a square matrix with \\(X S X^\top)\_{ij} = (X S
+X^\top)\_{ji}\\. To sample from this matrix, it’s typical to sample the
+upper triangle of \\A\\ from a Poisson with rate \\(X S X^\top)\_{ij}\\
+for all \\1 \le i \le j \le n\\, and then fill the lower triangle of
+\\A\\ to make \\A\\ symmetric.
 
-Since the `fastRG` algorithm samples $A_{ij}$ for all $i,j$, not just
-the upper triangle of $A$, we use a trick to sample from undirected
-networks. First, we force the conditional expectation to be symmetric by
-symmetrizing $S$. Then, we still sample for all $i,j$. That is, to set
-$A_{ij}$ we sample once from a Poisson with rate
-$\left( XSX^{\top} \right)_{ij}$ and once from a Poisson with rate
-$\left( XSX^{\top} \right)_{ji}$ (these rates are equal by symmetry!).
-Then we set $A_{ij} = A_{ji}$ to the sum of these Poisson random
-variables. The issue is that this doubles the expected value of
-$A_{ij} = A_{ji}$ and so we sample twice as many edges as we should. Up
-until this release of `fastRG`, we’ve unfortunately been doing this
-double sampling in undirected networks
+Since the `fastRG` algorithm samples \\A\_{ij}\\ for all \\i, j\\, not
+just the upper triangle of \\A\\, we use a trick to sample from
+undirected networks. First, we force the conditional expectation to be
+symmetric by symmetrizing \\S\\. Then, we still sample for all \\i, j\\.
+That is, to set \\A\_{ij}\\ we sample once from a Poisson with rate \\(X
+S X^\top)\_{ij}\\ and once from a Poisson with rate \\(X S
+X^\top)\_{ji}\\ (these rates are equal by symmetry!). Then we set
+\\A\_{ij} = A\_{ji}\\ to the sum of these Poisson random variables. The
+issue is that this doubles the expected value of \\A\_{ij} = A\_{ji}\\
+and so we sample twice as many edges as we should. Up until this release
+of `fastRG`, we’ve unfortunately been doing this double sampling in
+undirected networks
 ([\#19](https://github.com/RoheLab/fastRG/issues/19)).
 
 In this release, we fix this over-sampling. The key is that we divide
-$S$ by two at sampling time. We do not modify $S$ at all in the
+\\S\\ by two at sampling time. We do not modify \\S\\ at all in the
 [`undirected_factor_model()`](https://rohelab.github.io/fastRG/dev/reference/undirected_factor_model.md)!
-You can always use $XSX^{\top}$ to compute the expected value of $A$.
-This new change *only affects sampling*.
+You can always use \\X S X^\top\\ to compute the expected value of
+\\A\\. This new change *only affects sampling*.
 
-That is, instead of passing the $S$ from an
+That is, instead of passing the \\S\\ from an
 [`undirected_factor_model()`](https://rohelab.github.io/fastRG/dev/reference/undirected_factor_model.md)
 to the sampler
 [`sample_edgelist.matrix()`](https://rohelab.github.io/fastRG/dev/reference/sample_edgelist.matrix.md),
-we pass $S/2$ (see
+we pass \\S / 2\\ (see
 [`sample_edgelist.undirected_factor_model()`](https://rohelab.github.io/fastRG/dev/reference/sample_edgelist.md)).
-This fixes double sampling on the off-diagonal of $A$. The downside is
-that we’re now undersampling by half the diagonal of $A$. I’m assuming
+This fixes double sampling on the off-diagonal of \\A\\. The downside is
+that we’re now undersampling by half the diagonal of \\A\\. I’m assuming
 that for most use cases this doesn’t matter. We could correct for this
-undersampling of the diagonal of $A$, so please open an issue if
+undersampling of the diagonal of \\A\\, so please open an issue if
 self-loops are important to your project.
 
-As a consequence of this change, $A$ and
-${\mathbb{E}}\left\lbrack A|X,S \right\rbrack$ show now be on the same
-scale, rather than off by a factor of 2. Importantly, the spectrums
-should match up now, so you can now use `fastRG` to check how closely
-you’re recovering the spectrum of the your model. See
+As a consequence of this change, \\A\\ and \\\mathbb E\[A \| X, S\]\\
+show now be on the same scale, rather than off by a factor of 2.
+Importantly, the spectrums should match up now, so you can now use
+`fastRG` to check how closely you’re recovering the spectrum of the your
+model. See
 [`vignette("consistency")`](https://rohelab.github.io/fastRG/dev/articles/consistency.md)
 for a quick demonstration showing consistency of spectral estimates.
 

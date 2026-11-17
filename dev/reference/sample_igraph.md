@@ -79,6 +79,7 @@ Other samplers:
 ## Examples
 
 ``` r
+
 library(igraph)
 library(tidygraph)
 
@@ -121,7 +122,7 @@ ufm
 
 edgelist <- sample_edgelist(ufm)
 edgelist
-#> # A tibble: 251 × 2
+#> # A tibble: 256 × 2
 #>     from    to
 #>    <int> <int>
 #>  1    44    57
@@ -134,7 +135,7 @@ edgelist
 #>  8    92    98
 #>  9    14    94
 #> 10    22    85
-#> # ℹ 241 more rows
+#> # ℹ 246 more rows
 
 ### sampling graphs as sparse matrices ----------------
 
@@ -159,25 +160,25 @@ dim(B)
 ### sampling graphs as igraph graphs ------------------
 
 sample_igraph(ufm)
-#> IGRAPH 3d28faf UN-- 100 236 -- 
+#> IGRAPH 4e358d2 UN-- 100 213 -- 
 #> + attr: name (v/c)
-#> + edges from 3d28faf (vertex names):
-#>  [1] 16--98  45--98  57--88  19--88  22--100 1 --70  37--87  13--66  19--84 
-#> [10] 17--74  37--92  65--83  1 --46  17--94  86--92  59--94  70--90  30--66 
-#> [19] 10--61  44--87  43--79  39--92  46--73  6 --100 12--17  30--44  16--64 
-#> [28] 17--54  11--71  64--100 9 --56  41--80  47--79  11--100 62--99  9 --14 
-#> [37] 71--81  11--80  5 --11  32--76  1 --94  55--81  22--38  62--79  46--88 
-#> [46] 41--82  37--79  76--98  73--86  17--75  34--74  52--56  71--90  2 --39 
-#> [55] 14--14  17--61  3 --11  82--91  72--87  17--23  16--46  87--97  47--98 
-#> [64] 61--66  5 --94  45--51  43--71  30--97  36--72  28--47  85--97  15--27 
+#> + edges from 4e358d2 (vertex names):
+#>  [1] 40--56  71--85  80--80  25--97  66--94  6 --22  47--86  15--50  62--94 
+#> [10] 56--98  12--75  26--30  14--84  13--95  85--94  15--40  47--95  17--70 
+#> [19] 46--78  44--84  6 --68  94--98  26--38  61--87  48--100 6 --36  12--93 
+#> [28] 31--85  56--97  62--83  1 --55  3 --75  24--32  16--85  25--85  24--71 
+#> [37] 9 --65  2 --71  25--85  46--100 44--87  9 --83  1 --46  44--61  84--95 
+#> [46] 84--95  5 --12  15--23  64--73  55--58  25--59  12--25  68--85  79--85 
+#> [55] 61--75  46--62  13--95  50--58  17--87  11--13  85--100 10--14  27--74 
+#> [64] 20--64  3 --15  47--52  11--58  86--87  3 --43  20--59  27--99  35--86 
 #> + ... omitted several edges
 
 ### sampling graphs as tidygraph graphs ---------------
 
 sample_tidygraph(ufm)
-#> # A tbl_graph: 100 nodes and 238 edges
+#> # A tbl_graph: 100 nodes and 239 edges
 #> #
-#> # An undirected multigraph with 8 components
+#> # An undirected multigraph with 2 components
 #> #
 #> # Node Data: 100 × 1 (active)
 #>    name 
@@ -194,13 +195,13 @@ sample_tidygraph(ufm)
 #> 10 10   
 #> # ℹ 90 more rows
 #> #
-#> # Edge Data: 238 × 2
+#> # Edge Data: 239 × 2
 #>    from    to
 #>   <int> <int>
-#> 1    46    80
-#> 2    12    25
-#> 3    54    66
-#> # ℹ 235 more rows
+#> 1    16    66
+#> 2    77    87
+#> 3    27    76
+#> # ℹ 236 more rows
 
 ##### directed examples ----------------------------
 
@@ -241,20 +242,20 @@ fm
 
 edgelist2 <- sample_edgelist(fm)
 edgelist2
-#> # A tibble: 96 × 2
+#> # A tibble: 95 × 2
 #>     from    to
 #>    <int> <int>
-#>  1    40    10
-#>  2    46    36
-#>  3    31    36
-#>  4     4    34
-#>  5    40     9
-#>  6    54    32
-#>  7    38    24
-#>  8   100    17
-#>  9    79    11
-#> 10    53    11
-#> # ℹ 86 more rows
+#>  1    99    16
+#>  2    88    15
+#>  3     8    37
+#>  4    65    48
+#>  5    25     9
+#>  6    19    47
+#>  7     9    49
+#>  8    97    19
+#>  9    75    50
+#> 10    36    40
+#> # ℹ 85 more rows
 
 ### sampling graphs as sparse matrices ----------------
 
@@ -292,9 +293,9 @@ is_bipartite(dig)
 ### sampling graphs as tidygraph graphs ---------------
 
 sample_tidygraph(fm)
-#> # A tbl_graph: 150 nodes and 104 edges
+#> # A tbl_graph: 150 nodes and 88 edges
 #> #
-#> # A bipartite multigraph with 58 components
+#> # A bipartite multigraph with 69 components
 #> #
 #> # Node Data: 150 × 1 (active)
 #>    type 
@@ -311,11 +312,11 @@ sample_tidygraph(fm)
 #> 10 FALSE
 #> # ℹ 140 more rows
 #> #
-#> # Edge Data: 104 × 2
+#> # Edge Data: 88 × 2
 #>    from    to
 #>   <int> <int>
-#> 1     2   102
-#> 2    34   102
-#> 3    45   102
-#> # ℹ 101 more rows
+#> 1    83   101
+#> 2    99   101
+#> 3    90   102
+#> # ℹ 85 more rows
 ```

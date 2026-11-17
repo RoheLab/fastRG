@@ -262,6 +262,7 @@ Other directed graphs:
 ## Examples
 
 ``` r
+
 set.seed(27)
 
 B <- matrix(0.2, nrow = 5, ncol = 8)

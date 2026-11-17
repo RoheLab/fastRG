@@ -200,6 +200,7 @@ Other undirected graphs:
 ## Examples
 
 ``` r
+
 set.seed(27)
 
 lazy_mmsbm <- mmsbm(n = 100, k = 5, expected_density = 0.01)
@@ -307,7 +308,7 @@ custom_mmsbm
 
 edgelist <- sample_edgelist(custom_mmsbm)
 edgelist
-#> # A tibble: 2,530 × 2
+#> # A tibble: 2,589 × 2
 #>     from    to
 #>    <int> <int>
 #>  1    32    63
@@ -320,7 +321,7 @@ edgelist
 #>  8    14    46
 #>  9     1     2
 #> 10     2     8
-#> # ℹ 2,520 more rows
+#> # ℹ 2,579 more rows
 
 # efficient eigendecompostion that leverages low-rank structure in
 # E(A) so that you don't have to form E(A) to find eigenvectors,

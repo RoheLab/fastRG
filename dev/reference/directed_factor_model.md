@@ -127,6 +127,7 @@ elements:
 ## Examples
 
 ``` r
+
 n <- 1000
 
 k1 <- 5
@@ -155,10 +156,10 @@ fm
 #> Poisson edges: TRUE 
 #> Allow self loops: TRUE 
 #> 
-#> Expected edges: 365525
-#> Expected density: 0.73105
-#> Expected in degree: 731.1
-#> Expected out degree: 365.5
+#> Expected edges: 311993
+#> Expected density: 0.62399
+#> Expected in degree: 624
+#> Expected out degree: 312
 
 fm2 <- directed_factor_model(X, S, Y, expected_in_degree = 50)
 fm2

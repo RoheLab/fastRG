@@ -192,6 +192,7 @@ Other undirected graphs:
 ## Examples
 
 ``` r
+
 set.seed(27)
 
 lazy_overlapping_sbm <- overlapping_sbm(n = 1000, k = 5, expected_density = 0.01)
@@ -294,7 +295,7 @@ custom_overlapping_sbm
 
 edgelist <- sample_edgelist(custom_overlapping_sbm)
 edgelist
-#> # A tibble: 518 × 2
+#> # A tibble: 520 × 2
 #>     from    to
 #>    <int> <int>
 #>  1    19    35
@@ -307,7 +308,7 @@ edgelist
 #>  8    15    32
 #>  9    20    34
 #> 10    19    37
-#> # ℹ 508 more rows
+#> # ℹ 510 more rows
 
 # efficient eigendecompostion that leverages low-rank structure in
 # E(A) so that you don't have to form E(A) to find eigenvectors,

@@ -164,6 +164,7 @@ Other undirected graphs:
 ## Examples
 
 ``` r
+
 set.seed(27)
 
 lazy_pp <- planted_partition(

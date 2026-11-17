@@ -129,6 +129,7 @@ Other samplers:
 ## Examples
 
 ``` r
+
 set.seed(46)
 
 n <- 10000

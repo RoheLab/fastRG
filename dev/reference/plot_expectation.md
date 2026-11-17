@@ -42,6 +42,7 @@ plot.
 ## Examples
 
 ``` r
+
 set.seed(27)
 
 model <- dcsbm(n = 10, k = 2, expected_density = 0.2)
