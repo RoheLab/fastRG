@@ -1,6 +1,10 @@
-# fastRG (development version)
+# fastRG 1.0.0
 
-- **Breaking change:** fixed `expected_edges()` and `expected_density()` double counting edges in undirected models. Since 0.4.0 fixed the edge over-sampling in #19, both have been twice the true value, because each undirected edge appears in `A` twice (as `A[i, j]` and `A[j, i]`). As a result, **specifying `expected_density = d` for any undirected model produced graphs with density about `d / 2`**, and print methods reported twice the number of edges actually sampled.
+This release contains several breaking changes, along with fixes for bugs that affected sampled graphs. **Graphs sampled with a given seed will differ from previous versions for many models.** In particular, undirected models specified with `expected_density` now sample twice as many edges as before, matching the requested density.
+
+## Breaking changes
+
+- Fixed `expected_edges()` and `expected_density()` double counting edges in undirected models. Since 0.4.0 fixed the edge over-sampling in #19, both have been twice the true value, because each undirected edge appears in `A` twice (as `A[i, j]` and `A[j, i]`). As a result, **specifying `expected_density = d` for any undirected model produced graphs with density about `d / 2`**, and print methods reported twice the number of edges actually sampled.
   - `expected_edges()` is now the expected number of undirected edges, counting self-loops once: `(sum(P) + trace(P)) / 2` for `P = X S X'`.
   - `expected_density()` is now the expected number of edges between distinct nodes divided by `choose(n, 2)`: `(sum(P) - trace(P)) / (n (n - 1))`.
   - `expected_degree()`, `expected_degrees()`, sampling and population spectra were already correct and are unchanged, as are all directed models.
@@ -8,7 +12,27 @@
 
 - `erdos_renyi()` and `directed_erdos_renyi()` now error when neither `p` nor a scaling argument such as `expected_degree` or `expected_density` is given. Previously the check never fired, because it looked up the generic functions `expected_degree()` (or `expected_in_degree()` / `expected_out_degree()`) instead of the arguments, and the model silently used `p = 0.5`.
 
+- `overlapping_sbm()` now puts every node in at least one block. A node that joins no block in the independent Bernoulli draws is assigned to exactly one block, chosen with probability proportional to `pi`. Previously, with the default `pi`, about a third of nodes belonged to no block and had no edges. `pi` must now have at least one positive element. Graphs sampled with a given seed will differ from previous versions.
+
+- By default (when neither `pi_out` nor `block_sizes_out` is given, and likewise for the incoming side), `directed_dcsbm()` now makes blocks as balanced as possible, using the same rule as `dcsbm()`, instead of sampling block memberships with equal probabilities. Graphs sampled with a given seed from the `directed_dcsbm()` defaults will differ from previous versions. Passing `pi_out` / `pi_in` explicitly gives the old behavior (#41).
+
+- `planted_partition()` now errors when `within_block` or `between_block` (or `a / n` or `b / n`) is outside [0, 1]. This was always documented, but was not enforced, so code passing Poisson rates above 1 will now fail. See the `planted_partition()` entry under "New features".
+
+- fastRG now requires R >= 4.4.0. irlba 2.4.1, which fastRG uses in tests and vignettes, fails on earlier R versions because `is.atomic(NULL)` changed in R 4.4.0.
+
+## New features
+
 - `sample_edgelist()`, `sample_igraph()` and `sample_tidygraph()` gain a `multigraph` argument. The default, `multigraph = TRUE`, keeps the current behavior: Poisson graphs are returned as multigraphs with repeated edges. With `multigraph = FALSE`, repeated edges are collapsed into a single edge with an integer `weight` attribute (an edgelist column, or an `igraph` edge attribute) that equals the corresponding entry of `sample_sparse()`. In undirected graphs `(i, j)` and `(j, i)` are collapsed together. The `weight` attribute is always present when `multigraph = FALSE`, so Bernoulli graphs (`poisson_edges = FALSE`) get weights of 1 (#30).
+
+- New `directed_planted_partition()`, a directed stochastic blockmodel with `k` outgoing and `k` incoming blocks whose mixing matrix has `within_block` (or `a / n`) on the diagonal and `between_block` (or `b / n`) off the diagonal. Outgoing and incoming communities are independent by default; set `shared_blocks = TRUE` to give each node a single community. Supports `block_sizes` / `pi`, `sort_nodes`, `poisson_edges`, `allow_self_loops` and expected degree / density scaling. Like `planted_partition()`, blocks are as balanced as possible by default (#10).
+
+- `planted_partition()` now returns an object with class `undirected_planted_partition` (on top of `undirected_sbm`), so it prints with its own print method, which now shows the within- and between-block edge probabilities. Its validator is now run: `within_block` and `between_block` (or `a / n` and `b / n`) must be scalars between zero and one, as documented, and `B` must have a constant diagonal and off-diagonal. Sampling is unchanged.
+
+- `directed_dcsbm()` gains `shared_blocks` and `shared_theta` arguments, both `FALSE` by default. `shared_blocks = TRUE` samples one block membership vector and uses it for both outgoing and incoming blocks (`z_out` and `z_in` are identical, `B` must be square). `shared_theta = TRUE` uses one degree-heterogeneity vector for both `theta_out` and `theta_in`, and requires `shared_blocks = TRUE`. With shared blocks, `sort_nodes` permutes rows and columns together so that row `i` and column `i` refer to the same node. The defaults keep the co-factor model. The print method now shows whether blocks and degree parameters are shared, and labels outgoing/incoming blocks and degrees correctly (#40).
+
+- `directed_dcsbm()` gains `block_sizes_out` and `block_sizes_in` arguments to specify the exact number of nodes in each outgoing and incoming block, as an alternative to sampling block memberships from `pi_out` and `pi_in` (which now default to `NULL`) (#41).
+
+## Bug fixes
 
 - Fixed `sample_sparse()`, `sample_igraph()` and `sample_tidygraph()` erroring on directed rectangular models (`n != d`) when no edges are sampled. Empty graphs now have the same output types as non-empty ones: `sample_edgelist()` returns a tibble with integer `from` and `to` columns instead of a base matrix of doubles, and `sample_sparse()` returns a symmetric `dsCMatrix` for undirected models.
 
@@ -18,27 +42,15 @@
   - The invertibility error now says that it is the symmetrized and rescaled `B` (i.e. `S`) that must be invertible.
   - `print()` now says "not sorted" for unsorted models, and no longer calls the model degree-corrected.
 
-- `overlapping_sbm()` now puts every node in at least one block. A node that joins no block in the independent Bernoulli draws is assigned to exactly one block, chosen with probability proportional to `pi`. Previously, with the default `pi`, about a third of nodes belonged to no block and had no edges. `pi` must now have at least one positive element. Graphs sampled with a given seed will differ from previous versions.
-
-- New `directed_planted_partition()`, a directed stochastic blockmodel with `k` outgoing and `k` incoming blocks whose mixing matrix has `within_block` (or `a / n`) on the diagonal and `between_block` (or `b / n`) off the diagonal. Outgoing and incoming communities are independent by default; set `shared_blocks = TRUE` to give each node a single community. Supports `block_sizes` / `pi`, `sort_nodes`, `poisson_edges`, `allow_self_loops` and expected degree / density scaling. Like `planted_partition()`, blocks are as balanced as possible by default (#10).
-
-- `planted_partition()` now returns an object with class `undirected_planted_partition` (on top of `undirected_sbm`), so it prints with its own print method, which now shows the within- and between-block edge probabilities. Its validator is now run: `within_block` and `between_block` (or `a / n` and `b / n`) must be scalars between zero and one, as documented, and `B` must have a constant diagonal and off-diagonal. Sampling is unchanged.
-
-- `directed_dcsbm()` gains `shared_blocks` and `shared_theta` arguments, both `FALSE` by default. `shared_blocks = TRUE` samples one block membership vector and uses it for both outgoing and incoming blocks (`z_out` and `z_in` are identical, `B` must be square). `shared_theta = TRUE` uses one degree-heterogeneity vector for both `theta_out` and `theta_in`, and requires `shared_blocks = TRUE`. With shared blocks, `sort_nodes` permutes rows and columns together so that row `i` and column `i` refer to the same node. The defaults keep the co-factor model. The print method now shows whether blocks and degree parameters are shared, and labels outgoing/incoming blocks and degrees correctly (#40).
-
-- The `directed_dcsbm()` documentation now states that in the default co-factor model, `sort_nodes = TRUE` sorts rows and columns independently, so row `i` and column `i` are generally not the same node and self-loops are not meaningful as "node `i` to itself". Use `shared_blocks = TRUE` or `sort_nodes = FALSE` if rows and columns must index the same nodes (#40).
-
-- `directed_dcsbm()` gains `block_sizes_out` and `block_sizes_in` arguments to specify the exact number of nodes in each outgoing and incoming block, as an alternative to sampling block memberships from `pi_out` and `pi_in` (which now default to `NULL`) (#41).
-
-- Breaking change: by default (when neither `pi_out` nor `block_sizes_out` is given, and likewise for the incoming side), `directed_dcsbm()` now makes blocks as balanced as possible, using the same rule as `dcsbm()`, instead of sampling block memberships with equal probabilities. Graphs sampled with a given seed from the `directed_dcsbm()` defaults will differ from previous versions. Passing `pi_out` / `pi_in` explicitly gives the old behavior (#41).
-
 - Fixed `dcsbm()` pairing blocks with the wrong rows and columns of `B` when `sort_nodes = TRUE` (the default). Block memberships were sampled before `B` and `pi` were reordered by block size, and were never relabeled to match. Models with unequal `pi` or `block_sizes`, or with `n` not divisible by `k`, connected the wrong groups of nodes at each rate in `B`. Graphs sampled with a given seed will differ for those models.
 
 - Fixed `dcsbm()` and `directed_dcsbm()` assigning degree parameters to the wrong nodes when `sort_nodes = FALSE`. Theta was written into `X` (and `Y`) in block order rather than node order. With `force_identifiability = FALSE`, nodes got another node's theta; with `force_identifiability = TRUE`, `X` was correct but the returned `theta` was in block order. Sorted models (the default) are unaffected.
 
-- fastRG now requires R >= 4.4.0. irlba 2.4.1, which fastRG uses in tests and vignettes, fails on earlier R versions because `is.atomic(NULL)` changed in R 4.4.0.
-
 - Fixed undersampling of self-loops in undirected models. Since 0.4.0, the diagonal of `A` was sampled at half the intended rate, so `E[A | X, S]` did not equal `X S X'` on the diagonal. `sample_edgelist.undirected_factor_model()` now adds independent Poisson self-loops at the missing rate when `allow_self_loops = TRUE`, so `E[A | X, S] = X S X'` holds exactly. This only affects sampling: `S`, `expected_*()` and population spectra are unchanged, and so are the off-diagonal fixes from #19 and #31. Graphs sampled with a given seed will differ from previous versions (#46).
+
+## Documentation
+
+- The `directed_dcsbm()` documentation now states that in the default co-factor model, `sort_nodes = TRUE` sorts rows and columns independently, so row `i` and column `i` are generally not the same node and self-loops are not meaningful as "node `i` to itself". Use `shared_blocks = TRUE` or `sort_nodes = FALSE` if rows and columns must index the same nodes (#40).
 
 - Fixed math rendering on the pkgdown site. The home page showed stray backticks because `README.md` used GitHub's `` $`...`$ `` math syntax, which pkgdown can't parse. Also fixed malformed LaTeX (e.g. `\pi_out`, `theta_in`) in the `dcsbm()` and `directed_dcsbm()` documentation (#48).
 
