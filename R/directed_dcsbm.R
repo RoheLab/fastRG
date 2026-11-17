@@ -860,8 +860,8 @@ directed_dcsbm <- function(
     # aligned in node order, and permute all of it jointly when sorting
 
     if (force_identifiability) {
-      theta_out <- l1_normalize_within_in_place(theta_out, z_out)
-      theta_in <- l1_normalize_within_in_place(theta_in, z_in)
+      theta_out <- l1_normalize_within(theta_out, z_out)
+      theta_in <- l1_normalize_within(theta_in, z_in)
     }
 
     if (sort_nodes) {
@@ -874,19 +874,18 @@ directed_dcsbm <- function(
 
     if (k_out > 1) {
       X <- sparse.model.matrix(~ z_out + 0)
-      X@x <- as.numeric(theta_out[X@i + 1])
     } else {
       X <- Matrix(1, nrow = n, ncol = 1)
-      X@x <- as.numeric(theta_out)
     }
 
     if (k_in > 1) {
       Y <- sparse.model.matrix(~ z_in + 0)
-      Y@x <- as.numeric(theta_in[Y@i + 1])
     } else {
       Y <- Matrix(1, nrow = n, ncol = 1)
-      Y@x <- as.numeric(theta_in)
     }
+
+    X <- set_membership_weights(X, as.numeric(theta_out))
+    Y <- set_membership_weights(Y, as.numeric(theta_in))
 
     dcsbm <- new_directed_dcsbm(
       X = X,
@@ -934,8 +933,8 @@ directed_dcsbm <- function(
     theta_in <- l1_normalize_within(theta_in, z_in)
   }
 
-  X@x <- theta_out
-  Y@x <- theta_in
+  X <- set_membership_weights(X, theta_out)
+  Y <- set_membership_weights(Y, theta_in)
 
   if (sort_nodes) {
     # X, Y indexing must match z indexing, be careful about this
