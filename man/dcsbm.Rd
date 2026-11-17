@@ -170,15 +170,15 @@ is uncertain).
 \subsection{Edge formulation}{
 
 Once we know the block memberships \eqn{z} and the degree
-heterogeneity parameters \eqn{theta}, we need one more
+heterogeneity parameters \eqn{\theta}, we need one more
 ingredient, which is the baseline intensity of connections
 between nodes in block \code{i} and block \code{j}. Then each edge
 \eqn{A_{i,j}} is Poisson distributed with parameter
 
 \deqn{
-  \lambda[i, j] = \theta_i \cdot B_{z_i, z_j} \cdot \theta_j.
+  \lambda_{i, j} = \theta_i \cdot B_{z_i, z_j} \cdot \theta_j.
 }{
-  \lambda_{i, j} = \theta[i] * B[z[i], z[j]] * \theta[j].
+  lambda[i, j] = theta[i] * B[z[i], z[j]] * theta[j].
 }
 }
 }
@@ -243,6 +243,7 @@ population_eigs <- eigs_sym(custom_dcsbm)
 \seealso{
 Other stochastic block models: 
 \code{\link{directed_dcsbm}()},
+\code{\link{directed_planted_partition}()},
 \code{\link{mmsbm}()},
 \code{\link{overlapping_sbm}()},
 \code{\link{planted_partition}()},

@@ -2,7 +2,7 @@
 % Please edit documentation in R/undirected_overlapping_sbm.R
 \name{overlapping_sbm}
 \alias{overlapping_sbm}
-\title{Create an undirected overlapping degree corrected stochastic blockmodel object}
+\title{Create an undirected overlapping stochastic blockmodel object}
 \usage{
 overlapping_sbm(
   n,
@@ -17,22 +17,29 @@ overlapping_sbm(
 )
 }
 \arguments{
-\item{n}{The number of nodes in the overlapping SBM.}
+\item{n}{The number of nodes in the overlapping SBM. Must be at least
+\code{k} when \code{force_pure = TRUE}.}
 
 \item{k}{(mixing matrix) The number of blocks in the blockmodel.
 Use when you don't want to specify the mixing-matrix by hand.
-When \code{k} is specified, \code{B} is set to a diagonal dominant matrix with
+When \code{k} is specified, \code{B} is set to a diagonally dominant matrix with
 value \code{0.8} along the diagonal and \code{0.1 / (k - 1)} on the
-off-diagonal. \code{k} defaults to \code{NULL}. You must specify either \code{k}
+off-diagonal. This is subject to change, and may not be reproducible.
+\code{k} defaults to \code{NULL}. You must specify either \code{k}
 or \code{B}, but not both.}
 
-\item{B}{(mixing matrix) A \code{k} by \code{k} matrix of block connection
-probabilities. The probability that a node in block \code{i} connects
-to a node in community \code{j} is \code{Poisson(B[i, j])}. Must be
-an \emph{invertible}, symmetric square matrix.
+\item{B}{(mixing matrix) A \code{k} by \code{k} matrix of baseline connection
+intensities between blocks. Before any rescaling via
+\code{expected_degree} or \code{expected_density}, \code{B[a, b]} is the expected
+number of edges contributed to the pair of nodes \eqn{(i, j)} by
+node \eqn{i}'s membership in block \code{a} and node \eqn{j}'s membership
+in block \code{b}. These contributions add up over all pairs of blocks
+that \code{i} and \code{j} belong to (see "Edge formulation" below).
+All elements of \code{B} must be contained in \eqn{[0, 1]}.
 \code{matrix} and \code{Matrix} objects are both
 acceptable. If \code{B} is not symmetric, it will be
-symmetrized via the update \code{B := B + t(B)}. Defaults to \code{NULL}.
+symmetrized via the update \code{B := (B + t(B)) / 2}, and the
+symmetrized \code{B} must be \emph{invertible}. Defaults to \code{NULL}.
 You must specify either \code{k} or \code{B}, but not both.}
 
 \item{...}{
@@ -48,29 +55,47 @@ to achieve this. Defaults to \code{NULL}. Do not specify both
 \code{expected_degree} and \code{expected_density} at the same time.}
   }}
 
-\item{pi}{(block probabilities) Probability of membership in each
-block. Membership in each block is independent under the
-overlapping SBM. Defaults to \code{rep(1 / k, k)}.}
+\item{pi}{(block membership probabilities) A vector of length \code{k}
+whose \code{j}th element is the probability that a node belongs to
+block \code{j}. All elements must be contained in \eqn{[0, 1]}. Each node
+joins each block independently, so \code{pi} is \strong{not} normalized and
+does not need to sum to one: \code{sum(pi)} is the expected number of
+blocks a node joins before nodes in no block are reassigned
+(ignoring \code{force_pure}). A node that joins no block is instead
+assigned to exactly one block, chosen with probability
+proportional to \code{pi}, so every node belongs to at least one block
+and at least one element of \code{pi} must be positive. Defaults to
+\code{rep(1 / k, k)}, in which case a fraction of roughly
+\eqn{(1 - 1/k)^k \approx e^{-1}}{(1 - 1/k)^k, approximately exp(-1),}
+of nodes initially join no block and are reassigned to a single
+block chosen uniformly at random. Regardless of \code{sort_nodes},
+\code{pi} is sorted in increasing order, and the rows and columns
+of \code{B} are permuted to match the new order of \code{pi}.}
 
 \item{sort_nodes}{Logical indicating whether or not to sort the nodes
 so that they are grouped by block. Useful for plotting.
-Defaults to \code{TRUE}.}
+Defaults to \code{TRUE}. When \code{TRUE}, the rows of \code{Z} are sorted in
+decreasing lexicographic order, so that members of the first
+block come first, and within the members of the first block,
+members of the second block come first, and so on.}
 
 \item{force_pure}{Logical indicating whether or not to force presence of
-"pure nodes" (nodes that belong only to a single community) for the sake
+"pure nodes" (nodes that belong only to a single block) for the sake
 of identifiability. To include pure nodes, block membership sampling
-first proceeds as per usual. Then, after it is complete, \code{k} nodes
-are chosen randomly as pure nodes, one for each block. Defaults to \code{TRUE}.}
+first proceeds as per usual. Then, after it is complete, \code{k} distinct
+nodes are chosen uniformly at random, and the memberships of the
+\code{j}th chosen node are overwritten so that it belongs to block \code{j}
+and to no other block. Requires \code{n >= k}. Defaults to \code{TRUE}.}
 
 \item{poisson_edges}{Logical indicating whether or not
 multiple edges are allowed to form between a pair of
 nodes. Defaults to \code{TRUE}. When \code{FALSE}, sampling proceeds
 as usual, and duplicate edges are removed afterwards. Further,
-when \code{FALSE}, we assume that \code{S} specifies a desired between-factor
-connection probability, and back-transform this \code{S} to the
-appropriate Poisson intensity parameter to approximate Bernoulli
-factor connection probabilities. See Section 2.3 of Rohe et al. (2017)
-for some additional details.}
+when \code{FALSE}, we assume that \code{S} specifies a desired Bernoulli
+edge probability, and back-transform \code{S} to a Poisson
+parameterization before sampling (see "Edge formulation" below),
+so all elements of \code{S} (after symmetrizing and any rescaling)
+must be at most \code{1}.}
 
 \item{allow_self_loops}{Logical indicating whether or not
 nodes should be allowed to form edges with themselves.
@@ -82,17 +107,28 @@ An \code{undirected_overlapping_sbm} S3 object, a subclass of the
 \code{\link[=undirected_factor_model]{undirected_factor_model()}} with the following additional
 fields:
 \itemize{
-\item \code{pi}: Sampling probabilities for each block.
-\item \code{sorted}: Logical indicating where nodes are arranged by
-block (and additionally by degree heterogeneity parameter)
-within each block.
+\item \code{Z}: The block memberships of each node, as an \code{n} by \code{k}
+binary \code{\link[Matrix:Matrix]{Matrix::Matrix()}}. \code{Z[i, j]} is one if node \code{i} belongs
+to block \code{j} and zero otherwise. Rows can contain any number of
+ones, including none. Columns are ordered to match \code{pi} and \code{B}.
+For this model, \code{Z} is identical to the latent positions \code{X}.
+\item \code{pi}: Block membership probabilities for each block, sorted in
+increasing order.
+\item \code{B}: The mixing matrix, as specified by the user (or the default
+when only \code{k} is given), with rows and columns permuted to match
+the order of \code{pi}. Note that \code{B} is \emph{not} symmetrized or rescaled:
+the symmetrized and rescaled matrix used for sampling is \code{S}.
+\item \code{sorted}: Logical indicating whether nodes are arranged by
+block membership (see \code{sort_nodes}).
 }
 }
 \description{
-To specify a overlapping stochastic blockmodel, you must specify
+To specify an overlapping stochastic blockmodel, you must specify
 the number of nodes (via \code{n}),
-the mixing matrix (via \code{k} or \code{B}), and the  block
-probabilities (optional, via \code{pi}). We provide defaults for most of these
+the mixing matrix (via \code{k} or \code{B}), and the block membership
+probabilities (optional, via \code{pi}). In an overlapping stochastic
+blockmodel, each node can belong to any number of blocks: zero, one,
+or several. We provide defaults for most of these
 options to enable rapid exploration, or you can invest the effort
 for more control over the model parameters. We \strong{strongly recommend}
 setting the \code{expected_degree} or \code{expected_density} argument
@@ -100,40 +136,137 @@ to avoid large memory allocations associated with
 sampling large, dense graphs.
 }
 \section{Generative Model}{
-There are two levels of randomness in a degree-corrected
+\code{overlapping_sbm()} implements the stochastic blockmodel with
+overlaps (SBMO) of Kaufmann, Bonald and Lelarge (2016), with Poisson
+rather than Bernoulli edges. There are two levels of randomness in an
 overlapping stochastic blockmodel. First, for each node, we
 independently determine if that node is a member of each block. This is
 handled by \code{overlapping_sbm()}. Then, given these block memberships,
 we randomly sample edges between nodes. This second
 operation is handled by \code{\link[=sample_edgelist]{sample_edgelist()}},
 \code{\link[=sample_sparse]{sample_sparse()}}, \code{\link[=sample_igraph]{sample_igraph()}} and
-\code{\link[=sample_tidygraph]{sample_tidygraph()}}, depending depending on your desired
+\code{\link[=sample_tidygraph]{sample_tidygraph()}}, depending on your desired
 graph representation.
-\subsection{Identifiability}{
-
-In order to be identifiable, an overlapping SBM must satisfy two conditions:
-\enumerate{
-\item \code{B} must be invertible, and
-\item the must be at least one "pure node" in each block that belongs to no
-other blocks.
-}
-}
-
 \subsection{Block memberships}{
 
-Note that some nodes may not belong to any blocks.
+Let \eqn{Z \in \{0, 1\}^{n \times k}}{Z} be the binary block
+membership matrix, and let \eqn{z_i}{z[i]} be its \eqn{i}th row, so
+that \eqn{Z_{ia} = 1}{Z[i, a] = 1} when node \eqn{i} belongs to block
+\eqn{a}. Each entry is sampled independently as
 
-\strong{TODO}
+\deqn{
+  Z_{ia} \sim \text{Bernoulli}(\pi_a),
+  \qquad i = 1, \dots, n, \quad a = 1, \dots, k.
+}{
+  Z[i, a] ~ Bernoulli(pi[a]), i = 1, ..., n, a = 1, ..., k.
+}
+
+Unlike in \code{\link[=dcsbm]{dcsbm()}}, where each node belongs to exactly one block,
+or in \code{\link[=mmsbm]{mmsbm()}}, where each node splits one unit of membership among
+blocks, here a node can be a full member of several blocks at
+once.
+
+Every node must belong to at least one block. After the Bernoulli
+draws above, any node with \eqn{Z_{ia} = 0}{Z[i, a] = 0} for every
+block \eqn{a} is assigned to exactly one block, chosen at random with
+probability \eqn{\pi_a / \sum_b \pi_b}{pi[a] / sum(pi)}. As a result,
+the entries of \eqn{Z} are not exactly independent, and nodes that
+belong to a single block are somewhat more common than independent
+Bernoulli draws alone would give. When \code{force_pure = TRUE}, \code{k} randomly chosen nodes
+are then made pure members of one block each (see "Identifiability").
+}
+
+\subsection{Degree heterogeneity}{
+
+The overlapping SBM has no degree heterogeneity parameters
+(equivalently, \eqn{\theta_i = 1} for every node). Nodes that belong
+to more blocks tend to have higher expected degree, but all members
+of the same set of blocks have the same expected degree. See \code{\link[=dcsbm]{dcsbm()}}
+and \code{\link[=mmsbm]{mmsbm()}} for models with degree heterogeneity.
 }
 
 \subsection{Edge formulation}{
 
 Once we know the block memberships, we need one more
 ingredient, which is the baseline intensity of connections
-between nodes in block \code{i} and block \code{j}. Then each edge
-\eqn{A_{i,j}} is Poisson distributed with parameter
+between nodes in block \code{a} and block \code{b}. This is given by the
+symmetric \eqn{k \times k}{k by k} matrix \eqn{B}. Then each edge
+\eqn{A_{ij}}{A[i, j]} is Poisson distributed with parameter
 
-\strong{TODO}
+\deqn{
+  \lambda_{ij} = z_i^T B z_j
+    = \sum_{a = 1}^k \sum_{b = 1}^k Z_{ia} Z_{jb} B_{ab}.
+}{
+  lambda[i, j] = z[i]' B z[j] = sum_a sum_b Z[i, a] Z[j, b] B[a, b].
+}
+
+That is, every pair of blocks \eqn{(a, b)} with \eqn{i} in block
+\eqn{a} and \eqn{j} in block \eqn{b} contributes \eqn{B_{ab}}{B[a, b]} to the
+expected number of edges between \eqn{i} and \eqn{j}, so two nodes
+that share more blocks connect at a higher rate. When
+\code{expected_degree} or \code{expected_density} is specified, \eqn{B} is
+multiplied by a constant to achieve the desired value, so only the
+relative magnitudes of the entries of \eqn{B} matter in that case.
+
+In the factor model parameterization, the latent positions are
+\eqn{X = Z} and the mixing matrix \eqn{S} is the symmetrized and
+rescaled \eqn{B}, so that
+\eqn{\mathbb{E}[A \mid Z] = Z S Z^T}{E[A | Z] = Z S Z'}.
+
+When \code{poisson_edges = FALSE}, the symmetrized and rescaled \eqn{B}
+is instead treated as a matrix of Bernoulli probabilities, and
+replaced by \eqn{-\log(1 - B)}{-log(1 - B)} (elementwise) before
+sampling. Nodes \eqn{i} and \eqn{j} are then connected with
+probability
+
+\deqn{
+  1 - \prod_{a = 1}^k \prod_{b = 1}^k (1 - B_{ab})^{Z_{ia} Z_{jb}},
+}{
+  1 - prod_a prod_b (1 - B[a, b])^(Z[i, a] Z[j, b]),
+}
+
+that is, each pair of shared blocks independently gets a chance to
+connect \eqn{i} and \eqn{j}. This is the "noisy-OR" model discussed
+in Section 3 of Kaufmann, Bonald and Lelarge (2016), and for sparse
+graphs it is close to the SBMO with Bernoulli edges.
+}
+
+\subsection{Identifiability}{
+
+Kaufmann, Bonald and Lelarge (2016, Theorem 1) show that the
+parameters \eqn{k}, \eqn{B} and \eqn{Z} of an SBMO are identifiable,
+up to a permutation of the block labels, when:
+\enumerate{
+\item \eqn{B} is invertible, and
+\item there is at least one "pure node" in each block that belongs to no
+other blocks.
+}
+
+\code{overlapping_sbm()} checks that the symmetrized and rescaled
+\eqn{B} (i.e. \code{S}) is invertible, and \code{force_pure = TRUE} guarantees
+the second condition. Kaufmann, Bonald and Lelarge (2016) further
+assume that every node belongs to at least one block, which
+\code{overlapping_sbm()} guarantees by reassigning nodes that join no
+block (see "Block memberships" above).
+}
+
+\subsection{Related models}{
+
+Latouche, Birmelé and Ambroise (2011) introduced the overlapping
+stochastic block model (OSBM), which also uses binary membership
+vectors but passes them through a logistic link, so that block
+contributions add up on the logit scale rather than on the scale of
+the edge rate. The OSBM is not implemented in fastRG.
+
+The overlapping continuous community assignment model (OCCAM) of Zhang,
+Levina and Zhu (2020) generalizes the SBMO by allowing non-negative,
+real-valued membership vectors (normalized to have unit length) and
+per-node degree heterogeneity parameters \eqn{\theta_i}, with
+\eqn{\mathbb{E}[A \mid Z, \theta] = \Theta Z B Z^T \Theta}{E[A | Z, theta] = Theta Z B Z' Theta}
+for \eqn{\Theta = \mathrm{diag}(\theta)}{Theta = diag(theta)}. The
+SBMO can be viewed as a special case of the OCCAM (Kaufmann, Bonald
+and Lelarge 2016). \code{overlapping_sbm()} does not include degree
+heterogeneity parameters.
 }
 }
 
@@ -144,20 +277,31 @@ set.seed(27)
 lazy_overlapping_sbm <- overlapping_sbm(n = 1000, k = 5, expected_density = 0.01)
 lazy_overlapping_sbm
 
+# block memberships: a binary matrix, nodes can belong to several blocks
+lazy_overlapping_sbm$Z[1:5, ]
+
+# how many blocks does each node belong to? every node belongs to
+# at least one block
+table(Matrix::rowSums(lazy_overlapping_sbm$Z))
+
 # sometimes you gotta let the world burn and
 # sample a wildly dense graph
 
 dense_lazy_overlapping_sbm <- overlapping_sbm(n = 500, k = 3, expected_density = 0.8)
 dense_lazy_overlapping_sbm
 
+# explicitly setting the mixing matrix and block membership
+# probabilities rather than using defaults. pi does not need to
+# sum to one: here nodes belong to 1.7 blocks on average
+
 k <- 5
 n <- 1000
 B <- matrix(stats::runif(k * k), nrow = k, ncol = k)
 
-pi <- c(1, 2, 4, 1, 1) / 5
+pi <- c(1, 2, 4, 1, 0.5) / 5
 
 custom_overlapping_sbm <- overlapping_sbm(
-  n = 200,
+  n = n,
   B = B,
   pi = pi,
   expected_degree = 5
@@ -165,8 +309,18 @@ custom_overlapping_sbm <- overlapping_sbm(
 
 custom_overlapping_sbm
 
+# pi is sorted, and B is permuted to match
+custom_overlapping_sbm$pi
+colMeans(custom_overlapping_sbm$Z)
+
 edgelist <- sample_edgelist(custom_overlapping_sbm)
 edgelist
+
+A <- sample_sparse(custom_overlapping_sbm)
+
+# nodes that belong to more blocks have higher degree on average
+memberships <- Matrix::rowSums(custom_overlapping_sbm$Z)
+tapply(Matrix::rowSums(A), memberships, mean)
 
 # efficient eigendecompostion that leverages low-rank structure in
 # E(A) so that you don't have to form E(A) to find eigenvectors,
@@ -174,29 +328,33 @@ edgelist
 # handled via RSpectra
 
 population_eigs <- eigs_sym(custom_overlapping_sbm)
+population_eigs$values
 
 }
 \references{
-Kaufmann, Emilie, Thomas Bonald, and Marc Lelarge.
+Kaufmann, Emilie, Thomas Bonald, and Marc Lelarge. 2016.
 "A Spectral Algorithm with Additive Clustering for the Recovery of
-Overlapping Communities in Networks," Vol. 9925.
-Lecture Notes in Computer Science.
-Cham: Springer International Publishing, 2016.
-https://doi.org/10.1007/978-3-319-46379-7.
+Overlapping Communities in Networks." In \emph{Algorithmic Learning
+Theory (ALT 2016)}, edited by R. Ortner et al., 355–70.
+Lecture Notes in Computer Science, vol. 9925.
+Cham: Springer International Publishing.
+\doi{10.1007/978-3-319-46379-7_24}.
 
-Latouche, Pierre, Etienne Birmelé, and Christophe Ambroise.
+Latouche, Pierre, Etienne Birmelé, and Christophe Ambroise. 2011.
 "Overlapping Stochastic Block Models with Application to the
-French Political Blogosphere." The Annals of Applied Statistics 5,
-no. 1 (March 2011): 309–36. https://doi.org/10.1214/10-AOAS382.
+French Political Blogosphere." \emph{The Annals of Applied Statistics} 5
+(1): 309–36. \doi{10.1214/10-AOAS382}.
 
-Zhang, Yuan, Elizaveta Levina, and Ji Zhu. "Detecting
+Zhang, Yuan, Elizaveta Levina, and Ji Zhu. 2020. "Detecting
 Overlapping Communities in Networks Using Spectral Methods."
-ArXiv:1412.3432, December 10, 2014. http://arxiv.org/abs/1412.3432.
+\emph{SIAM Journal on Mathematics of Data Science} 2 (2): 265–83.
+\doi{10.1137/19M1272238}. Preprint: \url{https://arxiv.org/abs/1412.3432}.
 }
 \seealso{
 Other stochastic block models: 
 \code{\link{dcsbm}()},
 \code{\link{directed_dcsbm}()},
+\code{\link{directed_planted_partition}()},
 \code{\link{mmsbm}()},
 \code{\link{planted_partition}()},
 \code{\link{sbm}()}
