@@ -1,5 +1,9 @@
 # fastRG (development version)
 
+- Fixed `dcsbm()` pairing blocks with the wrong rows and columns of `B` when `sort_nodes = TRUE` (the default). Block memberships were sampled before `B` and `pi` were reordered by block size, and were never relabeled to match. Models with unequal `pi` or `block_sizes`, or with `n` not divisible by `k`, connected the wrong groups of nodes at each rate in `B`. Graphs sampled with a given seed will differ for those models.
+
+- Fixed `dcsbm()` and `directed_dcsbm()` assigning degree parameters to the wrong nodes when `sort_nodes = FALSE`. Theta was written into `X` (and `Y`) in block order rather than node order. With `force_identifiability = FALSE`, nodes got another node's theta; with `force_identifiability = TRUE`, `X` was correct but the returned `theta` was in block order. Sorted models (the default) are unaffected.
+
 - fastRG now requires R >= 4.4.0. irlba 2.4.1, which fastRG uses in tests and vignettes, fails on earlier R versions because `is.atomic(NULL)` changed in R 4.4.0.
 
 - Fixed undersampling of self-loops in undirected models. Since 0.4.0, the diagonal of `A` was sampled at half the intended rate, so `E[A | X, S]` did not equal `X S X'` on the diagonal. `sample_edgelist.undirected_factor_model()` now adds independent Poisson self-loops at the missing rate when `allow_self_loops = TRUE`, so `E[A | X, S] = X S X'` holds exactly. This only affects sampling: `S`, `expected_*()` and population spectra are unchanged, and so are the off-diagonal fixes from #19 and #31. Graphs sampled with a given seed will differ from previous versions (#46).
