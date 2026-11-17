@@ -65,8 +65,7 @@ randomly from a \code{Uniform(0, 1)} distribution.
 This is subject to change, and may not be reproducible.
 \code{k_out} defaults to \code{NULL}. You must specify either \code{k_out} and
 \code{k_in} together, or \code{B}. You may specify all three at once, in which
-case \code{k_out} is only used to set \code{pi_out} (when \code{pi_out} and
-\code{block_sizes_out} are left at their default \code{NULL} values).}
+case the number of outgoing blocks is taken from \code{B}.}
 
 \item{k_in}{(mixing matrix) The number of incoming blocks in the blockmodel.
 Use when you don't want to specify the mixing-matrix by hand.
@@ -74,8 +73,7 @@ When \code{k_in} is specified, the elements of \code{B} are drawn
 randomly from a \code{Uniform(0, 1)} distribution.
 This is subject to change, and may not be reproducible.
 \code{k_in} defaults to \code{NULL}. You may specify all three at once, in which
-case \code{k_in} is only used to set \code{pi_in} (when \code{pi_in} and
-\code{block_sizes_in} are left at their default \code{NULL} values).}
+case the number of incoming blocks is taken from \code{B}.}
 
 \item{B}{(mixing matrix) A \code{k_out} by \code{k_in} matrix of block connection
 probabilities. The probability that a node in block \code{i} connects
@@ -106,34 +104,36 @@ block, as a vector of non-negative integers. Must match the number of
 rows of \code{B} (or \code{k_out}) and must sum to \code{n} (or \code{length(theta_out)}).
 When specified, exactly \code{block_sizes_out[j]} nodes are assigned to
 outgoing block \code{j}, and which nodes land in which block is uniformly
-random. Defaults to \code{NULL}, in which case outgoing block memberships
-are sampled independently according to \code{pi_out}. You can specify
-either \code{pi_out} or \code{block_sizes_out}, but not both.}
+random. Defaults to \code{NULL}, in which case outgoing blocks are made to
+be as balanced as possible, unless \code{pi_out} is specified. You can
+specify either \code{pi_out} or \code{block_sizes_out}, but not both.}
 
 \item{block_sizes_in}{(block sizes) Number of nodes in each incoming
 block, as a vector of non-negative integers. Must match the number of
 columns of \code{B} (or \code{k_in}) and must sum to \code{n} (or \code{length(theta_in)}).
 When specified, exactly \code{block_sizes_in[j]} nodes are assigned to
 incoming block \code{j}, and which nodes land in which block is uniformly
-random. Defaults to \code{NULL}, in which case incoming block memberships
-are sampled independently according to \code{pi_in}. You can specify
-either \code{pi_in} or \code{block_sizes_in}, but not both.}
+random. Defaults to \code{NULL}, in which case incoming blocks are made to
+be as balanced as possible, unless \code{pi_in} is specified. You can
+specify either \code{pi_in} or \code{block_sizes_in}, but not both.}
 
 \item{pi_out}{(block sizes) Relative block
 probabilities for outgoing blocks. Must be positive, but do not need to
 sum to one, as they will be normalized internally.
-Must match the rows of \code{B}, or \code{k_out}. Defaults to \code{NULL}, in which
-case \code{rep(1 / k_out, k_out)}, i.e. balanced outgoing blocks, is used
-unless \code{block_sizes_out} is specified. You can specify either \code{pi_out}
-or \code{block_sizes_out}, but not both.}
+Must match the rows of \code{B}, or \code{k_out}. When specified, outgoing block
+memberships are sampled independently for each node with these
+probabilities. Defaults to \code{NULL}, in which case the \code{block_sizes_out}
+argument (or its balanced default) takes precedence. You can specify
+either \code{pi_out} or \code{block_sizes_out}, but not both.}
 
 \item{pi_in}{(block sizes) Relative block
 probabilities for incoming blocks. Must be positive, but do not need to
 sum to one, as they will be normalized internally.
-Must match the columns of \code{B}, or \code{k_in}. Defaults to \code{NULL}, in which
-case \code{rep(1 / k_in, k_in)}, i.e. balanced incoming blocks, is used
-unless \code{block_sizes_in} is specified. You can specify either \code{pi_in}
-or \code{block_sizes_in}, but not both.}
+Must match the columns of \code{B}, or \code{k_in}. When specified, incoming
+block memberships are sampled independently for each node with these
+probabilities. Defaults to \code{NULL}, in which case the \code{block_sizes_in}
+argument (or its balanced default) takes precedence. You can specify
+either \code{pi_in} or \code{block_sizes_in}, but not both.}
 
 \item{shared_blocks}{(block memberships) Logical indicating whether each
 node should belong to the same outgoing and incoming block. Defaults to
@@ -276,12 +276,15 @@ distribution with parameter \eqn{\pi_in}.
 Block memberships are independent across nodes. Incoming and outgoing
 block memberships of the same node are also independent.
 
-Alternatively, you can fix the exact number of nodes in each outgoing
-(incoming) block with \code{block_sizes_out} (\code{block_sizes_in}). In this case
-the block memberships are a uniformly random assignment of nodes to
-blocks with exactly the requested block sizes, rather than independent
-categorical draws. Fixed block sizes are useful, for instance, to
-construct blockmodels with exactly repeated singular values.
+These categorical draws are used when \code{pi_out} (\code{pi_in}) is specified.
+Otherwise, the outgoing (incoming) block memberships are a uniformly
+random assignment of nodes to blocks with fixed block sizes: either
+exactly the sizes given in \code{block_sizes_out} (\code{block_sizes_in}), or, by
+default, block sizes that are as balanced as possible (every block gets
+\code{floor(n / k_out)} nodes, and the remainder is spread over the first
+blocks, one node each), as in \code{\link[=dcsbm]{dcsbm()}}. Fixed block sizes are useful,
+for instance, to construct blockmodels with exactly repeated singular
+values.
 }
 
 \subsection{Degree heterogeneity}{

@@ -243,8 +243,7 @@ sample_block_memberships <- function(n, k, pi, block_sizes = NULL) {
 #'   This is subject to change, and may not be reproducible.
 #'   `k_out` defaults to `NULL`. You must specify either `k_out` and
 #'   `k_in` together, or `B`. You may specify all three at once, in which
-#'   case `k_out` is only used to set `pi_out` (when `pi_out` and
-#'   `block_sizes_out` are left at their default `NULL` values).
+#'   case the number of outgoing blocks is taken from `B`.
 #'
 #' @param k_in (mixing matrix) The number of incoming blocks in the blockmodel.
 #'   Use when you don't want to specify the mixing-matrix by hand.
@@ -252,8 +251,7 @@ sample_block_memberships <- function(n, k, pi, block_sizes = NULL) {
 #'   randomly from a `Uniform(0, 1)` distribution.
 #'   This is subject to change, and may not be reproducible.
 #'   `k_in` defaults to `NULL`. You may specify all three at once, in which
-#'   case `k_in` is only used to set `pi_in` (when `pi_in` and
-#'   `block_sizes_in` are left at their default `NULL` values).
+#'   case the number of incoming blocks is taken from `B`.
 #'
 #' @param B (mixing matrix) A `k_out` by `k_in` matrix of block connection
 #'   probabilities. The probability that a node in block `i` connects
@@ -267,34 +265,36 @@ sample_block_memberships <- function(n, k, pi, block_sizes = NULL) {
 #'   rows of `B` (or `k_out`) and must sum to `n` (or `length(theta_out)`).
 #'   When specified, exactly `block_sizes_out[j]` nodes are assigned to
 #'   outgoing block `j`, and which nodes land in which block is uniformly
-#'   random. Defaults to `NULL`, in which case outgoing block memberships
-#'   are sampled independently according to `pi_out`. You can specify
-#'   either `pi_out` or `block_sizes_out`, but not both.
+#'   random. Defaults to `NULL`, in which case outgoing blocks are made to
+#'   be as balanced as possible, unless `pi_out` is specified. You can
+#'   specify either `pi_out` or `block_sizes_out`, but not both.
 #'
 #' @param block_sizes_in (block sizes) Number of nodes in each incoming
 #'   block, as a vector of non-negative integers. Must match the number of
 #'   columns of `B` (or `k_in`) and must sum to `n` (or `length(theta_in)`).
 #'   When specified, exactly `block_sizes_in[j]` nodes are assigned to
 #'   incoming block `j`, and which nodes land in which block is uniformly
-#'   random. Defaults to `NULL`, in which case incoming block memberships
-#'   are sampled independently according to `pi_in`. You can specify
-#'   either `pi_in` or `block_sizes_in`, but not both.
+#'   random. Defaults to `NULL`, in which case incoming blocks are made to
+#'   be as balanced as possible, unless `pi_in` is specified. You can
+#'   specify either `pi_in` or `block_sizes_in`, but not both.
 #'
 #' @param pi_out (block sizes) Relative block
 #'   probabilities for outgoing blocks. Must be positive, but do not need to
 #'   sum to one, as they will be normalized internally.
-#'   Must match the rows of `B`, or `k_out`. Defaults to `NULL`, in which
-#'   case `rep(1 / k_out, k_out)`, i.e. balanced outgoing blocks, is used
-#'   unless `block_sizes_out` is specified. You can specify either `pi_out`
-#'   or `block_sizes_out`, but not both.
+#'   Must match the rows of `B`, or `k_out`. When specified, outgoing block
+#'   memberships are sampled independently for each node with these
+#'   probabilities. Defaults to `NULL`, in which case the `block_sizes_out`
+#'   argument (or its balanced default) takes precedence. You can specify
+#'   either `pi_out` or `block_sizes_out`, but not both.
 #'
 #' @param pi_in (block sizes) Relative block
 #'   probabilities for incoming blocks. Must be positive, but do not need to
 #'   sum to one, as they will be normalized internally.
-#'   Must match the columns of `B`, or `k_in`. Defaults to `NULL`, in which
-#'   case `rep(1 / k_in, k_in)`, i.e. balanced incoming blocks, is used
-#'   unless `block_sizes_in` is specified. You can specify either `pi_in`
-#'   or `block_sizes_in`, but not both.
+#'   Must match the columns of `B`, or `k_in`. When specified, incoming
+#'   block memberships are sampled independently for each node with these
+#'   probabilities. Defaults to `NULL`, in which case the `block_sizes_in`
+#'   argument (or its balanced default) takes precedence. You can specify
+#'   either `pi_in` or `block_sizes_in`, but not both.
 #'
 #' @param shared_blocks (block memberships) Logical indicating whether each
 #'   node should belong to the same outgoing and incoming block. Defaults to
@@ -421,12 +421,15 @@ sample_block_memberships <- function(n, k, pi, block_sizes = NULL) {
 #' Block memberships are independent across nodes. Incoming and outgoing
 #' block memberships of the same node are also independent.
 #'
-#' Alternatively, you can fix the exact number of nodes in each outgoing
-#' (incoming) block with `block_sizes_out` (`block_sizes_in`). In this case
-#' the block memberships are a uniformly random assignment of nodes to
-#' blocks with exactly the requested block sizes, rather than independent
-#' categorical draws. Fixed block sizes are useful, for instance, to
-#' construct blockmodels with exactly repeated singular values.
+#' These categorical draws are used when `pi_out` (`pi_in`) is specified.
+#' Otherwise, the outgoing (incoming) block memberships are a uniformly
+#' random assignment of nodes to blocks with fixed block sizes: either
+#' exactly the sizes given in `block_sizes_out` (`block_sizes_in`), or, by
+#' default, block sizes that are as balanced as possible (every block gets
+#' `floor(n / k_out)` nodes, and the remainder is spread over the first
+#' blocks, one node each), as in [dcsbm()]. Fixed block sizes are useful,
+#' for instance, to construct blockmodels with exactly repeated singular
+#' values.
 #'
 #' ## Degree heterogeneity
 #'
@@ -776,7 +779,9 @@ directed_dcsbm <- function(
     # for sorting by block size later
     pi_out <- block_sizes_out / n
   } else if (is.null(pi_out)) {
-    pi_out <- rep(1 / k_out, k_out)
+    # default: blocks as balanced as possible, like `dcsbm()`
+    block_sizes_out <- balanced_block_sizes(n, k_out)
+    pi_out <- block_sizes_out / n
   }
 
   if (!is.null(block_sizes_in)) {
@@ -792,7 +797,9 @@ directed_dcsbm <- function(
     # for sorting by block size later
     pi_in <- block_sizes_in / n
   } else if (is.null(pi_in)) {
-    pi_in <- rep(1 / k_in, k_in)
+    # default: blocks as balanced as possible, like `dcsbm()`
+    block_sizes_in <- balanced_block_sizes(n, k_in)
+    pi_in <- block_sizes_in / n
   }
 
   if (length(pi_out) != nrow(B)) {
