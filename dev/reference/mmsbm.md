@@ -102,10 +102,12 @@ mmsbm(
 - force_pure:
 
   Logical indicating whether or not to force presence of "pure nodes"
-  (nodes that belong only to a single community) for the sake of
+  (nodes that belong only to a single block) for the sake of
   identifiability. To include pure nodes, block membership sampling
-  first proceeds as per usual. Then, after it is complete, `k` nodes are
-  chosen randomly as pure nodes, one for each block. Defaults to `TRUE`.
+  first proceeds as per usual. Then, after it is complete, `k` distinct
+  nodes are chosen uniformly at random, and the memberships of the `j`th
+  chosen node are overwritten so that it belongs to block `j` and to no
+  other block. Requires `n >= k`. Defaults to `TRUE`.
 
 - poisson_edges:
 
@@ -185,6 +187,7 @@ edge \\A\_{i,j}\\ is Poisson distributed with parameter
 Other stochastic block models:
 [`dcsbm()`](https://rohelab.github.io/fastRG/dev/reference/dcsbm.md),
 [`directed_dcsbm()`](https://rohelab.github.io/fastRG/dev/reference/directed_dcsbm.md),
+[`directed_planted_partition()`](https://rohelab.github.io/fastRG/dev/reference/directed_planted_partition.md),
 [`overlapping_sbm()`](https://rohelab.github.io/fastRG/dev/reference/overlapping_sbm.md),
 [`planted_partition()`](https://rohelab.github.io/fastRG/dev/reference/planted_partition.md),
 [`sbm()`](https://rohelab.github.io/fastRG/dev/reference/sbm.md)

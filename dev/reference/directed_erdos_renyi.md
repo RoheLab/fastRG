@@ -103,7 +103,8 @@ Other erdos renyi:
 [`erdos_renyi()`](https://rohelab.github.io/fastRG/dev/reference/erdos_renyi.md)
 
 Other directed graphs:
-[`directed_dcsbm()`](https://rohelab.github.io/fastRG/dev/reference/directed_dcsbm.md)
+[`directed_dcsbm()`](https://rohelab.github.io/fastRG/dev/reference/directed_dcsbm.md),
+[`directed_planted_partition()`](https://rohelab.github.io/fastRG/dev/reference/directed_planted_partition.md)
 
 ## Examples
 

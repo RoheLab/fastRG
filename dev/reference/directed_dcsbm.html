@@ -11,6 +11,9 @@ theta_in), the mixing matrix
 (via k_out and k_in, or B), and the block sizes (optional,
 either as relative block probabilities via pi_out and pi_in, or as
 exact block counts via block_sizes_out and block_sizes_in).
+By default, outgoing and incoming block memberships and degree
+parameters are unrelated (a co-factor model); use shared_blocks and
+shared_theta to tie them together.
 We provide defaults for most of these
 options to enable rapid exploration, or you can invest the effort
 for more control over the model parameters. We strongly recommend
@@ -23,6 +26,9 @@ theta_in), the mixing matrix
 (via k_out and k_in, or B), and the block sizes (optional,
 either as relative block probabilities via pi_out and pi_in, or as
 exact block counts via block_sizes_out and block_sizes_in).
+By default, outgoing and incoming block memberships and degree
+parameters are unrelated (a co-factor model); use shared_blocks and
+shared_theta to tie them together.
 We provide defaults for most of these
 options to enable rapid exploration, or you can invest the effort
 for more control over the model parameters. We strongly recommend
@@ -74,6 +80,9 @@ the degree-heterogeneity parameters (via <code>n</code> or <code>theta_out</code
 (via <code>k_out</code> and <code>k_in</code>, or <code>B</code>), and the block sizes (optional,
 either as relative block probabilities via <code>pi_out</code> and <code>pi_in</code>, or as
 exact block counts via <code>block_sizes_out</code> and <code>block_sizes_in</code>).
+By default, outgoing and incoming block memberships and degree
+parameters are unrelated (a co-factor model); use <code>shared_blocks</code> and
+<code>shared_theta</code> to tie them together.
 We provide defaults for most of these
 options to enable rapid exploration, or you can invest the effort
 for more control over the model parameters. We <strong>strongly recommend</strong>
@@ -97,6 +106,8 @@ sampling large, dense graphs.</p>
 <span>  block_sizes_in <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  pi_out <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  pi_in <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  shared_blocks <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  shared_theta <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  sort_nodes <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  force_identifiability <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  poisson_edges <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -116,7 +127,9 @@ parameters <code>theta_out</code> and <code>theta_in</code> by hand. When <code>
 a <code>LogNormal(2, 1)</code> distribution.
 This is subject to change, and may not be reproducible.
 <code>n</code> defaults to <code>NULL</code>. You must specify either <code>n</code>
-or <code>theta_out</code> and <code>theta_in</code> together, but not both.</p></dd>
+or <code>theta_out</code> and <code>theta_in</code> together, but not both.
+When <code>shared_theta = TRUE</code>, a single vector is generated and used
+for both <code>theta_out</code> and <code>theta_in</code>.</p></dd>
 
 
 <dt id="arg-theta-out">theta_out<a class="anchor" aria-label="anchor" href="#arg-theta-out"></a></dt>
@@ -242,6 +255,32 @@ argument (or its balanced default) takes precedence. You can specify
 either <code>pi_in</code> or <code>block_sizes_in</code>, but not both.</p></dd>
 
 
+<dt id="arg-shared-blocks">shared_blocks<a class="anchor" aria-label="anchor" href="#arg-shared-blocks"></a></dt>
+<dd><p>(block memberships) Logical indicating whether each
+node should belong to the same outgoing and incoming block. Defaults to
+<code>FALSE</code>, in which case outgoing and incoming block memberships are
+sampled independently. When <code>TRUE</code>, a single block membership vector is
+sampled and used for both, so that <code>z_out</code> and <code>z_in</code> are identical.
+This requires the same number of outgoing and incoming blocks, i.e.
+<code>B</code> must be square (or <code>k_out</code> must equal <code>k_in</code>; specifying only one
+of them is enough). It is enough to specify only one of <code>pi_out</code> and
+<code>pi_in</code> (or of <code>block_sizes_out</code> and <code>block_sizes_in</code>); if both are
+specified, they must agree.</p></dd>
+
+
+<dt id="arg-shared-theta">shared_theta<a class="anchor" aria-label="anchor" href="#arg-shared-theta"></a></dt>
+<dd><p>(degree heterogeneity) Logical indicating whether
+each node should have the same propensity to form outgoing and incoming
+edges. Defaults to <code>FALSE</code>, in which case <code>theta_out</code> and <code>theta_in</code>
+are unrelated. When <code>TRUE</code>, a single degree-heterogeneity vector is
+used for both <code>theta_out</code> and <code>theta_in</code>: either specify <code>n</code> (one
+vector is then generated at random), or only one of <code>theta_out</code> and
+<code>theta_in</code>. If you specify both <code>theta_out</code> and <code>theta_in</code>, they must
+be identical. Requires <code>shared_blocks = TRUE</code>, so that the stored
+<code>theta_out</code> and <code>theta_in</code> are identical (also after normalization
+by <code>force_identifiability</code>).</p></dd>
+
+
 <dt id="arg-sort-nodes">sort_nodes<a class="anchor" aria-label="anchor" href="#arg-sort-nodes"></a></dt>
 <dd><p>Logical indicating whether or not to sort the nodes
 so that they are grouped by block. Useful for plotting.
@@ -254,7 +293,19 @@ Additionally, <code>pi_out</code> and <code>pi_in</code> are sorted in increasin
 and the rows and columns of the <code>B</code> matrix are permuted to match the
 new orderings. When <code>block_sizes_out</code> or <code>block_sizes_in</code> are
 specified, they are permuted in the same way, so each block keeps
-exactly the requested number of nodes and its row (or column) of <code>B</code>.</p></dd>
+exactly the requested number of nodes and its row (or column) of <code>B</code>.</p>
+<p><strong>Rows and columns index different nodes.</strong> In the default co-factor
+model (<code>shared_blocks = FALSE</code>), the rows and the columns are permuted
+<em>independently</em>, so after sorting, row <code>i</code> and column <code>i</code> of the
+adjacency matrix are generally not the same node. In particular, the
+diagonal of <code>A</code> (self-loops, see <code>allow_self_loops</code>) does not mean
+"node <code>i</code> to itself", and <code>X[i, ]</code> and <code>Y[i, ]</code> describe different
+nodes. If you need rows and columns to index the same nodes, use
+<code>shared_blocks = TRUE</code> or <code>sort_nodes = FALSE</code>.</p>
+<p>When <code>shared_blocks = TRUE</code>, rows and columns are instead permuted
+together, so that row <code>i</code> and column <code>i</code> of the expected adjacency
+matrix refer to the same node: nodes are sorted by block, and then by
+decreasing <code>theta_out</code> and <code>theta_in</code> within each block.</p></dd>
 
 
 <dt id="arg-force-identifiability">force_identifiability<a class="anchor" aria-label="anchor" href="#arg-force-identifiability"></a></dt>
@@ -287,27 +338,33 @@ self-loops, and these are then removed after the fact.</p></dd>
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A <code>directed_dcsbm</code> S3 object, a subclass of the
 <code><a href="directed_factor_model.html">directed_factor_model()</a></code> with the following additional
-fields:</p><ul><li><p><code>theta_out</code>: A numeric vector of incoming community
+fields:</p><ul><li><p><code>theta_out</code>: A numeric vector of outgoing
 degree-heterogeneity parameters.</p></li>
-<li><p><code>theta_in</code>: A numeric vector of outgoing community
+<li><p><code>theta_in</code>: A numeric vector of incoming
 degree-heterogeneity parameters.</p></li>
-<li><p><code>z_out</code>: The incoming community memberships of each node,
+<li><p><code>z_out</code>: The outgoing community memberships of each node,
 as a <code><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor()</a></code>. The factor will have <code>k_out</code> levels,
-where <code>k_out</code> is the number of incoming
+where <code>k_out</code> is the number of outgoing
 communities in the stochastic blockmodel. There will not
 always necessarily be observed nodes in each community.</p></li>
-<li><p><code>z_in</code>: The outgoing community memberships of each node,
+<li><p><code>z_in</code>: The incoming community memberships of each node,
 as a <code><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor()</a></code>. The factor will have <code>k_in</code> levels,
-where <code>k_in</code> is the number of outgoing
+where <code>k_in</code> is the number of incoming
 communities in the stochastic blockmodel. There will not
 always necessarily be observed nodes in each community.</p></li>
-<li><p><code>pi_out</code>: Sampling probabilities for each incoming
+<li><p><code>pi_out</code>: Sampling probabilities for each outgoing
 community.</p></li>
-<li><p><code>pi_in</code>: Sampling probabilities for each outgoing
+<li><p><code>pi_in</code>: Sampling probabilities for each incoming
 community.</p></li>
 <li><p><code>sorted</code>: Logical indicating where nodes are arranged by
 block (and additionally by degree heterogeneity parameter)
 within each block.</p></li>
+<li><p><code>shared_blocks</code>: Logical indicating whether outgoing and incoming
+block memberships are shared, in which case <code>z_out</code> and <code>z_in</code>
+are identical.</p></li>
+<li><p><code>shared_theta</code>: Logical indicating whether outgoing and incoming
+degree-heterogeneity parameters are shared, in which case <code>theta_out</code>
+and <code>theta_in</code> are identical.</p></li>
 </ul></div>
     <div class="section level2">
     <h2 id="generative-model">Generative Model<a class="anchor" aria-label="anchor" href="#generative-model"></a></h2>
@@ -377,15 +434,53 @@ $$</p>
 
     </div>
     <div class="section level2">
+    <h2 id="co-factor-models-versus-shared-blocks-and-degree-heterogeneity">Co-factor models versus shared blocks and degree heterogeneity<a class="anchor" aria-label="anchor" href="#co-factor-models-versus-shared-blocks-and-degree-heterogeneity"></a></h2>
+    <p>By default (<code>shared_blocks = FALSE</code> and <code>shared_theta = FALSE</code>),
+<code>directed_dcsbm()</code> is a <em>co-factor</em> model: every node has an outgoing
+block \(z_{out}\) and degree parameter \(\theta_{out}\) that govern
+the edges it sends (the rows of \(A\)), and a separate incoming block
+\(z_{in}\) and degree parameter \(\theta_{in}\) that govern the edges
+it receives (the columns of \(A\)). These are drawn independently, so
+the communities a node sends edges from and receives edges into are
+unrelated, and the two sets of communities can even have different
+numbers of blocks. This is the model targeted by co-clustering methods
+that estimate separate sending and receiving communities.</p>
+<p>In the co-factor model, <code>sort_nodes = TRUE</code> (the default) sorts the rows
+and the columns of \(A\) <em>independently</em>, so row \(i\) and column
+\(i\) are generally not the same node. Consequently the diagonal of
+\(A\), and so the self-loops controlled by <code>allow_self_loops</code>, is not
+meaningful as "node \(i\) to itself": entry \(A_{ii}\) connects the
+\(i\)-th sender to the \(i\)-th receiver in their respective
+orderings. If you need rows and columns to index the same nodes (for
+example, to interpret self-loops or to read the graph as a directed
+graph on a single set of nodes), use <code>shared_blocks = TRUE</code> or
+<code>sort_nodes = FALSE</code>.</p>
+<p>Often it is more natural to think of each node as belonging to a single
+community, which shapes both the edges it sends and the edges it
+receives. Setting <code>shared_blocks = TRUE</code> draws one membership vector
+\(z\) with \(z_{out} = z_{in} = z\), so that
+\(E[A_{ij}] = \theta_{out, i} B_{z_i, z_j} \theta_{in, j}\), where
+an asymmetric <code>B</code> encodes directed relationships between the communities.
+With shared blocks you can additionally set <code>shared_theta = TRUE</code>, which
+uses one degree-heterogeneity vector \(\theta\) for both
+\(\theta_{out}\) and \(\theta_{in}\), so nodes that send many edges
+also tend to receive many edges. (<code>shared_theta = TRUE</code> requires
+<code>shared_blocks = TRUE</code>.) With shared blocks, <code>sort_nodes = TRUE</code>
+permutes rows and columns together, so that row <code>i</code> and column <code>i</code> of
+\(A\) always refer to the same node.</p>
+    </div>
+    <div class="section level2">
     <h2 id="see-also">See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
     <div class="dont-index"><p>Other stochastic block models:
 <code><a href="dcsbm.html">dcsbm()</a></code>,
+<code><a href="directed_planted_partition.html">directed_planted_partition()</a></code>,
 <code><a href="mmsbm.html">mmsbm()</a></code>,
 <code><a href="overlapping_sbm.html">overlapping_sbm()</a></code>,
 <code><a href="planted_partition.html">planted_partition()</a></code>,
 <code><a href="sbm.html">sbm()</a></code></p>
 <p>Other directed graphs:
-<code><a href="directed_erdos_renyi.html">directed_erdos_renyi()</a></code></p></div>
+<code><a href="directed_erdos_renyi.html">directed_erdos_renyi()</a></code>,
+<code><a href="directed_planted_partition.html">directed_planted_partition()</a></code></p></div>
     </div>
 
     <div class="section level2">
@@ -410,8 +505,10 @@ $$</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -----------------------------------------------</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Nodes (n): 100 (arranged by block)</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Incoming Blocks (k_out): 5</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Outgoing Blocks (k_in): 8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Outgoing Blocks (k_out): 5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Incoming Blocks (k_in): 8</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Shared blocks: FALSE (z_out and z_in are independent)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Shared degree heterogeneity: FALSE (theta_out and theta_in are separate)</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Traditional DCSBM parameterization:</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
@@ -432,8 +529,8 @@ $$</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Allow self loops: TRUE </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 100</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Expected in degree: 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected out degree: 1</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected in degree: 1</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> Expected density: 0.01</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">population_svd</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/RSpectra/man/svds.html" class="external-link">svds</a></span><span class="op">(</span><span class="va">ddcsbm</span><span class="op">)</span></span></span>
@@ -459,6 +556,57 @@ $$</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  1  2  3  4  5  6  7  8 </span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>  5  5 10 10 15 15 20 20 </span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># each node belongs to the same outgoing and incoming community, and has</span></span></span>
+<span class="r-in"><span><span class="co"># the same propensity to send and receive edges</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">B_square</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">0.1</span>, nrow <span class="op">=</span> <span class="fl">4</span>, ncol <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="va">B_square</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fl">0.8</span></span></span>
+<span class="r-in"><span><span class="va">B_square</span><span class="op">[</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fl">0.5</span> <span class="co"># block 1 sends many edges to block 2</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">shared_ddcsbm</span> <span class="op">&lt;-</span> <span class="fu">directed_dcsbm</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  theta_out <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Exponential.html" class="external-link">rexp</a></span><span class="op">(</span><span class="fl">100</span>, <span class="fl">1</span> <span class="op">/</span> <span class="fl">3</span><span class="op">)</span> <span class="op">+</span> <span class="fl">1</span>,</span></span>
+<span class="r-in"><span>  B <span class="op">=</span> <span class="va">B_square</span>,</span></span>
+<span class="r-in"><span>  shared_blocks <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>  shared_theta <span class="op">=</span> <span class="cn">TRUE</span>,</span></span>
+<span class="r-in"><span>  expected_density <span class="op">=</span> <span class="fl">0.05</span></span></span>
+<span class="r-in"><span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">shared_ddcsbm</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Directed Degree-Corrected Stochastic Blockmodel</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -----------------------------------------------</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Nodes (n): 100 (arranged by block)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Outgoing Blocks (k_out): 4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Incoming Blocks (k_in): 4</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Shared blocks: TRUE (z_out and z_in are identical)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Shared degree heterogeneity: TRUE (theta_out and theta_in are identical)</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Traditional DCSBM parameterization:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Block memberships (z_out): 100 [factor] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Block memberships (z_in): 100 [factor] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Degree heterogeneity (theta_out): 100 [numeric] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Degree heterogeneity (theta_in): 100 [numeric] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Block probabilities (pi_out): 4 [numeric] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Block probabilities (pi_in): 4 [numeric] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Factor model parameterization:</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> X: 100 x 4 [dgCMatrix] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> S: 4 x 4 [dgeMatrix] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Y: 100 x 4 [dgCMatrix] </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Poisson edges: TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Allow self loops: TRUE </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected edges: 500</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected out degree: 5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected in degree: 5</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Expected density: 0.05</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/identical.html" class="external-link">identical</a></span><span class="op">(</span><span class="va">shared_ddcsbm</span><span class="op">$</span><span class="va">z_out</span>, <span class="va">shared_ddcsbm</span><span class="op">$</span><span class="va">z_in</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

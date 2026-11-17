@@ -149,6 +149,7 @@ themselves don't have any impact apart from this.
 Other stochastic block models:
 [`dcsbm()`](https://rohelab.github.io/fastRG/dev/reference/dcsbm.md),
 [`directed_dcsbm()`](https://rohelab.github.io/fastRG/dev/reference/directed_dcsbm.md),
+[`directed_planted_partition()`](https://rohelab.github.io/fastRG/dev/reference/directed_planted_partition.md),
 [`mmsbm()`](https://rohelab.github.io/fastRG/dev/reference/mmsbm.md),
 [`overlapping_sbm()`](https://rohelab.github.io/fastRG/dev/reference/overlapping_sbm.md),
 [`sbm()`](https://rohelab.github.io/fastRG/dev/reference/sbm.md)
@@ -176,16 +177,19 @@ lazy_pp <- planted_partition(
 )
 
 lazy_pp
-#> Undirected Stochastic Blockmodel
-#> --------------------------------
+#> Undirected Planted Partition Model
+#> ----------------------------------
 #> 
 #> Nodes (n): 100 (arranged by block)
 #> Blocks (k): 5
 #> 
-#> Traditional SBM parameterization:
+#> Traditional planted partition parameterization:
 #> 
+#> Within block edge probability: 0.1 
+#> Between block edge probability: 0.01 
 #> Block memberships (z): 100 [factor] 
 #> Block probabilities (pi): 5 [numeric] 
+#> 
 #> Factor model parameterization:
 #> 
 #> X: 100 x 5 [dgCMatrix] 

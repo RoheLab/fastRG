@@ -282,8 +282,7 @@ Journal of Machine Learning Research; 19(77):1-13, 2018.
 - [`dcsbm()`](https://rohelab.github.io/fastRG/dev/reference/dcsbm.md) :
   Create an undirected degree corrected stochastic blockmodel object
 - [`overlapping_sbm()`](https://rohelab.github.io/fastRG/dev/reference/overlapping_sbm.md)
-  : Create an undirected overlapping degree corrected stochastic
-  blockmodel object
+  : Create an undirected overlapping stochastic blockmodel object
 - [`undirected_factor_model()`](https://rohelab.github.io/fastRG/dev/reference/undirected_factor_model.md)
   : Create an undirected factor model graph
 - [`mmsbm()`](https://rohelab.github.io/fastRG/dev/reference/mmsbm.md) :
@@ -294,6 +293,8 @@ Journal of Machine Learning Research; 19(77):1-13, 2018.
 
 - [`directed_erdos_renyi()`](https://rohelab.github.io/fastRG/dev/reference/directed_erdos_renyi.md)
   : Create an directed erdos renyi object
+- [`directed_planted_partition()`](https://rohelab.github.io/fastRG/dev/reference/directed_planted_partition.md)
+  : Create a directed planted partition object
 - [`directed_dcsbm()`](https://rohelab.github.io/fastRG/dev/reference/directed_dcsbm.md)
   : Create a directed degree corrected stochastic blockmodel object
 - [`directed_factor_model()`](https://rohelab.github.io/fastRG/dev/reference/directed_factor_model.md)

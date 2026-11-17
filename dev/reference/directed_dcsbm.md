@@ -5,12 +5,14 @@ the degree-heterogeneity parameters (via `n` or `theta_out` and
 `theta_in`), the mixing matrix (via `k_out` and `k_in`, or `B`), and the
 block sizes (optional, either as relative block probabilities via
 `pi_out` and `pi_in`, or as exact block counts via `block_sizes_out` and
-`block_sizes_in`). We provide defaults for most of these options to
-enable rapid exploration, or you can invest the effort for more control
-over the model parameters. We **strongly recommend** setting the
-`expected_out_degree`, `expected_in_degree`, or `expected_density`
-argument to avoid large memory allocations associated with sampling
-large, dense graphs.
+`block_sizes_in`). By default, outgoing and incoming block memberships
+and degree parameters are unrelated (a co-factor model); use
+`shared_blocks` and `shared_theta` to tie them together. We provide
+defaults for most of these options to enable rapid exploration, or you
+can invest the effort for more control over the model parameters. We
+**strongly recommend** setting the `expected_out_degree`,
+`expected_in_degree`, or `expected_density` argument to avoid large
+memory allocations associated with sampling large, dense graphs.
 
 ## Usage
 
@@ -27,6 +29,8 @@ directed_dcsbm(
   block_sizes_in = NULL,
   pi_out = NULL,
   pi_in = NULL,
+  shared_blocks = FALSE,
+  shared_theta = FALSE,
   sort_nodes = TRUE,
   force_identifiability = TRUE,
   poisson_edges = TRUE,
@@ -44,7 +48,9 @@ directed_dcsbm(
   and `theta_in` are randomly generated from a `LogNormal(2, 1)`
   distribution. This is subject to change, and may not be reproducible.
   `n` defaults to `NULL`. You must specify either `n` or `theta_out` and
-  `theta_in` together, but not both.
+  `theta_in` together, but not both. When `shared_theta = TRUE`, a
+  single vector is generated and used for both `theta_out` and
+  `theta_in`.
 
 - theta_out:
 
@@ -166,6 +172,32 @@ directed_dcsbm(
   `block_sizes_in` argument (or its balanced default) takes precedence.
   You can specify either `pi_in` or `block_sizes_in`, but not both.
 
+- shared_blocks:
+
+  (block memberships) Logical indicating whether each node should belong
+  to the same outgoing and incoming block. Defaults to `FALSE`, in which
+  case outgoing and incoming block memberships are sampled
+  independently. When `TRUE`, a single block membership vector is
+  sampled and used for both, so that `z_out` and `z_in` are identical.
+  This requires the same number of outgoing and incoming blocks, i.e.
+  `B` must be square (or `k_out` must equal `k_in`; specifying only one
+  of them is enough). It is enough to specify only one of `pi_out` and
+  `pi_in` (or of `block_sizes_out` and `block_sizes_in`); if both are
+  specified, they must agree.
+
+- shared_theta:
+
+  (degree heterogeneity) Logical indicating whether each node should
+  have the same propensity to form outgoing and incoming edges. Defaults
+  to `FALSE`, in which case `theta_out` and `theta_in` are unrelated.
+  When `TRUE`, a single degree-heterogeneity vector is used for both
+  `theta_out` and `theta_in`: either specify `n` (one vector is then
+  generated at random), or only one of `theta_out` and `theta_in`. If
+  you specify both `theta_out` and `theta_in`, they must be identical.
+  Requires `shared_blocks = TRUE`, so that the stored `theta_out` and
+  `theta_in` are identical (also after normalization by
+  `force_identifiability`).
+
 - sort_nodes:
 
   Logical indicating whether or not to sort the nodes so that they are
@@ -179,6 +211,20 @@ directed_dcsbm(
   match the new orderings. When `block_sizes_out` or `block_sizes_in`
   are specified, they are permuted in the same way, so each block keeps
   exactly the requested number of nodes and its row (or column) of `B`.
+
+  **Rows and columns index different nodes.** In the default co-factor
+  model (`shared_blocks = FALSE`), the rows and the columns are permuted
+  *independently*, so after sorting, row `i` and column `i` of the
+  adjacency matrix are generally not the same node. In particular, the
+  diagonal of `A` (self-loops, see `allow_self_loops`) does not mean
+  "node `i` to itself", and `X[i, ]` and `Y[i, ]` describe different
+  nodes. If you need rows and columns to index the same nodes, use
+  `shared_blocks = TRUE` or `sort_nodes = FALSE`.
+
+  When `shared_blocks = TRUE`, rows and columns are instead permuted
+  together, so that row `i` and column `i` of the expected adjacency
+  matrix refer to the same node: nodes are sorted by block, and then by
+  decreasing `theta_out` and `theta_in` within each block.
 
 - force_identifiability:
 
@@ -210,30 +256,38 @@ A `directed_dcsbm` S3 object, a subclass of the
 [`directed_factor_model()`](https://rohelab.github.io/fastRG/dev/reference/directed_factor_model.md)
 with the following additional fields:
 
-- `theta_out`: A numeric vector of incoming community
-  degree-heterogeneity parameters.
+- `theta_out`: A numeric vector of outgoing degree-heterogeneity
+  parameters.
 
-- `theta_in`: A numeric vector of outgoing community
-  degree-heterogeneity parameters.
+- `theta_in`: A numeric vector of incoming degree-heterogeneity
+  parameters.
 
-- `z_out`: The incoming community memberships of each node, as a
+- `z_out`: The outgoing community memberships of each node, as a
   [`factor()`](https://rdrr.io/r/base/factor.html). The factor will have
-  `k_out` levels, where `k_out` is the number of incoming communities in
+  `k_out` levels, where `k_out` is the number of outgoing communities in
   the stochastic blockmodel. There will not always necessarily be
   observed nodes in each community.
 
-- `z_in`: The outgoing community memberships of each node, as a
+- `z_in`: The incoming community memberships of each node, as a
   [`factor()`](https://rdrr.io/r/base/factor.html). The factor will have
-  `k_in` levels, where `k_in` is the number of outgoing communities in
+  `k_in` levels, where `k_in` is the number of incoming communities in
   the stochastic blockmodel. There will not always necessarily be
   observed nodes in each community.
 
-- `pi_out`: Sampling probabilities for each incoming community.
+- `pi_out`: Sampling probabilities for each outgoing community.
 
-- `pi_in`: Sampling probabilities for each outgoing community.
+- `pi_in`: Sampling probabilities for each incoming community.
 
 - `sorted`: Logical indicating where nodes are arranged by block (and
   additionally by degree heterogeneity parameter) within each block.
+
+- `shared_blocks`: Logical indicating whether outgoing and incoming
+  block memberships are shared, in which case `z_out` and `z_in` are
+  identical.
+
+- `shared_theta`: Logical indicating whether outgoing and incoming
+  degree-heterogeneity parameters are shared, in which case `theta_out`
+  and `theta_in` are identical.
 
 ## Generative Model
 
@@ -291,17 +345,56 @@ independently according to a Poisson distribution with parameters
 
 \$\$ \lambda = \theta\_{in} \* B\_{x, y} \* \theta\_{out}. \$\$
 
+## Co-factor models versus shared blocks and degree heterogeneity
+
+By default (`shared_blocks = FALSE` and `shared_theta = FALSE`),
+`directed_dcsbm()` is a *co-factor* model: every node has an outgoing
+block \\z\_{out}\\ and degree parameter \\\theta\_{out}\\ that govern
+the edges it sends (the rows of \\A\\), and a separate incoming block
+\\z\_{in}\\ and degree parameter \\\theta\_{in}\\ that govern the edges
+it receives (the columns of \\A\\). These are drawn independently, so
+the communities a node sends edges from and receives edges into are
+unrelated, and the two sets of communities can even have different
+numbers of blocks. This is the model targeted by co-clustering methods
+that estimate separate sending and receiving communities.
+
+In the co-factor model, `sort_nodes = TRUE` (the default) sorts the rows
+and the columns of \\A\\ *independently*, so row \\i\\ and column \\i\\
+are generally not the same node. Consequently the diagonal of \\A\\, and
+so the self-loops controlled by `allow_self_loops`, is not meaningful as
+"node \\i\\ to itself": entry \\A\_{ii}\\ connects the \\i\\-th sender
+to the \\i\\-th receiver in their respective orderings. If you need rows
+and columns to index the same nodes (for example, to interpret
+self-loops or to read the graph as a directed graph on a single set of
+nodes), use `shared_blocks = TRUE` or `sort_nodes = FALSE`.
+
+Often it is more natural to think of each node as belonging to a single
+community, which shapes both the edges it sends and the edges it
+receives. Setting `shared_blocks = TRUE` draws one membership vector
+\\z\\ with \\z\_{out} = z\_{in} = z\\, so that \\E\[A\_{ij}\] =
+\theta\_{out, i} B\_{z_i, z_j} \theta\_{in, j}\\, where an asymmetric
+`B` encodes directed relationships between the communities. With shared
+blocks you can additionally set `shared_theta = TRUE`, which uses one
+degree-heterogeneity vector \\\theta\\ for both \\\theta\_{out}\\ and
+\\\theta\_{in}\\, so nodes that send many edges also tend to receive
+many edges. (`shared_theta = TRUE` requires `shared_blocks = TRUE`.)
+With shared blocks, `sort_nodes = TRUE` permutes rows and columns
+together, so that row `i` and column `i` of \\A\\ always refer to the
+same node.
+
 ## See also
 
 Other stochastic block models:
 [`dcsbm()`](https://rohelab.github.io/fastRG/dev/reference/dcsbm.md),
+[`directed_planted_partition()`](https://rohelab.github.io/fastRG/dev/reference/directed_planted_partition.md),
 [`mmsbm()`](https://rohelab.github.io/fastRG/dev/reference/mmsbm.md),
 [`overlapping_sbm()`](https://rohelab.github.io/fastRG/dev/reference/overlapping_sbm.md),
 [`planted_partition()`](https://rohelab.github.io/fastRG/dev/reference/planted_partition.md),
 [`sbm()`](https://rohelab.github.io/fastRG/dev/reference/sbm.md)
 
 Other directed graphs:
-[`directed_erdos_renyi()`](https://rohelab.github.io/fastRG/dev/reference/directed_erdos_renyi.md)
+[`directed_erdos_renyi()`](https://rohelab.github.io/fastRG/dev/reference/directed_erdos_renyi.md),
+[`directed_planted_partition()`](https://rohelab.github.io/fastRG/dev/reference/directed_planted_partition.md)
 
 ## Examples
 
@@ -326,8 +419,10 @@ ddcsbm
 #> -----------------------------------------------
 #> 
 #> Nodes (n): 100 (arranged by block)
-#> Incoming Blocks (k_out): 5
-#> Outgoing Blocks (k_in): 8
+#> Outgoing Blocks (k_out): 5
+#> Incoming Blocks (k_in): 8
+#> Shared blocks: FALSE (z_out and z_in are independent)
+#> Shared degree heterogeneity: FALSE (theta_out and theta_in are separate)
 #> 
 #> Traditional DCSBM parameterization:
 #> 
@@ -348,8 +443,8 @@ ddcsbm
 #> Allow self loops: TRUE 
 #> 
 #> Expected edges: 100
-#> Expected in degree: 1
 #> Expected out degree: 1
+#> Expected in degree: 1
 #> Expected density: 0.01
 
 population_svd <- svds(ddcsbm)
@@ -375,4 +470,55 @@ table(ddcsbm_explicit_block_sizes$z_in)
 #> 
 #>  1  2  3  4  5  6  7  8 
 #>  5  5 10 10 15 15 20 20 
+
+# each node belongs to the same outgoing and incoming community, and has
+# the same propensity to send and receive edges
+
+B_square <- matrix(0.1, nrow = 4, ncol = 4)
+diag(B_square) <- 0.8
+B_square[1, 2] <- 0.5 # block 1 sends many edges to block 2
+
+shared_ddcsbm <- directed_dcsbm(
+  theta_out = rexp(100, 1 / 3) + 1,
+  B = B_square,
+  shared_blocks = TRUE,
+  shared_theta = TRUE,
+  expected_density = 0.05
+)
+
+shared_ddcsbm
+#> Directed Degree-Corrected Stochastic Blockmodel
+#> -----------------------------------------------
+#> 
+#> Nodes (n): 100 (arranged by block)
+#> Outgoing Blocks (k_out): 4
+#> Incoming Blocks (k_in): 4
+#> Shared blocks: TRUE (z_out and z_in are identical)
+#> Shared degree heterogeneity: TRUE (theta_out and theta_in are identical)
+#> 
+#> Traditional DCSBM parameterization:
+#> 
+#> Block memberships (z_out): 100 [factor] 
+#> Block memberships (z_in): 100 [factor] 
+#> Degree heterogeneity (theta_out): 100 [numeric] 
+#> Degree heterogeneity (theta_in): 100 [numeric] 
+#> Block probabilities (pi_out): 4 [numeric] 
+#> Block probabilities (pi_in): 4 [numeric] 
+#> 
+#> Factor model parameterization:
+#> 
+#> X: 100 x 4 [dgCMatrix] 
+#> S: 4 x 4 [dgeMatrix] 
+#> Y: 100 x 4 [dgCMatrix] 
+#> 
+#> Poisson edges: TRUE 
+#> Allow self loops: TRUE 
+#> 
+#> Expected edges: 500
+#> Expected out degree: 5
+#> Expected in degree: 5
+#> Expected density: 0.05
+
+identical(shared_ddcsbm$z_out, shared_ddcsbm$z_in)
+#> [1] TRUE
 ```

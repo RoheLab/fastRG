@@ -168,10 +168,12 @@ of the <code>B</code> matrix are permuted to match the new order of <code>pi</co
 
 <dt id="arg-force-pure">force_pure<a class="anchor" aria-label="anchor" href="#arg-force-pure"></a></dt>
 <dd><p>Logical indicating whether or not to force presence of
-"pure nodes" (nodes that belong only to a single community) for the sake
+"pure nodes" (nodes that belong only to a single block) for the sake
 of identifiability. To include pure nodes, block membership sampling
-first proceeds as per usual. Then, after it is complete, <code>k</code> nodes
-are chosen randomly as pure nodes, one for each block. Defaults to <code>TRUE</code>.</p></dd>
+first proceeds as per usual. Then, after it is complete, <code>k</code> distinct
+nodes are chosen uniformly at random, and the memberships of the
+<code>j</code>th chosen node are overwritten so that it belongs to block <code>j</code>
+and to no other block. Requires <code>n &gt;= k</code>. Defaults to <code>TRUE</code>.</p></dd>
 
 
 <dt id="arg-poisson-edges">poisson_edges<a class="anchor" aria-label="anchor" href="#arg-poisson-edges"></a></dt>
@@ -258,6 +260,7 @@ $$</p>
     <div class="dont-index"><p>Other stochastic block models:
 <code><a href="dcsbm.html">dcsbm()</a></code>,
 <code><a href="directed_dcsbm.html">directed_dcsbm()</a></code>,
+<code><a href="directed_planted_partition.html">directed_planted_partition()</a></code>,
 <code><a href="overlapping_sbm.html">overlapping_sbm()</a></code>,
 <code><a href="planted_partition.html">planted_partition()</a></code>,
 <code><a href="sbm.html">sbm()</a></code></p>

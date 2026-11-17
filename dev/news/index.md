@@ -2,6 +2,72 @@
 
 ## fastRG (development version)
 
+- [`overlapping_sbm()`](https://rohelab.github.io/fastRG/dev/reference/overlapping_sbm.md)
+  bug fixes:
+
+  - `poisson_edges` and `allow_self_loops` were silently ignored, so
+    every overlapping SBM was a Poisson graph with self-loops. They are
+    now passed on, and Bernoulli overlapping SBMs follow the “noisy-OR”
+    edge probability `1 - prod (1 - B[a, b])^(Z[i, a] Z[j, b])`.
+  - Specifying both `k` and `B` is now an error, as in
+    [`dcsbm()`](https://rohelab.github.io/fastRG/dev/reference/dcsbm.md).
+  - The invertibility error now says that it is the symmetrized and
+    rescaled `B` (i.e. `S`) that must be invertible.
+  - [`print()`](https://rdrr.io/r/base/print.html) now says “not sorted”
+    for unsorted models, and no longer calls the model degree-corrected.
+
+- [`overlapping_sbm()`](https://rohelab.github.io/fastRG/dev/reference/overlapping_sbm.md)
+  now puts every node in at least one block. A node that joins no block
+  in the independent Bernoulli draws is assigned to exactly one block,
+  chosen with probability proportional to `pi`. Previously, with the
+  default `pi`, about a third of nodes belonged to no block and had no
+  edges. `pi` must now have at least one positive element. Graphs
+  sampled with a given seed will differ from previous versions.
+
+- New
+  [`directed_planted_partition()`](https://rohelab.github.io/fastRG/dev/reference/directed_planted_partition.md),
+  a directed stochastic blockmodel with `k` outgoing and `k` incoming
+  blocks whose mixing matrix has `within_block` (or `a / n`) on the
+  diagonal and `between_block` (or `b / n`) off the diagonal. Outgoing
+  and incoming communities are independent by default; set
+  `shared_blocks = TRUE` to give each node a single community. Supports
+  `block_sizes` / `pi`, `sort_nodes`, `poisson_edges`,
+  `allow_self_loops` and expected degree / density scaling. Like
+  [`planted_partition()`](https://rohelab.github.io/fastRG/dev/reference/planted_partition.md),
+  blocks are as balanced as possible by default
+  ([\#10](https://github.com/RoheLab/fastRG/issues/10)).
+
+- [`planted_partition()`](https://rohelab.github.io/fastRG/dev/reference/planted_partition.md)
+  now returns an object with class `undirected_planted_partition` (on
+  top of `undirected_sbm`), so it prints with its own print method,
+  which now shows the within- and between-block edge probabilities. Its
+  validator is now run: `within_block` and `between_block` (or `a / n`
+  and `b / n`) must be scalars between zero and one, as documented, and
+  `B` must have a constant diagonal and off-diagonal. Sampling is
+  unchanged.
+
+- [`directed_dcsbm()`](https://rohelab.github.io/fastRG/dev/reference/directed_dcsbm.md)
+  gains `shared_blocks` and `shared_theta` arguments, both `FALSE` by
+  default. `shared_blocks = TRUE` samples one block membership vector
+  and uses it for both outgoing and incoming blocks (`z_out` and `z_in`
+  are identical, `B` must be square). `shared_theta = TRUE` uses one
+  degree-heterogeneity vector for both `theta_out` and `theta_in`, and
+  requires `shared_blocks = TRUE`. With shared blocks, `sort_nodes`
+  permutes rows and columns together so that row `i` and column `i`
+  refer to the same node. The defaults keep the co-factor model. The
+  print method now shows whether blocks and degree parameters are
+  shared, and labels outgoing/incoming blocks and degrees correctly
+  ([\#40](https://github.com/RoheLab/fastRG/issues/40)).
+
+- The
+  [`directed_dcsbm()`](https://rohelab.github.io/fastRG/dev/reference/directed_dcsbm.md)
+  documentation now states that in the default co-factor model,
+  `sort_nodes = TRUE` sorts rows and columns independently, so row `i`
+  and column `i` are generally not the same node and self-loops are not
+  meaningful as “node `i` to itself”. Use `shared_blocks = TRUE` or
+  `sort_nodes = FALSE` if rows and columns must index the same nodes
+  ([\#40](https://github.com/RoheLab/fastRG/issues/40)).
+
 - [`directed_dcsbm()`](https://rohelab.github.io/fastRG/dev/reference/directed_dcsbm.md)
   gains `block_sizes_out` and `block_sizes_in` arguments to specify the
   exact number of nodes in each outgoing and incoming block, as an
@@ -58,6 +124,14 @@
   [\#31](https://github.com/RoheLab/fastRG/issues/31). Graphs sampled
   with a given seed will differ from previous versions
   ([\#46](https://github.com/RoheLab/fastRG/issues/46)).
+
+- Finished the documentation for
+  [`overlapping_sbm()`](https://rohelab.github.io/fastRG/dev/reference/overlapping_sbm.md):
+  it now describes the generative model (binary block memberships,
+  additive edge rates), identifiability conditions, related models
+  (OSBM, OCCAM), every argument and the returned fields, and has updated
+  references and examples
+  ([\#42](https://github.com/RoheLab/fastRG/issues/42)).
 
 ## fastRG 0.4.0
 

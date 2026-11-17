@@ -198,6 +198,7 @@ each edge \\A\_{i,j}\\ is Poisson distributed with parameter
 
 Other stochastic block models:
 [`directed_dcsbm()`](https://rohelab.github.io/fastRG/dev/reference/directed_dcsbm.md),
+[`directed_planted_partition()`](https://rohelab.github.io/fastRG/dev/reference/directed_planted_partition.md),
 [`mmsbm()`](https://rohelab.github.io/fastRG/dev/reference/mmsbm.md),
 [`overlapping_sbm()`](https://rohelab.github.io/fastRG/dev/reference/overlapping_sbm.md),
 [`planted_partition()`](https://rohelab.github.io/fastRG/dev/reference/planted_partition.md),
