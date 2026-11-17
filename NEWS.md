@@ -1,5 +1,13 @@
 # fastRG (development version)
 
+- **Breaking change:** fixed `expected_edges()` and `expected_density()` double counting edges in undirected models. Since 0.4.0 fixed the edge over-sampling in #19, both have been twice the true value, because each undirected edge appears in `A` twice (as `A[i, j]` and `A[j, i]`). As a result, **specifying `expected_density = d` for any undirected model produced graphs with density about `d / 2`**, and print methods reported twice the number of edges actually sampled.
+  - `expected_edges()` is now the expected number of undirected edges, counting self-loops once: `(sum(P) + trace(P)) / 2` for `P = X S X'`.
+  - `expected_density()` is now the expected number of edges between distinct nodes divided by `choose(n, 2)`: `(sum(P) - trace(P)) / (n (n - 1))`.
+  - `expected_degree()`, `expected_degrees()`, sampling and population spectra were already correct and are unchanged, as are all directed models.
+  - Undirected models built with `expected_density` now sample twice as many edges as before, so graphs sampled with a given seed will differ.
+
+- `erdos_renyi()` and `directed_erdos_renyi()` now error when neither `p` nor a scaling argument such as `expected_degree` or `expected_density` is given. Previously the check never fired, because it looked up the generic functions `expected_degree()` (or `expected_in_degree()` / `expected_out_degree()`) instead of the arguments, and the model silently used `p = 0.5`.
+
 - fastRG now requires R >= 4.4.0. irlba 2.4.1, which fastRG uses in tests and vignettes, fails on earlier R versions because `is.atomic(NULL)` changed in R 4.4.0.
 
 - Fixed undersampling of self-loops in undirected models. Since 0.4.0, the diagonal of `A` was sampled at half the intended rate, so `E[A | X, S]` did not equal `X S X'` on the diagonal. `sample_edgelist.undirected_factor_model()` now adds independent Poisson self-loops at the missing rate when `allow_self_loops = TRUE`, so `E[A | X, S] = X S X'` holds exactly. This only affects sampling: `S`, `expected_*()` and population spectra are unchanged, and so are the off-diagonal fixes from #19 and #31. Graphs sampled with a given seed will differ from previous versions (#46).

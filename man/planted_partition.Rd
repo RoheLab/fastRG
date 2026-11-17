@@ -34,7 +34,9 @@ of the graph. Specifying \code{expected_degree} simply rescales \code{S}
 to achieve this. Defaults to \code{NULL}. Do not specify both
 \code{expected_degree} and \code{expected_density} at the same time.}
     \item{\code{expected_density}}{If specified, the desired expected density
-of the graph. Specifying \code{expected_density} simply rescales \code{S}
+of the graph, that is, the expected number of edges between distinct
+nodes divided by \code{choose(n, 2)}. See \code{\link[=expected_density]{expected_density()}}.
+Specifying \code{expected_density} simply rescales \code{S}
 to achieve this. Defaults to \code{NULL}. Do not specify both
 \code{expected_degree} and \code{expected_density} at the same time.}
   }}

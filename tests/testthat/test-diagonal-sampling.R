@@ -178,8 +178,11 @@ test_that("sampled diagonal matches diag(X S X') for heterogeneous factors", {
   expect_equal(sum(A_bar[off_diag]) / sum(EA[off_diag]), 1, tolerance = 0.02)
 
   # with the diagonal fixed, sampled totals match expected_edges() and
-  # expected_degree() exactly in expectation (#19)
-  expect_equal(sum(A_bar) / expected_edges(ufm), 1, tolerance = 0.02)
+  # expected_degree() exactly in expectation (#19). each undirected edge
+  # between distinct nodes appears twice in A and each self-loop once, so
+  # the number of edges is (sum(A) + trace(A)) / 2
+  edges_bar <- (sum(A_bar) + sum(diag(A_bar))) / 2
+  expect_equal(edges_bar / expected_edges(ufm), 1, tolerance = 0.02)
   expect_equal(mean(rowSums(A_bar)), expected_degree(ufm), tolerance = 0.02)
 
   # average of sampled graphs has the population spectrum, rather than

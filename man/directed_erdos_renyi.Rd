@@ -29,7 +29,8 @@ to achieve this. Defaults to \code{NULL}. Specify only one of
   }}
 
 \item{p}{Probability of an edge between any two nodes. You must specify
-either \code{p}, \code{expected_in_degree}, or \code{expected_out_degree}.}
+either \code{p}, \code{expected_in_degree}, \code{expected_out_degree} or
+\code{expected_density}.}
 
 \item{poisson_edges}{Logical indicating whether or not
 multiple edges are allowed to form between a pair of

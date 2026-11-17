@@ -5,12 +5,44 @@
 #'
 #' @inherit sample_edgelist references params
 #'
-#' @return Expected edge counts, or graph densities.
+#' @return Expected edge counts, degrees, or graph densities.
 #'
-#' @details Note that the runtime of the `fastRG` algorithm is proportional to
-#'   the expected number of edges in the graph. Expected edge count will be
-#'   an underestimate of expected number of edges for Bernoulli
-#'   graphs. See the Rohe et al for details.
+#' @details Write \eqn{P = \mathbb{E}[A \mid X, S] = X S X^T}{P = E[A | X, S] = X S X'}
+#'   for an undirected factor model, and
+#'   \eqn{P = X S Y^T}{P = X S Y'} for a directed one.
+#'
+#'   For **undirected** graphs, every edge between distinct nodes `i` and
+#'   `j` appears twice in the symmetric adjacency matrix `A`, as both
+#'   `A[i, j]` and `A[j, i]`, while a self-loop appears once, as `A[i, i]`.
+#'   Accordingly:
+#'
+#'   - `expected_edges()` is the expected number of edges, counting each
+#'     undirected edge once: \eqn{(\sum_{ij} P_{ij} + \mathrm{tr}(P)) / 2}{(sum(P) + trace(P)) / 2}.
+#'     This includes expected self-loops, even when
+#'     `allow_self_loops = FALSE`.
+#'   - `expected_degree()` is the expected mean degree, i.e. the average
+#'     row sum of \eqn{P}{P}: \eqn{\sum_{ij} P_{ij} / n}{sum(P) / n}.
+#'     `expected_degrees()` gives the expected degree of each node.
+#'   - `expected_density()` is the expected number of edges between
+#'     distinct nodes, divided by the number of pairs of distinct nodes:
+#'     \eqn{(\sum_{ij} P_{ij} - \mathrm{tr}(P)) / (n (n - 1))}{(sum(P) - trace(P)) / (n (n - 1))}.
+#'     This is the average edge probability (or rate) between distinct
+#'     nodes, and does not depend on self-loops.
+#'
+#'   For **directed** graphs, `expected_edges()` is
+#'   \eqn{\sum_{ij} P_{ij}}{sum(P)}, `expected_out_degree()` and
+#'   `expected_in_degree()` divide this by the number of rows and columns
+#'   of `A`, and `expected_density()` divides it by the number of entries
+#'   of `A`.
+#'
+#'   These are expectations under Poisson edges. For Bernoulli graphs
+#'   (`poisson_edges = FALSE`), they are computed from the Poisson
+#'   parameterization of `S`, and overestimate edge counts slightly when
+#'   edge probabilities are large.
+#'
+#'   Note that the runtime of the `fastRG` algorithm is proportional to
+#'   the expected number of edges in the graph. See Rohe et al. (2018) for
+#'   details.
 #'
 #' @export
 #'
@@ -32,7 +64,7 @@
 #' A <- sample_sparse(b_model)
 #'
 #' # compare
-#' mean(rowSums(triu(A)))
+#' mean(rowSums(A))
 #'
 #' pop * a + pop * b # analytical average degree
 #'
@@ -86,11 +118,22 @@ expected_edges.directed_factor_model <- function(factor_model, ...) {
 
 #' @export
 expected_edges.undirected_factor_model <- function(factor_model, ...) {
-  X <- factor_model$X
-  S <- factor_model$S
+  # each edge between distinct nodes is counted twice in sum(P), once as
+  # P[i, j] and once as P[j, i], but self-loops are only counted once (#19)
+  (expected_sum(factor_model) + expected_trace(factor_model)) / 2
+}
 
-  Cx <- Diagonal(n = ncol(X), x = colSums(X))
-  sum(Cx %*% S %*% Cx)
+# sum of all entries of P = E[A | X, S] = X S X', without forming P
+expected_sum <- function(factor_model) {
+  cx <- colSums(factor_model$X)
+  as.numeric(crossprod(cx, factor_model$S %*% cx))
+}
+
+# trace of P = E[A | X, S] = X S X', i.e. the expected number of
+# self-loops, without forming P
+expected_trace <- function(factor_model) {
+  X <- factor_model$X
+  sum((X %*% factor_model$S) * X)
 }
 
 #' @rdname expected_edges
@@ -137,12 +180,16 @@ expected_density <- function(factor_model, ...) {
 
 #' @export
 expected_degree.undirected_factor_model <- function(factor_model, ...) {
-  expected_edges(factor_model) / as.numeric(factor_model$n)
+  # mean row sum of P, i.e. the mean expected degree
+  expected_sum(factor_model) / as.numeric(factor_model$n)
 }
 
 #' @export
 expected_density.undirected_factor_model <- function(factor_model, ...) {
-  expected_edges(factor_model) / as.numeric(choose(factor_model$n, 2))
+  # mean of P[i, j] over pairs of distinct nodes i != j
+  n <- as.numeric(factor_model$n)
+  off_diagonal <- expected_sum(factor_model) - expected_trace(factor_model)
+  off_diagonal / (n * (n - 1))
 }
 
 #' @export

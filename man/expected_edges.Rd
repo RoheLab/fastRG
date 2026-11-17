@@ -28,17 +28,50 @@ expected_density(factor_model, ...)
 \item{...}{Ignored. Do not use.}
 }
 \value{
-Expected edge counts, or graph densities.
+Expected edge counts, degrees, or graph densities.
 }
 \description{
 These calculations are conditional on the latent factors
 \code{X} and \code{Y}.
 }
 \details{
+Write \eqn{P = \mathbb{E}[A \mid X, S] = X S X^T}{P = E[A | X, S] = X S X'}
+for an undirected factor model, and
+\eqn{P = X S Y^T}{P = X S Y'} for a directed one.
+
+For \strong{undirected} graphs, every edge between distinct nodes \code{i} and
+\code{j} appears twice in the symmetric adjacency matrix \code{A}, as both
+\code{A[i, j]} and \code{A[j, i]}, while a self-loop appears once, as \code{A[i, i]}.
+Accordingly:
+\itemize{
+\item \code{expected_edges()} is the expected number of edges, counting each
+undirected edge once: \eqn{(\sum_{ij} P_{ij} + \mathrm{tr}(P)) / 2}{(sum(P) + trace(P)) / 2}.
+This includes expected self-loops, even when
+\code{allow_self_loops = FALSE}.
+\item \code{expected_degree()} is the expected mean degree, i.e. the average
+row sum of \eqn{P}{P}: \eqn{\sum_{ij} P_{ij} / n}{sum(P) / n}.
+\code{expected_degrees()} gives the expected degree of each node.
+\item \code{expected_density()} is the expected number of edges between
+distinct nodes, divided by the number of pairs of distinct nodes:
+\eqn{(\sum_{ij} P_{ij} - \mathrm{tr}(P)) / (n (n - 1))}{(sum(P) - trace(P)) / (n (n - 1))}.
+This is the average edge probability (or rate) between distinct
+nodes, and does not depend on self-loops.
+}
+
+For \strong{directed} graphs, \code{expected_edges()} is
+\eqn{\sum_{ij} P_{ij}}{sum(P)}, \code{expected_out_degree()} and
+\code{expected_in_degree()} divide this by the number of rows and columns
+of \code{A}, and \code{expected_density()} divides it by the number of entries
+of \code{A}.
+
+These are expectations under Poisson edges. For Bernoulli graphs
+(\code{poisson_edges = FALSE}), they are computed from the Poisson
+parameterization of \code{S}, and overestimate edge counts slightly when
+edge probabilities are large.
+
 Note that the runtime of the \code{fastRG} algorithm is proportional to
-the expected number of edges in the graph. Expected edge count will be
-an underestimate of expected number of edges for Bernoulli
-graphs. See the Rohe et al for details.
+the expected number of edges in the graph. See Rohe et al. (2018) for
+details.
 }
 \examples{
 
@@ -58,7 +91,7 @@ b_model
 A <- sample_sparse(b_model)
 
 # compare
-mean(rowSums(triu(A)))
+mean(rowSums(A))
 
 pop * a + pop * b # analytical average degree
 
