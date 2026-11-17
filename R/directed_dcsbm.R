@@ -636,8 +636,8 @@ directed_dcsbm <- function(
     theta_in <- l1_normalize_within(theta_in, z_in)
   }
 
-  X@x <- theta_out
-  Y@x <- theta_in
+  X <- set_membership_weights(X, theta_out)
+  Y <- set_membership_weights(Y, theta_in)
 
   if (sort_nodes) {
     # X, Y indexing must match z indexing, be careful about this
