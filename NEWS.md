@@ -1,5 +1,7 @@
 # fastRG (development version)
 
+- fastRG now requires R >= 4.4.0. irlba 2.4.1, which fastRG uses in tests and vignettes, fails on earlier R versions because `is.atomic(NULL)` changed in R 4.4.0.
+
 - Fixed undersampling of self-loops in undirected models. Since 0.4.0, the diagonal of `A` was sampled at half the intended rate, so `E[A | X, S]` did not equal `X S X'` on the diagonal. `sample_edgelist.undirected_factor_model()` now adds independent Poisson self-loops at the missing rate when `allow_self_loops = TRUE`, so `E[A | X, S] = X S X'` holds exactly. This only affects sampling: `S`, `expected_*()` and population spectra are unchanged, and so are the off-diagonal fixes from #19 and #31. Graphs sampled with a given seed will differ from previous versions (#46).
 
 # fastRG 0.4.0
