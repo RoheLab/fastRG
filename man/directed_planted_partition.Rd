@@ -72,15 +72,17 @@ as a vector of non-negative integers. Must have length \code{k} and
 must sum to \code{n}. Used for both the outgoing and the incoming blocks:
 exactly \code{block_sizes[j]} nodes are assigned to outgoing block \code{j}, and
 exactly \code{block_sizes[j]} nodes are assigned to incoming block \code{j}.
-Defaults to \code{NULL}. You can specify either \code{pi} or \code{block_sizes},
-but not both.}
+Defaults to \code{NULL}, in which case blocks are made to be as balanced as
+possible (unless \code{pi} is specified). You can specify either \code{pi} or
+\code{block_sizes}, but not both.}
 
 \item{pi}{(block sizes) Relative block probabilities, used for both the
 outgoing and the incoming blocks. Must be positive, but do not need to
 sum to one, as they will be normalized internally. Must have length
-\code{k}. Defaults to \code{NULL}, in which case each node is equally likely to
-belong to each block (unless \code{block_sizes} is specified). You can
-specify either \code{pi} or \code{block_sizes}, but not both.}
+\code{k}. When specified, block memberships are sampled independently for
+each node with these probabilities. Defaults to \code{NULL}, in which case
+the \code{block_sizes} argument (or its balanced default) takes precedence.
+You can specify either \code{pi} or \code{block_sizes}, but not both.}
 
 \item{shared_blocks}{Logical indicating whether each node should belong
 to the same outgoing and incoming block. Defaults to \code{FALSE}, in which
@@ -94,9 +96,15 @@ so that they are grouped by block. Useful for plotting.
 Defaults to \code{TRUE}. When \code{TRUE}, blocks are relabeled in increasing
 order of \code{pi} (or \code{block_sizes}), and the rows of the expected
 adjacency matrix are grouped by outgoing block while the columns are
-grouped by incoming block. Rows and columns are sorted independently
-when \code{shared_blocks = FALSE}, and together (so that row \code{i} and column
-\code{i} refer to the same node) when \code{shared_blocks = TRUE}.}
+grouped by incoming block. When \code{shared_blocks = TRUE}, rows and
+columns are permuted together, so that row \code{i} and column \code{i} refer to
+the same node. When \code{shared_blocks = FALSE} (the default), rows and
+columns are sorted \emph{independently}, so row \code{i} and column \code{i} are
+generally not the same node: the diagonal of \code{A} (self-loops) is then
+not meaningful as "node \code{i} to itself", and \code{z_out[i]} and \code{z_in[i]}
+describe different nodes. Use \code{shared_blocks = TRUE} or
+\code{sort_nodes = FALSE} if you need rows and columns to index the same
+nodes. See \code{\link[=directed_dcsbm]{directed_dcsbm()}} for details.}
 
 \item{poisson_edges}{Logical indicating whether or not
 multiple edges are allowed to form between a pair of
@@ -156,13 +164,15 @@ to one.
 Each node \eqn{i} has an outgoing block membership \eqn{z_{out, i}},
 which governs the edges it sends, and an incoming block membership
 \eqn{z_{in, i}}, which governs the edges it receives. Both take values
-in \verb{1, ..., k}. By default, outgoing memberships
-are sampled independently across nodes from a categorical distribution
-with parameter \eqn{\pi}, and incoming memberships are sampled in the
-same way, independently of the outgoing memberships. When \code{block_sizes}
-is specified, the memberships are instead a uniformly random assignment
-of nodes to blocks with exactly \code{block_sizes[j]} nodes in block \code{j}
-(again, independently for outgoing and incoming blocks).
+in \verb{1, ..., k}. By default, the outgoing memberships are a uniformly
+random assignment of nodes to blocks with block sizes that are as
+balanced as possible (as in \code{\link[=planted_partition]{planted_partition()}}), or with exactly
+\code{block_sizes[j]} nodes in block \code{j} when \code{block_sizes} is specified. The
+incoming memberships are assigned in the same way, independently of the
+outgoing memberships. When \code{pi} is specified, memberships are instead
+sampled independently across nodes from a categorical distribution with
+parameter \eqn{\pi} (again, independently for outgoing and incoming
+blocks).
 
 When \code{shared_blocks = TRUE}, a single membership vector is sampled
 and \eqn{z_{out, i} = z_{in, i}} for every node.
@@ -203,7 +213,11 @@ expectation
 Edges are Poisson distributed when \code{poisson_edges = TRUE} (yielding a
 multigraph) and Bernoulli distributed with the same probabilities when
 \code{poisson_edges = FALSE}. Self-loops are allowed or not according to
-\code{allow_self_loops}.
+\code{allow_self_loops}. Note that with the default \code{shared_blocks = FALSE}
+and \code{sort_nodes = TRUE}, rows and columns of \eqn{A} are sorted
+independently, so the diagonal entry \eqn{A_{ii}} pairs the \eqn{i}-th
+sender with the \eqn{i}-th receiver rather than node \eqn{i} with
+itself (see \code{sort_nodes}).
 }
 
 \subsection{Interpretation}{

@@ -28,8 +28,13 @@ test_that("directed_planted_partition() builds a constant-diagonal B", {
   # no degree heterogeneity
   expect_equal(pp$theta_out, rep(1, 50))
   expect_equal(pp$theta_in, rep(1, 50))
-  expect_equal(pp$pi_out, rep(1 / 3, 3))
-  expect_equal(pp$pi_in, rep(1 / 3, 3))
+
+  # balanced block sizes by default (50 = 17 + 17 + 16), relabeled in
+  # increasing order of size by sort_nodes
+  expect_equal(pp$pi_out, c(16, 17, 17) / 50)
+  expect_equal(pp$pi_in, c(16, 17, 17) / 50)
+  expect_equal(as.vector(table(pp$z_out)), c(16, 17, 17))
+  expect_equal(as.vector(table(pp$z_in)), c(16, 17, 17))
 
   # expected adjacency matrix is exactly B[z_out[i], z_in[j]]
   EA <- as.matrix(pp$X %*% pp$S %*% t(pp$Y))
@@ -59,17 +64,32 @@ test_that("a and b parameterization matches within_block / between_block", {
 test_that("in and out communities are independent by default", {
   set.seed(27)
 
+  # sort_nodes = FALSE so that z_out[i] and z_in[i] refer to the same node.
+  # with sorting, rows and columns are sorted independently, so with equal
+  # (balanced) block sizes the sorted z_out and z_in vectors coincide even
+  # though the memberships are independent
   pp <- directed_planted_partition(
+    n = 200,
+    k = 3,
+    within_block = 0.3,
+    between_block = 0.05,
+    sort_nodes = FALSE
+  )
+
+  expect_false(pp$shared_blocks)
+  expect_false(identical(as.integer(pp$z_out), as.integer(pp$z_in)))
+
+  set.seed(27)
+
+  sorted <- directed_planted_partition(
     n = 200,
     k = 3,
     within_block = 0.3,
     between_block = 0.05
   )
 
-  expect_false(pp$shared_blocks)
-  expect_false(identical(as.integer(pp$z_out), as.integer(pp$z_in)))
-  expect_false(is.unsorted(pp$z_out))
-  expect_false(is.unsorted(pp$z_in))
+  expect_false(is.unsorted(sorted$z_out))
+  expect_false(is.unsorted(sorted$z_in))
 })
 
 test_that("shared_blocks gives each node a single community", {

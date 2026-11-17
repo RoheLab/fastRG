@@ -43,6 +43,16 @@ validate_directed_planted_partition <- function(x) {
     )
   }
 
+  S <- as.matrix(values$S)
+
+  if (length(unique(diag(S))) > 1) {
+    stop("The diagonal of `B` must be constant.", call. = FALSE)
+  }
+
+  if (length(unique(S[row(S) != col(S)])) > 1) {
+    stop("The off-diagonal elements of `B` must be constant.", call. = FALSE)
+  }
+
   x
 }
 
@@ -115,15 +125,17 @@ check_positive_integer <- function(x, arg) {
 #'   must sum to `n`. Used for both the outgoing and the incoming blocks:
 #'   exactly `block_sizes[j]` nodes are assigned to outgoing block `j`, and
 #'   exactly `block_sizes[j]` nodes are assigned to incoming block `j`.
-#'   Defaults to `NULL`. You can specify either `pi` or `block_sizes`,
-#'   but not both.
+#'   Defaults to `NULL`, in which case blocks are made to be as balanced as
+#'   possible (unless `pi` is specified). You can specify either `pi` or
+#'   `block_sizes`, but not both.
 #'
 #' @param pi (block sizes) Relative block probabilities, used for both the
 #'   outgoing and the incoming blocks. Must be positive, but do not need to
 #'   sum to one, as they will be normalized internally. Must have length
-#'   `k`. Defaults to `NULL`, in which case each node is equally likely to
-#'   belong to each block (unless `block_sizes` is specified). You can
-#'   specify either `pi` or `block_sizes`, but not both.
+#'   `k`. When specified, block memberships are sampled independently for
+#'   each node with these probabilities. Defaults to `NULL`, in which case
+#'   the `block_sizes` argument (or its balanced default) takes precedence.
+#'   You can specify either `pi` or `block_sizes`, but not both.
 #'
 #' @param shared_blocks Logical indicating whether each node should belong
 #'   to the same outgoing and incoming block. Defaults to `FALSE`, in which
@@ -137,9 +149,15 @@ check_positive_integer <- function(x, arg) {
 #'   Defaults to `TRUE`. When `TRUE`, blocks are relabeled in increasing
 #'   order of `pi` (or `block_sizes`), and the rows of the expected
 #'   adjacency matrix are grouped by outgoing block while the columns are
-#'   grouped by incoming block. Rows and columns are sorted independently
-#'   when `shared_blocks = FALSE`, and together (so that row `i` and column
-#'   `i` refer to the same node) when `shared_blocks = TRUE`.
+#'   grouped by incoming block. When `shared_blocks = TRUE`, rows and
+#'   columns are permuted together, so that row `i` and column `i` refer to
+#'   the same node. When `shared_blocks = FALSE` (the default), rows and
+#'   columns are sorted *independently*, so row `i` and column `i` are
+#'   generally not the same node: the diagonal of `A` (self-loops) is then
+#'   not meaningful as "node `i` to itself", and `z_out[i]` and `z_in[i]`
+#'   describe different nodes. Use `shared_blocks = TRUE` or
+#'   `sort_nodes = FALSE` if you need rows and columns to index the same
+#'   nodes. See [directed_dcsbm()] for details.
 #'
 #' @inheritDotParams directed_factor_model expected_out_degree expected_in_degree expected_density
 #' @inheritParams directed_factor_model
@@ -180,13 +198,15 @@ check_positive_integer <- function(x, arg) {
 #' Each node \eqn{i} has an outgoing block membership \eqn{z_{out, i}},
 #' which governs the edges it sends, and an incoming block membership
 #' \eqn{z_{in, i}}, which governs the edges it receives. Both take values
-#' in `1, ..., k`. By default, outgoing memberships
-#' are sampled independently across nodes from a categorical distribution
-#' with parameter \eqn{\pi}, and incoming memberships are sampled in the
-#' same way, independently of the outgoing memberships. When `block_sizes`
-#' is specified, the memberships are instead a uniformly random assignment
-#' of nodes to blocks with exactly `block_sizes[j]` nodes in block `j`
-#' (again, independently for outgoing and incoming blocks).
+#' in `1, ..., k`. By default, the outgoing memberships are a uniformly
+#' random assignment of nodes to blocks with block sizes that are as
+#' balanced as possible (as in [planted_partition()]), or with exactly
+#' `block_sizes[j]` nodes in block `j` when `block_sizes` is specified. The
+#' incoming memberships are assigned in the same way, independently of the
+#' outgoing memberships. When `pi` is specified, memberships are instead
+#' sampled independently across nodes from a categorical distribution with
+#' parameter \eqn{\pi} (again, independently for outgoing and incoming
+#' blocks).
 #'
 #' When `shared_blocks = TRUE`, a single membership vector is sampled
 #' and \eqn{z_{out, i} = z_{in, i}} for every node.
@@ -225,7 +245,11 @@ check_positive_integer <- function(x, arg) {
 #' Edges are Poisson distributed when `poisson_edges = TRUE` (yielding a
 #' multigraph) and Bernoulli distributed with the same probabilities when
 #' `poisson_edges = FALSE`. Self-loops are allowed or not according to
-#' `allow_self_loops`.
+#' `allow_self_loops`. Note that with the default `shared_blocks = FALSE`
+#' and `sort_nodes = TRUE`, rows and columns of \eqn{A} are sorted
+#' independently, so the diagonal entry \eqn{A_{ii}} pairs the \eqn{i}-th
+#' sender with the \eqn{i}-th receiver rather than node \eqn{i} with
+#' itself (see `sort_nodes`).
 #'
 #' ## Interpretation
 #'
