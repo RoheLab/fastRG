@@ -21,7 +21,8 @@
 #'   explicitly specifying the degree heterogeneity
 #'   parameters. This implicitly determines the number of nodes
 #'   in the resulting graph, i.e. it will have `length(theta)` nodes.
-#'   Must be positive. Setting to a vector of ones recovers
+#'   Must be non-negative. Nodes with `theta` equal to zero have no
+#'   edges. Setting to a vector of ones recovers
 #'   an erdos renyi graph.
 #'   Defaults to `NULL`. You must specify either `n` or `theta`,
 #'   but not both.

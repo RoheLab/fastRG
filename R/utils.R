@@ -22,10 +22,12 @@ l1_normalize <- function(x) x / sum(x)
 
 # `x` and `block` should be vectors of the same length. `block` should be
 # discrete and `x` numeric. normalizes `x` to sum to one within each distinct
-# block. ideally only call on positive x to avoid divide by zero errors.
+# block. blocks whose elements are all zero are left as zeros.
 # the result is in the same order as `x` (i.e. node order, not block order)
 l1_normalize_within <- function(x, block) {
-  as.numeric(x / stats::ave(x, block, FUN = sum))
+  totals <- stats::ave(x, block, FUN = sum)
+  # blocks whose x are all zero stay zero rather than becoming NaN
+  as.numeric(ifelse(totals == 0, 0, x / totals))
 }
 
 # put node-level weights `theta` into the non-zero entries of a block

@@ -70,11 +70,11 @@ validate_directed_dcsbm <- function(x) {
   }
 
   if (any(values$theta_out < 0)) {
-    stop("Elements of `theta_out` must be strictly positive.", call. = FALSE)
+    stop("Elements of `theta_out` must be non-negative.", call. = FALSE)
   }
 
   if (any(values$theta_in < 0)) {
-    stop("Elements of `theta_in` must be strictly positive.", call. = FALSE)
+    stop("Elements of `theta_in` must be non-negative.", call. = FALSE)
   }
 
   if (length(values$theta_out) != nrow(values$X)) {
@@ -225,7 +225,7 @@ sample_block_memberships <- function(n, k, pi, block_sizes = NULL) {
 #'   explicitly specifying the degree heterogeneity
 #'   parameters. This implicitly determines the number of nodes
 #'   in the resulting graph, i.e. it will have `length(theta_out)` nodes.
-#'   Must be positive. Setting to a vector of ones recovers
+#'   Must be non-negative. Setting to a vector of ones recovers
 #'   a stochastic blockmodel without degree correction.
 #'   Defaults to `NULL`. You must specify either `n`
 #'   or `theta_out` and `theta_in` together, but not both. `theta_out`
@@ -236,7 +236,7 @@ sample_block_memberships <- function(n, k, pi, block_sizes = NULL) {
 #'   explicitly specifying the degree heterogeneity
 #'   parameters. This implicitly determines the number of nodes
 #'   in the resulting graph, i.e. it will have `length(theta)` nodes.
-#'   Must be positive. Setting to a vector of ones recovers
+#'   Must be non-negative. Setting to a vector of ones recovers
 #'   a stochastic blockmodel without degree correction.
 #'   Defaults to `NULL`. You must specify either `n`
 #'   or `theta_out` and `theta_in` together, but not both. `theta_in`
@@ -946,6 +946,25 @@ directed_dcsbm <- function(
     z_in <- sort(z_in)
   }
 
+  if (force_identifiability) {
+    theta_out <- l1_normalize_within(theta_out, z_out)
+    theta_in <- l1_normalize_within(theta_in, z_in)
+  }
+
+  if (sort_nodes) {
+    # within each block, sort by decreasing theta. permute each block
+    # membership vector together with its theta rather than sorting the
+    # rows of X and Y, which would send rows with theta = 0 to the bottom,
+    # out of line with z
+    row_order <- order(z_out, -theta_out)
+    z_out <- z_out[row_order]
+    theta_out <- theta_out[row_order]
+
+    col_order <- order(z_in, -theta_in)
+    z_in <- z_in[col_order]
+    theta_in <- theta_in[col_order]
+  }
+
   if (k_out > 1) {
     X <- sparse.model.matrix(~ z_out + 0)
   } else {
@@ -958,31 +977,8 @@ directed_dcsbm <- function(
     Y <- Matrix(1, nrow = n, ncol = 1)
   }
 
-  if (force_identifiability) {
-    theta_out <- l1_normalize_within(theta_out, z_out)
-    theta_in <- l1_normalize_within(theta_in, z_in)
-  }
-
   X <- set_membership_weights(X, theta_out)
   Y <- set_membership_weights(Y, theta_in)
-
-  if (sort_nodes) {
-    # X, Y indexing must match z indexing, be careful about this
-    X <- sort_by_all_columns(X)
-    Y <- sort_by_all_columns(Y)
-
-    if (k_out > 1) {
-      theta_out <- X@x
-    } else {
-      theta_out <- sort(theta_out, decreasing = TRUE)
-    }
-
-    if (k_in > 1) {
-      theta_in <- Y@x
-    } else {
-      theta_in <- sort(theta_in, decreasing = TRUE)
-    }
-  }
 
   dcsbm <- new_directed_dcsbm(
     X = X,

@@ -13,7 +13,7 @@ validate_undirected_mmsbm <- function(x) {
   }
 
   if (any(values$theta < 0)) {
-    stop("Elements of `theta` must be strictly positive.", call. = FALSE)
+    stop("Elements of `theta` must be non-negative.", call. = FALSE)
   }
 
   if (min(values$S) < 0) {
