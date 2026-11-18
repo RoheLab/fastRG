@@ -151,3 +151,17 @@ test_that("print() reports whether nodes are sorted", {
   expect_output(print(unsorted), "Nodes \\(n\\): 20 \\(not sorted\\)")
   expect_output(print(sorted), "Undirected Overlapping Stochastic Blockmodel")
 })
+
+test_that("overlapping_sbm() docs no longer say nodes can belong to no block", {
+  path <- testthat::test_path("..", "..", "man", "overlapping_sbm.Rd")
+  skip_if_not(file.exists(path))
+  txt <- paste(readLines(path), collapse = " ")
+
+  expect_no_match(txt, "zero, one", fixed = TRUE)
+  expect_no_match(txt, "including none", fixed = TRUE)
+
+  # and every node does belong to at least one block
+  set.seed(1)
+  m <- overlapping_sbm(n = 200, k = 3, pi = c(0.1, 0.1, 0.1))
+  expect_true(all(Matrix::rowSums(m$Z) >= 1))
+})

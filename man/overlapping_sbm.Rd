@@ -111,8 +111,10 @@ fields:
 \itemize{
 \item \code{Z}: The block memberships of each node, as an \code{n} by \code{k}
 binary \code{\link[Matrix:Matrix]{Matrix::Matrix()}}. \code{Z[i, j]} is one if node \code{i} belongs
-to block \code{j} and zero otherwise. Rows can contain any number of
-ones, including none. Columns are ordered to match \code{pi} and \code{B}.
+to block \code{j} and zero otherwise. Every row contains at least one
+one: nodes that join no block in the independent Bernoulli draws
+are assigned to exactly one block, chosen with probability
+proportional to \code{pi}. Columns are ordered to match \code{pi} and \code{B}.
 For this model, \code{Z} is identical to the latent positions \code{X}.
 \item \code{pi}: Block membership probabilities for each block, sorted in
 increasing order.
@@ -129,8 +131,7 @@ To specify an overlapping stochastic blockmodel, you must specify
 the number of nodes (via \code{n}),
 the mixing matrix (via \code{k} or \code{B}), and the block membership
 probabilities (optional, via \code{pi}). In an overlapping stochastic
-blockmodel, each node can belong to any number of blocks: zero, one,
-or several. We provide defaults for most of these
+blockmodel, each node belongs to one or more blocks. We provide defaults for most of these
 options to enable rapid exploration, or you can invest the effort
 for more control over the model parameters. We \strong{strongly recommend}
 setting the \code{expected_degree} or \code{expected_density} argument
