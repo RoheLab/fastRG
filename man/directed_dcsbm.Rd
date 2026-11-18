@@ -40,7 +40,7 @@ for both \code{theta_out} and \code{theta_in}.}
 explicitly specifying the degree heterogeneity
 parameters. This implicitly determines the number of nodes
 in the resulting graph, i.e. it will have \code{length(theta_out)} nodes.
-Must be positive. Setting to a vector of ones recovers
+Must be non-negative. Setting to a vector of ones recovers
 a stochastic blockmodel without degree correction.
 Defaults to \code{NULL}. You must specify either \code{n}
 or \code{theta_out} and \code{theta_in} together, but not both. \code{theta_out}
@@ -51,7 +51,7 @@ row sums of the adjacency matrix.}
 explicitly specifying the degree heterogeneity
 parameters. This implicitly determines the number of nodes
 in the resulting graph, i.e. it will have \code{length(theta)} nodes.
-Must be positive. Setting to a vector of ones recovers
+Must be non-negative. Setting to a vector of ones recovers
 a stochastic blockmodel without degree correction.
 Defaults to \code{NULL}. You must specify either \code{n}
 or \code{theta_out} and \code{theta_in} together, but not both. \code{theta_in}

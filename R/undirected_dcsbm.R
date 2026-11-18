@@ -40,7 +40,7 @@ validate_undirected_dcsbm <- function(x) {
   }
 
   if (any(values$theta < 0)) {
-    stop("Elements of `theta` must be strictly positive.", call. = FALSE)
+    stop("Elements of `theta` must be non-negative.", call. = FALSE)
   }
 
   if (length(levels(values$z)) != values$k) {
@@ -91,7 +91,8 @@ validate_undirected_dcsbm <- function(x) {
 #'   explicitly specifying the degree heterogeneity
 #'   parameters. This implicitly determines the number of nodes
 #'   in the resulting graph, i.e. it will have `length(theta)` nodes.
-#'   Must be positive. Setting to a vector of ones recovers
+#'   Must be non-negative. Nodes with `theta` equal to zero have no
+#'   edges. Setting to a vector of ones recovers
 #'   a stochastic blockmodel without degree correction.
 #'   Defaults to `NULL`. You must specify either `n` or `theta`,
 #'   but not both.
@@ -394,28 +395,26 @@ dcsbm <- function(
     z <- sort(z)
   }
 
+  if (force_identifiability) {
+    theta <- l1_normalize_within(theta, z)
+  }
+
+  if (sort_nodes) {
+    # within each block, sort by decreasing theta. permute z and theta
+    # together rather than sorting the rows of X, which would send nodes
+    # with theta = 0 (all-zero rows) to the bottom, out of line with z
+    node_order <- order(z, -theta)
+    z <- z[node_order]
+    theta <- theta[node_order]
+  }
+
   if (k > 1) {
     X <- sparse.model.matrix(~ z + 0)
   } else {
     X <- Matrix(1, nrow = n, ncol = 1)
   }
 
-  if (force_identifiability) {
-    theta <- l1_normalize_within(theta, z)
-  }
-
   X <- set_membership_weights(X, theta)
-
-  if (sort_nodes) {
-    # note that X and z indexing must match
-    X <- sort_by_all_columns(X)
-
-    if (k > 1) {
-      theta <- X@x
-    } else {
-      theta <- sort(theta, decreasing = TRUE)
-    }
-  }
 
   dcsbm <- new_undirected_dcsbm(
     X = X,

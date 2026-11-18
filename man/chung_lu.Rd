@@ -27,7 +27,8 @@ or \code{theta}, but not both.}
 explicitly specifying the degree heterogeneity
 parameters. This implicitly determines the number of nodes
 in the resulting graph, i.e. it will have \code{length(theta)} nodes.
-Must be positive. Setting to a vector of ones recovers
+Must be non-negative. Nodes with \code{theta} equal to zero have no
+edges. Setting to a vector of ones recovers
 an erdos renyi graph.
 Defaults to \code{NULL}. You must specify either \code{n} or \code{theta},
 but not both.}
