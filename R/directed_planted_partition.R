@@ -166,14 +166,14 @@ check_positive_integer <- function(x, arg) {
 #'   of the [directed_dcsbm()] object (with `theta_out` and `theta_in`
 #'   identically one), with additional fields:
 #'
-#'   - `within_block`: The probability of edge formation within a block,
-#'     as specified (or as computed from `a / n`), before any rescaling
-#'     by `expected_out_degree`, `expected_in_degree` or `expected_density`.
+#'   - `within_block`: The probability of edge formation within a block.
+#'     If `expected_out_degree`, `expected_in_degree` or `expected_density`
+#'     is given, this is the probability after rescaling (the edge rate,
+#'     for Poisson graphs), not the value given as `within_block` (or
+#'     `a / n`).
 #'
 #'   - `between_block`: The probability of edge formation between two
-#'     distinct blocks, as specified (or as computed from `b / n`), before
-#'     any rescaling by `expected_out_degree`, `expected_in_degree` or
-#'     `expected_density`.
+#'     distinct blocks, after any rescaling, as for `within_block`.
 #'
 #' @export
 #' @family stochastic block models
@@ -441,6 +441,17 @@ directed_planted_partition <- function(
     allow_self_loops = allow_self_loops,
     subclass = "directed_planted_partition"
   )
+
+  # store the edge probabilities of the final, rescaled model
+  if (is_rescaled(...)) {
+    S <- edge_scale_S(pp)
+    if (k > 1) {
+      between_block <- S[1, 2]
+    } else {
+      between_block <- between_block * S[1, 1] / within_block
+    }
+    within_block <- S[1, 1]
+  }
 
   pp$within_block <- within_block
   pp$between_block <- between_block

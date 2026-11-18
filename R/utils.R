@@ -92,6 +92,23 @@ balanced_block_sizes <- function(n, k) {
   c(rep(base_value + 1, remainder), rep(base_value, k - remainder))
 }
 
+# the edge probabilities (Bernoulli graphs) or edge rates (Poisson graphs)
+# implied by the final S of a model, i.e. after any rescaling to achieve an
+# expected degree or density, on the scale users specify them. this undoes
+# the `-log(1 - S)` transform the factor model constructors apply to
+# Bernoulli graphs
+edge_scale_S <- function(model) {
+  S <- as.matrix(model$S)
+  if (model$poisson_edges) S else -expm1(-S)
+}
+
+# TRUE when `...` contains an argument such as `expected_degree`,
+# `expected_in_degree` or `expected_density` that rescales S
+is_rescaled <- function(...) {
+  dots <- names(list(...))
+  !is.null(dots) && any(startsWith(dots, "expected_"))
+}
+
 utils::globalVariables(
   c("i", "j", "value", "x")
 )

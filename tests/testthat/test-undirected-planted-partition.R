@@ -117,7 +117,7 @@ test_that("planted partition validators check B", {
 
   expect_error(
     planted_partition(n = 30, k = 3, within_block = 1.5, between_block = 0.1),
-    "`within_block` must be between zero and one.",
+    "`within_block` (or `a / n`) must be between zero and one.",
     fixed = TRUE
   )
 })

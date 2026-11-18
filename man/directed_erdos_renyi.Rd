@@ -28,9 +28,12 @@ to achieve this. Defaults to \code{NULL}. Specify only one of
 \code{expected_in_degree}, \code{expected_out_degree}, and \code{expected_density}.}
   }}
 
-\item{p}{Probability of an edge between any two nodes. You must specify
-either \code{p}, \code{expected_in_degree}, \code{expected_out_degree} or
-\code{expected_density}.}
+\item{p}{Probability of an edge between any two nodes, strictly
+between zero and one. You must specify either \code{p},
+\code{expected_in_degree}, \code{expected_out_degree} or \code{expected_density}.
+When one of those is given, the stored \code{p} is the edge probability
+(the edge rate, for Poisson graphs) of the rescaled model, not the \code{p}
+given here.}
 
 \item{poisson_edges}{Logical indicating whether or not
 multiple edges are allowed to form between a pair of
