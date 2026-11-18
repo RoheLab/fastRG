@@ -60,8 +60,7 @@ validate_undirected_overlapping_sbm <- function(x) {
 #' the number of nodes (via `n`),
 #' the mixing matrix (via `k` or `B`), and the block membership
 #' probabilities (optional, via `pi`). In an overlapping stochastic
-#' blockmodel, each node can belong to any number of blocks: zero, one,
-#' or several. We provide defaults for most of these
+#' blockmodel, each node belongs to one or more blocks. We provide defaults for most of these
 #' options to enable rapid exploration, or you can invest the effort
 #' for more control over the model parameters. We **strongly recommend**
 #' setting the `expected_degree` or `expected_density` argument
@@ -148,8 +147,10 @@ validate_undirected_overlapping_sbm <- function(x) {
 #'
 #'   - `Z`: The block memberships of each node, as an `n` by `k`
 #'     binary [Matrix::Matrix()]. `Z[i, j]` is one if node `i` belongs
-#'     to block `j` and zero otherwise. Rows can contain any number of
-#'     ones, including none. Columns are ordered to match `pi` and `B`.
+#'     to block `j` and zero otherwise. Every row contains at least one
+#'     one: nodes that join no block in the independent Bernoulli draws
+#'     are assigned to exactly one block, chosen with probability
+#'     proportional to `pi`. Columns are ordered to match `pi` and `B`.
 #'     For this model, `Z` is identical to the latent positions `X`.
 #'
 #'   - `pi`: Block membership probabilities for each block, sorted in
