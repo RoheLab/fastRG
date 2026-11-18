@@ -941,21 +941,15 @@ directed_dcsbm <- function(
   # co-factor model: outgoing and incoming parameters are unrelated, and
   # rows and columns are sorted independently
 
-  if (sort_nodes) {
-    z_out <- sort(z_out)
-    z_in <- sort(z_in)
-  }
-
   if (force_identifiability) {
     theta_out <- l1_normalize_within(theta_out, z_out)
     theta_in <- l1_normalize_within(theta_in, z_in)
   }
 
   if (sort_nodes) {
-    # within each block, sort by decreasing theta. permute each block
-    # membership vector together with its theta rather than sorting the
-    # rows of X and Y, which would send rows with theta = 0 to the bottom,
-    # out of line with z
+    # sort by block, and by decreasing theta within blocks. permute each
+    # block membership vector together with its theta, so that row
+    # (column) i keeps its own block and its own theta
     row_order <- order(z_out, -theta_out)
     z_out <- z_out[row_order]
     theta_out <- theta_out[row_order]
