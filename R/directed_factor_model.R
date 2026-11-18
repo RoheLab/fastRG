@@ -73,14 +73,16 @@ validate_directed_factor_model <- function(x) {
 #'
 #' @param X A [matrix()] or [Matrix::Matrix()] representing real-valued
 #'   latent node positions encoding community structure of
-#'   incoming edges. Entries must be positive.
+#'   outgoing edges, one row per row of `A` (sending node). Entries must
+#'   be positive.
 #'
 #' @param S A [matrix()] or [Matrix::Matrix()] mixing matrix. Entries
 #'   must be positive.
 #'
 #' @param Y A [matrix()] or [Matrix::Matrix()] representing real-valued
 #'   latent node positions encoding community structure of
-#'   outgoing edges. Entries must be positive.
+#'   incoming edges, one row per column of `A` (receiving node). Entries
+#'   must be positive.
 #'
 #' @param ... Ignored. For internal developer use only.
 #'
@@ -117,23 +119,25 @@ validate_directed_factor_model <- function(x) {
 #' @return A `directed_factor_model` S3 class based on a list
 #'   with the following elements:
 #'
-#'   - `X`: The incoming latent positions as a [Matrix::Matrix()] object.
+#'   - `X`: The outgoing latent positions as a [Matrix::Matrix()] object.
 #'
 #'   - `S`: The mixing matrix as a [Matrix::Matrix()] object.
 #'
-#'   - `Y`: The outgoing latent positions as a [Matrix::Matrix()] object.
+#'   - `Y`: The incoming latent positions as a [Matrix::Matrix()] object.
 #'
-#'   - `n`: The number of nodes with incoming edges in the network.
+#'   - `n`: The number of nodes with outgoing edges in the network
+#'     (rows of `A`).
 #'
 #'   - `k1`: The dimension of the latent node position vectors
-#'     encoding incoming latent communities (i.e. in `X`).
+#'     encoding outgoing latent communities (i.e. in `X`).
 #'
-#'   - `d`: The number of nodes with outgoing edges in the network.
+#'   - `d`: The number of nodes with incoming edges in the network
+#'     (columns of `A`).
 #'     Does not need to match `n` -- rectangular adjacency matrices
 #'     are supported.
 #'
 #'   - `k2`: The dimension of the latent node position vectors
-#'     encoding outgoing latent communities (i.e. in `Y`).
+#'     encoding incoming latent communities (i.e. in `Y`).
 #'
 #'   - `poisson_edges`: Whether or not the graph is taken to be have
 #'     Poisson or Bernoulli edges, as indicated by a logical vector
@@ -269,10 +273,10 @@ print.directed_factor_model <- function(x, ...) {
   cat(glue("Directed Factor Model\n", .trim = FALSE))
   cat(glue("---------------------\n\n", .trim = FALSE))
 
-  cat(glue("Incoming Nodes (n): {x$n}\n", .trim = FALSE))
-  cat(glue("Incoming Rank (k1): {x$k1}\n", .trim = FALSE))
-  cat(glue("Outgoing Rank (k2): {x$k2}\n", .trim = FALSE))
-  cat(glue("Outgoing Nodes (d): {x$d}\n\n", .trim = FALSE))
+  cat(glue("Outgoing Nodes (n): {x$n}\n", .trim = FALSE))
+  cat(glue("Outgoing Rank (k1): {x$k1}\n", .trim = FALSE))
+  cat(glue("Incoming Rank (k2): {x$k2}\n", .trim = FALSE))
+  cat(glue("Incoming Nodes (d): {x$d}\n\n", .trim = FALSE))
 
   cat("X:", dim_and_class(x$X), "\n")
   cat("S:", dim_and_class(x$S), "\n")

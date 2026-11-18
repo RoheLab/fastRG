@@ -41,14 +41,14 @@ validate_directed_dcsbm <- function(x) {
 
   if (length(levels(values$z_out)) != values$k1) {
     stop(
-      "Number of levels of `z1` must match the incoming rank of the model.",
+      "Number of levels of `z_out` must match the outgoing rank of the model.",
       call. = FALSE
     )
   }
 
   if (length(levels(values$z_in)) != values$k2) {
     stop(
-      "Number of levels of `z_in` must match the outgoing rank of the model.",
+      "Number of levels of `z_in` must match the incoming rank of the model.",
       call. = FALSE
     )
   }
@@ -107,14 +107,14 @@ validate_directed_dcsbm <- function(x) {
 
   if (length(values$pi_out) != values$k1) {
     stop(
-      "Dimension of `pi_out` must match the incoming rank of the model.",
+      "Dimension of `pi_out` must match the outgoing rank of the model.",
       call. = FALSE
     )
   }
 
   if (length(values$pi_in) != values$k2) {
     stop(
-      "Dimension of `pi_in` must match the outgoing rank of the model.",
+      "Dimension of `pi_in` must match the incoming rank of the model.",
       call. = FALSE
     )
   }
@@ -353,8 +353,8 @@ sample_block_memberships <- function(n, k, pi, block_sizes = NULL) {
 #'   decreasing `theta_out` and `theta_in` within each block.
 #'
 #' @param force_identifiability Logical indicating whether or not to
-#'   normalize `theta_out` such that it sums to one within each incoming
-#'   block and `theta_in` such that it sums to one within each outgoing
+#'   normalize `theta_out` such that it sums to one within each outgoing
+#'   block and `theta_in` such that it sums to one within each incoming
 #'   block. Defaults to `TRUE`.
 #'
 #' @inheritDotParams directed_factor_model expected_out_degree expected_density expected_in_degree
@@ -409,8 +409,8 @@ sample_block_memberships <- function(n, k, pi, block_sizes = NULL) {
 #' # Generative Model
 #'
 #' There are two levels of randomness in a directed degree-corrected
-#' stochastic blockmodel. First, we randomly chose a incoming
-#' block membership and an outgoing block membership
+#' stochastic blockmodel. First, we randomly choose an outgoing
+#' block membership and an incoming block membership
 #' for each node in the blockmodel. This is
 #' handled by `directed_dcsbm()`. Then, given these block memberships,
 #' we randomly sample edges between nodes. This second
@@ -421,13 +421,13 @@ sample_block_memberships <- function(n, k, pi, block_sizes = NULL) {
 #'
 #' ## Block memberships
 #'
-#' Let \eqn{x} represent the incoming block membership of a node
-#' and \eqn{y} represent the outgoing block membership of a node.
+#' Let \eqn{x} represent the outgoing block membership of a node
+#' and \eqn{y} represent the incoming block membership of a node.
 #' To generate \eqn{x} we sample from a categorical
 #' distribution with parameter \eqn{\pi_{out}}.
 #' To generate \eqn{y} we sample from a categorical
 #' distribution with parameter \eqn{\pi_{in}}.
-#' Block memberships are independent across nodes. Incoming and outgoing
+#' Block memberships are independent across nodes. Outgoing and incoming
 #' block memberships of the same node are also independent.
 #'
 #' These categorical draws are used when `pi_out` (`pi_in`) is specified.
@@ -442,12 +442,12 @@ sample_block_memberships <- function(n, k, pi, block_sizes = NULL) {
 #'
 #' ## Degree heterogeneity
 #'
-#' In addition to block membership, the DCSBM also
-#' nodes to have different propensities for incoming and
-#' outgoing edge formation.
-#' We represent the propensity to form incoming edges for a
-#' given node by a positive number \eqn{\theta_{out}}.
+#' In addition to block membership, the DCSBM also allows
+#' nodes to have different propensities for outgoing and
+#' incoming edge formation.
 #' We represent the propensity to form outgoing edges for a
+#' given node by a positive number \eqn{\theta_{out}}.
+#' We represent the propensity to form incoming edges for a
 #' given node by a positive number \eqn{\theta_{in}}.
 #' Typically the \eqn{\theta_{out}} (and \eqn{\theta_{in}}) across all nodes are
 #' constrained to sum to one for identifiability purposes,
@@ -456,15 +456,18 @@ sample_block_memberships <- function(n, k, pi, block_sizes = NULL) {
 #' ## Edge formulation
 #'
 #' Once we know the block memberships \eqn{x} and \eqn{y}
-#' and the degree  heterogeneity parameters \eqn{\theta_{in}} and
-#' \eqn{\theta_{out}}, we need one more
+#' and the degree heterogeneity parameters \eqn{\theta_{out}} and
+#' \eqn{\theta_{in}}, we need one more
 #' ingredient, which is the baseline intensity of connections
-#' between nodes in block `i` and block `j`. Then each edge forms
-#' independently according to a Poisson distribution with
-#' parameters
+#' from nodes in outgoing block `a` to nodes in incoming block `b`,
+#' `B[a, b]`. Then each edge \eqn{A_{ij}} from node \eqn{i} to node
+#' \eqn{j} forms independently according to a Poisson distribution with
+#' parameter
 #'
 #' \deqn{
-#'   \lambda = \theta_{in} \cdot B_{x, y} \cdot \theta_{out}.
+#'   \lambda_{ij} = \theta_{out, i} \cdot B_{x_i, y_j} \cdot \theta_{in, j}.
+#' }{
+#'   lambda[i, j] = theta_out[i] * B[x[i], y[j]] * theta_in[j].
 #' }
 #'
 #' # Co-factor models versus shared blocks and degree heterogeneity

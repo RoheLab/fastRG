@@ -51,17 +51,19 @@ self-loops, and these are then removed after the fact.}
 A \code{directed_factor_model} S3 class based on a list
 with the following elements:
 \itemize{
-\item \code{X}: The incoming latent positions as a \code{\link[Matrix:Matrix]{Matrix::Matrix()}} object.
+\item \code{X}: The outgoing latent positions as a \code{\link[Matrix:Matrix]{Matrix::Matrix()}} object.
 \item \code{S}: The mixing matrix as a \code{\link[Matrix:Matrix]{Matrix::Matrix()}} object.
-\item \code{Y}: The outgoing latent positions as a \code{\link[Matrix:Matrix]{Matrix::Matrix()}} object.
-\item \code{n}: The number of nodes with incoming edges in the network.
+\item \code{Y}: The incoming latent positions as a \code{\link[Matrix:Matrix]{Matrix::Matrix()}} object.
+\item \code{n}: The number of nodes with outgoing edges in the network
+(rows of \code{A}).
 \item \code{k1}: The dimension of the latent node position vectors
-encoding incoming latent communities (i.e. in \code{X}).
-\item \code{d}: The number of nodes with outgoing edges in the network.
+encoding outgoing latent communities (i.e. in \code{X}).
+\item \code{d}: The number of nodes with incoming edges in the network
+(columns of \code{A}).
 Does not need to match \code{n} -- rectangular adjacency matrices
 are supported.
 \item \code{k2}: The dimension of the latent node position vectors
-encoding outgoing latent communities (i.e. in \code{Y}).
+encoding incoming latent communities (i.e. in \code{Y}).
 \item \code{poisson_edges}: Whether or not the graph is taken to be have
 Poisson or Bernoulli edges, as indicated by a logical vector
 of length 1.

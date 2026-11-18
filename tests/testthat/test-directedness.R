@@ -60,3 +60,40 @@ test_that("directed graphs are directed", {
   tbl_graph <- sample_tidygraph(fm)
   expect_false(is_directed(tbl_graph))
 })
+
+test_that("print.directed_factor_model() labels rows as outgoing nodes", {
+  # rows of A send edges: n = 3 outgoing nodes, d = 5 incoming nodes
+  m <- directed_factor_model(matrix(1, 3, 2), matrix(1, 2, 4), matrix(1, 5, 4))
+  out <- paste(capture.output(print(m)), collapse = "\n")
+
+  expect_match(out, "Outgoing Nodes (n): 3", fixed = TRUE)
+  expect_match(out, "Outgoing Rank (k1): 2", fixed = TRUE)
+  expect_match(out, "Incoming Rank (k2): 4", fixed = TRUE)
+  expect_match(out, "Incoming Nodes (d): 5", fixed = TRUE)
+
+  # out degree is edges per row, in degree is edges per column
+  expect_equal(expected_out_degree(m), expected_edges(m) / 3)
+  expect_equal(expected_in_degree(m), expected_edges(m) / 5)
+})
+
+test_that("directed_dcsbm() validator messages name the right side", {
+  m <- directed_dcsbm(
+    theta_out = rep(1, 10), theta_in = rep(1, 10), B = matrix(1, 2, 3)
+  )
+
+  bad <- m
+  bad$pi_out <- c(0.5, 0.25, 0.25)
+  expect_error(
+    validate_directed_dcsbm(bad),
+    "`pi_out` must match the outgoing rank",
+    fixed = TRUE
+  )
+
+  bad <- m
+  bad$pi_in <- c(0.5, 0.5)
+  expect_error(
+    validate_directed_dcsbm(bad),
+    "`pi_in` must match the incoming rank",
+    fixed = TRUE
+  )
+})

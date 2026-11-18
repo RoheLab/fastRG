@@ -185,8 +185,8 @@ matrix refer to the same node: nodes are sorted by block, and then by
 decreasing \code{theta_out} and \code{theta_in} within each block.}
 
 \item{force_identifiability}{Logical indicating whether or not to
-normalize \code{theta_out} such that it sums to one within each incoming
-block and \code{theta_in} such that it sums to one within each outgoing
+normalize \code{theta_out} such that it sums to one within each outgoing
+block and \code{theta_in} such that it sums to one within each incoming
 block. Defaults to \code{TRUE}.}
 
 \item{poisson_edges}{Logical indicating whether or not
@@ -258,8 +258,8 @@ sampling large, dense graphs.
 }
 \section{Generative Model}{
 There are two levels of randomness in a directed degree-corrected
-stochastic blockmodel. First, we randomly chose a incoming
-block membership and an outgoing block membership
+stochastic blockmodel. First, we randomly choose an outgoing
+block membership and an incoming block membership
 for each node in the blockmodel. This is
 handled by \code{directed_dcsbm()}. Then, given these block memberships,
 we randomly sample edges between nodes. This second
@@ -269,13 +269,13 @@ operation is handled by \code{\link[=sample_edgelist]{sample_edgelist()}},
 graph representation.
 \subsection{Block memberships}{
 
-Let \eqn{x} represent the incoming block membership of a node
-and \eqn{y} represent the outgoing block membership of a node.
+Let \eqn{x} represent the outgoing block membership of a node
+and \eqn{y} represent the incoming block membership of a node.
 To generate \eqn{x} we sample from a categorical
 distribution with parameter \eqn{\pi_{out}}.
 To generate \eqn{y} we sample from a categorical
 distribution with parameter \eqn{\pi_{in}}.
-Block memberships are independent across nodes. Incoming and outgoing
+Block memberships are independent across nodes. Outgoing and incoming
 block memberships of the same node are also independent.
 
 These categorical draws are used when \code{pi_out} (\code{pi_in}) is specified.
@@ -291,12 +291,12 @@ values.
 
 \subsection{Degree heterogeneity}{
 
-In addition to block membership, the DCSBM also
-nodes to have different propensities for incoming and
-outgoing edge formation.
-We represent the propensity to form incoming edges for a
-given node by a positive number \eqn{\theta_{out}}.
+In addition to block membership, the DCSBM also allows
+nodes to have different propensities for outgoing and
+incoming edge formation.
 We represent the propensity to form outgoing edges for a
+given node by a positive number \eqn{\theta_{out}}.
+We represent the propensity to form incoming edges for a
 given node by a positive number \eqn{\theta_{in}}.
 Typically the \eqn{\theta_{out}} (and \eqn{\theta_{in}}) across all nodes are
 constrained to sum to one for identifiability purposes,
@@ -306,15 +306,18 @@ but this doesn't really matter during sampling.
 \subsection{Edge formulation}{
 
 Once we know the block memberships \eqn{x} and \eqn{y}
-and the degree  heterogeneity parameters \eqn{\theta_{in}} and
-\eqn{\theta_{out}}, we need one more
+and the degree heterogeneity parameters \eqn{\theta_{out}} and
+\eqn{\theta_{in}}, we need one more
 ingredient, which is the baseline intensity of connections
-between nodes in block \code{i} and block \code{j}. Then each edge forms
-independently according to a Poisson distribution with
-parameters
+from nodes in outgoing block \code{a} to nodes in incoming block \code{b},
+\code{B[a, b]}. Then each edge \eqn{A_{ij}} from node \eqn{i} to node
+\eqn{j} forms independently according to a Poisson distribution with
+parameter
 
 \deqn{
-  \lambda = \theta_{in} \cdot B_{x, y} \cdot \theta_{out}.
+  \lambda_{ij} = \theta_{out, i} \cdot B_{x_i, y_j} \cdot \theta_{in, j}.
+}{
+  lambda[i, j] = theta_out[i] * B[x[i], y[j]] * theta_in[j].
 }
 }
 }
