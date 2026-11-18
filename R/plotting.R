@@ -80,11 +80,13 @@ plot_sparse_matrix <- function(A) {
   A <- methods::as(A, "CsparseMatrix")
   A <- methods::as(A, "generalMatrix")
 
-  ggplot(summary(A), aes(x = i, y = j, fill = as.factor(x))) +
+  # rows of A go down the y axis and columns along the x axis, as in
+  # plot_dense_matrix()
+  ggplot(summary(A), aes(x = j, y = i, fill = as.factor(x))) +
     geom_tile() +
     scale_fill_grey() +
     scale_y_reverse() +
-    expand_limits(x = nrow(A), y = ncol(A)) +
+    expand_limits(x = ncol(A), y = nrow(A)) +
     theme_void() +
     labs(
       fill = "Edges"
