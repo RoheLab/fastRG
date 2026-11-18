@@ -116,6 +116,11 @@ validate_undirected_factor_model <- function(x) {
 #'
 #' @inheritParams directed_factor_model
 #'
+#' @param allow_self_loops Logical indicating whether or not
+#'   nodes should be allowed to form edges with themselves.
+#'   Defaults to `TRUE`. When `FALSE`, sampling proceeds allowing
+#'   self-loops, and these are then removed after the fact.
+#'
 #' @return An `undirected_factor_model` S3 class based on a list
 #'   with the following elements:
 #'

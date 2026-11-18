@@ -55,7 +55,10 @@ for some additional details. Defaults to \code{TRUE}.}
 \item{allow_self_loops}{Logical indicating whether or not
 nodes should be allowed to form edges with themselves.
 Defaults to \code{TRUE}. When \code{FALSE}, sampling proceeds allowing
-self-loops, and these are then removed after the fact.}
+self-loops, and these are then removed after the fact.
+Ignored for rectangular graphs (\code{nrow(X) != nrow(Y)}), whose rows
+and columns are different sets of nodes, so that there are no
+self-loops.}
 
 \item{...}{Ignored, for generic consistency only.}
 
