@@ -75,8 +75,8 @@ directed_erdos_renyi <- function(
   poisson_edges = TRUE,
   allow_self_loops = TRUE
 ) {
-  X <- Matrix(1, nrow = n, ncol = 1)
-  Y <- Matrix(1, nrow = n, ncol = 1)
+  X <- Matrix(1, nrow = n, ncol = 1, doDiag = FALSE)
+  Y <- Matrix(1, nrow = n, ncol = 1, doDiag = FALSE)
 
   # the scaling arguments arrive via `...`, so look for them by name (a
   # bare `expected_in_degree` would find the generic function)

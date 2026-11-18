@@ -62,7 +62,7 @@ erdos_renyi <- function(
   poisson_edges = TRUE,
   allow_self_loops = TRUE
 ) {
-  X <- Matrix(1, nrow = n, ncol = 1)
+  X <- Matrix(1, nrow = n, ncol = 1, doDiag = FALSE)
 
   # `expected_degree` and `expected_density` arrive via `...`, so look for
   # them by name (a bare `expected_degree` would find the generic function)

@@ -267,8 +267,8 @@ mmsbm <- function(
 
   if (sort_nodes) {
     idx <- sort_by_all_columns_idx(X)
-    X <- X[idx, ]
-    Z <- Z[idx, ]
+    X <- X[idx, , drop = FALSE]
+    Z <- Z[idx, , drop = FALSE]
     theta <- theta[idx]
   }
 

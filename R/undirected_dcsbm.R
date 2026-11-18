@@ -397,7 +397,7 @@ dcsbm <- function(
   if (k > 1) {
     X <- sparse.model.matrix(~ z + 0)
   } else {
-    X <- Matrix(1, nrow = n, ncol = 1)
+    X <- Matrix(1, nrow = n, ncol = 1, doDiag = FALSE)
   }
 
   if (force_identifiability) {

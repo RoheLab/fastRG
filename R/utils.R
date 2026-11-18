@@ -7,7 +7,8 @@ sort_by_all_columns <- function(X) {
   args <- as.list(as.data.frame(as.matrix(X)))
   args$decreasing <- TRUE
 
-  X <- X[do.call(order, args), ]
+  # drop = FALSE keeps a matrix when there is a single node or block
+  X <- X[do.call(order, args), , drop = FALSE]
   X
 }
 
