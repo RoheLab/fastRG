@@ -34,7 +34,8 @@
 #' @inheritParams undirected_factor_model
 #' @inheritParams dcsbm
 #'
-#' @return An `undirected_chung_lu` S3 object, a subclass of [dcsbm()].
+#' @return An `undirected_chung_lu` S3 object, a subclass of the
+#'   `undirected_dcsbm` object returned by [dcsbm()], with a single block.
 #'
 #' @export
 #' @family undirected graphs
@@ -95,7 +96,8 @@ chung_lu <- function(
     poisson_edges = poisson_edges,
     force_identifiability = force_identifiability,
     allow_self_loops = allow_self_loops,
-    ...
+    ...,
+    subclass = "undirected_chung_lu"
   )
 
   # don't validate the chung-ln-ness because there is no low level
@@ -107,17 +109,14 @@ chung_lu <- function(
 #' @export
 print.undirected_chung_lu <- function(x, ...) {
   cat(glue("Undirected Chung-Lu Graph\n", .trim = FALSE))
-  cat(glue(
-    "-------------------------------------------------\n\n",
-    .trim = FALSE
-  ))
+  cat(glue("-------------------------\n\n", .trim = FALSE))
 
   sorted <- if (x$sorted) "arranged by block" else "not arranged by block"
 
-  cat(glue("Nodes (n): {x$n} ({sorted})\n", .trim = FALSE))
+  cat(glue("Nodes (n): {x$n} ({sorted})\n\n", .trim = FALSE))
 
   cat("Traditional Chung-Lu parameterization:\n\n")
-  cat("Degree heterogeneity (theta):", dim_and_class(x$theta), "\n")
+  cat("Degree heterogeneity (theta):", dim_and_class(x$theta), "\n\n")
 
   cat("Factor model parameterization:\n\n")
   cat("X:", dim_and_class(x$X), "\n")
