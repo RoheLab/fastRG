@@ -132,12 +132,33 @@ planted_partition <- function(
   poisson_edges = TRUE,
   allow_self_loops = TRUE
 ) {
-  if (is.null(within_block)) {
+  check_scalar(within_block, "within_block")
+  check_scalar(between_block, "between_block")
+  check_scalar(a, "a")
+  check_scalar(b, "b")
+
+  if (!is.null(within_block) && !is.null(a)) {
+    stop("Must specify only one of `within_block` and `a`.", call. = FALSE)
+  }
+
+  if (!is.null(between_block) && !is.null(b)) {
+    stop("Must specify only one of `between_block` and `b`.", call. = FALSE)
+  }
+
+  if (is.null(within_block) && !is.null(a)) {
     within_block <- a / n
   }
 
-  if (is.null(between_block)) {
+  if (is.null(between_block) && !is.null(b)) {
     between_block <- b / n
+  }
+
+  if (is.null(within_block) || is.null(between_block)) {
+    stop(
+      "Must specify either `within_block` and `between_block`, ",
+      "or `a` and `b`.",
+      call. = FALSE
+    )
   }
 
   B <- matrix(between_block, nrow = k, ncol = k)
