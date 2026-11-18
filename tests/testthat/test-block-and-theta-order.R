@@ -126,3 +126,57 @@ test_that("sorted models keep X, z and theta consistent", {
   expect_equal(block_of(d$X), as.integer(d$z_out))
   expect_equal(block_of(d$Y), as.integer(d$z_in))
 })
+
+test_that("sorting nodes keeps each node's own block and theta together", {
+  # with equal block sizes no blocks are relabeled, so the sorted model is
+  # the unsorted model with its nodes permuted
+  pairs <- function(z, theta) {
+    p <- data.frame(z = as.integer(z), theta = unname(theta))
+    p[order(p$z, p$theta), ]
+  }
+
+  theta <- 1:100 + 0
+
+  for (fi in c(TRUE, FALSE)) {
+    set.seed(1)
+    sorted <- dcsbm(theta = theta, B = diag(2), force_identifiability = fi)
+    set.seed(1)
+    unsorted <- dcsbm(
+      theta = theta, B = diag(2), force_identifiability = fi,
+      sort_nodes = FALSE
+    )
+
+    expect_equal(
+      pairs(sorted$z, sorted$theta),
+      pairs(unsorted$z, unsorted$theta),
+      ignore_attr = TRUE
+    )
+
+    # theta is not simply split by position between the blocks
+    if (!fi) {
+      expect_false(all(sorted$theta[sorted$z == "block1"] <= 50))
+    }
+
+    set.seed(1)
+    sorted <- directed_dcsbm(
+      theta_out = theta, theta_in = rev(theta), B = diag(2),
+      force_identifiability = fi
+    )
+    set.seed(1)
+    unsorted <- directed_dcsbm(
+      theta_out = theta, theta_in = rev(theta), B = diag(2),
+      force_identifiability = fi, sort_nodes = FALSE
+    )
+
+    expect_equal(
+      pairs(sorted$z_out, sorted$theta_out),
+      pairs(unsorted$z_out, unsorted$theta_out),
+      ignore_attr = TRUE
+    )
+    expect_equal(
+      pairs(sorted$z_in, sorted$theta_in),
+      pairs(unsorted$z_in, unsorted$theta_in),
+      ignore_attr = TRUE
+    )
+  }
+})

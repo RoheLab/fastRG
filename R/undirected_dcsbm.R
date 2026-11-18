@@ -391,18 +391,13 @@ dcsbm <- function(
 
   pi <- pi / sum(pi)
 
-  if (sort_nodes) {
-    z <- sort(z)
-  }
-
   if (force_identifiability) {
     theta <- l1_normalize_within(theta, z)
   }
 
   if (sort_nodes) {
-    # within each block, sort by decreasing theta. permute z and theta
-    # together rather than sorting the rows of X, which would send nodes
-    # with theta = 0 (all-zero rows) to the bottom, out of line with z
+    # sort by block, and by decreasing theta within blocks. permute z and
+    # theta together, so that node i keeps its own block and its own theta
     node_order <- order(z, -theta)
     z <- z[node_order]
     theta <- theta[node_order]

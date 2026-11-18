@@ -28,8 +28,12 @@ expect_reference_case <- function(case, z_out, z_in, theta_out, theta_in, S, i, 
 #   of the defaults. they also reflect the theta-order fix (theta in node
 #   order).
 # - the explicit `pi` pin was generated with fastRG 0.4.0.9000 (commit
-#   30679ae), before `block_sizes_out` / `block_sizes_in` were added, and is
-#   unchanged
+#   30679ae), before `block_sizes_out` / `block_sizes_in` were added.
+# - the sorted pins (the sorted default and explicit `pi`) were regenerated
+#   when sorting stopped pairing theta with blocks by position: each node
+#   now keeps its own theta and block when nodes are sorted, which
+#   intentionally changes seeded output of sorted models. the unsorted pin
+#   is unchanged
 
 test_that("directed_dcsbm() default sampling is pinned (sorted)", {
   case <- sample_reference_case(
@@ -44,38 +48,35 @@ test_that("directed_dcsbm() default sampling is pinned (sorted)", {
     z_out = c(1L, 1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 2L, 3L, 3L, 3L, 3L, 3L),
     z_in = c(1L, 1L, 1L, 2L, 2L, 2L, 2L, 3L, 3L, 3L, 3L, 4L, 4L, 4L, 4L),
     theta_out = c(
-      0.617259, 0.2880123, 0.04267424, 0.03071212, 0.02134236, 0.5541946,
-      0.208573, 0.08806888, 0.08315635, 0.06600721, 0.619145, 0.1508151,
-      0.1333359, 0.06108368, 0.03562034
+      0.5310611, 0.1979492, 0.1750073, 0.05662958, 0.03935283, 0.562851,
+      0.3201125, 0.06703823, 0.03158169, 0.01841655, 0.5182694, 0.2448739,
+      0.1033968, 0.09762926, 0.03583059
     ),
     theta_in = c(
-      0.3888567, 0.3887706, 0.2223727, 0.4261955, 0.3017147, 0.1742412,
-      0.09784863, 0.4608853, 0.3938223, 0.1242239, 0.02106845, 0.5364644,
-      0.2054845, 0.2038565, 0.05419462
+      0.6954421, 0.2797657, 0.02479222, 0.6694407, 0.19997, 0.06762814,
+      0.06296111, 0.4200212, 0.4165979, 0.1039326, 0.05944831, 0.3871937,
+      0.3704002, 0.1255702, 0.1168359
     ),
     S = structure(
       c(
-        4.604851, 6.235598, 1.309489, 3.287976, 3.37821,
-        1.262552, 4.444437, 7.243754, 6.082634, 0.4312557, 4.136733,
-        2.58251
+        4.604851, 6.235598, 1.309489, 3.287976, 3.37821, 1.262552, 4.444437,
+        7.243754, 6.082634, 0.4312557, 4.136733, 2.58251
       ),
       dim = 3:4
     ),
     i = c(
-      1L, 2L, 6L, 7L, 8L, 13L, 1L, 3L, 6L, 9L, 10L, 1L, 2L, 5L, 6L,
-      12L, 1L, 6L, 1L, 2L, 6L, 7L, 8L, 11L, 6L, 9L, 2L, 1L, 6L, 9L,
-      10L, 11L, 12L, 13L, 6L, 7L, 10L, 13L, 6L, 7L, 11L, 7L, 11L, 6L,
-      11L
+      1L, 2L, 3L, 4L, 6L, 7L, 8L, 9L, 14L, 1L, 3L, 5L, 6L, 12L, 1L, 6L, 7L,
+      11L, 2L, 6L, 7L, 2L, 3L, 1L, 6L, 8L, 9L, 11L, 12L, 13L, 6L, 7L, 10L,
+      11L, 13L, 7L, 11L, 6L, 11L, 7L, 11L, 6L, 11L
     ),
     j = c(
-      1L, 1L, 1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 2L, 3L, 3L, 3L, 3L,
-      3L, 4L, 4L, 5L, 5L, 5L, 5L, 5L, 5L, 6L, 6L, 7L, 8L, 8L, 8L, 8L,
-      8L, 8L, 8L, 9L, 9L, 9L, 9L, 10L, 10L, 10L, 12L, 12L, 13L, 14L
+      1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 2L, 4L, 4L, 4L, 4L,
+      5L, 5L, 5L, 7L, 7L, 8L, 8L, 8L, 8L, 8L, 8L, 8L, 9L, 9L, 9L, 9L, 9L, 10L,
+      10L, 11L, 11L, 12L, 12L, 13L, 14L
     ),
     x = c(
-      1, 2, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1,
-      3, 1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 2, 1, 1, 2, 1, 1, 1, 1, 1, 3,
-      1, 1, 1, 1
+      2, 2, 1, 1, 1, 3, 1, 1, 1, 1, 1, 1, 2, 1, 3, 4, 2, 1, 1, 1, 1, 1, 1, 1,
+      1, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1
     )
   )
 })
@@ -154,7 +155,7 @@ test_that("directed_dcsbm() defaults to balanced block sizes", {
   expect_equal(as.vector(table(sorted$z_in)), c(4, 4, 5, 5, 5))
 })
 
-test_that("directed_dcsbm() sampling with explicit pi is unchanged", {
+test_that("directed_dcsbm() sampling with explicit pi is pinned", {
   case <- sample_reference_case(
     theta_out = rep(1:3, 5),
     theta_in = rep(2, 15),
@@ -169,31 +170,30 @@ test_that("directed_dcsbm() sampling with explicit pi is unchanged", {
     z_out = c(1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L),
     z_in = c(1L, 1L, 1L, 2L, 2L, 2L, 2L, 3L, 3L, 3L, 3L, 3L, 3L, 3L, 3L),
     theta_out = c(
-      0.4285714, 0.2857143, 0.1428571, 0.1428571, 0.1304348, 0.1304348,
-      0.1304348, 0.1304348, 0.08695652, 0.08695652, 0.08695652, 0.08695652,
-      0.04347826, 0.04347826, 0.04347826
+      0.3, 0.3, 0.3, 0.1, 0.15, 0.15, 0.1, 0.1, 0.1, 0.1, 0.1, 0.05, 0.05,
+      0.05, 0.05
     ),
     theta_in = c(
-      0.3333333, 0.3333333, 0.3333333, 0.25, 0.25, 0.25, 0.25, 0.125,
-      0.125, 0.125, 0.125, 0.125, 0.125, 0.125, 0.125
+      0.3333333, 0.3333333, 0.3333333, 0.25, 0.25, 0.25, 0.25, 0.125, 0.125,
+      0.125, 0.125, 0.125, 0.125, 0.125, 0.125
     ),
     S = structure(
-      c(4.285714, 2.142857, 8.571429, 6.428571, 12.85714, 10.71429),
+      c(
+        4.285714, 2.142857, 8.571429, 6.428571, 12.85714, 10.71429
+      ),
       dim = 2:3
     ),
     i = c(
-      1L, 2L, 1L, 3L, 7L, 8L, 12L, 1L, 7L, 2L, 4L, 5L, 15L, 1L, 7L,
-      12L, 1L, 2L, 5L, 10L, 6L, 8L, 2L, 4L, 2L, 9L, 2L, 11L, 3L, 1L,
-      3L
+      1L, 2L, 2L, 3L, 5L, 10L, 11L, 3L, 10L, 1L, 2L, 6L, 15L, 3L, 10L, 11L,
+      2L, 3L, 6L, 7L, 5L, 9L, 1L, 2L, 2L, 14L, 2L, 8L, 4L, 2L, 3L
     ),
     j = c(
-      1L, 1L, 4L, 4L, 4L, 4L, 4L, 5L, 5L, 6L, 7L, 7L, 7L, 8L, 8L,
-      8L, 9L, 9L, 9L, 9L, 10L, 10L, 11L, 11L, 12L, 12L, 13L, 13L, 14L,
-      15L, 15L
+      1L, 1L, 4L, 4L, 4L, 4L, 4L, 5L, 5L, 6L, 7L, 7L, 7L, 8L, 8L, 8L, 9L, 9L,
+      9L, 9L, 10L, 10L, 11L, 11L, 12L, 12L, 13L, 13L, 14L, 15L, 15L
     ),
     x = c(
-      1, 1, 1, 1, 1, 1, 1, 3, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2,
-      1, 1, 1, 1, 1, 2, 1, 1, 1, 2, 1
+      1, 1, 1, 1, 1, 1, 1, 3, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1,
+      1, 2, 1, 1, 1, 1, 2
     )
   )
 })
