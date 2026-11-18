@@ -288,6 +288,9 @@ sample_edgelist.directed_factor_model <- function(
 #'   nodes should be allowed to form edges with themselves.
 #'   Defaults to `TRUE`. When `FALSE`, sampling proceeds allowing
 #'   self-loops, and these are then removed after the fact.
+#'   Ignored for rectangular graphs (`nrow(X) != nrow(Y)`), whose rows
+#'   and columns are different sets of nodes, so that there are no
+#'   self-loops.
 #'
 #' @param ... Ignored, for generic consistency only.
 #'
@@ -470,7 +473,9 @@ sample_edgelist.matrix <- function(
     edgelist <- dplyr::distinct(edgelist)
   }
 
-  if (!allow_self_loops) {
+  # in rectangular graphs (n != d) rows and columns are different sets of
+  # nodes, so `from == to` is not a self-loop and must be kept
+  if (!allow_self_loops && n == d) {
     edgelist <- dplyr::filter(edgelist, to != from)
   }
 

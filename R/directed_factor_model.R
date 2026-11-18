@@ -113,6 +113,9 @@ validate_directed_factor_model <- function(x) {
 #'   nodes should be allowed to form edges with themselves.
 #'   Defaults to `TRUE`. When `FALSE`, sampling proceeds allowing
 #'   self-loops, and these are then removed after the fact.
+#'   Ignored for rectangular graphs (`n != d`), whose rows
+#'   and columns are different sets of nodes, so that there are no
+#'   self-loops.
 #'
 #' @return A `directed_factor_model` S3 class based on a list
 #'   with the following elements:
