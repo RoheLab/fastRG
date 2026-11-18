@@ -121,3 +121,30 @@ test_that("planted partition validators check B", {
     fixed = TRUE
   )
 })
+
+test_that("planted_partition() requires exactly one way to give each probability", {
+  expect_error(
+    planted_partition(n = 10, k = 2, within_block = 0.5, a = 2, between_block = 0.1),
+    "only one of `within_block` and `a`"
+  )
+  expect_error(
+    planted_partition(n = 10, k = 2, within_block = 0.5, between_block = 0.1, b = 2),
+    "only one of `between_block` and `b`"
+  )
+  expect_error(
+    planted_partition(n = 10, k = 2),
+    "Must specify either `within_block` and `between_block`, or `a` and `b`"
+  )
+  expect_error(
+    planted_partition(n = 10, k = 2, within_block = 0.5),
+    "Must specify either `within_block` and `between_block`, or `a` and `b`"
+  )
+  expect_error(
+    planted_partition(n = 10, k = 2, within_block = c(0.5, 0.2), between_block = 0.1),
+    "`within_block` must be a scalar"
+  )
+
+  # mixing the two parameterizations is fine
+  pp <- planted_partition(n = 10, k = 2, within_block = 0.5, b = 2)
+  expect_equal(pp$between_block, 0.2)
+})
