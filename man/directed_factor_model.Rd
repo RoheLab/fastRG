@@ -53,7 +53,9 @@ when \code{FALSE}, we assume that \code{S} specifies a desired between-factor
 connection probability, and back-transform this \code{S} to the
 appropriate Poisson intensity parameter to approximate Bernoulli
 factor connection probabilities. See Section 2.3 of Rohe et al. (2017)
-for some additional details.}
+for some additional details. In this case every element of \code{S}
+(after any rescaling) must be less than one, since a probability of
+exactly one corresponds to an infinite Poisson intensity.}
 
 \item{allow_self_loops}{Logical indicating whether or not
 nodes should be allowed to form edges with themselves.

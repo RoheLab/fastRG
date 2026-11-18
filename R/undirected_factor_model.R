@@ -155,6 +155,10 @@ undirected_factor_model <- function(
   poisson_edges = TRUE,
   allow_self_loops = TRUE
 ) {
+  # check these first: they are used below, before the validator runs
+  check_flag(poisson_edges, "poisson_edges")
+  check_flag(allow_self_loops, "allow_self_loops")
+
   X <- Matrix(X)
   S <- Matrix(S)
 
@@ -206,10 +210,12 @@ undirected_factor_model <- function(
     # back-transform it to a Poisson parameterization of S. see section 2.3
     # of the paper and issue #20 for details.
 
-    if (max(ufm$S) > 1) {
+    # a probability of exactly 1 would be an infinite Poisson rate
+    if (max(ufm$S) >= 1) {
       stop(
         "Elements of `S` (after symmetrizing and scaling to achieve expected ",
-        "degree) must not exceed 1 for Bernoulli graphs.",
+        "degree or density) must be less than 1 for Bernoulli graphs ",
+        "(`poisson_edges = FALSE`).",
         call. = FALSE
       )
     }
