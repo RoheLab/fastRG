@@ -13,12 +13,14 @@
 
 \item{which}{Selection criterion. See \strong{Details} below.}
 
-\item{sigma}{Shift parameter. See section \strong{Shift-And-Invert Mode}.}
+\item{sigma}{Not supported for factor models, which are represented
+implicitly. Must be \code{NULL}. To use shift-and-invert mode, call
+\code{eigs_sym()} on \code{as.matrix(expectation(A))} instead.}
 
-\item{opts}{Control parameters related to the computing
-algorithm. See \strong{Details} below.}
+\item{opts}{Control parameters passed to \code{\link[RSpectra:eigs]{RSpectra::eigs_sym()}}. See
+the "Accuracy for small models" section for the default \code{ncv}.}
 
-\item{...}{Unused, included only for consistency with generic signature.}
+\item{...}{Passed to \code{\link[RSpectra:eigs]{RSpectra::eigs_sym()}}.}
 }
 \description{
 Compute the eigendecomposition of the expected adjacency matrix of an undirected factor model
@@ -72,3 +74,21 @@ following parameters:
                       if \code{initvec} is close to an eigenvector of \eqn{A}.}
 }
 }
+\section{Accuracy for small models}{
+
+
+These methods compute spectra with RSpectra's Lanczos solvers, applied
+implicitly to the expected adjacency matrix, which has rank \code{k}. RSpectra
+is unreliable on such exactly low-rank matrices when they are small: it
+can error with "TridiagEigen: eigen decomposition failed", or silently
+return wrong eigenvalues or singular values (see
+\url{https://github.com/yixuan/RSpectra/issues/20}).
+
+To reduce how often this happens, these methods default to a smaller
+Krylov subspace than RSpectra does, \code{opts$ncv = min(dim - 1, max(2 * k + 1, 10))},
+unless you specify \code{opts$ncv} yourself. They also warn whenever
+\code{min(n, d)} is 25 or less. For such small models, it is cheap and
+reliable to compute the decomposition directly with \code{\link[=eigen]{eigen()}} or \code{\link[=svd]{svd()}}
+of \code{as.matrix(expectation(A))}.
+}
+
