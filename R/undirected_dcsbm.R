@@ -109,22 +109,22 @@ validate_undirected_dcsbm <- function(x) {
 #'   to a node in community `j` is `Poisson(B[i, j])`. Must be
 #'   a square matrix. `matrix` and `Matrix` objects are both
 #'   acceptable. If `B` is not symmetric, it will be
-#'   symmetrized via the update `B := B + t(B) / 2`. Defaults to `NULL`.
+#'   symmetrized via the update `B := (B + t(B)) / 2`. Defaults to `NULL`.
 #'   You must specify either `k` or `B`, but not both.
 #'
 #' @param block_sizes (block sizes) Number of nodes in each block,
-#'   as a vector of integers. Must match the dimensions of `B`, or `k` and
-#'   must sum to `n`. Defaults to `NULL`, in which case blocks are made
+#'   as a vector of non-negative integers. Must match the dimensions of
+#'   `B`, or `k`, and must sum to `n`. Defaults to `NULL`, in which case blocks are made
 #'   to be as balanced as possible. You can specify either `pi` or
 #'   `block_sizes`, but not both.
 #'
 #' @param pi (block sizes) Relative block
 #'   probabilities. Must be positive, but do not need to sum
 #'   to one, as they will be normalized internally.
-#'   Must match the dimensions of `B` or `k`. Defaults to `NULL`, in which
-#'   case the `block_sizes` argument will take precedence. Note that
-#'   you can specify either `pi` or `block_sizes`, but should not
-#'   specify both.
+#'   Must match the dimensions of `B` or `k`. When `pi` is given,
+#'   block memberships are sampled independently from `pi`, so block
+#'   sizes are random. Defaults to `NULL`. You can specify either `pi`
+#'   or `block_sizes`, but not both.
 #'
 #' @param sort_nodes Logical indicating whether or not to sort the nodes
 #'   so that they are grouped by block and by `theta`. Useful for plotting.
@@ -179,11 +179,14 @@ validate_undirected_dcsbm <- function(x) {
 #' ## Block memberships
 #'
 #' Let \eqn{z_i} represent the block membership of node \eqn{i}.
-#' To generate \eqn{z_i} we sample from a categorical
-#' distribution (note that this is a special case of a
-#' multinomial) with parameter \eqn{\pi}, such that
-#' \eqn{\pi_i} represents the probability of ending up in
-#' the ith block. Block memberships for each node are independent.
+#' By default, and when `block_sizes` is given, block sizes are
+#' fixed: exactly `block_sizes[j]` nodes are put in block \eqn{j}
+#' (by default, blocks are as balanced as possible), and which nodes
+#' land in which block is uniformly random. When `pi` is given
+#' instead, each \eqn{z_i} is sampled independently from a categorical
+#' distribution (a special case of a multinomial) with parameter
+#' \eqn{\pi}, such that \eqn{\pi_j} is the probability of ending up in
+#' the jth block, and block sizes are random.
 #'
 #' ## Degree heterogeneity
 #'
@@ -331,38 +334,13 @@ dcsbm <- function(
 
   ### block membership
 
-  if (is.null(block_sizes) && is.null(pi)) {
-    base_value <- floor(n / k)
-    remainder <- n %% k
-    num_base_values <- k - remainder
-
-    upper_values <- rep(base_value + 1, remainder)
-    base_values <- rep(base_value, num_base_values)
-
-    block_sizes <- c(upper_values, base_values)
-
-    z <- sample(rep(1:k, times = block_sizes))
-
-    # for sorting by block size later
-    pi <- block_sizes / n
-  } else if (!is.null(block_sizes)) {
-    if (sum(block_sizes) != n) {
-      stop(
-        "Sum of `block_sizes` must equal `n` or `length(theta)`.",
-        call. = FALSE
-      )
-    }
-
-    z <- sample(rep(1:k, times = block_sizes))
-
-    # for sorting by block size later
-    pi <- block_sizes / n
+  if (!is.null(block_sizes) && !is.null(pi)) {
+    stop(
+      "Must specify only one of `block_sizes` and `pi`, not both.",
+      call. = FALSE
+    )
   } else if (!is.null(pi)) {
-    if (!is.null(pi) && !is.null(block_sizes)) {
-      stop("Length of `pi` must match dimensions of `B`.", call. = FALSE)
-    }
-
-    if (length(pi) != nrow(B) || length(pi) != ncol(B)) {
+    if (length(pi) != k) {
       stop("Length of `pi` must match dimensions of `B`.", call. = FALSE)
     }
 
@@ -372,7 +350,24 @@ dcsbm <- function(
 
     z <- sample(k, n, replace = TRUE, prob = pi)
   } else {
-    stop("Must at most one of `block_sizes` and `pi`.", call. = FALSE)
+    if (is.null(block_sizes)) {
+      # default: blocks as balanced as possible
+      block_sizes <- balanced_block_sizes(n, k)
+    } else {
+      check_block_sizes(
+        block_sizes,
+        arg = "block_sizes",
+        k = k,
+        n = n,
+        k_description = "dimensions of `B`",
+        n_description = "`n` or `length(theta)`"
+      )
+    }
+
+    z <- sample(rep(1:k, times = block_sizes))
+
+    # for sorting by block size later
+    pi <- block_sizes / n
   }
 
   # order mixing matrix by expected group size. `z` was sampled using the

@@ -33,7 +33,7 @@ probabilities. The probability that a node in block \code{i} connects
 to a node in community \code{j} is \code{Poisson(B[i, j])}. Must be
 a square matrix. \code{matrix} and \code{Matrix} objects are both
 acceptable. If \code{B} is not symmetric, it will be
-symmetrized via the update \code{B := B + t(B) / 2}. Defaults to \code{NULL}.
+symmetrized via the update \code{B := (B + t(B)) / 2}. Defaults to \code{NULL}.
 You must specify either \code{k} or \code{B}, but not both.}
 
 \item{...}{
@@ -52,18 +52,18 @@ to achieve this. Defaults to \code{NULL}. Do not specify both
   }}
 
 \item{block_sizes}{(block sizes) Number of nodes in each block,
-as a vector of integers. Must match the dimensions of \code{B}, or \code{k} and
-must sum to \code{n}. Defaults to \code{NULL}, in which case blocks are made
+as a vector of non-negative integers. Must match the dimensions of
+\code{B}, or \code{k}, and must sum to \code{n}. Defaults to \code{NULL}, in which case blocks are made
 to be as balanced as possible. You can specify either \code{pi} or
 \code{block_sizes}, but not both.}
 
 \item{pi}{(block sizes) Relative block
 probabilities. Must be positive, but do not need to sum
 to one, as they will be normalized internally.
-Must match the dimensions of \code{B} or \code{k}. Defaults to \code{NULL}, in which
-case the \code{block_sizes} argument will take precedence. Note that
-you can specify either \code{pi} or \code{block_sizes}, but should not
-specify both.}
+Must match the dimensions of \code{B} or \code{k}. When \code{pi} is given,
+block memberships are sampled independently from \code{pi}, so block
+sizes are random. Defaults to \code{NULL}. You can specify either \code{pi}
+or \code{block_sizes}, but not both.}
 
 \item{sort_nodes}{Logical indicating whether or not to sort the nodes
 so that they are grouped by block and by \code{theta}. Useful for plotting.
