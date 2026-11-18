@@ -85,6 +85,8 @@ chung_lu <- function(
     theta <- stats::rlnorm(n, meanlog = 2, sdlog = 1)
   } else if (is.null(n)) {
     n <- length(theta)
+  } else {
+    stop("Must specify only one of `n` and `theta`, not both.", call. = FALSE)
   }
 
   chung_lu <- dcsbm(

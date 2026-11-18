@@ -211,6 +211,8 @@ mmsbm <- function(
     theta <- stats::rlnorm(n, meanlog = 2, sdlog = 1)
   } else if (is.null(n)) {
     n <- length(theta)
+  } else {
+    stop("Must specify only one of `n` and `theta`, not both.", call. = FALSE)
   }
 
   ### mixing matrix
@@ -235,6 +237,24 @@ mmsbm <- function(
     }
 
     k <- nrow(B)
+  } else {
+    stop("Must specify only one of `B` and `k`, not both.", call. = FALSE)
+  }
+
+  if (k < 2) {
+    stop(
+      "`mmsbm()` needs at least two blocks. For a single block, use ",
+      "`chung_lu()` or `dcsbm()`.",
+      call. = FALSE
+    )
+  }
+
+  if (force_pure && n < k) {
+    stop(
+      "`force_pure = TRUE` needs at least as many nodes as blocks ",
+      "(`n >= k`).",
+      call. = FALSE
+    )
   }
 
   ### block membership

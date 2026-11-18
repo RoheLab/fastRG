@@ -65,7 +65,7 @@ randomly from a \code{Uniform(0, 1)} distribution.
 This is subject to change, and may not be reproducible.
 \code{k_out} defaults to \code{NULL}. You must specify either \code{k_out} and
 \code{k_in} together, or \code{B}. You may specify all three at once, in which
-case the number of outgoing blocks is taken from \code{B}.}
+case \code{k_out} must equal \code{nrow(B)}.}
 
 \item{k_in}{(mixing matrix) The number of incoming blocks in the blockmodel.
 Use when you don't want to specify the mixing-matrix by hand.
@@ -73,7 +73,7 @@ When \code{k_in} is specified, the elements of \code{B} are drawn
 randomly from a \code{Uniform(0, 1)} distribution.
 This is subject to change, and may not be reproducible.
 \code{k_in} defaults to \code{NULL}. You may specify all three at once, in which
-case the number of incoming blocks is taken from \code{B}.}
+case \code{k_in} must equal \code{ncol(B)}.}
 
 \item{B}{(mixing matrix) A \code{k_out} by \code{k_in} matrix of block connection
 probabilities. The probability that a node in block \code{i} connects

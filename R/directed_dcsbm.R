@@ -250,7 +250,7 @@ sample_block_memberships <- function(n, k, pi, block_sizes = NULL) {
 #'   This is subject to change, and may not be reproducible.
 #'   `k_out` defaults to `NULL`. You must specify either `k_out` and
 #'   `k_in` together, or `B`. You may specify all three at once, in which
-#'   case the number of outgoing blocks is taken from `B`.
+#'   case `k_out` must equal `nrow(B)`.
 #'
 #' @param k_in (mixing matrix) The number of incoming blocks in the blockmodel.
 #'   Use when you don't want to specify the mixing-matrix by hand.
@@ -258,7 +258,7 @@ sample_block_memberships <- function(n, k, pi, block_sizes = NULL) {
 #'   randomly from a `Uniform(0, 1)` distribution.
 #'   This is subject to change, and may not be reproducible.
 #'   `k_in` defaults to `NULL`. You may specify all three at once, in which
-#'   case the number of incoming blocks is taken from `B`.
+#'   case `k_in` must equal `ncol(B)`.
 #'
 #' @param B (mixing matrix) A `k_out` by `k_in` matrix of block connection
 #'   probabilities. The probability that a node in block `i` connects
@@ -701,6 +701,29 @@ directed_dcsbm <- function(
   if (shared_blocks && !is.null(B) && nrow(B) != ncol(B)) {
     stop(
       "`B` must be a square matrix when `shared_blocks = TRUE`.",
+      call. = FALSE
+    )
+  }
+
+  # `k_out` and `k_in` may be given along with `B`, but must agree with it
+  if (
+    !is.null(B) &&
+      !is.null(k_out) &&
+      !isTRUE(all.equal(as.numeric(k_out), as.numeric(nrow(B))))
+  ) {
+    stop(
+      "`k_out` must equal `nrow(B)` when both are given.",
+      call. = FALSE
+    )
+  }
+
+  if (
+    !is.null(B) &&
+      !is.null(k_in) &&
+      !isTRUE(all.equal(as.numeric(k_in), as.numeric(ncol(B))))
+  ) {
+    stop(
+      "`k_in` must equal `ncol(B)` when both are given.",
       call. = FALSE
     )
   }
