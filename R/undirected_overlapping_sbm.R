@@ -417,6 +417,14 @@ overlapping_sbm <- function(
     stop("Must specify only one of `B` and `k`, not both.", call. = FALSE)
   }
 
+  if (force_pure && n < k) {
+    stop(
+      "`force_pure = TRUE` needs at least as many nodes as blocks ",
+      "(`n >= k`).",
+      call. = FALSE
+    )
+  }
+
   ### block membership
 
   if (length(pi) != nrow(B) || length(pi) != ncol(B)) {
