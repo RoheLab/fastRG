@@ -905,13 +905,13 @@ directed_dcsbm <- function(
     if (k_out > 1) {
       X <- sparse.model.matrix(~ z_out + 0)
     } else {
-      X <- Matrix(1, nrow = n, ncol = 1)
+      X <- Matrix(1, nrow = n, ncol = 1, doDiag = FALSE)
     }
 
     if (k_in > 1) {
       Y <- sparse.model.matrix(~ z_in + 0)
     } else {
-      Y <- Matrix(1, nrow = n, ncol = 1)
+      Y <- Matrix(1, nrow = n, ncol = 1, doDiag = FALSE)
     }
 
     X <- set_membership_weights(X, as.numeric(theta_out))
@@ -949,13 +949,13 @@ directed_dcsbm <- function(
   if (k_out > 1) {
     X <- sparse.model.matrix(~ z_out + 0)
   } else {
-    X <- Matrix(1, nrow = n, ncol = 1)
+    X <- Matrix(1, nrow = n, ncol = 1, doDiag = FALSE)
   }
 
   if (k_in > 1) {
     Y <- sparse.model.matrix(~ z_in + 0)
   } else {
-    Y <- Matrix(1, nrow = n, ncol = 1)
+    Y <- Matrix(1, nrow = n, ncol = 1, doDiag = FALSE)
   }
 
   if (force_identifiability) {
