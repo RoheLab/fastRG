@@ -72,7 +72,8 @@ to \code{FALSE}, since this behavior can be surprise when \code{theta} is set
 to a vector of all ones to recover the SBM case.}
 }
 \value{
-An \code{undirected_chung_lu} S3 object, a subclass of \code{\link[=dcsbm]{dcsbm()}}.
+An \code{undirected_chung_lu} S3 object, a subclass of the
+\code{undirected_dcsbm} object returned by \code{\link[=dcsbm]{dcsbm()}}, with a single block.
 }
 \description{
 To specify a Chung-Lu graph, you must specify
