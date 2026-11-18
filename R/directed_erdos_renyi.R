@@ -32,8 +32,15 @@ validate_directed_erdos_renyi <- function(x) {
     stop("`Y` must have a single column.", call. = FALSE)
   }
 
-  if (values$p < 0) {
-    stop("`p` must be strictly non-negative.", call. = FALSE)
+  if (!is.numeric(values$p) || length(values$p) != 1 || values$p <= 0) {
+    stop("`p` must be a positive scalar.", call. = FALSE)
+  }
+
+  if (!values$poisson_edges && values$p >= 1) {
+    stop(
+      "`p` must be strictly between zero and one for Bernoulli graphs.",
+      call. = FALSE
+    )
   }
 
   x
@@ -43,9 +50,12 @@ validate_directed_erdos_renyi <- function(x) {
 #'
 #' @param n Number of nodes in graph.
 #'
-#' @param p Probability of an edge between any two nodes. You must specify
-#'   either `p`, `expected_in_degree`, `expected_out_degree` or
-#'   `expected_density`.
+#' @param p Probability of an edge between any two nodes, strictly
+#'   between zero and one. You must specify either `p`,
+#'   `expected_in_degree`, `expected_out_degree` or `expected_density`.
+#'   When one of those is given, the stored `p` is the edge probability
+#'   (the edge rate, for Poisson graphs) of the rescaled model, not the `p`
+#'   given here.
 #'
 #' @inheritDotParams directed_factor_model expected_in_degree expected_out_degree
 #' @inherit directed_factor_model params return
@@ -92,6 +102,8 @@ directed_erdos_renyi <- function(
 
   if (is.null(p)) {
     p <- 0.5 # doesn't matter, will get rescaled anyway
+  } else if (!is.numeric(p) || length(p) != 1 || p <= 0 || 1 <= p) {
+    stop("`p` must be strictly between zero and one.", call. = FALSE)
   }
 
   S <- matrix(p, nrow = 1, ncol = 1)
@@ -105,6 +117,11 @@ directed_erdos_renyi <- function(
     allow_self_loops = allow_self_loops,
     ...
   )
+
+  # store the edge probability of the final, rescaled model
+  if (is_rescaled(...)) {
+    er$p <- edge_scale_S(er)[1, 1]
+  }
 
   validate_directed_erdos_renyi(er)
 }

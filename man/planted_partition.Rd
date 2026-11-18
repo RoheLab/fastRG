@@ -102,8 +102,11 @@ An \code{undirected_planted_partition} S3 object, which is a subclass
 of the \code{\link[=sbm]{sbm()}} object, with additional fields:
 \itemize{
 \item \code{within_block}: The probability of edge formation within a block.
+If \code{expected_degree} or \code{expected_density} is given, this is the
+probability after rescaling (the edge rate, for Poisson graphs),
+not the value given as \code{within_block} (or \code{a / n}).
 \item \code{between_block}: The probability of edge formation between two distinct
-blocks.
+blocks, after any rescaling, as for \code{within_block}.
 }
 }
 \description{

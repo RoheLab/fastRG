@@ -20,12 +20,21 @@ validate_undirected_planted_partition <- function(x) {
     stop("`between_block` must be a scalar.", call. = FALSE)
   }
 
-  if (!is.null(x$within_block) && (x$within_block < 0 || x$within_block > 1)) {
+  # after rescaling by `expected_degree` or `expected_density`, the stored
+  # values are edge rates for Poisson graphs, so they may exceed one. the
+  # values the user gives are checked in planted_partition()
+  max_value <- if (x$poisson_edges) Inf else 1
+
+  if (
+    !is.null(x$within_block) &&
+      (x$within_block < 0 || x$within_block > max_value)
+  ) {
     stop("`within_block` must be between zero and one.", call. = FALSE)
   }
 
   if (
-    !is.null(x$between_block) && (x$between_block < 0 || x$between_block > 1)
+    !is.null(x$between_block) &&
+      (x$between_block < 0 || x$between_block > max_value)
   ) {
     stop("`between_block` must be between zero and one.", call. = FALSE)
   }
@@ -87,9 +96,12 @@ validate_undirected_planted_partition <- function(x) {
 #'   of the [sbm()] object, with additional fields:
 #'
 #'   - `within_block`: The probability of edge formation within a block.
+#'     If `expected_degree` or `expected_density` is given, this is the
+#'     probability after rescaling (the edge rate, for Poisson graphs),
+#'     not the value given as `within_block` (or `a / n`).
 #'
 #'   - `between_block`: The probability of edge formation between two distinct
-#'     blocks.
+#'     blocks, after any rescaling, as for `within_block`.
 #'
 #' @export
 #' @family stochastic block models
@@ -140,6 +152,20 @@ planted_partition <- function(
     between_block <- b / n
   }
 
+  if (within_block < 0 || within_block > 1) {
+    stop(
+      "`within_block` (or `a / n`) must be between zero and one.",
+      call. = FALSE
+    )
+  }
+
+  if (between_block < 0 || between_block > 1) {
+    stop(
+      "`between_block` (or `b / n`) must be between zero and one.",
+      call. = FALSE
+    )
+  }
+
   B <- matrix(between_block, nrow = k, ncol = k)
   diag(B) <- rep(within_block, k)
 
@@ -160,6 +186,17 @@ planted_partition <- function(
   )
 
   pp <- validate_undirected_sbm(pp)
+
+  # store the edge probabilities of the final, rescaled model
+  if (is_rescaled(...)) {
+    S <- edge_scale_S(pp)
+    if (k > 1) {
+      between_block <- S[1, 2]
+    } else {
+      between_block <- between_block * S[1, 1] / within_block
+    }
+    within_block <- S[1, 1]
+  }
 
   pp$within_block <- within_block
   pp$between_block <- between_block
