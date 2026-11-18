@@ -32,12 +32,13 @@ l1_normalize_within <- function(x, block) {
 # membership matrix `X` with exactly one non-zero entry per row. the
 # entries of X@x are stored in column-major order, so they are not in node
 # order unless the nodes are sorted by block. use the row indices X@i to
-# put each weight in the right row
+# put each weight in the right row. the `x` slot must be double, so
+# integer `theta` is coerced
 set_membership_weights <- function(X, theta) {
   if (methods::is(X, "CsparseMatrix")) {
-    X@x <- theta[X@i + 1L]
+    X@x <- as.numeric(theta[X@i + 1L])
   } else {
-    X@x <- theta
+    X@x <- as.numeric(theta)
   }
   X
 }
