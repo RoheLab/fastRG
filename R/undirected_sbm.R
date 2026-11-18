@@ -13,7 +13,7 @@ validate_undirected_sbm <- function(x) {
     function(x) length(unique(x))
   )
 
-  if (any(distinct_theta_by_block) > 1) {
+  if (any(distinct_theta_by_block > 1)) {
     stop(
       "`theta` must be equal for all nodes in a given block.",
       call. = FALSE
@@ -140,8 +140,7 @@ print.undirected_sbm <- function(x, ...) {
 
   cat("Traditional SBM parameterization:\n\n")
   cat("Block memberships (z):", dim_and_class(x$z), "\n")
-  cat("Block probabilities (pi):", dim_and_class(x$pi), "\n")
-  cat(glue("Edge distribution: {x$edge_distribution}\n\n", .trim = FALSE))
+  cat("Block probabilities (pi):", dim_and_class(x$pi), "\n\n")
 
   cat("Factor model parameterization:\n\n")
   cat("X:", dim_and_class(x$X), "\n")
